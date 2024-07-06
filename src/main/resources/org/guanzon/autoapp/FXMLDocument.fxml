@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane prefHeight="300.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane prefHeight="200.0" prefWidth="200.0">
+                    <top>
+                        <StackPane prefHeight="30.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <BorderPane prefHeight="47.0" prefWidth="750.0" style="-fx-background-color: #4C4C4C;">
+                                    <left>
+                                        <ImageView fitHeight="30.0" fitWidth="377.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                                            <image>
+                                                <Image url="@images/header-1.png" />
+                                            </image>
+                                        </ImageView>
+                                    </left>
+                                    <right>
+                                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <Pane fx:id="btnMin" onMouseClicked="#handleButtonMinimizeClick" prefHeight="30.0" prefWidth="60.0" styleClass="head-ic-min">
+                                                    <children>
+                                                        <StackPane prefHeight="30.0" prefWidth="65.0">
+                                                            <children>
+                                                                <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@images/ic-minimize.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </children>
+                                                        </StackPane>
+                                                    </children>
+                                                </Pane>
+                                                <Pane fx:id="btnClose" onMouseClicked="#handleButtonCloseClick" prefHeight="30.0" prefWidth="60.0" styleClass="head-ic-close">
+                                                    <children>
+                                                        <StackPane prefHeight="30.0" prefWidth="65.0">
+                                                            <children>
+                                                                <ImageView fitHeight="13.0" fitWidth="13.0" onMouseClicked="#handleButtonCloseClick" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@images/ic-close.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </children>
+                                                        </StackPane>
+                                                    </children>
+                                                </Pane>
+                                            </children>
+                                        </HBox>
+                                    </right>
+                                </BorderPane>
+                            </children>
+                        </StackPane>
+                    </top>
+                    <center>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                    <top>
+                                        <AnchorPane prefHeight="20.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <MenuBar style="-fx-background-color: #F1F1F1; -fx-font-family: arial; -fx-font-size: 12px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <menus>
+                                                        <Menu mnemonicParsing="false" text="Directory">
+                                                            <items>
+                                                                <Menu mnemonicParsing="false" text="Activity">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuActivity" mnemonicParsing="false" onAction="#mnuActivityClick" text="Activity" />
+                                                                        <MenuItem fx:id="mnuActivityApproval" mnemonicParsing="false" onAction="#mnuActivityApprovClick" text="Activiy Approval" />
+                                                                    </items>
+                                                                </Menu>
+                                                                <MenuItem fx:id="mnuCustomerInfo" mnemonicParsing="false" onAction="#mnuCustomerInfoClick" text="Customer" />
+                                                                <MenuItem fx:id="mnuCustVhclInfo" mnemonicParsing="false" onAction="#mnuCustVhclInfoClick" text="Customer Vehicle Information" />
+                                                                <MenuItem fx:id="mnuSupplierInfo" mnemonicParsing="false" onAction="#mnuSupplierInfoClick" text="Supplier" />
+                                                                <MenuItem mnemonicParsing="false" text="VIP Programs" />
+                                                                <MenuItem mnemonicParsing="false" text="VIP Program Member Registration" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Parameters">
+                                                            <items>
+                                                                <Menu mnemonicParsing="false" text="Activity">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuActType" mnemonicParsing="false" onAction="#mnuActivityTypeClick" text="Activity Type" />
+                                                                    </items>
+                                                                </Menu>
+                                                                <Menu mnemonicParsing="false" text="Item">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuBinEntry" mnemonicParsing="false" onAction="#mnuBinEntryClicked" text="Bin" />
+                                                                        <MenuItem fx:id="mnuBrandEntry" mnemonicParsing="false" onAction="#mnuBrandEntryClicked" text="Brand" />
+                                                                        <MenuItem fx:id="mnuCategoryEntry" mnemonicParsing="false" onAction="#mnuCategoryEntryClicked" text="Category" />
+                                                                        <MenuItem fx:id="mnuInvLocEntry" mnemonicParsing="false" onAction="#mnuInvLocEntryClicked" text="Inventory Location" />
+                                                                        <MenuItem fx:id="mnuInvTypeEntry" mnemonicParsing="false" onAction="#mnuInvTypeEntryClicked" text="Inventory Type" />
+                                                                        <MenuItem fx:id="mnuMeasureEntry" mnemonicParsing="false" onAction="#mnuMeasureEntryClicked" text="Measurement" />
+                                                                        <MenuItem fx:id="mnuSectionEntry" mnemonicParsing="false" onAction="#mnuSectionEntryClicked" text="Section" />
+                                                                        <MenuItem fx:id="mnuWarehsEntry" mnemonicParsing="false" onAction="#mnuWarehsEntryClicked" text="Warehouse" />
+                                                                    </items>
+                                                                </Menu>
+                                                                <Menu mnemonicParsing="false" text="Vehicle Description">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuVhclColorEntry" mnemonicParsing="false" onAction="#mnuVhclColorEntryClicked" text="Color" />
+                                                                        <MenuItem fx:id="mnuVhclEngFrmEntry" mnemonicParsing="false" onAction="#mnuVhclEngFrmEntryClicked" text="Engine / Frame" />
+                                                                        <MenuItem fx:id="mnuVhclMakeEntry" mnemonicParsing="false" onAction="#mnuVhclMakeEntryClicked" text="Make" />
+                                                                        <MenuItem fx:id="mnuVhclModelEntry" mnemonicParsing="false" onAction="#mnuVhclModelEntryClicked" text="Model" />
+                                                                        <MenuItem fx:id="mnuVhclTypeEntry" mnemonicParsing="false" onAction="#mnuVhclTypeEntryClicked" text="Type" />
+                                                                    </items>
+                                                                </Menu>
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Parts">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuItemEntry" mnemonicParsing="false" onAction="#mnuItemEntryClicked" text="Item Information" />
+                                                                <MenuItem fx:id="mnuSalesPartsRequest" mnemonicParsing="false" onAction="#mnuSalesPartsRequestClicked" text="Sales Parts Request" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Service">
+                                                            <items>
+                                                                <MenuItem mnemonicParsing="false" text="Delete" />
+                                                                <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu fx:id="menusales" mnemonicParsing="false" text="Vehicle Sales">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuInquiry" mnemonicParsing="false" onAction="#mnuInquiryClick" text="Inquiry" />
+                                                                <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />
+                                                                <MenuItem fx:id="mnuSalesAgent" mnemonicParsing="false" onAction="#mnuSalesAgentClick" text="Referral Agent" />
+                                                                <MenuItem fx:id="mnuSalesExecutive" mnemonicParsing="false" onAction="#mnuSalesExecutiveClick" text="Sales Executive" />
+                                                                <MenuItem fx:id="mnuVhclDesc" mnemonicParsing="false" onAction="#mnuVhclDescClick" text="Vehicle Description" />
+                                                                <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclEntryClick" text="Vehicle Sales Information" />
+                                                                <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
+                                                                <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
+                                                                <MenuItem fx:id="mnuAddOnsApproval" mnemonicParsing="false" onAction="#mnuAddOnsApprovalClick" text="VSP Add Ons Approval" />
+                                                                <MenuItem fx:id="mnuUnitDeliveryReceipt" mnemonicParsing="false" onAction="#mnuUnitDeliveryReceiptClick" text="Unit Delivery Receipt" />
+                                                                <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuInsurInfo" mnemonicParsing="false" onAction="#mnuInsurInfoClick" text="Insurance" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Cashiering">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />
+                                                                <MenuItem fx:id="mnuBillingStmt" mnemonicParsing="false" onAction="#mnuBillingStmtClick" text="Billing Statement" />
+                                                                <MenuItem fx:id="mnuColReceipt" mnemonicParsing="false" onAction="#mnuColReceiptClick" text="Collection Receipt" />
+                                                                <MenuItem fx:id="mnuOfcReceipt" mnemonicParsing="false" onAction="#mnuOfcReceiptClick" text="Official Receipt" />
+                                                                <MenuItem fx:id="mnuPartsSalesInv" mnemonicParsing="false" onAction="#mnuPartsSalesInvClick" text="Parts Sales Invoice" />
+                                                                <MenuItem fx:id="mnuVhclSalesInv" mnemonicParsing="false" onAction="#mnuVhclSalesInvClick" text="Vehicle Sales Invoice" />
+                                                            </items>
+                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Bank Transactions">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuBank" mnemonicParsing="false" onAction="#mnuBankClick" text="Bank" />
+                                                            </items>
+                                                        </Menu>
+                                                    </menus>
+                                                </MenuBar>
+                                            </children>
+                                        </AnchorPane>
+                                    </top>
+                                    <center>
+                                        <StackPane fx:id="workingSpace" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <Pane fx:id="view" prefHeight="118.0" prefWidth="750.0" />
+                                                <TabPane fx:id="tabpane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" />
+                                            </children>
+                                        </StackPane>
+                                    </center>
+                                </BorderPane>
+                            </children>
+                        </StackPane>
+                    </center>
+                    <bottom>
+                        <StackPane prefHeight="25.0" style="-fx-background-color: #F1F1F1;" BorderPane.alignment="CENTER">
+                            <children>
+                                <BorderPane prefHeight="25.0">
+                                    <left>
+                                        <HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="5.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <FontAwesomeIconView fill="#3f3f3f" glyphName="USER" size="14" wrappingWidth="12.999998092651367" />
+                                                <Label fx:id="AppUser" prefHeight="17.0" text="Arsiela Lavarias- MIS | Rank &amp; File" textFill="#3f3f3f">
+                                                    <font>
+                                                        <Font name="Arial" size="12.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <BorderPane.margin>
+                                                <Insets left="18.0" />
+                                            </BorderPane.margin>
+                                        </HBox>
+                                    </left>
+                                    <right>
+                                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@images/ic-clock.png" />
+                                                    </image>
+                                                    <HBox.margin>
+                                                        <Insets right="4.0" />
+                                                    </HBox.margin>
+                                                </ImageView>
+                                                <Label fx:id="DateAndTime" text="January 28, 2023 2:38:40 PM">
+                                                    <font>
+                                                        <Font name="Arial" size="12.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <BorderPane.margin>
+                                                <Insets right="18.0" />
+                                            </BorderPane.margin>
+                                        </HBox>
+                                    </right>
+                                </BorderPane>
+                            </children>
+                        </StackPane>
+                    </bottom>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@css/MainPanelStyle.css" />
+        <URL value="@css/FrameStyle.css" />
+    </stylesheets>
+</AnchorPane>
