@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.auto.clients.main.Client;
+import org.guanzon.auto.main.clients.Client;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 

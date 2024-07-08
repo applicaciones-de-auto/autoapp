@@ -423,8 +423,8 @@
                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                                                             </rowConstraints>
                                                                                                             <children>
-                                                                                                                <TextField fx:id="txtField14" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                                                                <TextField fx:id="txtField13" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField14" promptText="XXX-XX-XXXXXX" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField13" promptText="XXX-XX-XXXX" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="TIN ID" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="LTO ID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                             </children>

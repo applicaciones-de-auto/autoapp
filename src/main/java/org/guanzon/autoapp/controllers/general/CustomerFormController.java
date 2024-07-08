@@ -22,7 +22,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -53,6 +52,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.clients.Client;
+import org.guanzon.auto.main.clients.Vehicle_Serial;
 import org.guanzon.autoapp.models.general.ModelCustomerAddress;
 import org.guanzon.autoapp.models.general.ModelCustomerEmail;
 import org.guanzon.autoapp.models.general.ModelCustomerMobile;
@@ -62,8 +63,6 @@ import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
-import org.guanzon.auto.clients.main.Client;
-import org.guanzon.auto.clients.main.Vehicle_Serial;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 
 /**
@@ -84,7 +83,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private int pnRow = -1;
     private int lnCtr;
     private int iTabIndex = 0; //Set tab index
-    private int pnMobile, pnEmail, pnSocMed, pnAddress, pnContact = 0;
+//    private int pnMobile, pnEmail, pnSocMed, pnAddress, pnContact = 0;
 
     /* ------------------DATA TABLES----------------------- */
     private ObservableList<ModelCustomerAddress> addressdata = FXCollections.observableArrayList();
@@ -594,6 +593,15 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                             ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Civil Status.");
                             return;
                         }
+
+                        if (comboBox08.getSelectionModel().getSelectedIndex() == 0 && comboBox07.getSelectionModel().getSelectedIndex() >= 1) {
+                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Gender.");
+                            return;
+                        }
+                        if (comboBox08.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() < 1) {
+                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Gender.");
+                            return;
+                        }
                     }
                 } else {
                     return;
@@ -970,7 +978,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 loadAddressForm(pnRow, false);
                 loadAddress();
             }
-            if (oTrans.getAddress(pnRow, "sEntryByx") == null) { //sAddrssID
+            if (oTrans.getAddress(pnRow, "sEntryByx") == null || (oTrans.getAddress(pnRow, "sEntryByx").toString().isEmpty())) { //sAddrssID
                 btnTabRem.setVisible(true);
             } else {
                 btnTabRem.setVisible(false);
@@ -1019,9 +1027,9 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             loControl.setOrigProv((String) oTrans.getAddress(fnRow, 25));
-            loControl.setOrigTown((String) oTrans.getAddress(fnRow, 5));
-            loControl.setOrigBrgy((String) oTrans.getAddress(fnRow, 6));
-            loControl.setClientID((String) oTrans.getMaster(1));
+            loControl.setOrigTown((String) oTrans.getAddress(fnRow, 16));
+            loControl.setOrigBrgy((String) oTrans.getAddress(fnRow, 18));
+            loControl.setClientID((String) oTrans.getModel().getModel().getClientID());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -1573,7 +1581,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void loadVehicleInfoTable() {
         JSONObject loJSON;
         vhclinfodata.clear();
-        loJSON = oTransVehicle.LoadVehicleList(oTrans.getMaster("sClientID").toString(), true);
+        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID().toString(), true);
         if ("success".equals((String) loJSON.get("result"))) {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {
                 vhclinfodata.add(new ModelCustomerVehicleInfo(
@@ -1614,7 +1622,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void loadCoOwnVehicleInfoTable() {
         JSONObject loJSON;
         coownvhclinfodata.clear();
-        loJSON = oTransVehicle.LoadVehicleList(oTrans.getMaster("sClientID").toString(), false);
+        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID().toString(), false);
         /*Set Values to table from vehicle info table*/
         if ("success".equals((String) loJSON.get("result"))) {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {

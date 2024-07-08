@@ -30,7 +30,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
-import org.guanzon.auto.clients.main.Client;
+import org.guanzon.auto.main.clients.Client;
 import org.json.simple.JSONObject;
 
 /**
@@ -104,7 +104,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        CommonUtils.addTextLimiter(txtField03Addr, 5); //HOUSE NO
+        CommonUtils.addTextLimiter(txtField03Addr, 14); //HOUSE NO
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //House No
         txtField07Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Zip code
@@ -339,12 +339,12 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 txtField05Addr.setDisable(true);// Town
                 txtField06Addr.setDisable(true);// Brgy
                 oTransAddress.setAddress(pnRow, 25, ""); //province id
-                oTransAddress.setAddress(pnRow, 22, ""); //province
-                oTransAddress.setAddress(pnRow, 5, ""); //town id
-                oTransAddress.setAddress(pnRow, 24, ""); //town
-                oTransAddress.setAddress(pnRow, 7, ""); //zip
+                oTransAddress.setAddress(pnRow, 24, ""); //province
+                oTransAddress.setAddress(pnRow, 16, ""); //town id
+                oTransAddress.setAddress(pnRow, 23, ""); //town
+                oTransAddress.setAddress(pnRow, 17, ""); //zip
                 oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 23, ""); //brgy
+                oTransAddress.setAddress(pnRow, 22, ""); //brgy
             }
         });
 
@@ -354,18 +354,18 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 txtField07Addr.clear(); //Zip code
                 txtField06Addr.clear(); // Brgy
                 txtField06Addr.setDisable(true);// Brgy
-                oTransAddress.setAddress(pnRow, 5, ""); //town id
-                oTransAddress.setAddress(pnRow, 24, ""); //town
-                oTransAddress.setAddress(pnRow, 7, ""); //zip
+                oTransAddress.setAddress(pnRow, 16, ""); //town id
+                oTransAddress.setAddress(pnRow, 23, ""); //town
+                oTransAddress.setAddress(pnRow, 17, ""); //zip
                 oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 23, ""); //brgy
+                oTransAddress.setAddress(pnRow, 22, ""); //brgy
             }
         });
 
         txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
                 oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 23, ""); //brgy
+                oTransAddress.setAddress(pnRow, 22, ""); //brgy
             }
         });
     }
@@ -410,34 +410,34 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
             ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please select Barangay. Insert to table Aborted!");
             return false;
         }
-        oTransAddress.setAddress(pnRow, 3, sHouseNox);
-        oTransAddress.setAddress(pnRow, 4, txtField04Addr.getText());
-        oTransAddress.setAddress(pnRow, 7, txtField07Addr.getText());
+        oTransAddress.setAddress(pnRow, 14, sHouseNox);
+        oTransAddress.setAddress(pnRow, 15, txtField04Addr.getText());
+        oTransAddress.setAddress(pnRow, 17, txtField07Addr.getText());
         oTransAddress.setAddress(pnRow, 10, textArea11Addr.getText());
         if (checkBox12Addr.isSelected()) {
-            oTransAddress.setAddress(pnRow, 11, 1);
+            oTransAddress.setAddress(pnRow, 3, 1);
         } else {
-            oTransAddress.setAddress(pnRow, 11, 0);
+            oTransAddress.setAddress(pnRow, 3, 0);
         }
         if (checkBox13Addr.isSelected()) {
-            oTransAddress.setAddress(pnRow, 12, 1);
+            oTransAddress.setAddress(pnRow, 4, 1);
         } else {
-            oTransAddress.setAddress(pnRow, 12, 0);
+            oTransAddress.setAddress(pnRow, 4, 0);
         }
         if (checkBox14Addr.isSelected()) {
-            oTransAddress.setAddress(pnRow, 13, 1);
+            oTransAddress.setAddress(pnRow, 5, 1);
         } else {
-            oTransAddress.setAddress(pnRow, 13, 0);
+            oTransAddress.setAddress(pnRow, 5, 0);
         }
         if (checkBox17Addr.isSelected()) {
-            oTransAddress.setAddress(pnRow, 16, 1);
+            oTransAddress.setAddress(pnRow, 8, 1);
         } else {
-            oTransAddress.setAddress(pnRow, 16, 0);
+            oTransAddress.setAddress(pnRow, 8, 0);
         }
         if (radiobtn18AddY.isSelected()) {
-            oTransAddress.setAddress(pnRow, 17, 1);
+            oTransAddress.setAddress(pnRow, 9, 1);
         } else {
-            oTransAddress.setAddress(pnRow, 17, 0);
+            oTransAddress.setAddress(pnRow, 9, 0);
         }
 
         return true;
