@@ -14,7 +14,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -174,16 +173,8 @@
                                                                                                     <children>
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Customer Type" />
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Company Name" GridPane.columnIndex="3" />
-                                                                                                        <ComboBox fx:id="comboBox18" prefHeight="24.0" prefWidth="160.0" GridPane.columnIndex="1">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please choose Customer Type" />
-                                                                                                            </tooltip>
-                                                                                                        </ComboBox>
-                                                                                                        <TextField fx:id="txtField16" GridPane.columnIndex="4">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please Fill in the Company Name" />
-                                                                                                            </tooltip>
-                                                                                                        </TextField>
+                                                                                                        <ComboBox fx:id="comboBox18" prefHeight="24.0" prefWidth="160.0" GridPane.columnIndex="1" />
+                                                                                                        <TextField fx:id="txtField16" GridPane.columnIndex="4" />
                                                                                                     </children>
                                                                                                     <VBox.margin>
                                                                                                         <Insets bottom="2.0" left="20.0" right="10.0" />
@@ -225,16 +216,8 @@
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="First Name" GridPane.rowIndex="1" />
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Middle name" GridPane.rowIndex="2" />
                                                                                                         <Label id="LabelDesc" ellipsisString="" prefHeight="25.0" prefWidth="158.0" stylesheets="@../css/FrameStyle.css" text="Mother's Maiden Name" wrapText="true" GridPane.rowIndex="3" />
-                                                                                                        <TextField fx:id="txtField02" GridPane.columnIndex="1">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please Fill in the Last Name" />
-                                                                                                            </tooltip>
-                                                                                                        </TextField>
-                                                                                                        <TextField fx:id="txtField03" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please Fill in the First Name" />
-                                                                                                            </tooltip>
-                                                                                                        </TextField>
+                                                                                                        <TextField fx:id="txtField02" GridPane.columnIndex="1" />
+                                                                                                        <TextField fx:id="txtField03" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                         <TextField fx:id="txtField04" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                                                         <TextField fx:id="txtField05" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" />
                                                                                                         <TextField fx:id="txtField06" prefColumnCount="8" GridPane.columnIndex="4" />
@@ -245,16 +228,8 @@
                                                                                                         <TextField fx:id="txtField10" promptText="Search: F3" GridPane.columnIndex="10" GridPane.columnSpan="2" />
                                                                                                         <TextField fx:id="txtField25" promptText="Search: F3" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                                         <TextField fx:id="txtField12" promptText="Search: F3" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                                                                                                        <ComboBox fx:id="comboBox08" prefWidth="150.0" GridPane.columnIndex="7">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please select Gender" />
-                                                                                                            </tooltip>
-                                                                                                        </ComboBox>
-                                                                                                        <ComboBox fx:id="comboBox09" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="1">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Please select Civil Status" />
-                                                                                                            </tooltip>
-                                                                                                        </ComboBox>
+                                                                                                        <ComboBox fx:id="comboBox08" prefWidth="150.0" GridPane.columnIndex="7" />
+                                                                                                        <ComboBox fx:id="comboBox09" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                                                                         <DatePicker fx:id="txtField11" promptText="mm/dd/yyyy" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                                         <ComboBox fx:id="comboBox07" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                         <Label id="LabelDesc" text="Title" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -423,8 +398,8 @@
                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                                                             </rowConstraints>
                                                                                                             <children>
-                                                                                                                <TextField fx:id="txtField14" promptText="XXX-XX-XXXXXX" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                                                                <TextField fx:id="txtField13" promptText="XXX-XX-XXXX" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField14" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField13" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="TIN ID" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="LTO ID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                             </children>
