@@ -39,8 +39,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -83,7 +81,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private int pnRow = -1;
     private int lnCtr;
     private int iTabIndex = 0; //Set tab index
-//    private int pnMobile, pnEmail, pnSocMed, pnAddress, pnContact = 0;
 
     /* ------------------DATA TABLES----------------------- */
     private ObservableList<ModelCustomerAddress> addressdata = FXCollections.observableArrayList();
@@ -198,7 +195,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         initSocialMedia();
         initVehicleInfo();
         initCoVehicleInfo();
-
         initComboBoxValue();
         initTextFieldPattern();
         txtField11.setOnAction(this::getDate);
@@ -209,6 +205,8 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         initButtons();
         clearFields();
         clearTables();
+        CommonUtils.addTextLimiter(txtField13, 15); // tin
+        CommonUtils.addTextLimiter(txtField14, 15); // lto
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -221,16 +219,20 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldPattern() {
-        Pattern numberOnly, textOnly, suffOnly;
-        numberOnly = Pattern.compile("[0-9-]*");
+        Pattern TinOnly, textOnly, suffOnly, ltoOnly;
+        TinOnly = Pattern.compile("[0-9-]*");
         textOnly = Pattern.compile("[A-Za-z ]*");
         suffOnly = Pattern.compile("[A-Za-z .]*");
-        txtField13.setTextFormatter(new InputTextFormatterUtil(numberOnly));
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField05.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        ltoOnly = Pattern.compile("[A-Za-z0-9-]*");
+        txtField13.setTextFormatter(new InputTextFormatterUtil(TinOnly));
+        txtField10.setTextFormatter(new InputTextFormatterUtil(textOnly)); //citezenship
+        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly)); //lastname
+        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly)); //firstname
+        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly)); //middlename
+        txtField05.setTextFormatter(new InputTextFormatterUtil(textOnly)); // maidenname
         txtField06.setTextFormatter(new InputTextFormatterUtil(suffOnly));
+        txtField14.setTextFormatter(new InputTextFormatterUtil(ltoOnly));
+
     }
 
     private void getDate(ActionEvent event) {
@@ -285,8 +287,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                         loJSON = oTrans.searchSpouse(lsValue);
                         if ("success".equals(loJSON.get("result"))) {
                             txtField25.setText(oTrans.getModel().getModel().getSpouseNm());
-                            System.out.println("souse Id" + oTrans.getModel().getModel().getSpouseID());
-                            System.out.println("souse Name" + oTrans.getModel().getModel().getSpouseNm());
                         } else {
                             ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
                             txtField25.setText("");
@@ -589,11 +589,15 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                             txtField11.requestFocus();
                             return;
                         }
+                        if (age.getYears() >= 100) {
+                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Greater than 100 years old is not allowed.");
+                            txtField11.requestFocus();
+                            return;
+                        }
                         if (comboBox09.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() == 1) {
                             ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Civil Status.");
                             return;
                         }
-
                         if (comboBox08.getSelectionModel().getSelectedIndex() == 0 && comboBox07.getSelectionModel().getSelectedIndex() >= 1) {
                             ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Gender.");
                             return;
@@ -974,41 +978,19 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void tblAddress_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnRow = tblAddress.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblAddress.getItems().size()) {
+                ShowMessageFX.Warning(getStage(), "Please select valid address information.", "Warning", null);
+                return;
+            }
             if (event.getClickCount() == 2) {
                 loadAddressForm(pnRow, false);
                 loadAddress();
             }
-            if (oTrans.getAddress(pnRow, "sEntryByx") == null || (oTrans.getAddress(pnRow, "sEntryByx").toString().isEmpty())) { //sAddrssID
+            if (oTrans.getAddress(pnRow, "sEntryByx") == null || ((String) oTrans.getAddress(pnRow, "sEntryByx")).isEmpty()) {
                 btnTabRem.setVisible(true);
             } else {
                 btnTabRem.setVisible(false);
             }
-            tblAddress.setOnKeyReleased((KeyEvent t) -> {
-                KeyCode key = t.getCode();
-                switch (key) {
-                    case DOWN:
-                        pnRow = tblAddress.getSelectionModel().getSelectedIndex();
-                        if (pnRow == tblAddress.getItems().size()) {
-                            pnRow = tblAddress.getItems().size();
-                        } else {
-                            int y = 1;
-                            pnRow += y;
-                        }
-                        break;
-                    case UP:
-                        int pnRows = 0;
-                        pnRows = tblAddress.getSelectionModel().getSelectedIndex();
-                        pnRow = pnRows;
-                        break;
-                    default:
-                        return;
-                }
-                if (oTrans.getAddress(pnRow, "sAddrssID").toString().isEmpty()) {
-                    btnTabRem.setVisible(true);
-                } else {
-                    btnTabRem.setVisible(false);
-                }
-            });
         }
     }
 
@@ -1018,6 +1000,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(getStage(), "Invalid Table Row to Set. ", "Warning", null);
                 return;
             }
+
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/CustomerAddressForm.fxml"));
@@ -1029,7 +1012,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setOrigProv((String) oTrans.getAddress(fnRow, 25));
             loControl.setOrigTown((String) oTrans.getAddress(fnRow, 16));
             loControl.setOrigBrgy((String) oTrans.getAddress(fnRow, 18));
-            loControl.setClientID((String) oTrans.getModel().getModel().getClientID());
+            loControl.setClientID(oTrans.getModel().getModel().getClientID());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -1048,7 +1031,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            loadAddress();
+
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -1130,6 +1113,10 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void tblContact_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnRow = tblContact.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblContact.getItems().size()) {
+                ShowMessageFX.Warning(getStage(), "Please select valid contact no. information.", "Warning", null);
+                return;
+            }
             if (event.getClickCount() == 2) {
                 loadContactForm(pnRow, false);
                 loadContact();
@@ -1139,33 +1126,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             } else {
                 btnTabRem.setVisible(false);
             }
-            tblContact.setOnKeyReleased((KeyEvent t) -> {
-                KeyCode key = t.getCode();
-                switch (key) {
-                    case DOWN:
-                        pnRow = tblContact.getSelectionModel().getSelectedIndex();
-                        if (pnRow == tblContact.getItems().size()) {
-                            pnRow = tblContact.getItems().size();
-                        } else {
-                            int y = 1;
-                            pnRow += y;
-                        }
-                        break;
-                    case UP:
-                        int pnRows = 0;
-                        int x = -1;
-                        pnRows = tblContact.getSelectionModel().getSelectedIndex();
-                        pnRow = pnRows;
-                        break;
-                    default:
-                        return;
-                }
-                if (oTrans.getMobile(pnRow, "sMobileID").toString().isEmpty()) {
-                    btnTabRem.setVisible(true);
-                } else {
-                    btnTabRem.setVisible(false);
-                }
-            });
         }
     }
 
@@ -1201,7 +1161,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            loadContact();
+
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -1287,44 +1247,21 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnRow = tblEmail.getSelectionModel().getSelectedIndex();
 
+            // Check if no row is selected
+            if (pnRow < 0) {
+                ShowMessageFX.Warning(getStage(), "Please select valid email address information.", "Warning", null);
+                return;
+            }
             if (event.getClickCount() == 2) {
                 loadEmailForm(pnRow, false);
                 loadEmail();
             }
+            // Check if the email entry is empty or null
             if (oTrans.getEmail(pnRow, "sEntryByx") == null || oTrans.getEmail(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
             } else {
                 btnTabRem.setVisible(false);
             }
-            tblEmail.setOnKeyReleased((KeyEvent t) -> {
-                KeyCode key = t.getCode();
-                switch (key) {
-                    case DOWN:
-                        pnRow = tblEmail.getSelectionModel().getSelectedIndex();
-                        if (pnRow == tblEmail.getItems().size()) {
-                            pnRow = tblEmail.getItems().size();
-                        } else {
-                            int y = 1;
-                            pnRow += y;
-                        }
-                        break;
-                    case UP:
-                        int pnRows = 0;
-                        int x = -1;
-                        pnRows = tblEmail.getSelectionModel().getSelectedIndex();
-                        pnRow = pnRows;
-                        break;
-                    default:
-                        return;
-                }
-                if (oTrans.getEmail(pnRow, "sEmailIDx").toString().isEmpty()) {
-                    btnTabRem.setVisible(true);
-                } else {
-                    btnTabRem.setVisible(false);
-
-                }
-            });
-
         }
     }
 
@@ -1362,7 +1299,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            loadEmail();
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -1426,7 +1362,10 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void tblSocMed_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnRow = tblSocMed.getSelectionModel().getSelectedIndex();
-            System.out.println("mouse clicked: " + event.getClickCount());
+            if (pnRow < 0 || pnRow >= tblSocMed.getItems().size()) {
+                ShowMessageFX.Warning(getStage(), "Please select valid social media information.", "Warning", null);
+                return;
+            }
             if (event.getClickCount() == 2) {
                 loadSocialMediaForm(pnRow, false);
                 loadSocialMedia();
@@ -1436,35 +1375,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             } else {
                 btnTabRem.setVisible(false);
             }
-            tblSocMed.setOnKeyReleased((KeyEvent t) -> {
-                KeyCode key = t.getCode();
-                switch (key) {
-                    case DOWN:
-                        pnRow = tblSocMed.getSelectionModel().getSelectedIndex();
-                        if (pnRow == tblSocMed.getItems().size()) {
-                            pnRow = tblSocMed.getItems().size();
-                        } else {
-                            int y = 1;
-                            pnRow += y;
-                        }
-                        break;
-                    case UP:
-                        int pnRows = 0;
-                        int x = -1;
-                        pnRows = tblSocMed.getSelectionModel().getSelectedIndex();
-                        pnRow = pnRows;
-                        break;
-                    default:
-                        return;
-                }
-                if (oTrans.getSocialMed(pnRow, "sSocialID").toString().isEmpty()) {
-                    btnTabRem.setVisible(true);
-                } else {
-                    btnTabRem.setVisible(false);
-
-                }
-            });
-
         }
     }
 
@@ -1504,8 +1414,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-
-            loadSocialMedia();
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -1513,8 +1421,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     }
 
     private void loadSocialMedia() {
-        String sSocType = "";
-        String sStatus = "";
+        String sSocType, sStatus = "";
         socialmediadata.clear();
         /*Set Values to Class Mobile Master*/
         for (lnCtr = 0; lnCtr <= oTrans.getSocialMediaList().size() - 1; lnCtr++) {
@@ -1581,7 +1488,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void loadVehicleInfoTable() {
         JSONObject loJSON;
         vhclinfodata.clear();
-        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID().toString(), true);
+        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID(), true);
         if ("success".equals((String) loJSON.get("result"))) {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {
                 vhclinfodata.add(new ModelCustomerVehicleInfo(
@@ -1622,7 +1529,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void loadCoOwnVehicleInfoTable() {
         JSONObject loJSON;
         coownvhclinfodata.clear();
-        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID().toString(), false);
+        loJSON = oTransVehicle.LoadVehicleList(oTrans.getModel().getModel().getClientID(), false);
         /*Set Values to table from vehicle info table*/
         if ("success".equals((String) loJSON.get("result"))) {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {
