@@ -11,7 +11,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -23,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -108,39 +107,11 @@
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="House No." GridPane.columnIndex="1" GridPane.columnSpan="2" />
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Town" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Barangay" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <TextField fx:id="txtField03Addr" GridPane.columnIndex="2" GridPane.columnSpan="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Please Fill in the House Number" />
-                                                    </tooltip>
-                                                </TextField>
+                                                <TextField fx:id="txtField03Addr" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                 <TextField fx:id="txtField04Addr" GridPane.columnIndex="2" GridPane.columnSpan="9" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField23Addr" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="9" GridPane.rowIndex="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Please choose Province">
-                                                            <font>
-                                                                <Font name="Arial" size="12.0" />
-                                                            </font>
-                                                        </Tooltip>
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField05Addr" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="9" GridPane.rowIndex="3">
-                                                    <tooltip>
-                                                        <Tooltip text="Please choose Town">
-                                                            <font>
-                                                                <Font name="Arial" size="12.0" />
-                                                            </font>
-                                                        </Tooltip>
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField06Addr" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4">
-                                                    <tooltip>
-                                                        <Tooltip text="Please choose Barangay">
-                                                            <font>
-                                                                <Font name="Arial" size="12.0" />
-                                                            </font>
-                                                        </Tooltip>
-                                                    </tooltip>
-                                                </TextField>
+                                                <TextField fx:id="txtField23Addr" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="9" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField05Addr" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="9" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField06Addr" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4" />
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="ZIP Code" GridPane.columnIndex="9" GridPane.rowIndex="4" />
                                                 <TextField fx:id="txtField07Addr" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="5" />

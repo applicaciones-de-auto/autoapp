@@ -88,13 +88,39 @@ public class CustomerContactFormController implements Initializable, ScreenInter
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
-        CommonUtils.addTextLimiter(txtField03Cont, 11); //CONTACT NO
+
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Cont.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Mobile No
         initComboBoxItems();
-        comboBox04Cont.setOnAction(e -> {
-            txtField03Cont.clear();
+
+        // Set the action handler for the combo box
+        comboBox04Cont.setOnAction(event -> {
+            // Clear the text field when an action is performed on the combo box
+            if (txtField03Cont != null) {
+                txtField03Cont.clear();
+            }
+
+            // Get the selected index from the combo box
+            Integer selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
+
+            // Set the text limiter based on the selected index
+            if (selectedIndex != null) {
+                switch (selectedIndex) {
+                    case 0:
+                        if (txtField03Cont != null) {
+                            InputTextUtil.addTextLimiter(txtField03Cont, 11); // CONTACT NO
+                        }
+                        break;
+                    case 1:
+                    case 2:
+                        if (txtField03Cont != null) {
+                            InputTextUtil.addTextLimiter(txtField03Cont, 10); // TELE & FAX NO
+                        }
+                        break;
+                }
+            }
         });
+
         initCapitalizationFields();
         initTextKeyPressed();
         initButtons();

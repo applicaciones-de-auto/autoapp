@@ -331,7 +331,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
     private void initTextFieldListener() {
         //Button SetOnAction using cmdButton_Click() method
         txtField23Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
+            if (newValue.isEmpty() || newValue == null) {
                 txtField23Addr.clear(); // Province
                 txtField05Addr.clear(); // Town
                 txtField07Addr.clear(); //Zip code
@@ -349,7 +349,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         });
 
         txtField05Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
+            if (newValue.isEmpty() || newValue == null) {
                 txtField05Addr.clear(); // Town
                 txtField07Addr.clear(); //Zip code
                 txtField06Addr.clear(); // Brgy
@@ -363,7 +363,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         });
 
         txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
+            if (newValue.isEmpty() || newValue == null) {
                 oTransAddress.setAddress(pnRow, 6, ""); //brgy id
                 oTransAddress.setAddress(pnRow, 22, ""); //brgy
             }
@@ -413,7 +413,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         oTransAddress.setAddress(pnRow, 14, sHouseNox);
         oTransAddress.setAddress(pnRow, 15, txtField04Addr.getText());
         oTransAddress.setAddress(pnRow, 17, txtField07Addr.getText());
-        oTransAddress.setAddress(pnRow, 10, textArea11Addr.getText());
+        oTransAddress.setAddress(pnRow, 21, textArea11Addr.getText());
         if (checkBox12Addr.isSelected()) {
             oTransAddress.setAddress(pnRow, 3, 1);
         } else {
