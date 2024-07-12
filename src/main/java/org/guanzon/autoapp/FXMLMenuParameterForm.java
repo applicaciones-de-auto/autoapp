@@ -51,9 +51,14 @@ public class FXMLMenuParameterForm {
             // Get the class of any class in the desired package to retrieve the package information
             Class<?> clazz = fxObj.getClass();
             // Construct the correct path to the FXML file using the package information
-            String fxmlPath = clazz.getPackage().getName().replace(".", "/") + "/" + fsFxml;
-            // Load the FXML file using the constructed path
-            fxmlLoader.setLocation(clazz.getClassLoader().getResource(fxmlPath));
+            String fxmlPath = "/org/guanzon/autoapp/views/parameters/" + fsFxml;
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                throw new IOException("FXML resource not found: " + fxmlPath);
+            }
+
+            // Set the location of the FXML file
+            fxmlLoader.setLocation(resource);
             fxmlLoader.setController(fxObj);
             fxObj.setGRider(oApp);
 
