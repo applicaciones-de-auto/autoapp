@@ -205,8 +205,8 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         initButtons();
         clearFields();
         clearTables();
-        CommonUtils.addTextLimiter(txtField13, 15); // tin
-        CommonUtils.addTextLimiter(txtField14, 15); // lto
+        InputTextUtil.addTextLimiter(txtField13, 15); // tin
+        InputTextUtil.addTextLimiter(txtField14, 15); // lto
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -406,7 +406,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private void initCmboxFieldAction() {
         comboBox18.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                System.out.println("clicked: " + comboBox18.getSelectionModel().getSelectedIndex());
                 oTrans.getModel().getModel().setClientTp(String.valueOf(comboBox18.getSelectionModel().getSelectedIndex()));
                 comboChange();
                 if (!oTrans.getModel().getModel().getClientTp().equals("0")) {
@@ -425,20 +424,37 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     oTrans.getModel().getModel().setTownName("");
                     oTrans.getModel().getModel().setBirthPlc("");
                     oTrans.getModel().getModel().setBirthDte(convertLocalDateToDate(LocalDate.of(1900, Month.JANUARY, 1)));
+                    txtField25.setDisable(true);
                 } else {
                     oTrans.getModel().getModel().setCompnyNm("");
+                    txtField25.setDisable(true);
                 }
-
                 loadCustomerInformation();
             }
-
         });
+
         comboBox08.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
                     if (comboBox08.getSelectionModel().getSelectedIndex() >= 0) {
                         oTrans.getModel().getModel().setGender(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
                     }
+                }
+
+                txtField25.setText("");
+                oTrans.getModel().getModel().setSpouseID("");
+                oTrans.getModel().getModel().setSpouseNm("");
+
+                if (comboBox09.getValue() != null) {
+                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                        if (comboBox08.getValue() != null) {
+                            txtField25.setDisable(false);
+                        }
+                    } else {
+                        txtField25.setDisable(true);
+                    }
+                } else {
+                    txtField25.setDisable(true);
                 }
             }
         });
@@ -453,23 +469,25 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         });
         comboBox09.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                int selectedCivilStatus = comboBox09.getSelectionModel().getSelectedIndex();
-                switch (selectedCivilStatus) {
-                    case 0:
-                    case 2:
-                    case 3:
-                    case 4:
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (!comboBox09.getValue().isEmpty()) {
+                        if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                            if (comboBox08.getValue() != null) {
+                                txtField25.setDisable(false);
+                            }
+                        } else {
+                            txtField25.setDisable(true);
+                            txtField25.setText("");
+                            oTrans.getModel().getModel().setSpouseID("");
+                            oTrans.getModel().getModel().setSpouseNm("");
+                        }
+                    } else {
                         txtField25.setDisable(true);
-                        txtField25.setText("");
-                        oTrans.getModel().getModel().setSpouseID("");
-                        oTrans.getModel().getModel().setSpouseNm("");
-                        break;
-                    case 1:
-                        txtField25.setDisable(false);
-                        break;
-                }
-                if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
+                    }
+
+                    if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
+                        oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
+                    }
                 }
             }
         }
@@ -830,9 +848,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 txtField11.setValue(InputTextUtil.strToDate(oTrans.getMaster(11).toString()));
             }
             txtField10.setText(oTrans.getModel().getModel().getCntryNme());
-            txtField25.setText(oTrans.getModel().getModel().getSpouseNm());
             txtField12.setText(oTrans.getModel().getModel().getTownName());
-
         } else {
             lblType.setText("COMPANY ID : ");
             if (oTrans.getModel().getModel().getClientID() != null) {
@@ -857,7 +873,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         }
 
     }
-
 
     /*Enabling / Disabling Fields*/
     private void initFields(int fnValue) {
@@ -886,21 +901,28 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         txtField25.setDisable(true); //Spouse
         txtField16.setDisable(true); //company name
         cmdCLIENTType(lbShow);
-        int selectedCivilStatus = comboBox09.getSelectionModel().getSelectedIndex();
-        switch (selectedCivilStatus) {
-            case 0:
-            case 2:
-            case 3:
-            case 4:
+
+        if (lbShow) {
+            if (comboBox09.getValue() != null) {
+                if (!comboBox09.getValue().isEmpty()) {
+                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                        if (comboBox08.getValue() != null) {
+                            txtField25.setDisable(false);
+                        }
+                    } else {
+                        txtField25.setDisable(true);
+                        txtField25.setText("");
+                        oTrans.getModel().getModel().setSpouseID("");
+                        oTrans.getModel().getModel().setSpouseNm("");
+                    }
+                } else {
+                    txtField25.setDisable(true);
+                }
+            } else {
                 txtField25.setDisable(true);
-                break;
-            case 1:
-                txtField25.setDisable(!lbShow);
-                break;
-            default:
-                txtField25.setDisable(true);
-                break;
+            }
         }
+
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         btnCancel.setVisible(lbShow);
@@ -946,7 +968,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             comboBox08.setDisable(!bCust); //Gender
             comboBox09.setDisable(!bCust); //Civil Stat
             comboBox07.setDisable(!bCust); //Title
-            txtField25.setDisable(!bCust); // Spouse
+            //txtField25.setDisable(!bCust); // Spouse
 
         }
     }
