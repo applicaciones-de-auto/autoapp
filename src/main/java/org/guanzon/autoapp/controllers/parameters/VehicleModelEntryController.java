@@ -183,7 +183,7 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField02":
-                        loJSON = oTransModel.searchMake(lsValue, false);
+                        loJSON = oTransModel.searchMake(lsValue, true);
                         txtField02.setText(oTransModel.getModel().getModel().getMakeDesc());
                         if ("error".equals(loJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
