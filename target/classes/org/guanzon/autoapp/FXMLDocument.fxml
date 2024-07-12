@@ -95,6 +95,8 @@
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Parameters">
                                                             <items>
+                                                                <Menu mnemonicParsing="false" text="Bank" />
+                                                                <Menu mnemonicParsing="false" text="Insurance" />
                                                                 <Menu mnemonicParsing="false" text="Activity">
                                                                     <items>
                                                                         <MenuItem fx:id="mnuActType" mnemonicParsing="false" onAction="#mnuActivityTypeClick" text="Activity Type" />
@@ -115,10 +117,12 @@
                                                                 <Menu mnemonicParsing="false" text="Vehicle Description">
                                                                     <items>
                                                                         <MenuItem fx:id="mnuVhclColorEntry" mnemonicParsing="false" onAction="#mnuVhclColorEntryClicked" text="Color" />
-                                                                        <MenuItem fx:id="mnuVhclEngFrmEntry" mnemonicParsing="false" onAction="#mnuVhclEngFrmEntryClicked" text="Engine / Frame" />
+                                                                        <MenuItem fx:id="mnuVhclEngEntry" mnemonicParsing="false" onAction="#mnuVhclEngEntryClicked" text="Engine" />
+                                                                        <MenuItem fx:id="mnuVhclFrmEntry" mnemonicParsing="false" onAction="#mnuVhclFrmEntryClicked" text="Frame" />
                                                                         <MenuItem fx:id="mnuVhclMakeEntry" mnemonicParsing="false" onAction="#mnuVhclMakeEntryClicked" text="Make" />
                                                                         <MenuItem fx:id="mnuVhclModelEntry" mnemonicParsing="false" onAction="#mnuVhclModelEntryClicked" text="Model" />
                                                                         <MenuItem fx:id="mnuVhclTypeEntry" mnemonicParsing="false" onAction="#mnuVhclTypeEntryClicked" text="Type" />
+                                                                        <MenuItem fx:id="mnuVhclDesc" mnemonicParsing="false" onAction="#mnuVhclDescClick" text="Description" />
                                                                     </items>
                                                                 </Menu>
                                                             </items>
@@ -141,7 +145,6 @@
                                                                 <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />
                                                                 <MenuItem fx:id="mnuSalesAgent" mnemonicParsing="false" onAction="#mnuSalesAgentClick" text="Referral Agent" />
                                                                 <MenuItem fx:id="mnuSalesExecutive" mnemonicParsing="false" onAction="#mnuSalesExecutiveClick" text="Sales Executive" />
-                                                                <MenuItem fx:id="mnuVhclDesc" mnemonicParsing="false" onAction="#mnuVhclDescClick" text="Vehicle Description" />
                                                                 <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclEntryClick" text="Vehicle Sales Information" />
                                                                 <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
                                                                 <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
