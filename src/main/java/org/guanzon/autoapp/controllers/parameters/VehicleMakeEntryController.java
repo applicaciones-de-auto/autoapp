@@ -4,6 +4,8 @@
  */
 package org.guanzon.autoapp.controllers.parameters;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -110,7 +112,6 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        /*TextArea*/
     }
 
     private void initTextKeyPressed() {
@@ -128,7 +129,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
             CommonUtils.SetNextFocus((TextField) event.getSource());
         } else if (event.getCode() == KeyCode.UP) {
             event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
     }
 
@@ -232,8 +233,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    oTransMake.deactivateRecord(fsValue);
-                    poJSon = oTransMake.updateRecord();
+                    poJSon = oTransMake.deactivateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) poJSon.get("message"));
                         poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
@@ -248,8 +248,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    oTransMake.activateRecord(fsValue);
-                    poJSon = oTransMake.updateRecord();
+                    poJSon = oTransMake.activateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) poJSon.get("message"));
                         poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
