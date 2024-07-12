@@ -111,7 +111,6 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        /*TextArea*/
     }
 
     private void initTextKeyPressed() {
@@ -121,15 +120,15 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
-        String textAreaID = ((TextField) event.getSource()).getId();
+        String textFieldID = ((TextField) event.getSource()).getId();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
+            switch (textFieldID) {
             }
             event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
+            CommonUtils.SetNextFocus((TextField) event.getSource());
         } else if (event.getCode() == KeyCode.UP) {
             event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
     }
 
@@ -233,8 +232,7 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransColor.getModel().getModel().getColorID();
-                    oTransColor.deactivateRecord(fsValue);
-                    poJSon = oTransColor.updateRecord();
+                    poJSon = oTransColor.deactivateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Color Information", (String) poJSon.get("message"));
                         poJson = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
@@ -249,8 +247,7 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransColor.getModel().getModel().getColorID();
-                    oTransColor.activateRecord(fsValue);
-                    poJSon = oTransColor.updateRecord();
+                    poJSon = oTransColor.activateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Color Information", (String) poJSon.get("message"));
                         poJson = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
