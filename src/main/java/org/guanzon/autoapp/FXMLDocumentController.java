@@ -51,8 +51,26 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.general.CustomerFormController;
+import org.guanzon.autoapp.controllers.general.CustomerFormController;
+import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
+import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
+//import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
+import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
+//import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
+//import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -71,7 +89,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private String sSalesInfoType = "";
     private final String psGeneralPath = "/org/guanzon/autoapp/views/general/";
     private final String psInsurancePath = "/org/guanzon/autoapp/views/insurance/";
-    private final String psParametersPath = "/org/guanzon/autoapp/views/parameters/";
     private final String psPartsPath = "/org/guanzon/autoapp/views/parts/";
     private final String psSalesPath = "/org/guanzon/autoapp/views/sales/";
     private final String psServicePath = "/org/guanzon/autoapp/views/service/";
@@ -102,7 +119,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuVhclDesc;
     @FXML
     private Menu menusales;
-    @FXML
     private MenuItem mnuVhclInquiry;
     @FXML
     private MenuItem mnuSalesAgent;
@@ -141,8 +157,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuVhclColorEntry;
     @FXML
-    private MenuItem mnuVhclEngFrmEntry;
-    @FXML
     private MenuItem mnuBrandEntry;
     @FXML
     private MenuItem mnuCategoryEntry;
@@ -180,6 +194,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInsurInfo;
     @FXML
     private Menu menusales1;
+    @FXML
+    private MenuItem mnuInquiry;
+    @FXML
+    private MenuItem mnuVhclEngEntry;
+    @FXML
+    private MenuItem mnuVhclFrmEntry;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -599,18 +619,21 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //            /*SALES*/
 //            case "SalesAgentForm.fxml":
 //                return new SalesAgentFormController();
-//            case "VehicleDescriptionForm.fxml":
-//                return new VehicleDescriptionFormController();
-//            case "VehicleMakeForm.fxml":
-//                return new VehicleMakeFormController();
-//            case "VehicleModelForm.fxml":
-//                return new VehicleModelFormController();
-//            case "VehicleTypeForm.fxml":
-//                return new VehicleTypeFormController();
-//            case "VehicleColorForm.fxml":
-//                return new VehicleColorFormController();
-//            case "VehicleEngineFrameFormatForm.fxml":
-//                return new VehicleEngineFrameFormatFormController();
+            case "VehicleDescriptionEntry.fxml":
+//                return new VehicleDescriptionEntryController();
+            case "VehicleMakeEntry.fxml":
+                return new VehicleMakeEntryController();
+//            case "VehicleModelEntry.fxml":
+//                return new VehicleModelEntryController();
+//            case "VehicleTypeEntry.fxml":
+//                return new VehicleTypeEntryController();
+            case "VehicleColorEntry.fxml":
+                return new VehicleColorEntryController();
+//            case "VehicleFrameFormatEntry.fxml":
+//                return new VehicleFrameFormatEntryController();
+//            case "VehicleEngineFormatEntry.fxml":
+//                return new VehicleFrameFormatEntryController();
+
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
 //            case "UnitReceivingForm.fxml":
@@ -696,8 +719,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 }
                 return sSalesInfoType;
 //                return "Sales Agent";
-            case "VehicleDescriptionForm.fxml":
-                return "Vehicle Description";
 //            case "VehicleEntryForm.fxml":
 //                return "Vehicle Information";
             case "UnitReceivingForm.fxml":
@@ -935,42 +956,48 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*VEHICLE DESCRIPTION AND PARAMETERS*/
     @FXML
     public void mnuVhclDescClick(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleDescriptionForm.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+        String sformname = "VehicleDescriptionEntry.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     @FXML
     private void mnuVhclMakeEntryClicked(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleMakeForm.fxml";
+        String sformname = "VehicleMakeEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     @FXML
     private void mnuVhclModelEntryClicked(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleModelForm.fxml";
+        String sformname = "VehicleModelEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     @FXML
     private void mnuVhclTypeEntryClicked(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleTypeForm.fxml";
+        String sformname = "VehicleTypeEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     @FXML
     private void mnuVhclColorEntryClicked(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleColorForm.fxml";
+        String sformname = "VehicleColorEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     @FXML
-    private void mnuVhclEngFrmEntryClicked(ActionEvent event) {
-        String sformname = psParametersPath + "VehicleEngineFrameFormatForm.fxml";
+    private void mnuVhclEngEntryClicked(ActionEvent event) {
+        String sformname = "VehicleEngineFormatEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+
     }
+
+    @FXML
+    private void mnuVhclFrmEntryClicked(ActionEvent event) {
+        String sformname = "VehicleFrameFormatEntry.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+
+    }
+
 
     /*ACCOUNTING*/
     @FXML
@@ -1285,4 +1312,5 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //        //Bank Transasctions
 //        mnuBank.setVisible("A008;026".contains(oApp.getDepartment()));
 //    }
+
 }
