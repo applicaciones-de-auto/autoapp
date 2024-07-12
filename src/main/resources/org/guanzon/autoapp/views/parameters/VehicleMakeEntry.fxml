@@ -7,7 +7,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="247.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.views.parameters.BankEntryController">
+<AnchorPane id="AnchorPane" prefHeight="209.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -55,10 +54,9 @@
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Vehicle Make ID" GridPane.columnIndex="1">
+                                        <Label prefHeight="15.0" prefWidth="148.0" text="Vehicle Make ID" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
@@ -67,19 +65,9 @@
                                             </font>
                                         </Label>
                                         <Label id="LabelDesc" text="Vehicle Make Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtField01" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Bank Name." />
-                                            </tooltip>
-                                        </TextField>
-                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                        <Label id="LabelDesc" layoutX="20.0" layoutY="46.0" text="Vehicle Make Code" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Bank Code." />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />
@@ -150,6 +138,14 @@
                                             <HBox.margin>
                                                 <Insets />
                                             </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Activate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
                                         </Button>
                                         <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
                                             <effect>
