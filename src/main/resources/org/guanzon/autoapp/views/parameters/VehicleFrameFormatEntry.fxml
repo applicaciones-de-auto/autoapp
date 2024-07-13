@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -54,34 +53,18 @@
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TextField fx:id="txtField03" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Make." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Model." />
-                                                    </tooltip>
-                                                </TextField>
+                                                <TextField fx:id="txtField01" promptText="Search F3" GridPane.columnIndex="2" />
+                                                <TextField fx:id="txtField02" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField04" alignment="CENTER_RIGHT" maxWidth="120.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                 <Label id="LabelDesc" text="Vehicle Format Pattern" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="LabelDesc" text="Vehicle Model" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <Label id="LabelDesc" text="Vehicle Format Length" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField041" alignment="CENTER_RIGHT" maxWidth="120.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Model." />
-                                                    </tooltip>
-                                                </TextField>
-                                    <Label id="LabelDesc" text="Vehicle Make" GridPane.columnIndex="1" />
-                                    <TextField fx:id="txtField031" promptText="Search F3" GridPane.columnIndex="2">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
+                                                <Label id="LabelDesc" text="Vehicle Make" GridPane.columnIndex="1" />
                                             </children>
                                         </GridPane>
                                     </children>
