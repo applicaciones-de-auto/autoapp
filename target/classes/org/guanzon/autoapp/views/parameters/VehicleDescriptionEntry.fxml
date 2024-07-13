@@ -69,8 +69,8 @@
                                             <children>
                                                 <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                                 <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Description ID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField01" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <Label id="LabelDesc" text="Make" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField01" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <TextField fx:id="txtField02" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                 <TextField fx:id="txtField03" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                 <TextField fx:id="txtField04" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4" />
