@@ -29,7 +29,6 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Model;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -389,12 +388,14 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                     poJSon = oTransModel.deactivateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Model Information", (String) poJSon.get("message"));
-                        poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
-                        if ("success".equals((String) poJson.get("result"))) {
-                            loadModelFields();
-                            initFields(pnEditMode);
-                            pnEditMode = oTransModel.getEditMode();
-                        }
+                    } else {
+                        ShowMessageFX.Warning(null, "Vehicle Model Information", (String) poJSon.get("message"));
+                    }
+                    poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    if ("success".equals((String) poJson.get("result"))) {
+                        loadModelFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransModel.getEditMode();
                     }
                 }
                 break;
@@ -404,12 +405,14 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                     poJSon = oTransModel.activateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Model Information", (String) poJSon.get("message"));
-                        poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
-                        if ("success".equals((String) poJson.get("result"))) {
-                            loadModelFields();
-                            initFields(pnEditMode);
-                            pnEditMode = oTransModel.getEditMode();
-                        }
+                    } else {
+                        ShowMessageFX.Warning(null, "Vehicle Model Information", (String) poJSon.get("message"));
+                    }
+                    poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    if ("success".equals((String) poJson.get("result"))) {
+                        loadModelFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransModel.getEditMode();
                     }
                 }
                 break;
