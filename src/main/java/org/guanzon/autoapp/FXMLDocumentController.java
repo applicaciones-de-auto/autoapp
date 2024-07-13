@@ -53,25 +53,20 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
-//import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
+import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
-//import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
-//import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
+import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -626,14 +621,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new VehicleMakeEntryController();
             case "VehicleModelEntry.fxml":
                 return new VehicleModelEntryController();
-//            case "VehicleTypeEntry.fxml":
-//                return new VehicleTypeEntryController();
+            case "VehicleTypeEntry.fxml":
+                return new VehicleTypeEntryController();
             case "VehicleColorEntry.fxml":
                 return new VehicleColorEntryController();
-//            case "VehicleFrameFormatEntry.fxml":
-//                return new VehicleFrameFormatEntryController();
-//            case "VehicleEngineFormatEntry.fxml":
-//                return new VehicleFrameFormatEntryController();
+            case "VehicleFrameFormatEntry.fxml":
+                return new VehicleFrameFormatEntryController();
+            case "VehicleEngineFormatEntry.fxml":
+                return new VehicleFrameFormatEntryController();
 
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
