@@ -4,8 +4,6 @@
  */
 package org.guanzon.autoapp.controllers.parameters;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -236,12 +233,14 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
                     poJSon = oTransMake.deactivateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) poJSon.get("message"));
-                        poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
-                        if ("success".equals((String) poJson.get("result"))) {
-                            loadMakeFields();
-                            initFields(pnEditMode);
-                            pnEditMode = oTransMake.getEditMode();
-                        }
+                    } else {
+                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) poJSon.get("message"));
+                    }
+                    poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    if ("success".equals((String) poJson.get("result"))) {
+                        loadMakeFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransMake.getEditMode();
                     }
                 }
                 break;
@@ -251,12 +250,14 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
                     poJSon = oTransMake.activateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) poJSon.get("message"));
-                        poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
-                        if ("success".equals((String) poJson.get("result"))) {
-                            loadMakeFields();
-                            initFields(pnEditMode);
-                            pnEditMode = oTransMake.getEditMode();
-                        }
+                    } else {
+                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) poJSon.get("message"));
+                    }
+                    poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    if ("success".equals((String) poJson.get("result"))) {
+                        loadMakeFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransMake.getEditMode();
                     }
                 }
                 break;
