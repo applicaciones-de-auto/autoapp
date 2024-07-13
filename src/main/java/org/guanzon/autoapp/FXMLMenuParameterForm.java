@@ -54,6 +54,7 @@ public class FXMLMenuParameterForm {
             String fxmlPath = "/org/guanzon/autoapp/views/parameters/" + fsFxml;
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
+                System.out.println("Resource not found: " + fxmlPath);
                 throw new IOException("FXML resource not found: " + fxmlPath);
             }
 
