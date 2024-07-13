@@ -6,9 +6,11 @@ package org.guanzon.autoapp.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.function.UnaryOperator;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 
 /**
  *
@@ -57,4 +59,5 @@ public class InputTextUtil {
         // Store the listener reference for future removal if necessary
         textField.getProperties().put("textLimiter", textLimiter);
     }
+
 }
