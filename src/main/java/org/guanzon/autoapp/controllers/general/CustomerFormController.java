@@ -440,14 +440,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                         oTrans.getModel().getModel().setGender(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
                     }
                 }
-
+                
                 txtField25.setText("");
                 oTrans.getModel().getModel().setSpouseID("");
                 oTrans.getModel().getModel().setSpouseNm("");
-
-                if (comboBox09.getValue() != null) {
-                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                        if (comboBox08.getValue() != null) {
+                
+                if(comboBox09.getValue() != null){
+                    if(comboBox09.getSelectionModel().getSelectedIndex() == 1){
+                        if(comboBox08.getValue() != null){
                             txtField25.setDisable(false);
                         }
                     } else {
@@ -470,9 +470,9 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         comboBox09.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (!comboBox09.getValue().isEmpty()) {
-                        if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                            if (comboBox08.getValue() != null) {
+                    if(!comboBox09.getValue().isEmpty()){
+                        if(comboBox09.getSelectionModel().getSelectedIndex() == 1){
+                            if(comboBox08.getValue() != null){
                                 txtField25.setDisable(false);
                             }
                         } else {
@@ -481,10 +481,10 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                             oTrans.getModel().getModel().setSpouseID("");
                             oTrans.getModel().getModel().setSpouseNm("");
                         }
-                    } else {
+                    }else {
                         txtField25.setDisable(true);
                     }
-
+                    
                     if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
                         oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
                     }
@@ -901,12 +901,12 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         txtField25.setDisable(true); //Spouse
         txtField16.setDisable(true); //company name
         cmdCLIENTType(lbShow);
-
-        if (lbShow) {
-            if (comboBox09.getValue() != null) {
-                if (!comboBox09.getValue().isEmpty()) {
-                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                        if (comboBox08.getValue() != null) {
+        
+        if(lbShow){
+            if(comboBox09.getValue() != null){
+                if(!comboBox09.getValue().isEmpty()){
+                    if(comboBox09.getSelectionModel().getSelectedIndex() == 1){
+                        if(comboBox08.getValue() != null){
                             txtField25.setDisable(false);
                         }
                     } else {
@@ -915,14 +915,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                         oTrans.getModel().getModel().setSpouseID("");
                         oTrans.getModel().getModel().setSpouseNm("");
                     }
-                } else {
+                }else {
                     txtField25.setDisable(true);
                 }
             } else {
                 txtField25.setDisable(true);
             }
         }
-
+        
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         btnCancel.setVisible(lbShow);
