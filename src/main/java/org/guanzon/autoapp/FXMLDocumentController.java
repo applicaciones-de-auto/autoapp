@@ -616,7 +616,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //            case "SalesAgentForm.fxml":
 //                return new SalesAgentFormController();
             case "VehicleDescriptionEntry.fxml":
-//                return new VehicleDescriptionEntryController();
+                return new VehicleDescriptionEntryController();
             case "VehicleMakeEntry.fxml":
                 return new VehicleMakeEntryController();
             case "VehicleModelEntry.fxml":
