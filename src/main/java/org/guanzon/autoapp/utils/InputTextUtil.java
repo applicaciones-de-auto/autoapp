@@ -41,16 +41,26 @@ public class InputTextUtil {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public static void addTextLimiter(TextField textField, int maxLength) {
         // Remove any existing listeners to avoid stacking them
         if (textField.getProperties().get("textLimiter") != null) {
-            textField.textProperty().removeListener((ChangeListener) textField.getProperties().get("textLimiter"));
+            textField.textProperty().removeListener((ChangeListener<String>) textField.getProperties().get("textLimiter"));
         }
+
+        // Flag to prevent recursive calls
+        final boolean[] isUpdating = {false};
 
         // Create a new listener to limit the text length
         ChangeListener<String> textLimiter = (observable, oldValue, newValue) -> {
+            if (isUpdating[0]) {
+                return; // Skip if updating to avoid recursion
+            }
+
             if (newValue.length() > maxLength) {
-                textField.setText(oldValue);
+                isUpdating[0] = true; // Set flag before updating
+                textField.setText(oldValue); // Revert to old value
+                isUpdating[0] = false; // Reset flag after updating
             }
         };
 
