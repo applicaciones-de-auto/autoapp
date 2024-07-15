@@ -57,7 +57,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TextField fx:id="txtField01" maxWidth="120.0" GridPane.columnIndex="2" />
+                                                <TextField fx:id="txtField01" maxWidth="120.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
                                                 <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Color ID" GridPane.columnIndex="1" />
                                                 <Label id="LabelDesc" text="Vehicle Color Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
