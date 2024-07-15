@@ -74,14 +74,14 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
         initButtons();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
-        txtField02.textProperty()
+        txtField01.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
                                 oTransEngineFormat.getModel().getModel().setMakeID("");
                                 oTransEngineFormat.getModel().getModel().setModelID("");
-                                txtField03.setText("");
+                                txtField02.setText("");
                             }
                         }
                     }
