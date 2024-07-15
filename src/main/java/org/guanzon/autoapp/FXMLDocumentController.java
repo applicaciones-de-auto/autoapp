@@ -63,6 +63,7 @@ import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
+import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
@@ -628,7 +629,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "VehicleFrameFormatEntry.fxml":
                 return new VehicleFrameFormatEntryController();
             case "VehicleEngineFormatEntry.fxml":
-                return new VehicleFrameFormatEntryController();
+                return new VehicleEngineFormatEntryController();
 
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
