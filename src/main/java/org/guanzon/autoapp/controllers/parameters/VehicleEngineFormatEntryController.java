@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -25,7 +24,6 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_ModelEnginePattern;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -67,14 +65,15 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
+//        initTextFieldPattern();
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
         initButtons();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
+        InputTextUtil.addTextLimiter(txtField03, 3);
         initFields(pnEditMode);
     }
 
@@ -88,24 +87,26 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     }
 
     private void loadEngineFormatFields() {
-//        txtField01.setText(oTransEngineFormat.getModel().getModel().getVehicleMake());
-//        txtField02.setText(oTransEngineFormat.getModel().getModel().getVehicleModel());
-//        txtField03.setText(oTransEngineFormat.getModel().getModel().getVehicleEngineFormatPatt());
-//        txtField04.setText(oTransEngineFormat.getModel().getModel().getVehicleEngineFormatLength));
+        txtField01.setText(oTransEngineFormat.getModel().getModel().getMakeDesc());
+        txtField02.setText(oTransEngineFormat.getModel().getModel().getModelDsc());
+        txtField03.setText(oTransEngineFormat.getModel().getModel().getEngnPtrn());
+        if (oTransEngineFormat.getModel().getModel().getEngnLen() == null) {
+            txtField04.setText("0");
+        } else {
+            txtField04.setText(String.valueOf(oTransEngineFormat.getModel().getModel().getEngnLen()));
+        }
     }
 
-    private void initTextFieldPattern() {
-        Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
-
-    }
-
+//    private void initTextFieldPattern() {
+//        Pattern textOnly;
+//        textOnly = Pattern.compile("[A-Za-z ]*");
+//        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
+//        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
+//
+//    }
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        /*TextArea*/
     }
 
     private void initTextKeyPressed() {
@@ -128,7 +129,7 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
+        List<TextField> loTxtField = Arrays.asList(txtField03, txtField04);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /*Set TextField Value to Master Class*/
@@ -143,10 +144,10 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
             /*Lost Focus*/
             switch (lnIndex) {
                 case 3:
-//                    oTransEngineFormatEngineFormat.getModel().getModel().setVehicleEngineFormatDesc(lsValue);
+                    oTransEngineFormat.getModel().getModel().setEngnPtrn(lsValue);
                     break;
                 case 4:
-//                    oTransEngineFormatEngineFormat.getModel().getModel().setVehicleEngineFormatCode(lsValue);
+                    oTransEngineFormat.getModel().getModel().setEngnLen(Integer.valueOf(lsValue));
                     break;
             }
         } else {
@@ -166,44 +167,44 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
-//                clearFields();
-//                oTransEngineFormat = new Vehicle_EngineFormat(oApp, false, oApp.getBranchCode());
-//                poJson = oTransEngineFormat.newRecord();
-//                if ("success".equals((String) poJson.get("result"))) {
-//                    loadEngineFormatFields();
-////                    pnEditMode = oTransEngineFormat.getEditMode();
-//                } else {
-//                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
-//                }
+                clearFields();
+                oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
+                poJson = oTransEngineFormat.newRecord();
+                if ("success".equals((String) poJson.get("result"))) {
+                    loadEngineFormatFields();
+                    pnEditMode = oTransEngineFormat.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                }
                 break;
             case "btnEdit":
-//                poJson = oTransEngineFormat.updateRecord();
-//                pnEditMode = oTransEngineFormat.getEditMode();
-//                if ("error".equals((String) poJson.get("result"))) {
-//                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
-//                }
+                poJson = oTransEngineFormat.updateRecord();
+                pnEditMode = oTransEngineFormat.getEditMode();
+                if ("error".equals((String) poJson.get("result"))) {
+                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle EngineFormat Information Saving....", "Are you sure, do you want to save?")) {
-//                    poJson = oTransEngineFormat.saveRecord();
-//                    if ("success".equals((String) poJson.get("result"))) {
-//                        ShowMessageFX.Information(null, "Vehicle EngineFormat Information", (String) poJson.get("message"));
-//                        poJson = oTransEngineFormat.openRecord(oTransEngineFormat.getModel().getModel().getClientID());
-//                        if ("success".equals((String) poJson.get("result"))) {
-//                            loadEngineFormatFields();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTransEngineFormat.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
-//                        return;
-//                    }
+                    poJson = oTransEngineFormat.saveRecord();
+                    if ("success".equals((String) poJson.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle EngineFormat Information", (String) poJson.get("message"));
+                        poJson = oTransEngineFormat.openRecord(oTransEngineFormat.getModel().getModel().getModelID(), oTransEngineFormat.getModel().getModel().getEntryNo());
+                        if ("success".equals((String) poJson.get("result"))) {
+                            loadEngineFormatFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransEngineFormat.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                        return;
+                    }
                 }
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-//                    oTranEngineFormat = new Vehicle_EngineFormat(oApp, false, oApp.getBranchCode());
+                    oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -215,14 +216,14 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
                         return;
                     }
                 }
-//                poJSon = oTransEngineFormat.searchRecord("", false);
-//                if ("success".equals((String) poJSon.get("result"))) {
-//                    loadEngineFormatFields();
-////                    pnEditMode = oTransEngineFormatEngineFormat.getEditMode();
-//                    initFields(pnEditMode);
-//                } else {
-//                    ShowMessageFX.Warning(null, "Search Vehicle EngineFormat Information", (String) poJSon.get("message"));
-//                }
+                poJSon = oTransEngineFormat.searchRecord("", false);
+                if ("success".equals((String) poJSon.get("result"))) {
+                    loadEngineFormatFields();
+                    pnEditMode = oTransEngineFormat.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Vehicle EngineFormat Information", (String) poJSon.get("message"));
+                }
                 break;
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
