@@ -302,6 +302,8 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
                                 oTransVehicleDescription.getModel().getModel().setMakeID("");
+                                oTransVehicleDescription.getModel().getModel().setModelID("");
+                                txtField03.setText("");
                             }
                         }
                     }
