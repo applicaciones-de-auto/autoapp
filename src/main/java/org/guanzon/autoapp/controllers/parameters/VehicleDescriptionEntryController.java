@@ -140,7 +140,19 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             txtField06.setText(String.valueOf(oTransVehicleDescription.getModel().getModel().getYearModl()));
         }
         if (oTransVehicleDescription.getModel().getModel().getTransMsn() != null && !oTransVehicleDescription.getModel().getModel().getTransMsn().trim().isEmpty()) {
-            comboBox07.getSelectionModel().select(Integer.parseInt(oTransVehicleDescription.getModel().getModel().getTransMsn()));
+            switch ((String.valueOf(oTransVehicleDescription.getModel().getModel().getTransMsn()))) {
+                case "AT":
+                    comboBox07.setValue("AUTOMATIC");
+                    break;
+                case "M":
+                    comboBox07.setValue("MANUAL");
+                    break;
+                case "CVT":
+                    comboBox07.setValue("CVT");
+                    break;
+                default:
+                    break;
+            }
         }
         if (oTransVehicleDescription.getModel().getModel().getVhclSize() != null && !oTransVehicleDescription.getModel().getModel().getVhclSize().trim().isEmpty()) {
             comboBox08.getSelectionModel().select(Integer.parseInt(oTransVehicleDescription.getModel().getModel().getVhclSize()));
@@ -257,15 +269,28 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
 
     private void initCmboxFieldAction() {
         comboBox07.setOnAction(e -> {
+            int selectedComboBox07 = comboBox07.getSelectionModel().getSelectedIndex();
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVehicleDescription.getModel().getModel().setTransMsn(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
+                if (selectedComboBox07 >= 0) {
+                    switch (selectedComboBox07) {
+                        case 0:
+                            oTransVehicleDescription.getModel().getModel().setTransMsn("AT");
+                            break;
+                        case 1:
+                            oTransVehicleDescription.getModel().getModel().setTransMsn("M");
+                            break;
+                        case 2:
+                            oTransVehicleDescription.getModel().getModel().setTransMsn("CVT");
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
-        comboBox07.setOnAction(e -> {
+        comboBox08.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
+                if (comboBox08.getSelectionModel().getSelectedIndex() >= 0) {
                     oTransVehicleDescription.getModel().getModel().setVhclSize(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
                 }
             }
@@ -319,13 +344,26 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
 
     /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
+
     private boolean setSelection() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (comboBox07.getSelectionModel().getSelectedIndex() < 0) {
                 ShowMessageFX.Warning("No `Transmission` selected.", "Vehicle Transmission", "Please select `Vehicle Transmission` value.");
                 return false;
             } else {
-                oTransVehicleDescription.getModel().getModel().setTransMsn(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
+                switch (comboBox07.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        oTransVehicleDescription.getModel().getModel().setTransMsn("AT");
+                        break;
+                    case 1:
+                        oTransVehicleDescription.getModel().getModel().setTransMsn("M");
+                        break;
+                    case 2:
+                        oTransVehicleDescription.getModel().getModel().setTransMsn("CVT");
+                        break;
+                    default:
+                        break;
+                }
             }
             if (comboBox08.getSelectionModel().getSelectedIndex() < 0) {
                 ShowMessageFX.Warning("No `Vehicle Model Size` selected.", "Vehicle Model Size", "Please select `Vehicle Model Size` value.");
