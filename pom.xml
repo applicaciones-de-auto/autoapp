@@ -103,6 +103,7 @@
     </build>
 
     <dependencies>
+
         <!-- JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -175,6 +176,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>auto-clients</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon</groupId>
+            <artifactId>auto-parameter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
