@@ -33,7 +33,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleColorEntryController implements Initializable, ScreenInterface {
 
@@ -69,7 +69,6 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         oTransColor = new Vehicle_Color(oApp, false, oApp.getBranchCode());
         initTextFieldPattern();
         initCapitalizationFields();
@@ -163,40 +162,50 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson;
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 oTransColor = new Vehicle_Color(oApp, false, oApp.getBranchCode());
-                poJson = oTransColor.newRecord();
-                if ("success".equals((String) poJson.get("result"))) {
+                loJSON = oTransColor.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadColorFields();
                     pnEditMode = oTransColor.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                poJson = oTransColor.updateRecord();
+                loJSON = oTransColor.updateRecord();
                 pnEditMode = oTransColor.getEditMode();
-                if ("error".equals((String) poJson.get("result"))) {
-                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Color Information Saving....", "Are you sure, do you want to save?")) {
-                    poJson = oTransColor.saveRecord();
-                    if ("success".equals((String) poJson.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Color Information", (String) poJson.get("message"));
-                        poJson = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
-                        if ("success".equals((String) poJson.get("result"))) {
+                    if (txtField02.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, "Vehicle Color Information", "Please enter valid color information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    if (txtField02.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, "Vehicle Color Information", "Please enter value color information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    loJSON = oTransColor.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Color Information", (String) loJSON.get("message"));
+                        loJSON = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadColorFields();
                             initFields(pnEditMode);
                             pnEditMode = oTransColor.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;
                     }
                 }
@@ -238,8 +247,8 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
                         ShowMessageFX.Warning(null, "Vehicle Color Information", (String) poJSon.get("message"));
                         return;
                     }
-                    poJson = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadColorFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransColor.getEditMode();
@@ -255,8 +264,8 @@ public class VehicleColorEntryController implements Initializable, ScreenInterfa
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Color Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransColor.openRecord(oTransColor.getModel().getModel().getColorID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadColorFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransColor.getEditMode();
