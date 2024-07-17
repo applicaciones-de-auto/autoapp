@@ -36,7 +36,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleFrameFormatEntryController implements Initializable, ScreenInterface {
 
@@ -162,11 +162,13 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
     }
 
     private void initTextFieldPattern() {
-        Pattern textOnly, numOnly;
+        Pattern textOnly, numOnly, frmPat;
         textOnly = Pattern.compile("[A-Za-z -]*");
+        frmPat = Pattern.compile("[A-Za-z0-9-]*");
         numOnly = Pattern.compile("[0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
         txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        txtField04.setTextFormatter(new InputTextFormatterUtil(frmPat));
         txtField05.setTextFormatter(new InputTextFormatterUtil(numOnly));
 
     }
@@ -198,7 +200,7 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                     case "txtField02":
                         if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
                             loJSON = oTransModelFrameFormat.searchMake(lsValue, true);
-                            if ("success".equals(loJSON.get("result"))) {
+                            if (!"error".equals(loJSON.get("result"))) {
                                 txtField02.setText(oTransModelFrameFormat.getModel().getModel().getMakeDesc());
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -208,7 +210,7 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                             }
                         } else {
                             loJSON = oTransMakeFrameFormat.searchMake(lsValue, true);
-                            if ("success".equals(loJSON.get("result"))) {
+                            if (!"error".equals(loJSON.get("result"))) {
                                 txtField02.setText(oTransMakeFrameFormat.getModel().getModel().getMakeDesc());
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -221,7 +223,7 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                     case "txtField03":
                         if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
                             loJSON = oTransModelFrameFormat.searchModel(lsValue);
-                            if ("success".equals(loJSON.get("result"))) {
+                            if (!"error".equals(loJSON.get("result"))) {
                                 txtField03.setText(oTransModelFrameFormat.getModel().getModel().getModelDsc());
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
