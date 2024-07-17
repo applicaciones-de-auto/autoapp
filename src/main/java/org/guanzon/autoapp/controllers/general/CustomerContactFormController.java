@@ -38,7 +38,7 @@ import org.guanzon.autoapp.utils.ScreenInterface;
 /**
  * FXML Controller class
  *
- * @author Arsiela Date Created: 10-23-2023
+ * @author Auto Group Programmers
  */
 public class CustomerContactFormController implements Initializable, ScreenInterface {
 
@@ -99,8 +99,6 @@ public class CustomerContactFormController implements Initializable, ScreenInter
             if (txtField03Cont != null) {
                 txtField03Cont.clear();
             }
-
-            // Get the selected index from the combo box
             Integer selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
 
             // Set the text limiter based on the selected index
@@ -213,7 +211,7 @@ public class CustomerContactFormController implements Initializable, ScreenInter
         for (int lnCtr = 0; lnCtr <= oTransMobile.getMobileList().size() - 1; lnCtr++) {
             if (oTransMobile.getMobile(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
                 if (radiobtn11CntY.isSelected()) {
-                    ShowMessageFX.Warning(getStage(), null, "CCustomer Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
+                    ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
                     return false;
                 }
             }
@@ -224,7 +222,7 @@ public class CustomerContactFormController implements Initializable, ScreenInter
         }
         if (comboBox04Cont.getSelectionModel().getSelectedIndex() == 0) {
             if (CommonUtils.classifyNetwork(txtField03Cont.getText()).isEmpty()) {
-                ShowMessageFX.Warning(getStage(), null, "Customer Contact Warning", "Prefix not registered " + txtField03Cont.getText());
+                ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Prefix not registered " + txtField03Cont.getText());
                 return false;
             }
         }
