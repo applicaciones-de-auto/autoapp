@@ -28,19 +28,17 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
-import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 
 /**
  * FXML Controller class
  *
- * @author Arsiela Date Created: 10-23-2023
+ * @author Auto Group Programmers
  */
 public class CustomerEmailFormController implements Initializable, ScreenInterface {
 
     private GRider oApp;
     private Client oTransEmail;
-    private InputTextUtil poTextUtil = new InputTextUtil();
     private final String pxeModuleName = "Customer Email";
     private int pnRow = 0;
     private boolean pbState = true;

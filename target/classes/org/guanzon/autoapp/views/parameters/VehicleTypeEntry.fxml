@@ -9,7 +9,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,7 +19,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="456.0" prefWidth="549.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="418.0" prefWidth="549.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -47,75 +46,44 @@
                             <children>
                                 <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5; -fx-background-color: white; -fx-background-radius: 5;" styleClass="unity-container" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                     <children>
-                                        <GridPane vgap="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                        <GridPane layoutX="1.0" layoutY="11.0" vgap="5.0" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="11.0">
                                             <columnConstraints>
                                                 <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="210.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="80.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="20.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="20.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TextField fx:id="txtField03" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Make." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Type ID" GridPane.columnIndex="1" />
-                                                <Label id="LabelDesc" text="Format" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label id="LabelDesc" text="Engine Size" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Label id="LabelDesc" text="Variant Code A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                    <Label id="LabelDesc" text="Vehicle Make " GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <TextField fx:id="txtField031" maxWidth="120.0" GridPane.columnIndex="2">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <TextField fx:id="txtField032" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <TextField fx:id="txtField0321" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <Label id="LabelDesc" text="Variant Code B(Optional)" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                    <TextField fx:id="txtField03211" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <Separator prefWidth="200.0" style="-fx-background-color: orange;" GridPane.columnSpan="5" GridPane.rowIndex="7" />
-                                    <Button fx:id="btnConcat" mnemonicParsing="false" prefHeight="22.0" text="CREATE TYPE DESCRIPTION" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                    <Label id="LabelDesc" text="Vehicle Type Description" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                    <Label id="LabelDesc" text="Vehicle Type Code" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                    <TextField fx:id="txtField033" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <TextField fx:id="txtField0331" GridPane.columnIndex="2" GridPane.rowIndex="9">
-                                       <tooltip>
-                                          <Tooltip text="Please fill in the Vehicle Make." />
-                                       </tooltip>
-                                    </TextField>
-                                    <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                                                <TextField fx:id="txtField01" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="2" />
+                                                <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Type ID" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                <Label id="LabelDesc" text="Format" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label id="LabelDesc" text="Engine Size" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label id="LabelDesc" text="Variant Code A" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <ComboBox fx:id="comboBox03" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <Label id="LabelDesc" text="Vehicle Make " GridPane.columnIndex="1" />
+                                                <TextField fx:id="txtField04" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField05" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                <Label id="LabelDesc" text="Variant Code B(Optional)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField06" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <Separator prefWidth="200.0" style="-fx-background-color: orange;" GridPane.columnSpan="5" GridPane.rowIndex="6" />
+                                                <Button fx:id="btnConcat" mnemonicParsing="false" prefHeight="22.0" text="CREATE TYPE DESCRIPTION" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                <Label id="LabelDesc" text="Vehicle Type Description" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                             </children>
                                         </GridPane>
                                     </children>
@@ -126,73 +94,70 @@
                     <bottom>
                         <AnchorPane prefHeight="0.0" prefWidth="527.0" style="-fx-background-color: #515151;">
                             <children>
-                        <HBox prefHeight="53.0" prefWidth="430.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
-                           <children>
-                              <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="PLUS" size="20" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="SAVE" size="20" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnEdit" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="67.0" text="Edit">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="EDIT" size="19.5" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="CLOSE" size="20" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="TIMES" size="19.5" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </HBox>
+                                <HBox prefHeight="53.0" prefWidth="430.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PLUS" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="19.5" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Activate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
                                 <Button fx:id="btnClose" contentDisplay="TOP" layoutX="416.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                     <effect>
                                         <Blend />

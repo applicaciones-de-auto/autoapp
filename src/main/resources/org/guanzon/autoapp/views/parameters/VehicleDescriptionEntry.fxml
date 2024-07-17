@@ -4,10 +4,10 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="330.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.views.parameters.VehicleDescriptionEntryController">
+<AnchorPane id="AnchorPane" prefHeight="391.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -48,84 +48,46 @@
                                         <GridPane vgap="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
                                                 <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="85.0" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="210.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TextField fx:id="txtField03" promptText="Search F3" GridPane.columnIndex="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Make." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField04" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Model." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField06" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Type." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField05" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Color." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <TextField fx:id="txtField08" maxWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                                    <tooltip>
-                                                        <Tooltip text="Please fill in the Vehicle Year." />
-                                                    </tooltip>
-                                                </TextField>
-                                                <ComboBox fx:id="comboBox07" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                                                    <tooltip>
-                                                        <Tooltip text="Choose Transmission." />
-                                                    </tooltip>
-                                                </ComboBox>
-                                                <ComboBox fx:id="comboBox09" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
-                                                    <tooltip>
-                                                        <Tooltip text="Choose Model Size." />
-                                                    </tooltip>
-                                                </ComboBox>
-                                                <Button fx:id="btnMake" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="..." GridPane.columnIndex="4">
-                                                    <tooltip>
-                                                        <Tooltip text="Click to add Vehicle Make." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="btnModel" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="..." GridPane.columnIndex="4" GridPane.rowIndex="1">
-                                                    <tooltip>
-                                                        <Tooltip text="Click to add Vehicle Model." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="btnType" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="..." GridPane.columnIndex="4" GridPane.rowIndex="2">
-                                                    <tooltip>
-                                                        <Tooltip text="Click to add Vehicle Type." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="btnColor" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="..." GridPane.columnIndex="4" GridPane.rowIndex="3">
-                                                    <tooltip>
-                                                        <Tooltip text="Click to add Vehicle Color." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Make" GridPane.columnIndex="1" />
-                                                <Label id="LabelDesc" text="Model" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Label id="LabelDesc" text="Type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label id="LabelDesc" text="Color" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Label id="LabelDesc" text="Year" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label id="LabelDesc" text="Transmission" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                <Label id="LabelDesc" text="Model Size" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                                                <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Description ID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label id="LabelDesc" text="Make" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField01" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField02" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField03" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField04" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField05" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                <TextField fx:id="txtField06" alignment="CENTER_RIGHT" maxWidth="150.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                <ComboBox fx:id="comboBox07" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                <ComboBox fx:id="comboBox08" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                                                <Label id="LabelDesc" text="Model" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label id="LabelDesc" text="Type" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label id="LabelDesc" text="Color" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label id="LabelDesc" text="Year Model" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <Label id="LabelDesc" text="Transmission" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                <Label id="LabelDesc" text="Model Size" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                <Button fx:id="btnMake" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                <Button fx:id="btnModel" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                <Button fx:id="btnType" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                <Button fx:id="btnColor" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                             </children>
                                         </GridPane>
                                     </children>
@@ -181,6 +143,22 @@
                                             <HBox.margin>
                                                 <Insets />
                                             </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Active">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
                                         </Button>
                                         <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
                                             <effect>
