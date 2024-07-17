@@ -38,6 +38,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Description;
+import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -45,7 +46,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleDescriptionEntryController implements Initializable, ScreenInterface {
 
@@ -114,13 +115,16 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTransVehicleDescription = new Vehicle_Description(oApp, false, oApp.getBranchCode());
-
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
         initCmboxFieldAction();
         initButtons();
         clearFields();
+
+        Pattern numOnly = Pattern.compile("[0-9]*");
+        txtField06.setTextFormatter(new InputTextFormatterUtil(numOnly));
+        InputTextUtil.addTextLimiter(txtField06, 4);
         comboBox07.setItems(cTransmission);
         comboBox08.setItems(cModelsize);
         pnEditMode = EditMode.UNKNOWN;
@@ -185,12 +189,12 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             } else {
                 lsValue = lsTxtField.getText();
             }
-            JSONObject loJSON;
+            JSONObject loJSON = new JSONObject();
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField02":
                         loJSON = oTransVehicleDescription.searchMake(lsValue, true);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField02.setText(oTransVehicleDescription.getModel().getModel().getMakeDesc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -201,7 +205,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                         break;
                     case "txtField03":
                         loJSON = oTransVehicleDescription.searchModel(lsValue);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField03.setText(oTransVehicleDescription.getModel().getModel().getModelDsc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -212,7 +216,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                         break;
                     case "txtField04":
                         loJSON = oTransVehicleDescription.searchType(lsValue, true);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField04.setText(oTransVehicleDescription.getModel().getModel().getTypeDesc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -223,7 +227,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                         break;
                     case "txtField05":
                         loJSON = oTransVehicleDescription.searchColor(lsValue, true);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField05.setText(oTransVehicleDescription.getModel().getModel().getColorDsc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -344,13 +348,11 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                 );
     }
 
-    /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
-
     private boolean setSelection() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (comboBox07.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning("No `Transmission` selected.", "Vehicle Transmission", "Please select `Vehicle Transmission` value.");
+                ShowMessageFX.Warning(null, "Vehicle Transmission", "Please select `Vehicle Transmission` value.");
                 return false;
             } else {
                 switch (comboBox07.getSelectionModel().getSelectedIndex()) {
@@ -368,7 +370,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                 }
             }
             if (comboBox08.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning("No `Vehicle Model Size` selected.", "Vehicle Model Size", "Please select `Vehicle Model Size` value.");
+                ShowMessageFX.Warning(null, "Vehicle Model Size", "Please select `Vehicle Model Size` value.");
                 return false;
             } else {
                 oTransVehicleDescription.getModel().getModel().setVhclSize(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
@@ -385,67 +387,67 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson;
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 oTransVehicleDescription = new Vehicle_Description(oApp, false, oApp.getBranchCode());
-                poJson = oTransVehicleDescription.newRecord();
-                if ("success".equals((String) poJson.get("result"))) {
+                loJSON = oTransVehicleDescription.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadVehicleDescriptionFields();
                     pnEditMode = oTransVehicleDescription.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                poJson = oTransVehicleDescription.updateRecord();
+                loJSON = oTransVehicleDescription.updateRecord();
                 pnEditMode = oTransVehicleDescription.getEditMode();
-                if ("error".equals((String) poJson.get("result"))) {
-                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Description Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(getStage(), "Please enter a value for Make.", "Warning", null);
+                        ShowMessageFX.Warning(null, "Warning", "Please enter a value for Make.");
                         txtField02.requestFocus();
                         return;
                     }
                     if (txtField03.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(getStage(), "Please enter a value for Model.", "Warning", null);
+                        ShowMessageFX.Warning(null, "Warning", "Please enter a value for Model.");
                         txtField03.requestFocus();
                         return;
                     }
                     if (txtField04.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(getStage(), "Please enter a value for Type.", "Warning", null);
+                        ShowMessageFX.Warning(null, "Warning", "Please enter a value for Type.");
                         txtField04.requestFocus();
                         return;
                     }
                     if (txtField05.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(getStage(), "Please enter a value for Color.", "Warning", null);
+                        ShowMessageFX.Warning(null, "Warning", "Please enter a value for Color.");
                         txtField05.requestFocus();
                         return;
                     }
 
                     if (txtField06.getText().trim().equals("") || Integer.parseInt(txtField06.getText()) < 1900) {
-                        ShowMessageFX.Warning(getStage(), "Please enter a valid value for Year.", "Warning", null);
+                        ShowMessageFX.Warning(null, "Warning", "Please enter a valid value for Year.");
                         txtField06.requestFocus();
                         return;
                     }
                     if (setSelection()) {
-                        poJson = oTransVehicleDescription.saveRecord();
-                        if ("success".equals((String) poJson.get("result"))) {
-                            ShowMessageFX.Information(null, "Vehicle Description Information", (String) poJson.get("message"));
-                            poJson = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
-                            if ("success".equals((String) poJson.get("result"))) {
+                        loJSON = oTransVehicleDescription.saveRecord();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Vehicle Description Information", (String) loJSON.get("message"));
+                            loJSON = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
+                            if ("success".equals((String) loJSON.get("result"))) {
                                 loadVehicleDescriptionFields();
                                 initFields(pnEditMode);
                                 pnEditMode = oTransVehicleDescription.getEditMode();
                             }
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             return;
                         }
                     }
@@ -487,8 +489,8 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Description Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadVehicleDescriptionFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransVehicleDescription.getEditMode();
@@ -504,8 +506,8 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Description Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadVehicleDescriptionFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransVehicleDescription.getEditMode();
@@ -540,7 +542,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                 loadVehicleColor();
                 break;
             default:
-                ShowMessageFX.Warning("Please contact admin to assist about no button available", "Integrated Automotive System", pxeModuleName);
+                ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
         initFields(pnEditMode);
@@ -573,7 +575,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
         }
     }
@@ -614,7 +616,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             stage.showAndWait();
 
         } catch (IOException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
         }
     }
@@ -625,7 +627,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             Stage stage = new Stage();
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/VehicleDescriptionForm.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/VehicleTypeEntry.fxml"));
             VehicleTypeEntryController loControl = new VehicleTypeEntryController();
             loControl.setGRider(oApp);
             loControl.setMakeID(sSourceID);
@@ -655,7 +657,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             stage.showAndWait();
 
         } catch (IOException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
         }
     }
@@ -666,7 +668,6 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
 
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/VehicleColorEntry.fxml"));
-
             VehicleColorEntryController loControl = new VehicleColorEntryController();
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
@@ -689,8 +690,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             stage.showAndWait();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
         }
     }
