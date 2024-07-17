@@ -32,7 +32,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleEngineFormatEntryController implements Initializable, ScreenInterface {
 
@@ -113,11 +113,12 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     }
 
     private void initTextFieldPattern() {
-        Pattern textOnly, numOnly;
+        Pattern textOnly, numOnly, engPat;
         textOnly = Pattern.compile("[A-Za-z -]*");
+        engPat = Pattern.compile("[A-Za-z0-9-]*");
         numOnly = Pattern.compile("[0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        txtField03.setTextFormatter(new InputTextFormatterUtil(engPat));
         txtField04.setTextFormatter(new InputTextFormatterUtil(numOnly));
 
     }
@@ -143,12 +144,12 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
             } else {
                 lsValue = lsTxtField.getText();
             }
-            JSONObject loJSON;
+            JSONObject loJSON = new JSONObject();
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField01":
                         loJSON = oTransEngineFormat.searchMake(lsValue, true);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField01.setText(oTransEngineFormat.getModel().getModel().getMakeDesc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -159,7 +160,7 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
                         break;
                     case "txtField02":
                         loJSON = oTransEngineFormat.searchModel(lsValue);
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
                             txtField02.setText(oTransEngineFormat.getModel().getModel().getModelDsc());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -214,40 +215,40 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson;
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
-                poJson = oTransEngineFormat.newRecord();
-                if ("success".equals((String) poJson.get("result"))) {
+                loJSON = oTransEngineFormat.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadEngineFormatFields();
                     pnEditMode = oTransEngineFormat.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                poJson = oTransEngineFormat.updateRecord();
+                loJSON = oTransEngineFormat.updateRecord();
                 pnEditMode = oTransEngineFormat.getEditMode();
-                if ("error".equals((String) poJson.get("result"))) {
-                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle EngineFormat Information Saving....", "Are you sure, do you want to save?")) {
-                    poJson = oTransEngineFormat.saveRecord();
-                    if ("success".equals((String) poJson.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle EngineFormat Information", (String) poJson.get("message"));
-                        poJson = oTransEngineFormat.openRecord(oTransEngineFormat.getModel().getModel().getModelID(), oTransEngineFormat.getModel().getModel().getEntryNo());
-                        if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransEngineFormat.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle EngineFormat Information", (String) loJSON.get("message"));
+                        loJSON = oTransEngineFormat.openRecord(oTransEngineFormat.getModel().getModel().getModelID(), oTransEngineFormat.getModel().getModel().getEntryNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadEngineFormatFields();
                             initFields(pnEditMode);
                             pnEditMode = oTransEngineFormat.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;
                     }
                 }
