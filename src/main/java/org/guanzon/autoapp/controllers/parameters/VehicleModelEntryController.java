@@ -36,7 +36,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleModelEntryController implements Initializable, ScreenInterface {
 
@@ -45,31 +45,15 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
     private final String pxeModuleName = "Vehicle Model";
     private int pnEditMode;
 
-    private String psOldTransNo = "";
-    private String psTransNo = "";
     private String sMakeID = "";
     private String sMakeDesc = "";
-    private int lnRow;
-    private int lnCtr;
     private boolean pbOpenEvent = false;
 
     ObservableList<String> cUnitType = FXCollections.observableArrayList("COMMERCIAL VEHICLE", "PRIVATE VEHICLE", "LIGHT PRIVATE VEHICLE", "MEDIUM PRIVATE VEHICLE");
     ObservableList<String> cBodyType = FXCollections.observableArrayList("SEDAN", "SUV", "HATCHBACK", "MPV", "MOTORCYCLE", "TRUCK");
     ObservableList<String> cUnitSize = FXCollections.observableArrayList("BANTAM", "SMALL", "MEDIUM", "LARGE");
     @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnEdit;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnDeactivate;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnClose;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose;
     @FXML
     private TextField txtField03;
     @FXML
@@ -178,13 +162,14 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
             } else {
                 lsValue = lsTxtField.getText();
             }
-            JSONObject loJSON;
+            JSONObject loJSON = new JSONObject();
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField02":
                         loJSON = oTransModel.searchMake(lsValue, true);
-                        txtField02.setText(oTransModel.getModel().getModel().getMakeDesc());
-                        if ("error".equals(loJSON.get("result"))) {
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField02.setText(oTransModel.getModel().getModel().getMakeDesc());
+                        } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField02.setText("");
                             txtField02.requestFocus();
@@ -267,19 +252,19 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
     private boolean setSelection() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (comboBox04.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning("No `Vehicle Type` selected.", "Vehicle Type", "Please select `Vehicle Type` value.");
+                ShowMessageFX.Warning(null, "Vehicle Type", "Please select `Vehicle Type` value.");
                 return false;
             } else {
                 oTransModel.getModel().getModel().setUnitType(String.valueOf((comboBox04.getSelectionModel().getSelectedIndex())));
             }
             if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning("No `Vehicle Body Type` selected.", "Vehicle Body Type", "Please select `Vehicle Body Type` value.");
+                ShowMessageFX.Warning(null, "Vehicle Body Type", "Please select `Vehicle Body Type` value.");
                 return false;
             } else {
                 oTransModel.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
             }
             if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning("No `Vehicle Model Size` selected.", "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
+                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
                 return false;
             } else {
                 oTransModel.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
@@ -296,14 +281,14 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson;
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 oTransModel = new Vehicle_Model(oApp, false, oApp.getBranchCode());
-                poJson = oTransModel.newRecord();
-                if ("success".equals((String) poJson.get("result"))) {
+                loJSON = oTransModel.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     if (pbOpenEvent) {
                         txtField02.setText(sMakeDesc);
                         oTransModel.getModel().getModel().setMakeID(sMakeID);
@@ -312,15 +297,15 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                     loadModelFields();
                     pnEditMode = oTransModel.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
                 break;
             case "btnEdit":
-                poJson = oTransModel.updateRecord();
+                loJSON = oTransModel.updateRecord();
                 pnEditMode = oTransModel.getEditMode();
-                if ("error".equals((String) poJson.get("result"))) {
-                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
@@ -339,17 +324,17 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                         return;
                     }
                     if (setSelection()) {
-                        poJson = oTransModel.saveRecord();
-                        if ("success".equals((String) poJson.get("result"))) {
-                            ShowMessageFX.Information(null, "Vehicle Model Information", (String) poJson.get("message"));
-                            poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
-                            if ("success".equals((String) poJson.get("result"))) {
+                        loJSON = oTransModel.saveRecord();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Vehicle Model Information", (String) loJSON.get("message"));
+                            loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                            if ("success".equals((String) loJSON.get("result"))) {
                                 loadModelFields();
                                 initFields(pnEditMode);
                                 pnEditMode = oTransModel.getEditMode();
                             }
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             return;
                         }
                     }
@@ -391,8 +376,8 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Model Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadModelFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransModel.getEditMode();
@@ -408,8 +393,8 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Model Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadModelFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransModel.getEditMode();
