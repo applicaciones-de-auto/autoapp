@@ -103,8 +103,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        CommonUtils.addTextLimiter(txtField03Addr, 14); //HOUSE NO
+        InputTextUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //House No
         txtField07Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Zip code
@@ -146,22 +145,22 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         txtField06Addr.setOnKeyPressed(this::txtField_KeyPressed);
         txtField07Addr.setOnKeyPressed(this::txtField_KeyPressed);
         txtField23Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        textArea11Addr.setOnKeyPressed(this::txtArea_KeyPressed); // Address Remarks
+        textArea11Addr.setOnKeyPressed(this::txtArea_KeyPressed);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
-        JSONObject loJSON;
+        JSONObject loJSON = new JSONObject();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
                 case "txtField23Addr":  //Search by Province Address
                     loJSON = oTransAddress.searchProvince(lsTxtField.getText(), pnRow, false);
-                    if ("success".equals((String) loJSON.get("result"))) {
+                    if (!"error".equals((String) loJSON.get("result"))) {
                         txtField23Addr.setText((String) oTransAddress.getAddress(pnRow, "sProvName"));
                         txtField05Addr.setDisable(false);
                     } else {
-                        ShowMessageFX.Information((String) loJSON.get("message"), "Customer Address", pxeModuleName);
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField23Addr.clear();
                         txtField23Addr.clear(); // Province
                         txtField05Addr.setDisable(true);
@@ -174,12 +173,12 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                     break;
                 case "txtField05Addr":  //Search by Town Address
                     loJSON = oTransAddress.searchTown(lsTxtField.getText(), pnRow, false);
-                    if ("success".equals((String) loJSON.get("result"))) {
+                    if (!"error".equals((String) loJSON.get("result"))) {
                         txtField05Addr.setText((String) oTransAddress.getAddress(pnRow, "sTownName"));
                         txtField07Addr.setText((String) oTransAddress.getAddress(pnRow, "sZippCode"));
                         txtField06Addr.setDisable(false);
                     } else {
-                        ShowMessageFX.Information((String) loJSON.get("message"), "Customer Address", pxeModuleName);
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField05Addr.clear(); // Town
                         txtField07Addr.clear(); //Zip code
                         txtField06Addr.setDisable(true);
@@ -190,7 +189,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                     break;
                 case "txtField06Addr":  //Search by Brgy Address
                     loJSON = oTransAddress.searchBarangay(lsTxtField.getText(), pnRow, false);
-                    if ("success".equals((String) loJSON.get("result"))) {
+                    if (!"error".equals((String) loJSON.get("result"))) {
                         txtField06Addr.setText((String) oTransAddress.getAddress(pnRow, "sBrgyName"));
                     } else {
                         txtField06Addr.clear(); // Brgy
@@ -227,7 +226,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
 
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
-        JSONObject poJSON;
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnEdit":
             case "btnAdd":
@@ -248,16 +247,16 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 }
                 String lsAddrsID = String.valueOf((String) oTransAddress.getAddress(pnRow, "sAddrssID"));
                 if ((String) oTransAddress.getAddress(pnRow, "sAddrssID") != null) {
-                    poJSON = oTransAddress.checkClientAddress(lsAddrsID, lsAddress, psClientID, pnRow);
-                    if ("confirm".equals((String) poJSON.get("result"))) {
-                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) poJSON.get("message"))) {
+                    loJSON = oTransAddress.checkClientAddress(lsAddrsID, lsAddress, psClientID, pnRow);
+                    if ("confirm".equals((String) loJSON.get("result"))) {
+                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
                             return;
                         }
                     }
                 } else {
-                    poJSON = oTransAddress.checkClientAddress(lsAddress, pnRow, true);
-                    if ("confirm".equals((String) poJSON.get("result"))) {
-                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) poJSON.get("message"))) {
+                    loJSON = oTransAddress.checkClientAddress(lsAddress, pnRow, true);
+                    if ("confirm".equals((String) loJSON.get("result"))) {
+                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
                             return;
                         }
                     }
@@ -329,45 +328,63 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
     }
 
     private void initTextFieldListener() {
-        //Button SetOnAction using cmdButton_Click() method
         txtField23Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty() || newValue == null) {
-                txtField23Addr.clear(); // Province
-                txtField05Addr.clear(); // Town
-                txtField07Addr.clear(); //Zip code
-                txtField06Addr.clear(); // Brgy
-                txtField05Addr.setDisable(true);// Town
-                txtField06Addr.setDisable(true);// Brgy
-                oTransAddress.setAddress(pnRow, 25, ""); //province id
-                oTransAddress.setAddress(pnRow, 24, ""); //province
-                oTransAddress.setAddress(pnRow, 16, ""); //town id
-                oTransAddress.setAddress(pnRow, 23, ""); //town
-                oTransAddress.setAddress(pnRow, 17, ""); //zip
-                oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 22, ""); //brgy
+            if (oTransAddress != null && pnRow >= 0) {
+                if (newValue.isEmpty() || newValue == null) {
+                    oTransAddress.setAddress(pnRow, 25, ""); //province id
+                    oTransAddress.setAddress(pnRow, 24, ""); //province
+                    oTransAddress.setAddress(pnRow, 16, ""); //town id
+                    oTransAddress.setAddress(pnRow, 23, ""); //town
+                    oTransAddress.setAddress(pnRow, 17, ""); //zip
+                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
+                    txtField23Addr.clear(); // Province
+                    txtField05Addr.clear(); // Town
+                    txtField07Addr.clear(); //Zip code
+                    txtField06Addr.clear(); // Brgy
+                    txtField05Addr.setDisable(true);// Town
+                    txtField06Addr.setDisable(true);// Brgy
+                }
+            } else {
+                System.err.println("oTransAddress is null or pnRow is invalid.");
             }
-        });
+        }
+        );
 
         txtField05Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty() || newValue == null) {
-                txtField05Addr.clear(); // Town
-                txtField07Addr.clear(); //Zip code
-                txtField06Addr.clear(); // Brgy
-                txtField06Addr.setDisable(true);// Brgy
-                oTransAddress.setAddress(pnRow, 16, ""); //town id
-                oTransAddress.setAddress(pnRow, 23, ""); //town
-                oTransAddress.setAddress(pnRow, 17, ""); //zip
-                oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 22, ""); //brgy
+            if (oTransAddress != null && pnRow >= 0) {
+                if (newValue.isEmpty() || newValue == null) {
+
+                    oTransAddress.setAddress(pnRow, 16, ""); //town id
+                    oTransAddress.setAddress(pnRow, 23, ""); //town
+                    oTransAddress.setAddress(pnRow, 17, ""); //zip
+                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
+                    txtField05Addr.clear(); // Town
+                    txtField07Addr.clear(); //Zip code
+                    txtField06Addr.clear(); // Brgy
+                    txtField06Addr.setDisable(true);// Brgy
+
+                } else {
+                    System.err.println("oTransAddress is null or pnRow is invalid.");
+                }
+            }
+        }
+        );
+
+        txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Ensure oTransAddress and pnRow are not null
+            if (oTransAddress != null && pnRow >= 0) {
+                // Check if the new value is empty or null
+                if (newValue == null || newValue.isEmpty()) {
+                    oTransAddress.setAddress(pnRow, 6, ""); // brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); // brgy
+                }
+            } else {
+                System.err.println("oTransAddress is null or pnRow is invalid.");
             }
         });
 
-        txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty() || newValue == null) {
-                oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                oTransAddress.setAddress(pnRow, 22, ""); //brgy
-            }
-        });
     }
 
     private boolean settoClass() {
