@@ -33,7 +33,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class VehicleMakeEntryController implements Initializable, ScreenInterface {
 
@@ -100,9 +100,9 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     }
 
     private void initTextFieldPattern() {
-        Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        Pattern makePat;
+        makePat = Pattern.compile("[A-Za-z ]*");
+        txtField02.setTextFormatter(new InputTextFormatterUtil(makePat));
 
     }
 
@@ -162,44 +162,55 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson;
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
-                poJson = oTransMake.newRecord();
-                if ("success".equals((String) poJson.get("result"))) {
+                loJSON = oTransMake.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadMakeFields();
                     pnEditMode = oTransMake.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                poJson = oTransMake.updateRecord();
+                loJSON = oTransMake.updateRecord();
                 pnEditMode = oTransMake.getEditMode();
-                if ("error".equals((String) poJson.get("result"))) {
-                    ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Make Information Saving....", "Are you sure, do you want to save?")) {
-                    poJson = oTransMake.saveRecord();
-                    if ("success".equals((String) poJson.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) poJson.get("message"));
-                        poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
-                        if ("success".equals((String) poJson.get("result"))) {
+                    if (txtField02.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, "Vehicle Make Information", "Please enter valid make information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    if (txtField02.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, "Vehicle Make Information", "Please enter value make information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    loJSON = oTransMake.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadMakeFields();
                             initFields(pnEditMode);
                             pnEditMode = oTransMake.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
                         return;
                     }
                 }
                 break;
+
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
@@ -236,8 +247,8 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Make Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadMakeFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransMake.getEditMode();
@@ -253,8 +264,8 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Make Information", (String) poJSon.get("message"));
                     }
-                    poJson = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
-                    if ("success".equals((String) poJson.get("result"))) {
+                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadMakeFields();
                         initFields(pnEditMode);
                         pnEditMode = oTransMake.getEditMode();
