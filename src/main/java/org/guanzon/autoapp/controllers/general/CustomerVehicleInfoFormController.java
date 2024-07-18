@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -58,6 +59,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryContro
 import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
 import org.guanzon.autoapp.models.general.ModelVehicleOwnerHistory;
 import org.guanzon.autoapp.models.general.ModelVehicleWarehouseHistory;
+import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -157,6 +159,9 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         initButtons();
         clearFields();
         clearTables();
+        InputTextUtil.addTextLimiter(txtField15, 12);
+        InputTextUtil.addTextLimiter(txtField11, 10);
+        InputTextUtil.addTextLimiter(txtField13, 19);
         Platform.runLater(() -> {
             if (getParentTabTitle().contains("SALES")) {
                 pbisVhclSales = true;
@@ -195,18 +200,23 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     }
 
     private void initComboBoxValue() {
-        comboBox17.setItems(cIsVhclnew);
-        comboBox18.setItems(cSoldStats);
+        comboBox17.setItems(cSoldStats);
+        comboBox18.setItems(cIsVhclnew);
     }
 
     private void initTextFieldPattern() {
-
+        Pattern removeSymbols, withSpace;
+        removeSymbols = Pattern.compile("[A-Za-z0-9]*");
+        withSpace = Pattern.compile("[A-Za-z0-9 ]*");
+        txtField11.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //PlateNo
+        txtField12.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //CsNo
+        txtField15.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //keyno
+        txtField24.setTextFormatter(new InputTextFormatterUtil(withSpace)); //register
     }
 
     private void getDate(ActionEvent event) {
-        /*CLIENT INFORMATION*/
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            oTransVchInfo.setMaster(11, SQLUtil.toDate(datePicker26.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            oTransVchInfo.setMaster(22, SQLUtil.toDate(datePicker26.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
         }
     }
 
@@ -360,22 +370,20 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                     case "txtField24":
                         loJSON = oTransVchInfo.searchDealer(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField09.setText(oTransVchInfo.getModel().getModel().getDealerNm());
+                            txtField24.setText(oTransVchInfo.getModel().getModel().getDealerNm());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField09.setText("");
-                            txtField09.requestFocus();
                             return;
                         }
                         break;
                     case "txtField25":
                         loJSON = oTransVchInfo.searchRegsplace(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField10.setText(oTransVchInfo.getModel().getModel().getPlaceReg());
+                            txtField25.setText(oTransVchInfo.getModel().getModel().getPlaceReg());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField10.setText("");
-                            txtField10.requestFocus();
+                            txtField25.setText("");
+                            txtField25.requestFocus();
                             return;
                         }
                         break;
@@ -404,7 +412,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField11, txtField12, txtField13, txtField15, txtField14
+        List<TextField> loTxtField = Arrays.asList(txtField11, txtField12, txtField13, txtField15, txtField14, txtField24
         );
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
 
@@ -415,7 +423,6 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
-        JSONObject loJSON = new JSONObject();
         if (lsValue == null) {
             return;
         }
@@ -427,20 +434,6 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                     break;
                 case 13:/*Frame Number*/
                     oTransVchInfo.getModel().getModel().setFrameNo(lsValue);
-                    loJSON = oTransVchInfo.checkMakeFrameNo();
-                    if ("error".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        oTransVchInfo.getModel().getModel().setFrameNo("");
-                        txtField13.requestFocus();
-                        return;
-                    }
-                    loJSON = oTransVchInfo.checkModelFrameNo();
-                    if ("error".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        oTransVchInfo.getModel().getModel().setFrameNo("");
-                        txtField13.requestFocus();
-                        return;
-                    }
                     break;
                 case 15:/*Key Number*/
                     oTransVchInfo.getModel().getModel().setKeyNo(lsValue);
@@ -450,13 +443,9 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                     break;
                 case 14:/*Engine Number */
                     oTransVchInfo.getModel().getModel().setEngineNo(lsValue);
-                    loJSON = oTransVchInfo.checkEngineNo();
-                    if ("error".equals((String) loJSON.get("result"))) {
-                        oTransVchInfo.getModel().getModel().setEngineNo("");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField14.requestFocus();
-                        return;
-                    }
+                    break;
+                case 24:/*Dealer*/
+                    oTransVchInfo.getModel().getModel().setDealerNm(lsValue);
                     break;
             }
         } else {
@@ -483,18 +472,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         }
     };
 
-    //this function for selecting vehicle status depends on form title in adding vehicle information
-    private void initVehicleStatus() {
-        if (pnEditMode == EditMode.ADDNEW) {
-            if (pbisVhclSales) {
-                comboBox18.getSelectionModel().select(1);
-            } else {
-                comboBox18.getSelectionModel().select(0);
-            }
-        }
-    }
-
-    public static Date convertLocalDateToDate(LocalDate localDate) {
+    private static Date convertLocalDateToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
@@ -525,6 +503,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 oTransVchInfo.getModel().getModel().setOwnerNmx("");
                                 oTransVchInfo.getModel().getModel().setOwnerAdd("");
                                 textArea02.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -538,9 +517,10 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 oTransVchInfo.getModel().getModel().setCOwnerNm("");
                                 oTransVchInfo.getModel().getModel().setCOwnerAd("");
                                 textArea04.setText("");
-
+                                initFields(pnEditMode);
                             }
                         }
+
                     }
                 }
                 );
@@ -560,6 +540,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 txtField08.setText("");
                                 txtField09.setText("");
                                 txtField10.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -579,6 +560,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 txtField08.setText("");
                                 txtField09.setText("");
                                 txtField10.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -596,6 +578,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 txtField06.setText("");
                                 txtField08.setText("");
                                 txtField10.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -611,6 +594,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                                 oTransVchInfo.getModel().getModel().setColorID("");
                                 txtField08.setText("");
                                 txtField10.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -635,6 +619,21 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
                                 oTransVchInfo.getModel().getModel().setYearModl(0);
+                                initFields(pnEditMode);
+                            }
+                        }
+                    }
+                }
+                );
+        txtField11.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTransVchInfo.getModel().getModel().setPlaceReg("");
+                                datePicker26.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+                                txtField25.setText("");
+                                initFields(pnEditMode);
                             }
                         }
                     }
@@ -681,7 +680,14 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                 oTransVchInfo = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
                 loJson = oTransVchInfo.newRecord();
                 if ("success".equals((String) loJson.get("result"))) {
-                    initVehicleStatus();
+                    if (!pbisVhclSales) {
+                        comboBox17.getSelectionModel().select(0);
+                        oTransVchInfo.getModel().getModel().setIsDemo("0");
+                    } else {
+                        comboBox17.getSelectionModel().select(1);
+                        oTransVchInfo.getModel().getModel().setIsDemo("");
+                    }
+                    oTransVchInfo.getModel().getModel().setSoldStat(String.valueOf(comboBox17.getSelectionModel().getSelectedIndex()));
                     loadVehicleInformation();
                     txtField10.setText("");
                     pnEditMode = oTransVchInfo.getEditMode();
@@ -703,6 +709,11 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                             ShowMessageFX.Warning(null, "Warning", "Please select Vehicle Owner.");
                             return;
                         }
+                        if (txtField24.getText().matches("[^a-zA-Z0-9].*")) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid dealer name information.");
+                            txtField24.setText("");
+                            return;
+                        }
                     }
                 } else {
                     return;
@@ -717,8 +728,8 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                     loJson = oTransVchInfo.openRecord(oTransVchInfo.getModel().getModel().getSerialID());
                     if ("success".equals((String) loJson.get("result"))) {
                         loadVehicleInformation();
-                        loadWareHouseHistory();
-                        loadOwnerHistory();
+//                        loadWareHouseHistory();
+//                        loadOwnerHistory();
                         initFields(pnEditMode);
                         pnEditMode = oTransVchInfo.getEditMode();
                     }
@@ -743,11 +754,15 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                         return;
                     }
                 }
-                loJson = oTransVchInfo.searchRecord("", false);
+                if (pbisVhclSales) {
+                    loJson = oTransVchInfo.searchRecord("", false, true);
+                } else {
+                    loJson = oTransVchInfo.searchRecord("", false, false);
+                }
                 if ("success".equals((String) loJson.get("result"))) {
                     loadVehicleInformation();
-                    loadOwnerHistory();
-                    loadWareHouseHistory();
+//                    loadOwnerHistory();
+//                    loadWareHouseHistory();
                     pnEditMode = oTransVchInfo.getEditMode();
                     initFields(pnEditMode);
                 } else {
@@ -764,6 +779,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                 }
                 break;
             case "btnVhclDesc":
+                loadVehicleDescriptionWindow();
                 break;
             case "btnFrame":
             case "btnEngine":
@@ -802,7 +818,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pbisVhclSales) {
                 if (comboBox17.getSelectionModel().getSelectedIndex() < 0) {
-                    ShowMessageFX.Warning(null, "Vehicle Type", "Please select `Vehicle Category` value.");
+                    ShowMessageFX.Warning(null, "Vehicle Category", "Please select `Vehicle Category` value.");
                     return false;
                 } else {
                     oTransVchInfo.getModel().getModel().setSoldStat(String.valueOf((comboBox17.getSelectionModel().getSelectedIndex())));
@@ -857,11 +873,17 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             comboBox17.getSelectionModel().select(Integer.parseInt(oTransVchInfo.getModel().getModel().getSoldStat()));
         }
         if (oTransVchInfo.getModel().getModel().getVhclStat() != null && !oTransVchInfo.getModel().getModel().getVhclStat().trim().isEmpty()) {
-            comboBox18.getSelectionModel().select(Integer.parseInt(oTransVchInfo.getModel().getModel().getVhclStat()));
+//            comboBox18.getSelectionModel().select(Integer.parseInt(oTransVchInfo.getModel().getModel().getVhclStat()));
         }
-//        if (oTransVchInfo.getModel().getModel().getRegisterDte() != null && !oTransVchInfo.getModel().getModel().getRegisterDte().toString().isEmpty()) {
-////            datePicker26.setValue(InputTextUtil.strToDate(oTransVchInfo.getModel().getModel().getMaster(9)));
-//        }
+        // Your code
+        if (oTransVchInfo.getModel().getModel().getRegisterDte() != null && !oTransVchInfo.getModel().getModel().getRegisterDte().toString().isEmpty()) {
+            datePicker26.setValue(InputTextUtil.strToDate(oTransVchInfo.getMaster(22).toString()));
+        }
+
+    }
+
+    public static LocalDate dateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private void clearFields() {
@@ -923,10 +945,10 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         txtField08.setDisable(!(lbShow && !txtField06.getText().isEmpty()));
         txtField10.setDisable(!(lbShow && !txtField08.getText().isEmpty()));
         txtField11.setDisable(!lbShow);
-        txtField13.setDisable(!lbShow);
+        txtField13.setDisable(!(lbShow && !txtField05.getText().isEmpty()) && !(lbShow && !txtField07.getText().isEmpty()));
         txtField15.setDisable(!lbShow);
         txtField12.setDisable(!lbShow);
-        txtField14.setDisable(!lbShow);
+        txtField14.setDisable(!(lbShow && !txtField05.getText().isEmpty()) && !(lbShow && !txtField07.getText().isEmpty()));
         txtField16.setDisable(!lbShow);
 //        txtField20.setDisable(!lbShow);
 //        txtField19.setDisable(!lbShow);
@@ -934,7 +956,12 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
 //        txtField22.setDisable(!lbShow);
 //        txtField21.setDisable(!lbShow);
         txtField24.setDisable(!lbShow);
-        txtField25.setDisable(!lbShow);
+        txtField25.setDisable(!(lbShow && !txtField11.getText().isEmpty()));
+        textArea27.setDisable(!lbShow);
+        datePicker26.setDisable(!(lbShow && !txtField11.getText().isEmpty()));
+        btnFrame.setDisable(!(lbShow && !txtField05.getText().isEmpty()) && !(lbShow && !txtField07.getText().isEmpty()));
+        btnEngine.setDisable(!(lbShow && !txtField05.getText().isEmpty()) && !(lbShow && !txtField07.getText().isEmpty()));
+
         btnEdit.setVisible(false);
         btnEdit.setManaged(false);
 
@@ -949,8 +976,6 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         btnVhclAvl.setVisible(false);
         btnVhclMnl.setVisible(false);
         btnVhclDesc.setVisible(true);
-        btnEngine.setVisible(lbShow);
-        btnFrame.setVisible(lbShow);
         btnTransfer.setVisible(false);
         btnTransfer.setManaged(false);
 
