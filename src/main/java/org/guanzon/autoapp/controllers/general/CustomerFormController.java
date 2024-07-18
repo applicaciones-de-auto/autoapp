@@ -398,7 +398,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         }
     };
 
-    public static Date convertLocalDateToDate(LocalDate localDate) {
+    private static Date convertLocalDateToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
@@ -891,6 +891,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
                 txtField11.setValue(InputTextUtil.strToDate(oTrans.getMaster(11).toString()));
             }
+            System.out.println("date" + oTrans.getMaster(11).toString());
             txtField10.setText(oTrans.getModel().getModel().getCntryNme());
             txtField12.setText(oTrans.getModel().getModel().getTownName());
         } else {
