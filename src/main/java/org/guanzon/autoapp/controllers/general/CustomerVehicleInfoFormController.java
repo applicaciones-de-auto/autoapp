@@ -92,7 +92,9 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     @FXML
     private Label lblFormTitle;
     @FXML
-    private Button btnAdd, btnEdit, btnSave, btnCancel, btnBrowse, btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnVhclMnl, btnEngine, btnFrame, btnWareHouse;
+    private Button btnAdd;
+    @FXML
+    private Button btnEdit, btnSave, btnCancel, btnBrowse, btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnEngine, btnFrame, btnWareHouse;
     @FXML
     private VBox vboxSales;
     @FXML
@@ -665,7 +667,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnCancel, btnBrowse,
-                btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnVhclMnl, btnEngine, btnFrame, btnWareHouse);
+                btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnEngine, btnFrame, btnWareHouse);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -691,6 +693,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                     loadVehicleInformation();
                     txtField10.setText("");
                     pnEditMode = oTransVchInfo.getEditMode();
+                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJson.get("message"));
                 }
@@ -802,7 +805,13 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             case "btnWareHouse":
                 break;
             case "btnVhclAvl":
+                loJson = oTransVchInfo.searchAvailableVhcl();
+                if ("success".equals((String) loJson.get("result"))) {
+                } else {
+                    ShowMessageFX.Warning(null, "Search Available Vehicle Confirmation", (String) loJson.get("message"));
+                }
                 break;
+
             case "btnVhclMnl":
                 break;
             default:
@@ -964,17 +973,15 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
 
         btnEdit.setVisible(false);
         btnEdit.setManaged(false);
-
+        btnVhclAvl.setVisible(false);
         if (pnEditMode == EditMode.ADDNEW) {
             if (!pbisVhclSales) {
                 btnVhclAvl.setVisible(true);
-                btnVhclMnl.setVisible(true);
             } else {
                 comboBox17.setDisable(false);
             }
         }
-        btnVhclAvl.setVisible(false);
-        btnVhclMnl.setVisible(false);
+
         btnVhclDesc.setVisible(true);
         btnTransfer.setVisible(false);
         btnTransfer.setManaged(false);
@@ -985,10 +992,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         if (fnValue == EditMode.READY) {
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
-            if (!pbisVhclSales) {
-                btnTransfer.setVisible(true);
-                btnTransfer.setManaged(true);
-            }
+
         }
 
         if (pbisVhclSales) {
