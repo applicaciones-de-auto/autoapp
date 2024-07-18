@@ -252,7 +252,6 @@
                                                                                                 <Label id="LabelDesc" text="Engine Number" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                                                                 <TextField fx:id="txtField14" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                                                 <Button fx:id="btnEngine" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                                                <Button fx:id="btnVhclMnl" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Warehouse Location" GridPane.columnIndex="9" GridPane.rowIndex="5" />
                                                                                                 <TextField fx:id="txtField16" disable="true" editable="false" GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                                                 <Button fx:id="btnWareHouse" mnemonicParsing="false" text="..." GridPane.columnIndex="12" GridPane.rowIndex="5" />
