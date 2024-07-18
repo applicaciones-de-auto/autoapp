@@ -807,11 +807,11 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             case "btnVhclAvl":
                 loJson = oTransVchInfo.searchAvailableVhcl();
                 if ("success".equals((String) loJson.get("result"))) {
+                    loadVehicleInformation();
                 } else {
                     ShowMessageFX.Warning(null, "Search Available Vehicle Confirmation", (String) loJson.get("message"));
                 }
                 break;
-
             case "btnVhclMnl":
                 break;
             default:
