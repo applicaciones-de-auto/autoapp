@@ -43,8 +43,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -68,7 +67,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Auto Group Programmers
  */
 public class CustomerVehicleInfoFormController implements Initializable, ScreenInterface {
 
@@ -78,7 +77,6 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     private String pxeModuleName = ""; //Form Title
     private boolean pbisVhclSales = false;
     private int pnEditMode;
-    private boolean bBtnVhclAvl = false;
     private int pnRow = -1;
     private int lnCtr;
     private double xOffset = 0;
@@ -92,50 +90,54 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     @FXML
     private Label lblFormTitle;
     @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnEdit, btnSave, btnCancel, btnBrowse, btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnEngine, btnFrame, btnWareHouse;
-    @FXML
-    private VBox vboxSales;
-    @FXML
-    private AnchorPane anchorPurch;
-    @FXML
-    private GridPane gridPurch;
-    @FXML
-    private AnchorPane anchorSold;
-    @FXML
-    private GridPane gridSold;
-    @FXML
-    private AnchorPane anchorMisc;
-    @FXML
-    private GridPane gridMisc;
-    @FXML
-    private TextField txtField01, txtField03, txtField05, txtField07, txtField09, txtField06, txtField08, txtField10, txtField11, txtField15, txtField12, txtField14,
-            txtField16, txtField20, txtField19, txtField23, txtField22, txtField21, txtField24, txtField25, txtField13;
-    @FXML
-    private TextArea textArea02, textArea04;
-    @FXML
-    private ComboBox<String> comboBox18;
-    @FXML
-    private ComboBox<String> comboBox17;
-    @FXML
-    private DatePicker datePicker26;
-    @FXML
-    private TextArea textArea27;
-    @FXML
-    private TableView<ModelVehicleOwnerHistory> tblViewVhclOwnHsty;
-    @FXML
-    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty01, tblViewVhclOwnHsty02, tblViewVhclOwnHsty03, tblViewVhclOwnHsty04, tblViewVhclOwnHsty05;
-    @FXML
-    private TableView<ModelVehicleWarehouseHistory> tblViewVhclWrhHsty;
-    @FXML
-    private TableColumn<ModelVehicleWarehouseHistory, String> tblViewVhclWrhHsty01, tblViewVhclWrhHsty02, tblViewVhclWrhHsty03, tblViewVhclWrhHsty04, tblViewVhclWrhHsty05;
-    @FXML
     private Label lblSerailID;
     @FXML
     private Label lblSerailIDValue;
     @FXML
-    private Label lblVehicleStats;
+    private AnchorPane anchorPurch;
+    @FXML
+    private HBox vBoxPurchasedSold;
+    @FXML
+    private AnchorPane gridPurch;
+    @FXML
+    private AnchorPane gridSold;
+    @FXML
+    private AnchorPane anchorMisc;
+    @FXML
+    private AnchorPane gridMisc;
+    @FXML
+    private Button btnAdd, btnEdit, btnSave, btnCancel, btnBrowse, btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnLocation, btnFrame, btnEngine;
+    @FXML
+    private TextArea textArea02, textArea04, textArea27;
+    @FXML
+    private TextField txtField01, txtField03, txtField05, txtField07, txtField09, txtField06, txtField08, txtField10, txtField11, txtField15, txtField12, txtField14,
+            txtField16, txtField20, txtField19, txtField23, txtField22, txtField21, txtField24, txtField25, txtField13;
+    @FXML
+    private ComboBox<String> comboBox17, comboBox18;
+    @FXML
+    private DatePicker datePicker26;
+    @FXML
+    private TableView<ModelVehicleOwnerHistory> tblViewVhclOwnHsty;
+    @FXML
+    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty01;
+    @FXML
+    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty02;
+    @FXML
+    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty03;
+    @FXML
+    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty04;
+    @FXML
+    private TableColumn<ModelVehicleOwnerHistory, String> tblViewVhclOwnHsty05;
+    @FXML
+    private TableView<ModelVehicleWarehouseHistory> tblViewVhclWrhHsty;
+    @FXML
+    private TableColumn<ModelVehicleWarehouseHistory, String> tblViewVhclWrhHsty01;
+    @FXML
+    private TableColumn<ModelVehicleWarehouseHistory, String> tblViewVhclWrhHsty02;
+    @FXML
+    private TableColumn<ModelVehicleWarehouseHistory, String> tblViewVhclWrhHsty03;
+    @FXML
+    private TableColumn<ModelVehicleWarehouseHistory, String> tblViewVhclWrhHsty04, tblViewVhclWrhHsty05;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -667,7 +669,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnCancel, btnBrowse,
-                btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnEngine, btnFrame, btnWareHouse);
+                btnTransfer, btnClose, btnVhclAvl, btnVhclDesc, btnEngine, btnFrame);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -807,7 +809,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             case "btnVhclAvl":
                 loJson = oTransVchInfo.searchAvailableVhcl();
                 if ("success".equals((String) loJson.get("result"))) {
-                    loadVehicleInformation();
+                    loadAvailableVehicle();
                 } else {
                     ShowMessageFX.Warning(null, "Search Available Vehicle Confirmation", (String) loJson.get("message"));
                 }
@@ -835,6 +837,34 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             }
         }
         return true;
+    }
+
+    private void loadAvailableVehicle() {
+        txtField05.setText(oTransVchInfo.getModel().getModel().getMakeDesc());
+        txtField07.setText(oTransVchInfo.getModel().getModel().getModelDsc());
+        txtField09.setText(oTransVchInfo.getModel().getModel().getTypeDesc());
+        txtField06.setText(oTransVchInfo.getModel().getModel().getTransMsn());
+        txtField08.setText(oTransVchInfo.getModel().getModel().getColorDsc());
+        if (oTransVchInfo.getModel().getModel().getYearModl() == null) {
+            txtField10.setText("");
+        } else {
+            txtField10.setText(String.valueOf(oTransVchInfo.getModel().getModel().getYearModl()));
+        }
+        if (oTransVchInfo.getModel().getModel().getPlateNo() != null) {
+            txtField11.setText(oTransVchInfo.getModel().getModel().getPlateNo());
+        } else {
+            txtField11.setText("");
+        }
+
+        txtField13.setText(oTransVchInfo.getModel().getModel().getFrameNo());
+        txtField15.setText(oTransVchInfo.getModel().getModel().getKeyNo());
+        if (oTransVchInfo.getModel().getModel().getCSNo() != null) {
+            txtField12.setText(oTransVchInfo.getModel().getModel().getCSNo());
+        } else {
+            txtField12.setText("");
+        }
+        txtField14.setText(oTransVchInfo.getModel().getModel().getEngineNo());
+        txtField16.setText(oTransVchInfo.getModel().getModel().getLocation());
     }
 
     private void loadVehicleInformation() {
@@ -1004,8 +1034,8 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             anchorPurch.setManaged(true);
             gridPurch.setVisible(true);
             gridPurch.setManaged(true);
-            anchorSold.setVisible(true);
-            anchorSold.setManaged(true);
+            vBoxPurchasedSold.setVisible(true);
+            vBoxPurchasedSold.setManaged(true);
             gridSold.setVisible(true);
             gridSold.setManaged(true);
             txtField01.setDisable(true);
@@ -1019,12 +1049,11 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             anchorPurch.setManaged(false);
             gridPurch.setVisible(false);
             gridPurch.setManaged(false);
-            anchorSold.setVisible(false);
-            anchorSold.setManaged(false);
+            vBoxPurchasedSold.setVisible(false);
+            vBoxPurchasedSold.setManaged(false);
             gridSold.setVisible(false);
             gridSold.setManaged(false);
         }
-        lblVehicleStats.setVisible(true);
         comboBox18.setVisible(true);
         comboBox18.setManaged(true);
     }
