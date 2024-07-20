@@ -9,6 +9,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -46,6 +48,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -155,6 +158,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         initTextFieldPattern();
         dateFrom02.setOnAction(this::getDateFrom);
         dateTo03.setOnAction(this::getDateTo);
+        dateFrom02.setDayCellFactory(DateFrom);
         comboBox04.setItems(cType);
         initCapitalizationFields();
         initTextKeyPressed();
@@ -366,6 +370,15 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     };
 
     private void initCmboxFieldAction() {
+        dateFrom02.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    dateTo03.setDayCellFactory(DateTo);
+                    dateTo03.setValue(newValue.plusDays(1));
+                }
+            }
+        });
+
         comboBox04.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox04.getSelectionModel().getSelectedIndex() == 0) {
@@ -428,6 +441,27 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                 }
                 );
     }
+    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = InputTextUtil.strToDate(oApp.getServerDate().toString()).minusDays(7);
+            setDisable(fbEmpty || foItem.isBefore(minDate));
+        }
+    };
+    /**
+     * Callback for customizing the behavior and appearance of the date cells in
+     * the 'DateTo' DatePicker. The callback disables dates before the selected
+     * 'dateFrom' value.
+     */
+    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = dateFrom02.getValue();
+            setDisable(fbEmpty || foItem.isBefore(minDate));
+        }
+    };
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnPrint, btnActivityHistory, btnActCancel, btnClose, btnAddSource, btnActivityMembersSearch, btnActivityMemRemove,
@@ -461,7 +495,40 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 //                }
                     break;
                 case "btnSave":
-                    if (ShowMessageFX.YesNo(null, "Activity Information Saving....", "Are you sure, do you want to save?")) {
+                    LocalDate loDateFrom = dateFrom02.getValue();
+                    LocalDate loDateTo = dateTo03.getValue();
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to save?") == true) {
+                        if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a valid date.", "Warning", null);
+                            return;
+                        }
+                        if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a valid date.", "Warning", null);
+                            return;
+                        }
+                        if (comboBox04.getSelectionModel().isEmpty()) {
+                            ShowMessageFX.Warning(getStage(), "Please choose a value for Active Type", "Warning", null);
+                            return;
+                        }
+                        if (tblViewCity.getItems().size() == 1) {
+                            if (textArea08.getText().isEmpty()) {
+                                ShowMessageFX.Warning(getStage(), "Please enter a value for Street/Barangay", "Warning", null);
+                                textArea08.requestFocus();
+                                return;
+                            }
+                        }
+                        if (!txtField28.getText().trim().equals("")) {
+                            if (tblViewCity.getItems().size() <= 0) {
+                                ShowMessageFX.Warning(getStage(), "Please add Town/City.", "Warning", null);
+                                return;
+                            }
+                        }
+                        if (textArea09.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Establishment.", "Warning", null);
+                            textArea09.requestFocus();
+                            return;
+                        }
+                        if (ShowMessageFX.YesNo(null, "Activity Information Saving....", "Are you sure, do you want to save?")) {
 //                    if (setSelection()) {
 //                        loJson = oTransActivity.saveRecord();
 //                        if ("success".equals((String) loJson.get("result"))) {
@@ -478,9 +545,11 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 //                            return;
 //                        }
 //                    }
-                    }
-                    break;
-                case "btnCancel":
+                        }
+                        break;
+
+
+                    case "btnCancel":
 //                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
 //                    clearFields();
 //                    clearTables();
@@ -531,10 +600,24 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     break;
             }
             initFields(pnEditMode);
-        } catch (IOException ex) {
+            }catch (IOException ex) {
             Logger.getLogger(ActivityFormController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void loadActivityInformation() {
 //        if (oTransActivity.getModel().getModel().getActID != null) {
