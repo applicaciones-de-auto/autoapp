@@ -15,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -48,7 +47,9 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
     @FXML
     private TableColumn<ModelActivityMember, String> tblDprtmntndex01;
     @FXML
-    private TableColumn<ModelActivityMember, String> tblEmplyIndex01, tblEmplyIndex02, tblEmplyIndex03;
+    private TableColumn<ModelActivityMember, String> tblEmplyIndex01, tblEmplyIndex03;
+    @FXML
+    private TableColumn<ModelActivityMember, Boolean> tblEmplyIndex02;
     @FXML
     private CheckBox selectAllEmployee;
 //       public void setObject(Activity foValue) {
@@ -65,8 +66,8 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::cmdButton_Click);
-        btnAdd.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAdd.setOnAction(this::handleButtonAction);
         loadDepartTable();
         initDepartTable();
         initEmployeeTable();
@@ -79,7 +80,7 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
         });
     }
 
-    private void cmdButton_Click(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
@@ -115,10 +116,14 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
 //                            break;
 //                        }
 //                    }
-                    if (!isEmpExist) {
-                        addedCount++;
-//                        oTransActMembers.addMember(lsEmployID, lsEmpName, lsDept);
-                    }
+//                    if (!isEmpExist) {
+//                        loJSON = oTransActMembers.addMember(lsEmployID, lsEmpName, lsDept);
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            addedCount++;
+//                        } else {
+//                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                        }
+//                    }
                 }
                 if (addedCount > 0) {
                     ShowMessageFX.Information(null, pxeModuleName, "Added Employee successfully.");
