@@ -108,19 +108,25 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     @FXML
     private TableView<ModelActivityTown> tblViewCity;
     @FXML
-    private TableColumn<ModelActivityTown, String> tblCityIndex01, tblCityIndex02, tblCityIndex03;
+    private TableColumn<ModelActivityTown, String> tblCityIndex01, tblCityIndex03;
+    @FXML
+    private TableColumn<ModelActivityTown, Boolean> tblCityIndex02;
     @FXML
     private CheckBox selectAllCity;
     @FXML
     private TableView<ModelActivityMember> tblViewActivityMembers;
     @FXML
-    private TableColumn<ModelActivityMember, String> tblMembersIndex01, tblMembersIndex02, tblMembersIndex03, tblMembersIndex04;
+    private TableColumn<ModelActivityMember, String> tblMembersIndex01, tblMembersIndex03, tblMembersIndex04;
+    @FXML
+    private TableColumn<ModelActivityMember, Boolean> tblMembersIndex02;
     @FXML
     private CheckBox selectAllCheckBoxEmployee;
     @FXML
     private TableView<ModelActivityVehicle> tblViewVhclModels;
     @FXML
-    private TableColumn<ModelActivityVehicle, String> tblVhclIndex01, tblVhclIndex02, tblVhclIndex03;
+    private TableColumn<ModelActivityVehicle, String> tblVhclIndex01, tblVhclIndex03;
+    @FXML
+    private TableColumn<ModelActivityVehicle, Boolean> tblVhclIndex02;
     @FXML
     private CheckBox selectAllVchlMode;
     @FXML
@@ -143,48 +149,23 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         // Initialize the Client_Master transaction
 ////        oTransActivityActivity = new Activity(oApp, false, oApp.getBranchCode());
 ////
-////        initTownTable();
-////        initMembersTable();
-////        initActivityVehicleTable();
-//        initTableProperties();
-//        initTextFieldPattern();
-//        dateFrom02.setOnAction(this::getDateFrom);
-//        dateTo03.setOnAction(this::getDateTo);
-//        comboBox04.setItems(cType);
-//        initCapitalizationFields();
-//        initTextKeyPressed();
-//        initTextFieldFocus();
-//        initCmboxFieldAction();
-//        initButtons();
-//        clearFields();
-//        clearTables();
-//        InputTextUtil.addTextLimiter(txtField14, 4);
+        initTownTable();
+        initActMembersTable();
+        initActivityVehicleTable();
+        initTextFieldPattern();
+        dateFrom02.setOnAction(this::getDateFrom);
+        dateTo03.setOnAction(this::getDateTo);
+        comboBox04.setItems(cType);
+        initCapitalizationFields();
+        initTextKeyPressed();
+        initTextFieldFocus();
+        initCmboxFieldAction();
+        initButtons();
+        clearFields();
+        clearTables();
+        InputTextUtil.addTextLimiter(txtField14, 4);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
-    }
-
-    private void initTableProperties() {
-        tblViewVhclModels.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewVhclModels.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        tblViewCity.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewCity.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
     }
 
     private void initTextFieldPattern() {
@@ -613,7 +594,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             Stage stage = new Stage();
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("ActivityPrint.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/ActivityPrint.fxml"));
 
             ActivityPrintController loControl = new ActivityPrintController();
 //            loControl.setGRider(oApp);
@@ -761,6 +742,12 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         }
         );
         tblCityIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexCity03"));
+        tblViewCity.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewCity.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     //Activity Members Entry Dialog
@@ -843,6 +830,12 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         });
         tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem04"));
         tblMembersIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
+        tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     //Activity Vehicle Entry Dialog
@@ -923,6 +916,12 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         }
         );
         tblVhclIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexVchl03"));
+        tblViewVhclModels.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewVhclModels.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     private void clearTables() {
