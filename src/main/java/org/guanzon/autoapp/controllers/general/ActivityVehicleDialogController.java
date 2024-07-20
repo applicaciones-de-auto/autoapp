@@ -44,7 +44,9 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
     @FXML
     private TableView<ModelActivityVehicle> tblViewActVchl;
     @FXML
-    private TableColumn<ModelActivityVehicle, String> tblindex01, tblindex02, tblindex03;
+    private TableColumn<ModelActivityVehicle, String> tblindex01, tblindex03;
+    @FXML
+    private TableColumn<ModelActivityVehicle, Boolean> tblindex02;
     @FXML
     private CheckBox selectAllCheckBox;
 
@@ -62,14 +64,14 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        btnClose.setOnAction(this::cmdButton_Click);
-        btnAdd.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAdd.setOnAction(this::handleButtonAction);
         initVehicleTable();
         loadActVhclModelTable();
 
     }
 
-    private void cmdButton_Click(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
@@ -103,8 +105,13 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
 //                        }
 //                    }
 //                    if (!isVhclExist) {
-//                        addedCount++;
-//                        oTransActVehicle.addActVehicle(lsSerialID, lsDescript, lsCSNoxxxx);
+//                        loJSON = oTransActVehicle.addActVehicle(lsSerialID, lsDescript, lsCSNoxxxx);
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            addedCount++;
+//                        } else {
+//                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                        }
+//                    }
 //                    }
 //                }
                 if (addedCount > 0) {
