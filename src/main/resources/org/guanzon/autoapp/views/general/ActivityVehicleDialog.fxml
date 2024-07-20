@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="282.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="282.0" prefWidth="370.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -55,7 +55,6 @@
                                         <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                     </graphic>
                                 </Button>
-                                <Label fx:id="SelectedCount" prefHeight="50.0" prefWidth="42.0" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="5.0" />
                             </children>
                         </AnchorPane>
                     </bottom>
