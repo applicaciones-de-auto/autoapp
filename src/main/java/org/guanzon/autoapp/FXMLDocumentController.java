@@ -52,15 +52,11 @@ import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
+import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
@@ -387,7 +383,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void triggerMenu(String sFormName) {
         switch (sFormName) {
             /*DIRECTORY*/
-            case "Activity":
+            case "Activity Information":
                 mnuActivity.fire();
                 break;
             case "Activity Approval":
@@ -601,12 +597,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "FXMLMainScreen.fxml":
                 return new FXMLMainScreenController();
 //            /*DIRECTORY*/
-//            case "ActivityForm.fxml":
-//                return new ActivityFormController();
+            case psGeneralPath + "ActivityForm.fxml":
+                return new ActivityFormController();
 //            case "ActivityApproval.fxml":
 //                return new ActivityApprovalController();
-//            case "ActivityTypeAddSource.fxml":
-//                return new ActivityTypeAddSourceController();
+            case "ActivitySourceTypeEntry.fxml":
+                return new ActivitySourceTypeEntryController();
             case psGeneralPath + "CustomerForm.fxml":
                 return new CustomerFormController();
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
@@ -694,12 +690,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         switch (menuaction) {
             /*DIRECTORY*/
             case psGeneralPath + "ActivityForm.fxml":
-                return "Activity";
+                return "Activity Information";
             case psGeneralPath + "ActivityApproval.fxml":
                 return "Activity Approval";
             case psGeneralPath + "CustomerForm.fxml":
                 return "Customer";
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
+//                if (sVehicleInfoType.isEmpty()) {
+//                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
+//                    return null;
+//                }
+                return sVehicleInfoType;
+            case psGeneralPath + "VehicleInformation.fxml":
 //                if (sVehicleInfoType.isEmpty()) {
 //                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
 //                    return null;
@@ -1070,7 +1072,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*ACTIVITY*/
     @FXML
     private void mnuActivityClick(ActionEvent event) {
-        String sformname = "ActivityForm.fxml";
+        String sformname = psGeneralPath + "ActivityForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1088,7 +1090,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuActivityTypeClick(ActionEvent event) {
-        String sformname = "ActivityTypeAddSource.fxml";
+        String sformname = "ActivitySourceTypeEntry.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
 
     }
