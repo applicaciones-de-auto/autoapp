@@ -70,14 +70,14 @@ public class ActivityTownCityMainEntryDialogController implements Initializable,
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::cmdButton_Click);
-        btnAddTown.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAddTown.setOnAction(this::handleButtonAction);
         initTownTable();
         loadTownTable();
 
     }
 
-    private void cmdButton_Click(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
@@ -115,7 +115,12 @@ public class ActivityTownCityMainEntryDialogController implements Initializable,
 //                    }
                     if (!isTownExist) {
                         addedCount++;
-//                        oTransActTown.addActTown(townId, townName);
+//                        loJSON = addActTown.addMember(townId, townName);
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            addedCount++;
+//                        } else {
+//                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                        }
                     }
                 }
 
