@@ -54,7 +54,6 @@
                                         <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                     </graphic>
                                 </Button>
-                                <Label fx:id="SelectedCount" prefHeight="50.0" prefWidth="42.0" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="5.0" />
                             </children>
                         </AnchorPane>
                     </bottom>
