@@ -143,9 +143,9 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         // Initialize the Client_Master transaction
 ////        oTransActivityActivity = new Activity(oApp, false, oApp.getBranchCode());
 ////
-////        initTown();
-////        initMembers();
-////        initActivity();
+////        initTownTable();
+////        initMembersTable();
+////        initActivityVehicleTable();
 //        initTableProperties();
 //        initTextFieldPattern();
 //        dateFrom02.setOnAction(this::getDateFrom);
@@ -696,10 +696,10 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/ActivityTownCityMainEntryDialog.fxml"));
 
             ActivityTownCityMainEntryDialogController loControl = new ActivityTownCityMainEntryDialogController();
-//            loControl.setGRider(oApp);
+            loControl.setGRider(oApp);
 //            loControl.setObject(oTransActivity);
 //            loControl.setProv(oTransActivity.getModel().getModel().getProvNm());
-//            fxmlLoader.setController(loControl);
+            fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
 
@@ -762,8 +762,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         );
         tblCityIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexCity03"));
     }
-//Activity Members Entry Dialog
 
+    //Activity Members Entry Dialog
     private void loadActivityMemberDialog() throws IOException {
         /**
          * if state = true : ADD else if state = false : UPDATE *
