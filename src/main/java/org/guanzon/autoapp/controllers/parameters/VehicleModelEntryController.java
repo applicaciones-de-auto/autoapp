@@ -460,5 +460,8 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                 btnActive.setManaged(true);
             }
         }
+        if (fnValue == EditMode.UPDATE) {
+            txtField02.setDisable(true);
+        }
     }
 }
