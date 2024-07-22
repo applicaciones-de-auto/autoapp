@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -198,8 +199,15 @@
                                                                                                             <graphic>
                                                                                                                 <FontAwesomeIconView glyphName="CAR" />
                                                                                                             </graphic>
+                                                                                                            <tooltip>
+                                                                                                                <Tooltip text="Vehicle Available Button" />
+                                                                                                            </tooltip>
                                                                                                         </Button>
-                                                                                                        <Button fx:id="btnVhclDesc" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                                        <Button fx:id="btnVhclDesc" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                                                            <tooltip>
+                                                                                                                <Tooltip text="Vehicle Description Button" />
+                                                                                                            </tooltip>
+                                                                                                        </Button>
                                                                                                         <TextField fx:id="txtField05" promptText="Search F3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                                                         <TextField fx:id="txtField07" promptText="Search F3" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                                                                         <TextField fx:id="txtField09" promptText="Search F3" GridPane.columnIndex="10" GridPane.rowIndex="1" />
@@ -248,9 +256,21 @@
                                                                                                         <TextField fx:id="txtField14" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                                                         <Label id="LabelDesc" text="Warehouse Location" GridPane.columnIndex="9" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField16" disable="true" editable="false" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-                                                                                                        <Button fx:id="btnLocation" mnemonicParsing="false" text="..." GridPane.columnIndex="12" GridPane.rowIndex="5" />
-                                                                                                        <Button fx:id="btnEngine" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                                                        <Button fx:id="btnFrame" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                                                        <Button fx:id="btnLocation" mnemonicParsing="false" text="..." GridPane.columnIndex="12" GridPane.rowIndex="5">
+                                                                                                            <tooltip>
+                                                                                                                <Tooltip text="Vehicle Warehouse Location Button" />
+                                                                                                            </tooltip>
+                                                                                                        </Button>
+                                                                                                        <Button fx:id="btnEngine" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="8" GridPane.rowIndex="5">
+                                                                                                            <tooltip>
+                                                                                                                <Tooltip text="Vehicle Engine Button" />
+                                                                                                            </tooltip>
+                                                                                                        </Button>
+                                                                                                        <Button fx:id="btnFrame" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="..." GridPane.columnIndex="8" GridPane.rowIndex="4">
+                                                                                                            <tooltip>
+                                                                                                                <Tooltip text="Vehicle Frame Button" />
+                                                                                                            </tooltip>
+                                                                                                        </Button>
                                                                                                     </children>
                                                                                                 </GridPane>
                                                                                                 <AnchorPane fx:id="anchorPurch" prefHeight="17.0" style="-fx-background-color: #FACEA1;">
