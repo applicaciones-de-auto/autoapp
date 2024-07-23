@@ -240,6 +240,9 @@ public class ActivitySourceTypeEntryController implements Initializable, ScreenI
                         txtField03.setText("");
                         return;
                     }
+                    if (!setSelection()) {
+                        return;
+                    }
                     loJSON = oTransActivity.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Activity Source Information", (String) loJSON.get("message"));
@@ -323,6 +326,29 @@ public class ActivitySourceTypeEntryController implements Initializable, ScreenI
                 break;
         }
         initFields(pnEditMode);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
+                return false;
+            } else {
+                switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
+                    case "eve":
+                        comboBox02.setValue("EVENT");
+                        break;
+                    case "sal":
+                        comboBox02.setValue("SALES CALL");
+                        break;
+                    case "pro":
+                        comboBox02.setValue("PROMO");
+                        break;
+                }
+            }
+        }
+        return true;
     }
 
     private void clearFields() {
