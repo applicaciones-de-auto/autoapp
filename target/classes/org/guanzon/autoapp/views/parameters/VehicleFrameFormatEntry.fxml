@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="280.0" prefWidth="525.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="280.0" prefWidth="525.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -29,7 +29,7 @@
                     <top>
                         <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" prefHeight="17.0" text="Vehicle Format Entry Form" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                <Label alignment="CENTER" prefHeight="17.0" text="Vehicle Frame Format" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                     <font>
                                         <Font name="Arial Bold" size="12.0" />
                                     </font>
@@ -58,7 +58,7 @@
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Label id="LabelDesc" text="Format Type" GridPane.columnIndex="1" />
+                                                        <Label id="LabelDesc" text="Frame Format Type" GridPane.columnIndex="1" />
                                                         <ComboBox fx:id="comboBox01" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="2" />
                                                     </children>
                                                 </GridPane>

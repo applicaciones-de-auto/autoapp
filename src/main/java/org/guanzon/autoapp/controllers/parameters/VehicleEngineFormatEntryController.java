@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -39,7 +40,12 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     private GRider oApp;
     private Vehicle_ModelEnginePattern oTransEngineFormat;
     private final String pxeModuleName = "Vehicle Engine Format";
+    private String psMakeID, psMakeDesc;
+    private String psModelID, psModelDesc;
     private int pnEditMode;
+    private boolean pbOpenEvent = false;
+    private boolean pbState;
+    private int pnEditModeValue;
     @FXML
     private Button btnAdd;
     @FXML
@@ -61,12 +67,62 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
     @FXML
     private TextField txtField04;
 
+    public String setMakeID(String fsValue) {
+        psMakeID = fsValue;
+        return psMakeID;
+    }
+
+    public String setMakeDesc(String fsValue) {
+        psMakeDesc = fsValue;
+        return psMakeDesc;
+    }
+
+    public String setModelID(String fsValue) {
+        psModelID = fsValue;
+        return psModelID;
+    }
+
+    public String setModelDesc(String fsValue) {
+        psModelDesc = fsValue;
+        return psModelDesc;
+    }
+
+    public Boolean setOpenEvent(Boolean fbValue) {
+        pbOpenEvent = fbValue;
+        return pbOpenEvent;
+    }
+
+    public Boolean setState(Boolean fbState) {
+        pbState = fbState;
+        return pbState;
+    }
+
+    private Stage getStage() {
+        return (Stage) txtField02.getScene().getWindow();
+    }
+
+    @Override
+    public void setGRider(GRider foValue) {
+        oApp = foValue;
+    }
+
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+
+    public void initialize(URL url, ResourceBundle rb
+    ) {
         oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
+        if (pbOpenEvent) {
+            txtField01.setText(psMakeDesc);
+            txtField02.setText(psModelDesc);
+        }
+        Platform.runLater(() -> {
+            if (pbOpenEvent) {
+                btnAdd.fire();
+            }
+        });
         initTextFieldPattern();
         initCapitalizationFields();
         initTextKeyPressed();
@@ -90,15 +146,7 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
         InputTextUtil.addTextLimiter(txtField03, 3);
         InputTextUtil.addTextLimiter(txtField04, 4);
         initFields(pnEditMode);
-    }
 
-    @Override
-    public void setGRider(GRider foValue) {
-        oApp = foValue;
-    }
-
-    private Stage getStage() {
-        return (Stage) txtField02.getScene().getWindow();
     }
 
     private void loadEngineFormatFields() {
@@ -223,6 +271,12 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
                 oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
                 loJSON = oTransEngineFormat.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
+                    if (pbOpenEvent) {
+                        oTransEngineFormat.getModel().getModel().setMakeID(psMakeID);
+                        oTransEngineFormat.getModel().getModel().setMakeDesc(psMakeDesc);
+                        oTransEngineFormat.getModel().getModel().setModelID(psModelID);
+                        oTransEngineFormat.getModel().getModel().setModelDsc(psModelDesc);
+                    }
                     loadEngineFormatFields();
                     pnEditMode = oTransEngineFormat.getEditMode();
                 } else {
