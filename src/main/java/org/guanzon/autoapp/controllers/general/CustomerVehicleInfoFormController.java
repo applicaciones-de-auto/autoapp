@@ -1249,7 +1249,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         tblViewVhclWrhHsty05.setCellValueFactory(new PropertyValueFactory<>("tblViewVhclWrhHsty05"));
 
         tblViewVhclWrhHsty.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewVhclOwnHsty.lookup("TableHeaderRow");
+            TableHeaderRow header = (TableHeaderRow) tblViewVhclWrhHsty.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
