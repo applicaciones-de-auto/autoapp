@@ -45,8 +45,11 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
     private Vehicle_ModelFramePattern oTransModelFrameFormat;
     private Vehicle_MakeFramePattern oTransMakeFrameFormat;
     private final String pxeModuleName = "Vehicle Frame Format";
-    ObservableList<String> cFormtType = FXCollections.observableArrayList("MODEL FORMAT", "MAKE FORMAT");
+    private String psMakeID, psMakeDesc;
+    private String psModelID, psModelDesc;
     private int pnEditMode;
+    private boolean pbOpenEvent = false;
+    ObservableList<String> cFormtType = FXCollections.observableArrayList("MODEL FORMAT", "MAKE FORMAT");
     @FXML
     private Button btnAdd;
     @FXML
@@ -70,11 +73,46 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
     @FXML
     private TextField txtField05;
 
+    public String setMakeID(String fsValue) {
+        psMakeID = fsValue;
+        return psMakeID;
+    }
+
+    public String setMakeDesc(String fsValue) {
+        psMakeDesc = fsValue;
+        return psMakeDesc;
+    }
+
+    public String setModelID(String fsValue) {
+        psModelID = fsValue;
+        return psModelID;
+    }
+
+    public String setModelDesc(String fsValue) {
+        psModelDesc = fsValue;
+        return psModelDesc;
+    }
+
+    public Boolean setOpenEvent(Boolean fbValue) {
+        pbOpenEvent = fbValue;
+        return pbOpenEvent;
+    }
+
+    private Stage getStage() {
+        return (Stage) txtField02.getScene().getWindow();
+    }
+
+    @Override
+    public void setGRider(GRider foValue) {
+        oApp = foValue;
+    }
+
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb
+    ) {
         oTransModelFrameFormat = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
         oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
         initTextFieldPattern();
@@ -127,16 +165,6 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
         pnEditMode = EditMode.UNKNOWN;
 
         initFields(pnEditMode);
-    }
-
-    @Override
-    public void setGRider(GRider foValue
-    ) {
-        oApp = foValue;
-    }
-
-    private Stage getStage() {
-        return (Stage) txtField02.getScene().getWindow();
     }
 
     private void loadFrameFormatFields() {
@@ -293,6 +321,12 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                         oTransModelFrameFormat = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
                         poJson = oTransModelFrameFormat.newRecord();
                         if ("success".equals((String) poJson.get("result"))) {
+                            if (pbOpenEvent) {
+                                oTransModelFrameFormat.getModel().getModel().setMakeID(psMakeID);
+                                oTransModelFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
+                                oTransModelFrameFormat.getModel().getModel().setModelID(psModelID);
+                                oTransModelFrameFormat.getModel().getModel().setModelDsc(psModelDesc);
+                            }
                             loadFrameFormatFields();
                             pnEditMode = oTransModelFrameFormat.getEditMode();
                         } else {
@@ -302,6 +336,10 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                         oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
                         poJson = oTransMakeFrameFormat.newRecord();
                         if ("success".equals((String) poJson.get("result"))) {
+                            if (pbOpenEvent) {
+                                oTransMakeFrameFormat.getModel().getModel().setMakeID(psMakeID);
+                                oTransMakeFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
+                            }
                             loadFrameFormatFields();
                             pnEditMode = oTransMakeFrameFormat.getEditMode();
                         } else {

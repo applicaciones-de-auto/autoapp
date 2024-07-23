@@ -8,6 +8,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -29,7 +30,7 @@
                     <top>
                         <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" prefHeight="17.0" text="Vehicle Description Entry Form" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                <Label alignment="CENTER" prefHeight="17.0" text="Vehicle Description" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                     <font>
                                         <Font name="Arial Bold" size="12.0" />
                                     </font>
@@ -84,10 +85,26 @@
                                                 <Label id="LabelDesc" text="Year Model" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                 <Label id="LabelDesc" text="Transmission" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                 <Label id="LabelDesc" text="Model Size" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                                <Button fx:id="btnMake" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                <Button fx:id="btnModel" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                <Button fx:id="btnType" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                <Button fx:id="btnColor" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                <Button fx:id="btnMake" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                                                    <tooltip>
+                                                        <Tooltip text="Vehicle Make Button" />
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="btnModel" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                                                    <tooltip>
+                                                        <Tooltip text="Vehicle Model Button" />
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="btnType" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                                                    <tooltip>
+                                                        <Tooltip text="Vehicle Type Button" />
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="btnColor" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="5">
+                                                    <tooltip>
+                                                        <Tooltip text="Vehicle Color Button" />
+                                                    </tooltip>
+                                                </Button>
                                             </children>
                                         </GridPane>
                                     </children>

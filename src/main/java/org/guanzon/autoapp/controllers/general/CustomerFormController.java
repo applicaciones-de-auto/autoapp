@@ -398,7 +398,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         }
     };
 
-    public static Date convertLocalDateToDate(LocalDate localDate) {
+    private static Date convertLocalDateToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
