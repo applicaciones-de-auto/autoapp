@@ -40,7 +40,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.models.general.ModelActivityInformation;
 import org.guanzon.autoapp.models.general.ModelActivityMember;
-import org.guanzon.autoapp.models.general.ModelActivityTown;
+import org.guanzon.autoapp.models.general.ModelActivityLocation;
 import org.guanzon.autoapp.models.general.ModelActivityVehicle;
 import org.guanzon.autoapp.utils.ScreenInterface;
 
@@ -58,7 +58,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private final String pxeModuleName = "ActivityPrint";
     private ObservableList<ModelActivityInformation> actMasterData = FXCollections.observableArrayList();
     private List<ModelActivityMember> actMembersData = new ArrayList<ModelActivityMember>();
-    private List<ModelActivityTown> townCitydata = new ArrayList<ModelActivityTown>();
+    private List<ModelActivityLocation> townCitydata = new ArrayList<ModelActivityLocation>();
     private List<ModelActivityVehicle> actVhclModelData = new ArrayList<ModelActivityVehicle>();
     private String psTransNox;
     private boolean running = false;
@@ -257,7 +257,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
 //                    lsTown = lsTown + " , " + oTransAct.getActTown(lnCtr, "sTownName").toString();
 //                }
 //            }
-//            townCitydata.add(new ModelActivityTown(
+//            townCitydata.add(new ModelActivityLocation(
 //                    "", //ROW
 //                    "",
 //                    lsTown.toUpperCase()
