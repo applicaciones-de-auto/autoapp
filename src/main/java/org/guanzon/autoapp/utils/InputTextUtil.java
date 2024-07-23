@@ -6,11 +6,10 @@ package org.guanzon.autoapp.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.function.UnaryOperator;
+import java.time.format.DateTimeParseException;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 
 /**
  *
@@ -20,9 +19,8 @@ public class InputTextUtil {
 
     /*Convert Date to String*/
     public static LocalDate strToDate(String val) {
-        DateTimeFormatter date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(val, date_formatter);
-        return localDate;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(val, dateFormatter);
     }
 
     public static void setCapsLockBehavior(TextField textField) {
