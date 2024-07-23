@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.models.general.ModelActivityMember;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -34,7 +35,7 @@ import org.json.simple.JSONObject;
 public class ActivityMemberEntryDialogController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-//    private Activity oTransActMembers;
+    private Activity oTransActMembers;
     private final String pxeModuleName = "Activity Member Entry"; //Form Title
     private ObservableList<ModelActivityMember> employeeData = FXCollections.observableArrayList();
     private ObservableList<ModelActivityMember> departData = FXCollections.observableArrayList();
@@ -52,9 +53,10 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
     private TableColumn<ModelActivityMember, Boolean> tblEmplyIndex02;
     @FXML
     private CheckBox selectAllEmployee;
-//       public void setObject(Activity foValue) {
-//        oTransActMembers = foValue;
-//    }
+
+    public void setObject(Activity foValue) {
+        oTransActMembers = foValue;
+    }
 
     @Override
     public void setGRider(GRider foValue) {
@@ -104,26 +106,25 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                 }
                 int addedCount = 0;
                 for (ModelActivityMember item : selectedItems) {
+                    int fnRow = Integer.parseInt(item.getTblindexMem01());
                     String lsEmployID = item.getTblindexMem04();
                     String lsEmpName = item.getTblindexMem05();
                     String lsDept = item.getTblindexMem03();
                     boolean isEmpExist = false;
-//                    for (int lnCtr = 0; lnCtr <= oTransActMembers.getActMemberList().size() - 1; lnCtr++) {
-//                        if (oTransActMembers.getActMember(lnCtr, "sCompnyNm").toString().equals(lsEmployID)
-//                                && oTransActMembers.getActMember(lnCtr, "cOriginal").toString().equals("1")) {
-//                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Employee, " + lsEmpName + " already exist.");
-//                            isEmpExist = true;
-//                            break;
-//                        }
-//                    }
-//                    if (!isEmpExist) {
-//                        loJSON = oTransActMembers.addMember(lsEmployID, lsEmpName, lsDept);
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            addedCount++;
-//                        } else {
-//                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-//                        }
-//                    }
+                    for (int lnCtr = 0; lnCtr <= oTransActMembers.getActMemberList().size() - 1; lnCtr++) {
+                        if (oTransActMembers.getActMember(lnCtr, "sCompnyNm").toString().equals(lsEmployID)
+                                && oTransActMembers.getActMember(lnCtr, "cOriginal").toString().equals("1")) {
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Employee, " + lsEmpName + " already exist.");
+                            isEmpExist = true;
+                            break;
+                        }
+                    }
+                    if (!isEmpExist) {
+                        oTransActMembers.setActMember(fnRow, "sEmployID", lsEmployID);
+                        oTransActMembers.setActMember(fnRow, "sCompnyNm", lsEmpName);
+                        oTransActMembers.setActMember(fnRow, "sDeptName", lsDept);
+                        addedCount++;
+                    }
                 }
                 if (addedCount > 0) {
                     ShowMessageFX.Information(null, pxeModuleName, "Added Employee successfully.");
@@ -138,21 +139,21 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
     //storing values on bankentrydata
     private void loadEmployeeTable(String departmentID) {
         employeeData.clear();
-        String fsValue = departmentID;
-        boolean fbLoadEmp = true;
-//        if (oTransActMembers.loadEmployee(fsValue, fbLoadEmp)) {
-//            for (int lnCtr = 0; lnCtr <= oTransActMembers.getEmpList().size() - 1; lnCtr++) {
-//                employeeData.add(new ModelActivityMember(
-//                        String.valueOf(lnCtr + 1), // ROW
-//                        oTransActMembers.getEmployee(lnCtr, "sDeptName").toString(),
-//                        oTransActMembers.getEmployee(lnCtr, "sDeptIDxx").toString(),
-//                        oTransActMembers.getEmployee(lnCtr, "sCompnyNm").toString(),
-//                        oTransActMembers.getEmployee(lnCtr, "sEmployID").toString()
-//                ));
-//            }
-//            tblViewEmployee.setItems(employeeData);
-//            initEmployeeTable();
-//        }
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActMembers.loadEmployee(departmentID);
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTransActMembers.getEmployeeList().size() - 1; lnCtr++) {
+                employeeData.add(new ModelActivityMember(
+                        String.valueOf(lnCtr + 1), // ROW
+                        "",
+                        "",
+                        oTransActMembers.getEmployeeID(lnCtr, lnCtr).toString(),
+                        oTransActMembers.getEmployeeNm(lnCtr, lnCtr).toString()
+                ));
+            }
+            tblViewEmployee.setItems(employeeData);
+            initEmployeeTable();
+        }
     }
 
     private void initEmployeeTable() {
@@ -183,19 +184,20 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
 
     private void loadDepartTable() {
         departData.clear();
-//        if (oTransActMembers.loadDepartment()) {
-//            for (int lnCtr = 1; lnCtr <= oTransActMembers.getDeptList().size() - 1; lnCtr++) {
-//                departData.add(new ModelActivityMember(
-//                        String.valueOf(lnCtr), //ROW
-//                        oTransActMembers.getDepartment(lnCtr, "sDeptIDxx").toString(),
-//                        oTransActMembers.getDepartment(lnCtr, "sDeptName").toString(),
-//                        "",
-//                        ""
-//                ));
-//            }
-//            tblViewDepart.setItems(departData);
-//        }
-
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActMembers.loadDepartment();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 1; lnCtr <= oTransActMembers.getDepartmentList().size() - 1; lnCtr++) {
+                departData.add(new ModelActivityMember(
+                        String.valueOf(lnCtr), //ROW
+                        oTransActMembers.getDepartmentID(lnCtr, lnCtr).toString(),
+                        oTransActMembers.getDepartmentNm(lnCtr, lnCtr).toString(),
+                        "",
+                        ""
+                ));
+            }
+        }
+        tblViewDepart.setItems(departData);
     }
 
     private void initDepartTable() {
