@@ -21,6 +21,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
+import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -74,6 +75,10 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField05.setOnKeyPressed(this::txtField_KeyPressed);
         textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
+
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
+        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        InputTextUtil.setCapsLockBehavior(textArea06);
         initButtons();
         textProperty();
         if (pbState) {
@@ -94,8 +99,10 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
         txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
         txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
         txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
+        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
         txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
-//        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
+        textArea06.setText((String) oTransLocation.getActLocation(pnRow, "sCompnynx"));
+
     }
 
     private void textProperty() {
@@ -160,23 +167,23 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
                     loJSON = oTransLocation.searchTown(lsTxtField.getText(), pnRow, false);
                     if (!"error".equals((String) loJSON.get("result"))) {
                         txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
+                        txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField03.setText("");
-                        txtField05.setText("");
                         txtField03.focusedProperty();
                         return;
                     }
                     break;
                 case "txtField04":  //Search by Brgy Address
-//                    loJSON = oTransLocation.searhBarangay(lsTxtField.getText(), pnRow, false);
-//                    if (!"error".equals((String) loJSON.get("result"))) {
-//                        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
-//                    } else {
-//                        txtField04.setText("");
-//                        txtField04.focusedProperty();
-//                        return;
-//                    }
+                    loJSON = oTransLocation.searchBarangay(lsTxtField.getText(), pnRow, false);
+                    if (!"error".equals((String) loJSON.get("result"))) {
+                        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
+                    } else {
+                        txtField04.setText("");
+                        txtField04.focusedProperty();
+                        return;
+                    }
                     break;
             }
             initFields();
@@ -244,19 +251,20 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
             ShowMessageFX.Warning(getStage(), null, "Town Name", "Please enter value of Town Name.");
             return false;
         }
-//        if (txtField04.getText().trim().equals("")) {
-//            ShowMessageFX.Warning(getStage(), null, "Barangay Name", "Please enter value of Barangay Name.");
-//            return false;
-//        }
+        if (txtField04.getText().trim().equals("")) {
+            ShowMessageFX.Warning(getStage(), null, "Barangay Name", "Please enter value of Barangay Name.");
+            return false;
+        }
         if (textArea06.getText().trim().equals("")) {
             ShowMessageFX.Warning(getStage(), null, "Establishment", "Please enter value of Establishment.");
             return false;
         }
         oTransLocation.setActLocation(pnRow, 3, txtField01.getText());
-        oTransLocation.setActLocation(pnRow, 9, txtField02.getText());
-        oTransLocation.setActLocation(pnRow, 6, txtField03.getText());
+        oTransLocation.setActLocation(pnRow, 10, txtField02.getText());
+        oTransLocation.setActLocation(pnRow, 8, txtField03.getText());
+        oTransLocation.setActLocation(pnRow, 4, txtField04.getText());
         oTransLocation.setActLocation(pnRow, 7, txtField05.getText());
-        oTransLocation.setActLocation(pnRow, 5, textArea06.getText());
+        oTransLocation.setActLocation(pnRow, 6, textArea06.getText());
         return true;
     }
 
