@@ -134,7 +134,7 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                         String.valueOf(lnCtr + 1), //ROW
                         oTransActVehicle.getSerialID(lnCtr, "sSerialID").toString(),
                         oTransActVehicle.getVehicleDesc(lnCtr, "sDescript").toString(),
-                        ""
+                        oTransActVehicle.getVehicleCSNo(lnCtr, "sCSNoxxxx").toString()
                 ));
             }
             tblViewActVchl.setItems(actVhclModelData);
