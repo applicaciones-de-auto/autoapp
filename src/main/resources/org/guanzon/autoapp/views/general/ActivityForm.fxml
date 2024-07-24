@@ -183,12 +183,12 @@
                                                             <children>
                                                                 <HBox prefWidth="200.0">
                                                                     <children>
-                                                                        <Label fx:id="lblActivityID" prefHeight="30.0" prefWidth="124.0">
+                                                                        <Label fx:id="lblActivityID" prefHeight="30.0">
                                                                             <font>
                                                                                 <Font name="Arial Bold" size="12.0" />
                                                                             </font>
                                                                         </Label>
-                                                                        <Label fx:id="lblActivityIDValue" prefHeight="30.0" prefWidth="140.0">
+                                                                        <Label fx:id="lblActivityIDValue" prefHeight="30.0">
                                                                             <font>
                                                                                 <Font name="Arial Bold" size="12.0" />
                                                                             </font>
@@ -208,7 +208,7 @@
                                                     <children>
                                                         <TabPane fx:id="tabPaneMain" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <tabs>
-                                                                <Tab fx:id="tabCustomer" style="-fx-font-weight: bold; -fx-font-family: arial;" text="Activity Info">
+                                                                <Tab fx:id="tabActivityInfo" style="-fx-font-weight: bold; -fx-font-family: arial;" text="Activity Info">
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
@@ -229,12 +229,12 @@
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
-                                                                                                        <RowConstraints maxHeight="40.0" minHeight="-Infinity" prefHeight="23.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity No." />
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Period:" GridPane.columnIndex="3" />
-                                                                                                        <TextField fx:id="txtField02" GridPane.columnIndex="1" />
+                                                                                                        <TextField fx:id="txtField02" disable="true" editable="false" GridPane.columnIndex="1" />
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="From" GridPane.columnIndex="4" />
                                                                                                         <DatePicker fx:id="dateFrom03" GridPane.columnIndex="5" />
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="To" GridPane.columnIndex="7" />
@@ -268,26 +268,26 @@
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
-                                                                                                        <RowConstraints maxHeight="30.0" minHeight="-Infinity" prefHeight="23.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="30.0" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="30.0" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="30.0" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity Type" />
-                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity Title" GridPane.rowIndex="1" />
-                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Description" GridPane.rowIndex="3" />
-                                                                                                        <Label id="LabelDesc" ellipsisString="" prefHeight="25.0" prefWidth="158.0" stylesheets="@../css/FrameStyle.css" text="Logistic Remarks" wrapText="true" GridPane.rowIndex="5" />
-                                                                                                        <TextField fx:id="txtField06" prefColumnCount="8" promptText="Search: F3" GridPane.columnIndex="3" />
-                                                                                                        <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="55.0" text="Source" GridPane.columnIndex="2" />
+                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity Title" GridPane.rowIndex="2" />
+                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Description" GridPane.rowIndex="4" />
+                                                                                                        <Label id="LabelDesc" ellipsisString="" prefHeight="25.0" prefWidth="158.0" stylesheets="@../css/FrameStyle.css" text="Logistic Remarks" wrapText="true" GridPane.rowIndex="6" />
+                                                                                                        <TextField fx:id="txtField06" prefColumnCount="8" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                                         <ComboBox fx:id="comboBox05" prefWidth="150.0" GridPane.columnIndex="1" />
-                                                                                                        <TextArea fx:id="textArea07" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2" />
-                                                                                                        <TextArea fx:id="textArea08" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.rowSpan="2" />
-                                                                                                        <TextArea fx:id="textArea09" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" GridPane.rowSpan="2" />
-                                                                                                        <Button fx:id="btnAddSource" mnemonicParsing="false" text="Button" GridPane.columnIndex="5">
+                                                                                                        <TextArea fx:id="textArea07" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2" />
+                                                                                                        <TextArea fx:id="textArea08" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2" />
+                                                                                                        <TextArea fx:id="textArea09" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" GridPane.rowSpan="2" />
+                                                                                                        <Button fx:id="btnAddSource" mnemonicParsing="false" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="1">
                                                                                                             <tooltip>
                                                                                                                 <Tooltip text="Add Source Button" />
                                                                                                             </tooltip>
@@ -304,22 +304,14 @@
                                                                                                         <Label id="LabelDesc" prefHeight="66.0" prefWidth="133.0" text="Branch Code" GridPane.columnIndex="7" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField14" disable="true" editable="false" GridPane.columnIndex="8" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField15" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                                                        <Label id="LabelDesc" alignment="CENTER" prefHeight="66.0" prefWidth="133.0" text="Total Budget" GridPane.columnIndex="9" GridPane.rowIndex="6" />
-                                                                                                        <TextField fx:id="txtField16" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                                                                                                        <Label id="LabelDesc" prefHeight="66.0" prefWidth="133.0" text="Total Budget" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+                                                                                                        <TextField fx:id="txtField16" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="7" />
+                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity Type Source" GridPane.rowIndex="1" />
                                                                                                     </children>
                                                                                                     <VBox.margin>
                                                                                                         <Insets left="20.0" right="10.0" />
                                                                                                     </VBox.margin>
                                                                                                 </GridPane>
-                                                                                                <AnchorPane prefHeight="17.0" style="-fx-background-color: #FACEA1;">
-                                                                                                    <children>
-                                                                                                        <Label alignment="CENTER" text="Other Information" textFill="#5b5b5b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                                                            <font>
-                                                                                                                <Font name="System Bold" size="11.0" />
-                                                                                                            </font>
-                                                                                                        </Label>
-                                                                                                    </children>
-                                                                                                </AnchorPane>
                                                                                                 <AnchorPane>
                                                                                                     <children>
                                                                                                         <TabPane fx:id="tabPCustCont" prefWidth="880.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -417,7 +409,7 @@
                                                                         </AnchorPane>
                                                                     </content>
                                                                 </Tab>
-                                                                <Tab fx:id="DetailsTab" style="-fx-font-weight: bold; -fx-font-family: arial; -fx-pref-width: 100;" text="Details">
+                                                                <Tab fx:id="tabDetails" style="-fx-font-weight: bold; -fx-font-family: arial; -fx-pref-width: 100;" text="Details">
                                                                     <content>
                                                                         <StackPane prefHeight="150.0" prefWidth="200.0">
                                                                             <children>
