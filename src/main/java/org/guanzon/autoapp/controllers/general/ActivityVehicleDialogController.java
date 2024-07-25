@@ -23,6 +23,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.models.general.ModelActivityVehicle;
+import org.guanzon.autoapp.models.general.ModelActivityVehicle;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -42,13 +43,17 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
     @FXML
     private Button btnClose;
     @FXML
-    private TableView<ModelActivityVehicle> tblViewActVchl;
-    @FXML
-    private TableColumn<ModelActivityVehicle, String> tblindex01, tblindex03;
-    @FXML
-    private TableColumn<ModelActivityVehicle, Boolean> tblindex02;
-    @FXML
     private CheckBox selectAllCheckBox;
+    @FXML
+    private TableColumn<ModelActivityVehicle, String> tblindexVehicle01;
+    @FXML
+    private TableColumn<ModelActivityVehicle, Boolean> tblindexVehicle02;
+    @FXML
+    private TableColumn<ModelActivityVehicle, String> tblindexVehicle03;
+    @FXML
+    private TableView<ModelActivityVehicle> tblViewActVhcl;
+    @FXML
+    private TableColumn<ModelActivityVehicle, String> tblindexVehicle04;
 
     public void setObject(Activity foValue) {
         oTransActVehicle = foValue;
@@ -64,7 +69,6 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         btnClose.setOnAction(this::handleButtonAction);
         btnAdd.setOnAction(this::handleButtonAction);
         initVehicleTable();
@@ -80,7 +84,7 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                 break;
             case "btnAdd":
                 ObservableList<ModelActivityVehicle> selectedItems = FXCollections.observableArrayList();
-                for (ModelActivityVehicle item : tblViewActVchl.getItems()) {
+                for (ModelActivityVehicle item : tblViewActVhcl.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
@@ -94,10 +98,11 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                 }
                 int addedCount = 0;
                 for (ModelActivityVehicle item : selectedItems) {
-                    int fnRow = Integer.parseInt(item.getTblIndexVhcl01());
-                    String lsSerialID = item.getTblIndexVhcl02();
-                    String lsDescript = item.getTblIndexVchl03();
-                    String lsCSNoxxxx = item.getTblIndexVchl04();// Assuming there is a method to retrieve the transaction number
+                    oTransActVehicle.addActVehicle();
+                    int fnRow = oTransActVehicle.getActVehicleList().size() - 1;
+                    String lsSerialID = item.getTblindex02();
+                    String lsDescript = item.getTblindex04();
+                    String lsCSNoxxxx = item.getTblindex03();// Assuming there is a method to retrieve the transaction number
                     boolean isVhclExist = false;
                     for (int lnCtr = 0; lnCtr <= oTransActVehicle.getActVehicleList().size() - 1; lnCtr++) {
                         if (oTransActVehicle.getActVehicle(lnCtr, "sDescript").toString().equals(lsDescript)) {
@@ -107,9 +112,9 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                         }
                     }
                     if (!isVhclExist) {
-                        oTransActVehicle.setActMember(fnRow, "sSerialID", lsSerialID);
-                        oTransActVehicle.setActMember(fnRow, "sCompnyNm", lsDescript);
-                        oTransActVehicle.setActMember(fnRow, "sDeptName", lsCSNoxxxx);
+                        oTransActVehicle.setActVehicle(fnRow, "sSerialID", lsSerialID);
+                        oTransActVehicle.setActVehicle(fnRow, "sDescript", lsDescript);
+                        oTransActVehicle.setActVehicle(fnRow, "sCSNoxxxx", lsCSNoxxxx);
                         addedCount++;
                     }
                 }
@@ -132,22 +137,23 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
             for (int lnCtr = 0; lnCtr <= oTransActVehicle.getVehicleList().size() - 1; lnCtr++) {
                 actVhclModelData.add(new ModelActivityVehicle(
                         String.valueOf(lnCtr + 1), //ROW
-                        oTransActVehicle.getSerialID(lnCtr, "sSerialID").toString(),
-                        oTransActVehicle.getVehicleDesc(lnCtr, "sDescript").toString(),
-                        oTransActVehicle.getVehicleCSNo(lnCtr, "sCSNoxxxx").toString()
+                        oTransActVehicle.getSerialID(lnCtr, lnCtr).toString(),
+                        oTransActVehicle.getVehicleCSNo(lnCtr, lnCtr).toString(),
+                        oTransActVehicle.getVehicleDesc(lnCtr, lnCtr).toString()
                 ));
             }
-            tblViewActVchl.setItems(actVhclModelData);
+            initVehicleTable();
         }
     }
 
     private void initVehicleTable() {
-        tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindexVhcl01"));  //Row
-        tblindex02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblViewActVchl.getItems().forEach(item -> {
+        tblViewActVhcl.setItems(actVhclModelData);
+        tblindexVehicle01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));  //Row
+        tblindexVehicle02.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblViewActVhcl.getItems().forEach(item -> {
             CheckBox loSelectCheckBox = item.getSelect();
             loSelectCheckBox.setOnAction(event -> {
-                if (tblViewActVchl.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                if (tblViewActVhcl.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
                     selectAllCheckBox.setSelected(true);
                 } else {
                     selectAllCheckBox.setSelected(false);
@@ -156,12 +162,12 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
         });
         selectAllCheckBox.setOnAction(event -> {
             boolean lbNewValue = selectAllCheckBox.isSelected();
-            tblViewActVchl.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
+            tblViewActVhcl.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
         });
-        tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindexVhcl03"));
-        tblViewActVchl.setItems(actVhclModelData);
-        tblViewActVchl.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewActVchl.lookup("TableHeaderRow");
+        tblindexVehicle03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        tblindexVehicle04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
+        tblViewActVhcl.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewActVhcl.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
