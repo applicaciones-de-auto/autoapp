@@ -260,9 +260,9 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
             return false;
         }
         oTransLocation.setActLocation(pnRow, 3, txtField01.getText());
-        oTransLocation.setActLocation(pnRow, 10, txtField02.getText());
+        oTransLocation.setActLocation(pnRow, 11, txtField02.getText());
         oTransLocation.setActLocation(pnRow, 8, txtField03.getText());
-        oTransLocation.setActLocation(pnRow, 4, txtField04.getText());
+        oTransLocation.setActLocation(pnRow, 9, txtField04.getText());
         oTransLocation.setActLocation(pnRow, 7, txtField05.getText());
         oTransLocation.setActLocation(pnRow, 6, textArea06.getText());
         return true;
