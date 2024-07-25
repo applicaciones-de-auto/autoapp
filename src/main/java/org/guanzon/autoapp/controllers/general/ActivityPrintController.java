@@ -38,11 +38,14 @@ import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.models.general.ModelActivityInformation;
 import org.guanzon.autoapp.models.general.ModelActivityMember;
 import org.guanzon.autoapp.models.general.ModelActivityLocation;
 import org.guanzon.autoapp.models.general.ModelActivityVehicle;
+import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -51,14 +54,14 @@ import org.guanzon.autoapp.utils.ScreenInterface;
  */
 public class ActivityPrintController implements Initializable, ScreenInterface {
 
-//    private Activity oTransAct;
+    private Activity oTransPrint;
     private GRider oApp;
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "ActivityPrint";
     private ObservableList<ModelActivityInformation> actMasterData = FXCollections.observableArrayList();
     private List<ModelActivityMember> actMembersData = new ArrayList<ModelActivityMember>();
-    private List<ModelActivityLocation> townCitydata = new ArrayList<ModelActivityLocation>();
+    private List<ModelActivityLocation> locationData = new ArrayList<ModelActivityLocation>();
     private List<ModelActivityVehicle> actVhclModelData = new ArrayList<ModelActivityVehicle>();
     private String psTransNox;
     private boolean running = false;
@@ -89,7 +92,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //       oTrans= new Activity(oApp, false, oApp.getBranchCode());
+        oTransPrint = new Activity(oApp, false, oApp.getBranchCode());
         vbProgress.setVisible(true);
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
@@ -207,90 +210,92 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         int lnCtr;
         Map<String, Object> params = new HashMap<>();
         actMasterData.clear();
-//        if (oTransAct.OpenRecord(psTransNox)) {
-//            for (lnCtr = 1; lnCtr <= oTransAct.getItemCount(); lnCtr++) {
-//                String dApproved = " ";
-//                if (!((String) oTransAct.getDetail(lnCtr, "sApproved")).isEmpty()) {
-//                    dApproved = CommonUtils.xsDateShort((Date) oTrans.getDetail(lnCtr, "dApproved"));
-//                }
-//                String lsEntry = CommonUtils.xsDateShort((Date) oTrans.getDetail(lnCtr, "dEntryDte"));
-//                if (lsEntry.isEmpty()) {
-//                    lsEntry = " ";
-//                } else {
-//                    lsEntry = CommonUtils.xsDateShort((Date) oTrans.getDetail(lnCtr, "dEntryDte"));
-//                }
-//                String lsFrom = CommonUtils.xsDateLong((Date) oTrans.getDetail(lnCtr, "dDateFrom"));
-//                String lsTo = CommonUtils.xsDateLong((Date) oTrans.getDetail(lnCtr, "dDateThru"));
-//                String lsLogRemark = "";
-//                if (!oTransAct.getDetail(lnCtr, "sLogRemrk").toString().isEmpty()) {
-//                    lsLogRemark = oTransAct.getDetail(lnCtr, "sLogRemrk").toString().toUpperCase();
-//                }
-//                String duration = lsFrom + " - " + lsTo;
-//                actMasterData.add(new ModelActivityInformation(
-//                        oTransAct.getDetail(lnCtr, "sActvtyID").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sActTitle").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sActDescx").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sActTypDs").toString().toUpperCase(),
-//                        duration,
-//                        "",
-//                        oTransAct.getDetail(lnCtr, "sLocation").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sCompnynx").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "nPropBdgt").toString(),
-//                        oTransAct.getDetail(lnCtr, "nTrgtClnt").toString(),
-//                        lsLogRemark,
-//                        oTransAct.getDetail(lnCtr, "sRemarksx").toString().toUpperCase(),
-//                        lsEntry,
-//                        dApproved,
-//                        oTransAct.getDetail(lnCtr, "sDeptName").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sCompnyNm").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sBranchNm").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sProvName").toString().toUpperCase(),
-//                        oTransAct.getDetail(lnCtr, "sActNoxxx").toString().toUpperCase()
-//                ));
-//            }
-//            townCitydata.clear();
-//            String lsTown = "";
-//            for (lnCtr = 0; lnCtr <= oTransAct.getActTownList().size() - 1; lnCtr++) {
-//                if (lsTown.isEmpty()) {
-//                    lsTown = oTransAct.getActTown(lnCtr, "sTownName").toString();
-//                } else {
-//                    lsTown = lsTown + " , " + oTransAct.getActTown(lnCtr, "sTownName").toString();
-//                }
-//            }
-//            townCitydata.add(new ModelActivityLocation(
-//                    "", //ROW
-//                    "",
-//                    lsTown.toUpperCase()
-//            ));
-//            actMembersData.clear();
-//            for (lnCtr = 0; lnCtr <= oTransAct.getActMemberList().size() - 1; lnCtr++) {
-//                if (oTransAct.getActMember(lnCtr, "cOriginal").equals("1")) {
-//                    actMembersData.add(new ModelActivityMember(
-//                            String.valueOf(lnCtr + 1), //ROW
-//                            "",
-//                            oTransAct.getActMember(lnCtr, "sDeptName").toString().toUpperCase(),
-//                            oTransAct.getActMember(lnCtr, "sEmployID").toString().toUpperCase(),
-//                            oTransAct.getActMember(lnCtr, "sCompnyNm").toString().toUpperCase()));
-//                }
-//            }
-//            actVhclModelData.clear();
-//            for (lnCtr = 0; lnCtr <= oTransAct.getActVehicleList().size() - 1; lnCtr++) {
-//                actVhclModelData.add(new ModelActivityVehicle(
-//                        String.valueOf(lnCtr + 1), //ROW
-//                        oTransAct.getActVehicle(lnCtr, "sSerialID").toString().toUpperCase(),
-//                        oTransAct.getActVehicle(lnCtr, "sDescript").toString().toUpperCase(),
-//                        oTransAct.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase()));
-//            }
-//        }
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransPrint.openTransaction(psTransNox);
+        if ("success".equals((String) loJSON.get("result"))) {
+            String dApproved = " ";
+            if (!((String) oTransPrint.getMaster("sApproved")).isEmpty()) {
+                dApproved = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dApproved"));
+            }
+            String lsEntry = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dEntryDte"));
+            if (lsEntry.isEmpty()) {
+                lsEntry = " ";
+            } else {
+                lsEntry = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dEntryDte"));
+            }
+            String lsFrom = CommonUtils.xsDateLong((Date) oTransPrint.getMaster("dDateFrom"));
+            String lsTo = CommonUtils.xsDateLong((Date) oTransPrint.getMaster("dDateThru"));
+            String lsLogRemark = "";
+            if (!oTransPrint.getMaster("sLogRemrk").toString().isEmpty()) {
+                lsLogRemark = oTransPrint.getMaster("sLogRemrk").toString().toUpperCase();
+            }
+            String duration = lsFrom + " - " + lsTo;
+            oTransPrint.getMaster("sActvtyID").toString().toUpperCase();
+            oTransPrint.getMaster("sActTitle").toString().toUpperCase();
+            oTransPrint.getMaster("sActDescx").toString().toUpperCase();
+            oTransPrint.getMaster("sActTypDs").toString().toUpperCase();
+            oTransPrint.getMaster("sLocation").toString().toUpperCase();
+            oTransPrint.getMaster("sCompnynx").toString().toUpperCase();
+            oTransPrint.getMaster("nPropBdgt").toString();
+            oTransPrint.getMaster("nTrgtClnt").toString();
+
+            oTransPrint.getMaster("sRemarksx").toString().toUpperCase();
+
+            oTransPrint.getMaster("sDeptName").toString().toUpperCase();
+            oTransPrint.getMaster("sCompnyNm").toString().toUpperCase();
+            oTransPrint.getMaster("sBranchNm").toString().toUpperCase();
+            oTransPrint.getMaster("sProvName").toString().toUpperCase();
+            oTransPrint.getMaster("sActNoxxx").toString().toUpperCase();
+            locationData.clear();
+            String sAddress = "";
+            for (lnCtr = 0; lnCtr <= oTransPrint.getActLocationList().size() - 1; lnCtr++) {
+                sAddress = oTransPrint.getActLocation(lnCtr, "sAddressx").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sTownName").toString().toUpperCase() + ", " + oTransPrint.getActLocation(lnCtr, "sProvName").toString().toUpperCase();
+                locationData.add(new ModelActivityLocation(
+                        String.valueOf(lnCtr + 1), //ROW
+                        sAddress,
+                        oTransPrint.getActLocation(lnCtr, "sTownIDxx").toString().toUpperCase(),
+                        oTransPrint.getActLocation(lnCtr, "sTownName").toString().toUpperCase(),
+                        oTransPrint.getActLocation(lnCtr, "sCompnynx").toString().toUpperCase(),
+                        oTransPrint.getActLocation(lnCtr, "sZippCode").toString(),
+                        oTransPrint.getActLocation(lnCtr, "sProvIDxx").toString(),
+                        oTransPrint.getActLocation(lnCtr, "sProvName").toString().toUpperCase(),
+                        oTransPrint.getActLocation(lnCtr, "sBrgyIDxx").toString(),
+                        oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase()
+                ));
+            }
+            actMembersData.clear();
+            for (lnCtr = 0; lnCtr <= oTransPrint.getActMemberList().size() - 1; lnCtr++) {
+                if (oTransPrint.getActMember(lnCtr, "cOriginal").equals("1")) {
+                    actMembersData.add(new ModelActivityMember(
+                            String.valueOf(lnCtr + 1), //ROW
+                            "",
+                            oTransPrint.getActMember(lnCtr, "sDeptName").toString().toUpperCase(),
+                            oTransPrint.getActMember(lnCtr, "sEmployID").toString().toUpperCase(),
+                            oTransPrint.getActMember(lnCtr, "sCompnyNm").toString().toUpperCase()));
+                }
+            }
+            actVhclModelData.clear();
+            for (lnCtr = 0; lnCtr <= oTransPrint.getActVehicleList().size() - 1; lnCtr++) {
+                actVhclModelData.add(new ModelActivityVehicle(
+                        String.valueOf(lnCtr + 1), //ROW
+                        oTransPrint.getActVehicle(lnCtr, "sSerialID").toString().toUpperCase(),
+                        oTransPrint.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase(),
+                        oTransPrint.getActVehicle(lnCtr, "sDescript").toString().toUpperCase()));
+            }
+        }
         String lsSourceFileName = "D://GGC_Java_Systems/reports/autoapp/ActivityPrint.jasper";
         String lsPrintFileName = null;
         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(actMasterData);
         JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
-        JRBeanCollectionDataSource town = new JRBeanCollectionDataSource(townCitydata);
+        JRBeanCollectionDataSource town = new JRBeanCollectionDataSource(locationData);
         JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
-        params.put("vehicle", vehicle);
-        params.put("town", town);
-        params.put("member", member);
+
+        params.put(
+                "vehicle", vehicle);
+        params.put(
+                "town", town);
+        params.put(
+                "member", member);
         try {
             poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, beanColDataSource);
             lsPrintFileName = poJasperPrint.toString();
@@ -302,6 +307,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             vbProgress.setVisible(false);
             timeline.stop();
         }
+
         return false;
 
     }
