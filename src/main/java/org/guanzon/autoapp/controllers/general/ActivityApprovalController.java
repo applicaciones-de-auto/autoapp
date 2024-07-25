@@ -44,7 +44,7 @@ import org.json.simple.JSONObject;
 public class ActivityApprovalController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-//    private Activity oTrans;
+//    private Activity oTransApproval;
     private int poCtr = 0;
     private final String pxeModuleName = "Activity Approval"; //Form Title
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
@@ -88,7 +88,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
     public void initialize(URL url, ResourceBundle rb) {
 //        initActApprovalTable();
 //        initOtherUtils();
-        initCombo();
+//        initCombo();
 //        loadActApprovalTable();
 //        initButtons();
     }
