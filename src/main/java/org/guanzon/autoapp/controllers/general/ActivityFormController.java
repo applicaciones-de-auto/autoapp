@@ -120,7 +120,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     @FXML
     private TableView<ModelActivityVehicle> tblViewVhclModels;
     @FXML
-    private TableColumn<ModelActivityVehicle, String> tblVhclIndex01, tblVhclIndex02;
+    private TableColumn<ModelActivityVehicle, String> tblVhclIndex01, tblVhclIndex02, tblVhclIndex03;
     @FXML
     private Tab tabActivityInfo;
     @FXML
@@ -482,7 +482,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 
     private void handleButtonAction(ActionEvent event) {
         try {
-            JSONObject loJson = new JSONObject();
+            JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
             iTabIndex = tabPCustCont.getSelectionModel().getSelectedIndex();
             switch (lsButton) {
@@ -490,8 +490,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     clearFields();
                     clearTables();
                     oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
-                    loJson = oTransActivity.newTransaction();
-                    if ("success".equals((String) loJson.get("result"))) {
+                    loJSON = oTransActivity.newTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadActivityInformation();
 //                        loadActivityLocationTable();
 //                        loadActMembersTable();
@@ -499,14 +499,14 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         pnEditMode = oTransActivity.getEditMode();
                         initFields(pnEditMode);
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJson.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
                     break;
                 case "btnEdit":
-                    loJson = oTransActivity.updateTransaction();
+                    loJSON = oTransActivity.updateTransaction();
                     pnEditMode = oTransActivity.getEditMode();
-                    if ("error".equals((String) loJson.get("result"))) {
-                        ShowMessageFX.Warning((String) loJson.get("message"), "Warning", null);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
                     break;
                 case "btnSave":
@@ -525,14 +525,39 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             ShowMessageFX.Warning(getStage(), "Please choose a value for Active Type", "Warning", null);
                             return;
                         }
+                        if (textArea07.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Activity Title.", "Warning", null);
+                            textArea07.requestFocus();
+                            return;
+                        }
+                        if (textArea08.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Activity Description", "Warning", null);
+                            textArea08.requestFocus();
+                            return;
+                        }
+                        if (txtField11.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Department in charge.", "Warning", null);
+                            txtField11.requestFocus();
+                            return;
+                        }
+                        if (txtField12.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Person in charge.", "Warning", null);
+                            txtField12.requestFocus();
+                            return;
+                        }
+                        if (txtField13.getText().trim().equals("")) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a value for Branch in charge", "Warning", null);
+                            txtField13.requestFocus();
+                            return;
+                        }
                         if (!setSelection()) {
                             return;
                         }
-                        loJson = oTransActivity.saveTransaction();
-                        if ("success".equals((String) loJson.get("result"))) {
-                            ShowMessageFX.Information(null, "Activity Information", (String) loJson.get("message"));
-                            loJson = oTransActivity.openTransaction(oTransActivity.getMasterModel().getModel().getActvtyID());
-                            if ("success".equals((String) loJson.get("result"))) {
+                        loJSON = oTransActivity.saveTransaction();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Activity Information", (String) loJSON.get("message"));
+                            loJSON = oTransActivity.openTransaction(oTransActivity.getMasterModel().getModel().getActvtyID());
+                            if ("success".equals((String) loJSON.get("result"))) {
                                 loadActivityLocationTable();
                                 loadActMembersTable();
                                 loadActivityVehicleTable();
@@ -541,7 +566,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                                 pnEditMode = oTransActivity.getEditMode();
                             }
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJson.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             return;
                         }
                     }
@@ -561,7 +586,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             return;
                         }
                     }
-                    if ("success".equals((String) loJson.get("result"))) {
+                    loJSON = oTransActivity.searchTransaction("", false);
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadActivityLocationTable();
                         loadActMembersTable();
                         loadActivityVehicleTable();
@@ -569,7 +595,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         pnEditMode = oTransActivity.getEditMode();
                         initFields(pnEditMode);
                     } else {
-                        ShowMessageFX.Warning(null, "Search Activity Information Confirmation", (String) loJson.get("message"));
+                        ShowMessageFX.Warning(null, "Search Activity Information Confirmation", (String) loJSON.get("message"));
                     }
                     break;
                 case "btnClose":
@@ -596,7 +622,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             loadActMembersTable();
                             break;
                         case 2: //Vehicle
-                            oTransActivity.addActVehicle();
                             loadActivityVehicleDialog();
                             loadActivityVehicleTable();
                             break;
@@ -744,18 +769,10 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         }
         txtField02.setText(oTransActivity.getMasterModel().getModel().getActNo());
         if (oTransActivity.getMasterModel().getModel().getDateFrom() != null && !oTransActivity.getMasterModel().getModel().getDateFrom().toString().isEmpty()) {
-            try {
-                dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMaster(7).toString())));
-            } catch (ParseException ex) {
-                Logger.getLogger(ActivityFormController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMasterModel().getModel().getDateFrom())));
         }
         if (oTransActivity.getMasterModel().getModel().getDateThru() != null && !oTransActivity.getMasterModel().getModel().getDateThru().toString().isEmpty()) {
-            try {
-                dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMaster(8).toString())));
-            } catch (ParseException ex) {
-                Logger.getLogger(ActivityFormController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMasterModel().getModel().getDateThru())));
         }
         if (oTransActivity.getMasterModel().getModel().getEventTyp() != null && !oTransActivity.getMasterModel().getModel().getEventTyp().trim().isEmpty()) {
             switch (String.valueOf(oTransActivity.getMasterModel().getModel().getEventTyp())) {
@@ -782,17 +799,19 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         txtField15.setText(String.valueOf(oTransActivity.getMasterModel().getModel().getTrgtClnt()));
         txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getMasterModel().getModel().getRcvdBdgt()))));
 
-        if (oTransActivity.getMasterModel().getModel().getApproved() != null) {
-            lblApprovedBy.setText(oTransActivity.getMasterModel().getModel().getApproved());
-            if (oTransActivity.getMasterModel().getModel().getApprovedDte() != null && !oTransActivity.getMasterModel().getModel().getApprovedDte().toString().isEmpty()) {
-                lblApprovedDate.setText(oTransActivity.getMaster(23).toString());//dApproved
-            }
-        } else {
-            lblApprovedBy.setText("");
-            lblApprovedDate.setText("");//dApproved
-        }
+//        if (oTransActivity.getMasterModel().getModel().getApproved() != null) {
+//            lblApprovedBy.setText(oTransActivity.getMasterModel().getModel().getApproved());
+//            if (oTransActivity.getMasterModel().getModel().getApprovedDte() != null && !oTransActivity.getMasterModel().getModel().getApprovedDte().toString().isEmpty()) {
+//                lblApprovedDate.setText(oTransActivity.getMaster(23).toString());//dApproved
+//            }
+//        } else {
+//            lblApprovedBy.setText("");
+//            lblApprovedDate.setText("");//dApproved
+//        }
         if (oTransActivity.getMasterModel().getModel().getTranStat().equals("2")) {
             lblCancelStatus.setText("Cancelled");
+        } else if (oTransActivity.getMasterModel().getModel().getTranStat().equals("1")) {
+            lblCancelStatus.setText("Active");
         } else {
             lblCancelStatus.setText("");
         }
@@ -891,8 +910,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             }
         }
     }
-
     //Activity Members Entry Dialog
+
     private void loadActivityMemberDialog() throws IOException {
         /**
          * if state = true : ADD else if state = false : UPDATE *
@@ -938,7 +957,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         for (lnCtr = 0; lnCtr <= oTransActivity.getActMemberList().size() - 1; lnCtr++) {
             if (oTransActivity.getActMember(lnCtr, "cOriginal").equals("1")) {
                 actMembersData.add(new ModelActivityMember(
-                        String.valueOf(lnCtr), //ROW
+                        String.valueOf(lnCtr + 1), //ROW
                         oTransActivity.getActMember(lnCtr, "sDeptName").toString(),
                         "",
                         oTransActivity.getActMember(lnCtr, "sCompnyNm").toString(), // Fifth column (Department)
@@ -950,8 +969,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 
     private void initActMembersTable() {
         tblMembersIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
-        tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
-        tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem03"));
+        tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem04"));
+        tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
         tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -1019,22 +1038,23 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     }
 
     private void loadActivityVehicleTable() {
-        tblMembersIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
-        tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
-        tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem03"));
-        tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        actMembersData.clear();
-        tblViewActivityMembers.setItems(actMembersData);
+        actVhclModelData.clear();
+        if (oTransActivity.getActVehicleList() != null) {
+            for (lnCtr = 0; lnCtr <= oTransActivity.getActVehicleList().size() - 1; lnCtr++) {
+                actVhclModelData.add(new ModelActivityVehicle(
+                        String.valueOf(lnCtr + 1), //ROW
+                        oTransActivity.getActVehicle(lnCtr, "sSerialID").toString(),
+                        oTransActivity.getActVehicle(lnCtr, "sCSNoxxxx").toString(),
+                        oTransActivity.getActVehicle(lnCtr, "sDescript").toString()
+                ));
+            }
+        }
     }
 
     private void initActivityVehicleTable() {
-        tblVhclIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexVchl01"));
-        tblVhclIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexVchl02"));
+        tblVhclIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
+        tblVhclIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        tblVhclIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
         tblViewVhclModels.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewVhclModels.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
