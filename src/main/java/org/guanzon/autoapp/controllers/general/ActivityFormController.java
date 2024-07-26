@@ -664,7 +664,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     btnTabRem.setVisible(false);
                     break;
                 case "btnPrint":
-                    String lsTransNox = oTransActivity.getMasterModel().getModel().getActNo();
+                    String lsTransNox = oTransActivity.getMasterModel().getModel().getActvtyID();
                      {
                         try {
                             loadActivityPrint(lsTransNox);
@@ -960,8 +960,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         String.valueOf(lnCtr + 1), //ROW
                         oTransActivity.getActMember(lnCtr, "sDeptName").toString(),
                         "",
-                        oTransActivity.getActMember(lnCtr, "sCompnyNm").toString(), // Fifth column (Department)
-                        oTransActivity.getActMember(lnCtr, "sEmployID").toString()
+                        oTransActivity.getActMember(lnCtr, "sEmployID").toString(), // Fifth column (Department)
+                        oTransActivity.getActMember(lnCtr, "sCompnyNm").toString()
                 ));
             }
         }
@@ -969,7 +969,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 
     private void initActMembersTable() {
         tblMembersIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
-        tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem04"));
+        tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem05"));
         tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
         tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
