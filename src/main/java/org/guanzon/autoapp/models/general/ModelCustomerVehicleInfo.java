@@ -17,9 +17,9 @@ public class ModelCustomerVehicleInfo {
     private SimpleStringProperty tblindex02; //CS No
     private SimpleStringProperty tblindex03; //Plate No
     private SimpleStringProperty tblindex04; //Vhcl Desc
-    private SimpleStringProperty tblindex05; //Selling Dealer
-    private SimpleStringProperty tblindex06; //sSerialID
-    private SimpleStringProperty tblindex07; //sClientID
+    private SimpleStringProperty tblindex05; //sClientID
+    private SimpleStringProperty tblindex06; //Seller Dealer
+    private SimpleStringProperty tblindex07;
     private SimpleStringProperty tblindex08; //
     private SimpleStringProperty tblindex09; //
 
