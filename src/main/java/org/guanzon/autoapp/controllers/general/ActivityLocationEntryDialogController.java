@@ -35,6 +35,9 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
     private GRider oApp;
     private Activity oTransLocation;
     private final String pxeModuleName = "Activity Location";
+    private String psProvID;
+    private String psProvName;
+    private String psEstablish;
     private int pnRow = 0;
     private boolean pbState = true;
     @FXML
@@ -50,6 +53,14 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
 
     public void setRow(int fnRow) {
         pnRow = fnRow;
+    }
+
+    public void setProvID(String fsValue) {
+        psProvID = fsValue;
+    }
+
+    public void setProvName(String fsValue) {
+        psProvName = fsValue;
     }
 
     public void setState(boolean fbValue) {
@@ -93,10 +104,21 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
         }
+
+        if (oTransLocation.getActLocationList().size() > 0) {
+            if (!psProvID.isEmpty()) {
+                oTransLocation.setActLocation(pnRow, "sProvIDxx", (String) oTransLocation.getActLocation(0, "sProvIDxx"));
+                oTransLocation.setActLocation(pnRow, "sProvName", (String) oTransLocation.getActLocation(0, "sProvName"));
+                loadActLocationFields();
+            }
+
+            initFields();
+        }
     }
 
     private void loadActLocationFields() {
         txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
+
         txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
         txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
         txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
@@ -265,6 +287,9 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
     }
 
     private void initFields() {
+        if (oTransLocation.getActLocationList().size() > 1) {
+            txtField02.setDisable(true);
+        }
         txtField03.setDisable(txtField02.getText().isEmpty());
         txtField04.setDisable(txtField03.getText().isEmpty());
     }
