@@ -98,7 +98,6 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                 }
                 int addedCount = 0;
                 for (ModelActivityVehicle item : selectedItems) {
-                    oTransActVehicle.addActVehicle();
                     int fnRow = oTransActVehicle.getActVehicleList().size() - 1;
                     String lsSerialID = item.getTblindex02();
                     String lsDescript = item.getTblindex04();
@@ -112,6 +111,7 @@ public class ActivityVehicleDialogController implements Initializable, ScreenInt
                         }
                     }
                     if (!isVhclExist) {
+                        oTransActVehicle.addActVehicle();
                         oTransActVehicle.setActVehicle(fnRow, "sSerialID", lsSerialID);
                         oTransActVehicle.setActVehicle(fnRow, "sDescript", lsDescript);
                         oTransActVehicle.setActVehicle(fnRow, "sCSNoxxxx", lsCSNoxxxx);
