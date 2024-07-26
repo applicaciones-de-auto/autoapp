@@ -7,6 +7,7 @@ package org.guanzon.autoapp.controllers.general;
 import java.awt.Component;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,9 +31,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.swing.AbstractButton;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -157,31 +160,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         }
     }
 
-    private void showReport() {
-        vbProgress.setVisible(false);
-        btnPrint.setVisible(true);
-        btnPrint.setDisable(false);
-        poJrViewer = new JRViewer(poJasperPrint);
-        poJrViewer.setZoomRatio(0.75f);
-        findAndHideButton(poJrViewer, "Print");
-        findAndHideButton(poJrViewer, "Save");
-        // Find and hide the buttons
-        SwingNode swingNode = new SwingNode();
-        poJrViewer.setOpaque(true);
-        poJrViewer.setVisible(true);
-        poJrViewer.setFitPageZoomRatio();
-        swingNode.setContent(poJrViewer);
-        swingNode.setVisible(true);
-        reportPane.setTopAnchor(swingNode, 0.0);
-        reportPane.setBottomAnchor(swingNode, 0.0);
-        reportPane.setLeftAnchor(swingNode, 0.0);
-        reportPane.setRightAnchor(swingNode, 0.0);
-        reportPane.getChildren().add(swingNode);
-        running = true;
-        reportPane.setVisible(true);
-        timeline.stop();
-    }
-
     private void findAndHideButton(Component foComponent, String fsButtonText) {
         if (foComponent instanceof AbstractButton) {
             AbstractButton button = (AbstractButton) foComponent;
@@ -206,6 +184,34 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         psTransNox = fsValue;
     }
 
+    private String getValueReport(String fsValue, String fsCol) {
+        fsValue = "";
+        if (oTransPrint.getMaster(fsCol) != null) {
+            fsValue = oTransPrint.getMaster(fsCol).toString().toUpperCase();
+        }
+        return fsValue;
+    }
+
+    private String getValueDateReport(String fsValue, String fsCol) {
+        fsValue = "";
+        if (oTransPrint.getMaster(fsCol) != null) {
+            fsValue = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
+        }
+        return fsValue;
+    }
+
+    private static String formatAmount(String fsAmountString) {
+        DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
+        String lsFormattedAmount = "";
+        if (fsAmountString.contains("0.00") || fsAmountString.isEmpty()) {
+            lsFormattedAmount = "";
+        } else {
+            double amount = Double.parseDouble(fsAmountString);
+            lsFormattedAmount = loNumFormat.format(amount);
+        }
+        return lsFormattedAmount;
+    }
+
     private boolean loadReport() throws SQLException {
         int lnCtr;
         Map<String, Object> params = new HashMap<>();
@@ -213,39 +219,29 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
-            String dApproved = " ";
-            if (!((String) oTransPrint.getMaster("sApproved")).isEmpty()) {
-                dApproved = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dApproved"));
-            }
-            String lsEntry = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dEntryDte"));
-            if (lsEntry.isEmpty()) {
-                lsEntry = " ";
-            } else {
-                lsEntry = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dEntryDte"));
-            }
-            String lsFrom = CommonUtils.xsDateLong((Date) oTransPrint.getMaster("dDateFrom"));
-            String lsTo = CommonUtils.xsDateLong((Date) oTransPrint.getMaster("dDateThru"));
-            String lsLogRemark = "";
-            if (!oTransPrint.getMaster("sLogRemrk").toString().isEmpty()) {
-                lsLogRemark = oTransPrint.getMaster("sLogRemrk").toString().toUpperCase();
-            }
+            params.put("actNo", getValueReport("actNo", "sActNoxxx"));
+            params.put("actID", getValueReport("actID", "sActvtyID"));
+            params.put("actDateFrom", getValueDateReport("actDateFrom", "dDateFrom"));
+            params.put("actDateTo", getValueDateReport("actDateTo", "dDateThru"));
+            params.put("actTitle", getValueReport("actTitle", "sActTitle"));
+            params.put("actDesc", getValueReport("actDesc", "sActDescx"));
+            params.put("actTypDs", getValueReport("actTypeDs", "sActTypDs"));
+            params.put("actLogRemrks", getValueReport("actLogRrmks", "sLogRemrk"));
+            params.put("actDeprtName", getValueReport("actDeprtName", "sDeptName"));
+            params.put("actPersonEnhrge", getValueReport("actPersonEnhrge", "sCompnyNm"));
+            params.put("actRemarks", getValueReport("actLogRrmks", "sRemarksx"));
+            params.put("actBranchNm", getValueReport("actBranchNm", "sBranchNm"));
+            params.put("actBranchCd", getValueReport("actLocation", "sLocation"));
+            params.put("actTrgClnt", oTransPrint.getMaster("nTrgtClnt"));
+            params.put("actRcvdBdgt", formatAmount(oTransPrint.getMaster("nRcvdBdgt").toString()));
+            params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
+            params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
+            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApproved"));
+            String lsFrom = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
+            String lsTo = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
             String duration = lsFrom + " - " + lsTo;
-            oTransPrint.getMaster("sActvtyID").toString().toUpperCase();
-            oTransPrint.getMaster("sActTitle").toString().toUpperCase();
-            oTransPrint.getMaster("sActDescx").toString().toUpperCase();
-            oTransPrint.getMaster("sActTypDs").toString().toUpperCase();
-            oTransPrint.getMaster("sLocation").toString().toUpperCase();
-            oTransPrint.getMaster("sCompnynx").toString().toUpperCase();
-            oTransPrint.getMaster("nPropBdgt").toString();
-            oTransPrint.getMaster("nTrgtClnt").toString();
-
-            oTransPrint.getMaster("sRemarksx").toString().toUpperCase();
-
-            oTransPrint.getMaster("sDeptName").toString().toUpperCase();
-            oTransPrint.getMaster("sCompnyNm").toString().toUpperCase();
-            oTransPrint.getMaster("sBranchNm").toString().toUpperCase();
-            oTransPrint.getMaster("sProvName").toString().toUpperCase();
-            oTransPrint.getMaster("sActNoxxx").toString().toUpperCase();
+            params.put("durationTime", "test");
+            //Activity Location
             locationData.clear();
             String sAddress = "";
             for (lnCtr = 0; lnCtr <= oTransPrint.getActLocationList().size() - 1; lnCtr++) {
@@ -263,6 +259,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                         oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase()
                 ));
             }
+            //Activity Members
             actMembersData.clear();
             for (lnCtr = 0; lnCtr <= oTransPrint.getActMemberList().size() - 1; lnCtr++) {
                 if (oTransPrint.getActMember(lnCtr, "cOriginal").equals("1")) {
@@ -274,6 +271,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                             oTransPrint.getActMember(lnCtr, "sCompnyNm").toString().toUpperCase()));
                 }
             }
+            //Activity Vehicle
             actVhclModelData.clear();
             for (lnCtr = 0; lnCtr <= oTransPrint.getActVehicleList().size() - 1; lnCtr++) {
                 actVhclModelData.add(new ModelActivityVehicle(
@@ -283,23 +281,21 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                         oTransPrint.getActVehicle(lnCtr, "sDescript").toString().toUpperCase()));
             }
         }
-        String lsSourceFileName = "D://GGC_Java_Systems/reports/autoapp/ActivityPrint.jasper";
-        String lsPrintFileName = null;
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(actMasterData);
+        String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/test.jasper";
         JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
-        JRBeanCollectionDataSource town = new JRBeanCollectionDataSource(locationData);
+        JRBeanCollectionDataSource actlocation = new JRBeanCollectionDataSource(locationData);
         JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
 
         params.put(
                 "vehicle", vehicle);
         params.put(
-                "town", town);
+                "actlocation", actlocation);
         params.put(
                 "member", member);
         try {
-            poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, beanColDataSource);
-            lsPrintFileName = poJasperPrint.toString();
-            if (lsPrintFileName != null) {
+            poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params);
+            params.forEach((key, value) -> System.out.println("key: " + key + " / " + "value: " + value));
+            if (poJasperPrint != null) {
                 showReport();
             }
         } catch (JRException ex) {
@@ -310,5 +306,30 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
 
         return false;
 
+    }
+
+    private void showReport() {
+        vbProgress.setVisible(false);
+        btnPrint.setVisible(true);
+        btnPrint.setDisable(false);
+        poJrViewer = new JRViewer(poJasperPrint);
+        poJrViewer.setZoomRatio(0.75f);
+        findAndHideButton(poJrViewer, "Print");
+        findAndHideButton(poJrViewer, "Save");
+        // Find and hide the buttons
+        SwingNode swingNode = new SwingNode();
+        poJrViewer.setOpaque(true);
+        poJrViewer.setVisible(true);
+        poJrViewer.setFitPageZoomRatio();
+        swingNode.setContent(poJrViewer);
+        swingNode.setVisible(true);
+        reportPane.setTopAnchor(swingNode, 0.0);
+        reportPane.setBottomAnchor(swingNode, 0.0);
+        reportPane.setLeftAnchor(swingNode, 0.0);
+        reportPane.setRightAnchor(swingNode, 0.0);
+        reportPane.getChildren().add(swingNode);
+        running = true;
+        reportPane.setVisible(true);
+        timeline.stop();
     }
 }
