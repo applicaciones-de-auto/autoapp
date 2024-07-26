@@ -106,7 +106,6 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                 }
                 int addedCount = 0;
                 for (ModelActivityMember item : selectedItems) {
-                    oTransActMembers.addActMember();
                     int fnRow = oTransActMembers.getActMemberList().size() - 1; //Integer.parseInt(item.getTblindexMem01());
                     String lsEmployID = item.getTblindexMem04();
                     String lsEmpName = item.getTblindexMem05();
@@ -122,6 +121,7 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                         }
                     }
                     if (!isEmpExist) {
+                        oTransActMembers.addActMember();
                         oTransActMembers.setActMember(fnRow, "sEmployID", lsEmployID);
                         oTransActMembers.setActMember(fnRow, "sCompnyNm", lsEmpName);
                         oTransActMembers.setActMember(fnRow, "sDeptName", lsDeptName);
