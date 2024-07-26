@@ -830,6 +830,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             loControl.setObject(oTransActivity);
+            loControl.setProvID(String.valueOf(oTransActivity.getActLocation(0, "sProvIDxx").toString()));
+            loControl.setProvName(String.valueOf(oTransActivity.getActLocation(0, "sProvName")));
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -958,10 +960,10 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             if (oTransActivity.getActMember(lnCtr, "cOriginal").equals("1")) {
                 actMembersData.add(new ModelActivityMember(
                         String.valueOf(lnCtr + 1), //ROW
-                        oTransActivity.getActMember(lnCtr, "sDeptName").toString(),
                         "",
-                        oTransActivity.getActMember(lnCtr, "sEmployID").toString(), // Fifth column (Department)
-                        oTransActivity.getActMember(lnCtr, "sCompnyNm").toString()
+                        String.valueOf(oTransActivity.getActMember(lnCtr, "sDeptName")).toUpperCase(),
+                        String.valueOf(oTransActivity.getActMember(lnCtr, "sEmployID")).toUpperCase(),
+                        String.valueOf(oTransActivity.getActMember(lnCtr, "sCompnyNm")).toUpperCase()
                 ));
             }
         }
@@ -970,7 +972,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     private void initActMembersTable() {
         tblMembersIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
         tblMembersIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindexMem05"));
-        tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem02"));
+        tblMembersIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem03"));
         tblViewActivityMembers.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewActivityMembers.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -1043,9 +1045,9 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             for (lnCtr = 0; lnCtr <= oTransActivity.getActVehicleList().size() - 1; lnCtr++) {
                 actVhclModelData.add(new ModelActivityVehicle(
                         String.valueOf(lnCtr + 1), //ROW
-                        oTransActivity.getActVehicle(lnCtr, "sSerialID").toString(),
-                        oTransActivity.getActVehicle(lnCtr, "sCSNoxxxx").toString(),
-                        oTransActivity.getActVehicle(lnCtr, "sDescript").toString()
+                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sSerialID")).toUpperCase(),
+                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sCSNoxxxx")).toUpperCase(),
+                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sDescript")).toString().toUpperCase()
                 ));
             }
         }
