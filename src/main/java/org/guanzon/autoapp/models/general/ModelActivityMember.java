@@ -57,7 +57,7 @@ public class ModelActivityMember {
         return tblindexMem03.get();
     }
 
-    public void setTblindex14(String tblindexMem03) {
+    public void setTblindexMem03(String tblindexMem03) {
         this.tblindexMem03.set(tblindexMem03);
     }
 
