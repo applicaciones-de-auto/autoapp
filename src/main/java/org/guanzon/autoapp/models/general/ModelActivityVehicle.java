@@ -13,26 +13,26 @@ import javafx.scene.control.CheckBox;
  */
 public class ModelActivityVehicle {
 
-    private SimpleStringProperty tblindexVhcl01;
+    private SimpleStringProperty tblindex01;
     private CheckBox select;
-    private SimpleStringProperty tblindexVhcl02;//sSerialID
-    private SimpleStringProperty tblindexVhcl03; //sDescript
-    private SimpleStringProperty tblindexVhcl04; //sCSNoxxxx
+    private SimpleStringProperty tblindex02;//sSerialID
+    private SimpleStringProperty tblindex03; //sCSNoxxxx
+    private SimpleStringProperty tblindex04; //sDescript
 
-    public ModelActivityVehicle(String tblindexVhcl01, String tblindexVhcl02, String tblindexVhcl03, String tblindexVhcl04) {
-        this.tblindexVhcl01 = new SimpleStringProperty(tblindexVhcl01);
+    public ModelActivityVehicle(String tblindex01, String tblindex02, String tblindex03, String tblindex04) {
+        this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.select = new CheckBox();
-        this.tblindexVhcl02 = new SimpleStringProperty(tblindexVhcl02);
-        this.tblindexVhcl03 = new SimpleStringProperty(tblindexVhcl03);
-        this.tblindexVhcl04 = new SimpleStringProperty(tblindexVhcl04);
+        this.tblindex02 = new SimpleStringProperty(tblindex02);
+        this.tblindex03 = new SimpleStringProperty(tblindex03);
+        this.tblindex04 = new SimpleStringProperty(tblindex04);
     }
 
-    public String getTblIndexVhcl01() {
-        return tblindexVhcl01.get();
+    public String getTblindex01() {
+        return tblindex01.get();
     }
 
-    public void setTblIndexVhcl01(String tblindexVchl01) {
-        this.tblindexVhcl01.set(tblindexVchl01);
+    public void setTblindex01(String tblindex01) {
+        this.tblindex01.set(tblindex01);
     }
 
     public CheckBox getSelect() {
@@ -43,28 +43,28 @@ public class ModelActivityVehicle {
         this.select = select;
     }
 
-    public String getTblIndexVhcl02() {
-        return tblindexVhcl02.get();
+    public String getTblindex02() {
+        return tblindex02.get();
     }
 
-    public void setTblIndexVhcl02(String tblindexVchl02) {
-        this.tblindexVhcl02.set(tblindexVchl02);
+    public void setTblindex02(String tblindex02) {
+        this.tblindex02.set(tblindex02);
     }
 
-    public String getTblIndexVchl03() {
-        return tblindexVhcl03.get();
+    public String getTblindex03() {
+        return tblindex03.get();
     }
 
-    public void setTblIndexVchl03(String tblindexVchl03) {
-        this.tblindexVhcl03.set(tblindexVchl03);
+    public void setTblindex03(String tblindex03) {
+        this.tblindex03.set(tblindex03);
     }
 
-    public String getTblIndexVchl04() {
-        return tblindexVhcl04.get();
+    public String getTblindex04() {
+        return tblindex04.get();
     }
 
-    public void setTblIndexVchl04(String tblindexVchl04) {
-        this.tblindexVhcl04.set(tblindexVchl04);
+    public void setTblindex04(String tblindex04) {
+        this.tblindex04.set(tblindex04);
     }
 
 }
