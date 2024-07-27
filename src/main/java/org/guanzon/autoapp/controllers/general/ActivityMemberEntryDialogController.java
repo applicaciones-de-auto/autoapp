@@ -110,13 +110,23 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                     String lsEmpName = item.getTblindexMem05();
                     String lsDeptName = item.getTblindexMem03();
                     boolean isEmpExist = false;
+                    if (oTransActMembers.getMasterModel().getModel().getEmployID().equals(lsEmployID)) {
+                        ShowMessageFX.Error(null, pxeModuleName, "Person in charge: " + lsEmpName + " cannot be one of the member.");
+                        isEmpExist = true;
+                        addedCount++;
+                    }
                     for (int lnCtr = 0; lnCtr <= oTransActMembers.getActMemberList().size() - 1; lnCtr++) {
-                        if (oTransActMembers.getActMember(lnCtr, "sCompnyNm").toString().equals(lsEmployID)
-                                && oTransActMembers.getActMember(lnCtr, "cOriginal").toString().equals("1")) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Employee, " + lsEmpName + " already exist.");
+                        if (oTransActMembers.getActMember(lnCtr, "sEmployID").toString().equals(lsEmployID)) {
+                            if (oTransActMembers.getActMember(lnCtr, "cOriginal").toString().equals("1")) {
+                                ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Employee, " + lsEmpName + " already exist.");
+                            } else {
+                                oTransActMembers.setActMember(lnCtr, "cOriginal", "1");
+                                addedCount++;
+                            }
                             isEmpExist = true;
                             break;
                         }
+
                     }
                     if (!isEmpExist) {
                         oTransActMembers.addActMember();
@@ -136,8 +146,8 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                 break;
         }
     }
-
     //storing values on bankentrydata
+
     private void loadEmployeeTable(String departmentID) {
         employeeData.clear();
         JSONObject loJSON = new JSONObject();
