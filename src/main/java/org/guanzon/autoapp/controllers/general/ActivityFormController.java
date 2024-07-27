@@ -146,8 +146,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         initActMembersTable();
         initActivityVehicleTable();
         initTextFieldPattern();
-        dateFrom03.setOnAction(this::getDateFrom);
-        dateTo04.setOnAction(this::getDateTo);
         dateFrom03.setDayCellFactory(DateFrom);
         comboBox05.setItems(cType);
         initCapitalizationFields();
@@ -178,18 +176,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         }
     };
 
-    /*Set Date Value to Master Class*/
-    private void getDateFrom(ActionEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-        }
-    }
-
-    private void getDateTo(ActionEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-        }
-    }
     private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
@@ -363,10 +349,21 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     private void initCmboxFieldAction() {
         dateFrom03.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (pnEditMode == EditMode.ADDNEW) {
                     dateTo04.setDayCellFactory(DateTo);
                     dateTo04.setValue(newValue.plusDays(1));
                 }
+            }
+        });
+        dateFrom03.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+
+            }
+        });
+        dateTo04.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
             }
         });
         comboBox05.setOnAction(e -> {
@@ -492,10 +489,14 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
                     loJSON = oTransActivity.newTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
+//                        oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+//                        oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+//                        System.out.println("Date From value: " + dateFrom03.getValue().toString());
+//                        System.out.println("Date To value: " + dateTo04.getValue().toString());
+//                        System.out.println("Date From set to: " + oTransActivity.getMasterModel().getModel().getDateFrom());
+//                        System.out.println("Date To set to: " + oTransActivity.getMasterModel().getModel().getDateThru());
+
                         loadActivityInformation();
-//                        loadActivityLocationTable();
-//                        loadActMembersTable();
-//                        loadActivityVehicleTable();
                         pnEditMode = oTransActivity.getEditMode();
                         initFields(pnEditMode);
                     } else {
@@ -513,14 +514,16 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     LocalDate loDateFrom = dateFrom03.getValue();
                     LocalDate loDateTo = dateTo04.getValue();
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
-                        if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
-                            ShowMessageFX.Warning(getStage(), "Please enter a valid date.", "Warning", null);
-                            return;
-                        }
                         if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
-                            ShowMessageFX.Warning(getStage(), "Please enter a valid date.", "Warning", null);
+                            ShowMessageFX.Warning(getStage(), "Please enter a valid date from.", "Warning", null);
                             return;
                         }
+
+                        if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
+                            ShowMessageFX.Warning(getStage(), "Please enter a valid date to.", "Warning", null);
+                            return;
+                        }
+
                         if (comboBox05.getSelectionModel().isEmpty()) {
                             ShowMessageFX.Warning(getStage(), "Please choose a value for Active Type", "Warning", null);
                             return;
@@ -571,6 +574,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         }
                     }
                     break;
+
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         clearFields();
@@ -618,6 +622,15 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             loadActivityLocationTable();
                             break;
                         case 1: //Members
+                            if (oTransActivity.getMasterModel().getModel().getEmployID() == null) {
+                                ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
+                                return;
+                            } else {
+                                if (oTransActivity.getMasterModel().getModel().getEmployID().isEmpty()) {
+                                    ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
+                                    return;
+                                }
+                            }
                             loadActivityMemberDialog();
                             loadActMembersTable();
                             break;
@@ -643,10 +656,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             loadActivityLocationTable();
                             break;
                         case 1:
-                            if (ShowMessageFX.YesNo(null, "Activity Members Confirmation", "Are you sure you want to remove this Activity Members?")) {
-                            } else {
-                                return;
-                            }
                             oTransActivity.removeActMember(pnRow);
                             pnRow = 0;
                             loadActMembersTable();
@@ -956,15 +965,17 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 
     private void loadActMembersTable() {
         actMembersData.clear();
+        int lnRow = 1;
         for (lnCtr = 0; lnCtr <= oTransActivity.getActMemberList().size() - 1; lnCtr++) {
             if (oTransActivity.getActMember(lnCtr, "cOriginal").equals("1")) {
                 actMembersData.add(new ModelActivityMember(
-                        String.valueOf(lnCtr + 1), //ROW
-                        "",
+                        String.valueOf(lnRow), //ROW
+                        String.valueOf(lnCtr + 1),
                         String.valueOf(oTransActivity.getActMember(lnCtr, "sDeptName")).toUpperCase(),
                         String.valueOf(oTransActivity.getActMember(lnCtr, "sEmployID")).toUpperCase(),
                         String.valueOf(oTransActivity.getActMember(lnCtr, "sCompnyNm")).toUpperCase()
                 ));
+                lnRow++;
             }
         }
     }
@@ -986,8 +997,9 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     @FXML
     private void tblActMembers_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            pnRow = tblViewActivityMembers.getSelectionModel().getSelectedIndex();
-            if (pnRow < 0 || pnRow >= tblViewActivityMembers.getItems().size()) {
+            int lnSel = tblViewActivityMembers.getSelectionModel().getSelectedIndex();
+            pnRow = Integer.parseInt(actMembersData.get(lnSel).getTblindexMem02());
+            if (lnSel < 0 || lnSel >= tblViewActivityMembers.getItems().size()) {
                 ShowMessageFX.Warning(getStage(), "Please select valid members information.", "Warning", null);
                 return;
             }
@@ -1070,6 +1082,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     @FXML
     private void tblActVehicle_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+
             pnRow = tblViewVhclModels.getSelectionModel().getSelectedIndex();
             if (pnRow < 0 || pnRow >= tblViewVhclModels.getItems().size()) {
                 ShowMessageFX.Warning(getStage(), "Please select valid vehicle information.", "Warning", null);
@@ -1111,8 +1124,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        lblActivityID.setDisable(!lbShow);
-        lblActivityIDValue.setDisable(!lbShow);
         dateFrom03.setDisable(!lbShow);
         dateTo04.setDisable(!lbShow);
         comboBox05.setDisable(!lbShow);
