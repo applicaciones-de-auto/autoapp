@@ -203,6 +203,7 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
                         txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
                     } else {
                         txtField04.setText("");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField04.focusedProperty();
                         return;
                     }
@@ -242,9 +243,21 @@ public class ActivityLocationEntryDialogController implements Initializable, Scr
         switch (lsButton) {
             case "btnEdit":
             case "btnAdd":
+                boolean isLocationExist = false;
+//                String barangayName = txtField04.getText();
+//                //this is not working kasi nag seset na siya duon sa na set na row later ko nalang isipan haha
+//                for (int lnCtr = 0; lnCtr <= oTransLocation.getActLocationList().size() - 1; lnCtr++) {
+//                    if (oTransLocation.getActLocation(lnCtr, "sBrgyIDxx").toString().toUpperCase().equals(oTransLocation.getActLocation(lnCtr, "sBrgyIDxx").toString().toUpperCase())) {
+//                        ShowMessageFX.Warning(null, pxeModuleName, "Location Address is already existing.");
+//                        isLocationExist = true;
+//                        return;
+//                    }
+//                }
+//                if (!isLocationExist) {
                 if (settoClass()) {
                     CommonUtils.closeStage(btnClose);
                 }
+//                }
                 break;
             case "btnClose":
                 if (pbState) {
