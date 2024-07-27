@@ -30,6 +30,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.swing.AbstractButton;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -38,6 +40,7 @@ import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -68,6 +71,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private List<ModelActivityVehicle> actVhclModelData = new ArrayList<ModelActivityVehicle>();
     private String psTransNox;
     private boolean running = false;
+    Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
     @FXML
@@ -214,8 +218,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
 
     private boolean loadReport() throws SQLException {
         int lnCtr;
-        Map<String, Object> params = new HashMap<>();
-        actMasterData.clear();
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
@@ -240,7 +242,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             String lsFrom = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
             String lsTo = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
             String duration = lsFrom + " - " + lsTo;
-            params.put("durationTime", "test");
+            params.put("durationTime", duration);
             //Activity Location
             locationData.clear();
             String sAddress = "";
@@ -280,32 +282,30 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                         oTransPrint.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase(),
                         oTransPrint.getActVehicle(lnCtr, "sDescript").toString().toUpperCase()));
             }
-        }
-        String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/test.jasper";
-        JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
-        JRBeanCollectionDataSource actlocation = new JRBeanCollectionDataSource(locationData);
-        JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
 
-        params.put(
-                "vehicle", vehicle);
-        params.put(
-                "actlocation", actlocation);
-        params.put(
-                "member", member);
-        try {
-            poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params);
-            params.forEach((key, value) -> System.out.println("key: " + key + " / " + "value: " + value));
-            if (poJasperPrint != null) {
-                showReport();
+            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/ActivityReport.jasper";
+            JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
+            JRBeanCollectionDataSource actlocation = new JRBeanCollectionDataSource(locationData);
+            JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
+            System.out.println("vehicle: " + vehicle.getData());
+            params.put(
+                    "vehicle", vehicle);
+            params.put(
+                    "actlocation", actlocation);
+            params.put(
+                    "member", member);
+            try {
+                poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, new JREmptyDataSource());
+                if (poJasperPrint != null) {
+                    showReport();
+                }
+            } catch (JRException ex) {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
             }
-        } catch (JRException ex) {
-            running = false;
-            vbProgress.setVisible(false);
-            timeline.stop();
         }
-
         return false;
-
     }
 
     private void showReport() {
