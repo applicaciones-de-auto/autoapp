@@ -234,7 +234,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             params.put("actRemarks", getValueReport("actLogRrmks", "sRemarksx"));
             params.put("actBranchNm", getValueReport("actBranchNm", "sBranchNm"));
             params.put("actBranchCd", getValueReport("actLocation", "sLocation"));
-            params.put("actTrgClnt", oTransPrint.getMaster("nTrgtClnt"));
+            params.put("actTrgClnt", String.valueOf(oTransPrint.getMaster("nTrgtClnt")));
             params.put("actRcvdBdgt", formatAmount(oTransPrint.getMaster("nRcvdBdgt").toString()));
             params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
             params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
