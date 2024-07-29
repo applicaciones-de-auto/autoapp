@@ -53,10 +53,17 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
+import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
+import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
+import org.guanzon.autoapp.controllers.general.CustomerFormController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
+import org.guanzon.autoapp.controllers.parameters.BankEntryController;
+import org.guanzon.autoapp.controllers.parameters.BankInformationController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
@@ -193,6 +200,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuVhclEngEntry;
     @FXML
     private MenuItem mnuVhclFrmEntry;
+    @FXML
+    private MenuItem mnuBankInfo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -599,8 +608,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //            /*DIRECTORY*/
             case psGeneralPath + "ActivityForm.fxml":
                 return new ActivityFormController();
-//            case "ActivityApproval.fxml":
-//                return new ActivityApprovalController();
+            case psGeneralPath + "ActivityApproval.fxml":
+                return new ActivityApprovalController();
             case "ActivitySourceTypeEntry.fxml":
                 return new ActivitySourceTypeEntryController();
             case psGeneralPath + "CustomerForm.fxml":
@@ -635,8 +644,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new VehicleInquiryFormController();
 //            case "VehicleSalesApproval.fxml":
 //                return new VehicleSalesApprovalController();
-//            case "BankEntryForm_1.fxml":
-//                return new BankEntryForm_1Controller();
+            case "BankEntry.fxml":
+                return new BankEntryController();
+            case "BankInformation.fxml":
+                return new BankInformationController();
 //            case "UnitDeliveryReceiptForm.fxml":
 //                return new UnitDeliveryReceiptFormController();
 //            case "VSPForm.fxml":
@@ -732,9 +743,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Vehicle Sales Proposal";
             case "VSPAddOnsApproval.fxml":
                 return "VSP Add Ons Approval";
-            /*ACCOUNTING*/
-            case "BankEntryForm_1.fxml":
-                return "Bank";
             /*CASHIERING*/
             case "InvoiceForm.fxml":
                 if (sSalesInvoiceType.isEmpty()) {
@@ -773,8 +781,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             setScene(loadAnimateAnchor("FXMLMainScreen.fxml"));
         }
     }
-//    //Load Main Screen if no tab remain
-//
 
     public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
@@ -782,7 +788,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             setScene(loadAnimateAnchor("FXMLMainScreen.fxml"));
         }
     }
-//
 
     /*SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*/
     public void setScene2(TabPane foPane) {
@@ -816,12 +821,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     public Menu getMenu() {
         return menusales;
     }
-//
 
     public StackPane getStactPane() {
         return workingSpace;
     }
-//
 
     /*MENU ACTIONS OPENING FXML's*/
     @FXML
@@ -843,6 +846,16 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     /*SALES*/
+    @FXML
+    private void mnuVhclSalesEntryClick(ActionEvent event) {
+        sVehicleInfoType = "Vehicle Sales Information";
+        String sformname = psGeneralPath + "CustomerVehicleInfoForm.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
     @FXML
     private void mnuSalesJobOrderClick(ActionEvent event) {
         sJobOrderType = "Sales Job Order";
@@ -928,7 +941,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
     }
 
-    @FXML
     private void mnuVhclEntryClick(ActionEvent event) {
         sVehicleInfoType = "Vehicle Sales Information";
         String sformname = psGeneralPath + "CustomerVehicleInfoForm.fxml";
@@ -998,14 +1010,19 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
 
-    /*ACCOUNTING*/
+    /*Bank*/
     @FXML
     private void mnuBankClick(ActionEvent event) {
-        String sformname = "BankEntryForm_1.fxml";
+        String sformname = "BankEntry.fxml";
         //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+    }
+
+    @FXML
+    private void mnuBankInfoClick(ActionEvent event) {
+        String sformname = "BankInformation.fxml";
+        //check tab
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
     /*CASHIERING*/
@@ -1081,7 +1098,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuActivityApprovClick(ActionEvent event) {
-        String sformname = "ActivityApproval.fxml";
+        String sformname = psGeneralPath + "ActivityApproval.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1238,8 +1255,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //    //close whole application
 
     public void logout(Stage stage) {
-
-        if (ShowMessageFX.YesNo(null, "Exit", "Are you sure, do you want to close?") == true) {
+        if (ShowMessageFX.YesNo(null, "Integrated Automotive System", "Are you sure, do you want to close?") == true) {
 //            if (tabName.size() > 0) {
 //                for (String tabsName : tabName) {
 //                    TabsStateManager.closeTab(tabsName);
