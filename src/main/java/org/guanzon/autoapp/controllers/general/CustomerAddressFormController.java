@@ -161,7 +161,6 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                         txtField05Addr.setDisable(false);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField23Addr.clear();
                         txtField23Addr.clear(); // Province
                         txtField05Addr.setDisable(true);
                         txtField23Addr.focusedProperty();

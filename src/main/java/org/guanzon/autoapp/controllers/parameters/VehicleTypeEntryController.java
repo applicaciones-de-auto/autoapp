@@ -432,21 +432,20 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
                 }
                 break;
             case "btnBrowse":
-                JSONObject poJSon;
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Vehicle Type Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                poJSon = oTransType.searchRecord("", false);
-                if ("success".equals((String) poJSon.get("result"))) {
+                loJSON = oTransType.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
                     clearFields();
                     loadTypeFields();
                     pnEditMode = oTransType.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Type Information", (String) poJSon.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle Type Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
@@ -455,11 +454,11 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransType.getModel().getModel().getTypeID();
-                    poJSon = oTransType.deactivateRecord(fsValue);
-                    if ("success".equals((String) poJSon.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Type Information", (String) poJSon.get("message"));
+                    loJSON = oTransType.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Type Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Type Information", (String) poJSon.get("message"));
+                        ShowMessageFX.Warning(null, "Vehicle Type Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransType.openRecord(oTransType.getModel().getModel().getTypeID());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -472,11 +471,11 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransType.getModel().getModel().getTypeID();
-                    poJSon = oTransType.activateRecord(fsValue);
-                    if ("success".equals((String) poJSon.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Type Information", (String) poJSon.get("message"));
+                    loJSON = oTransType.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Type Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Type Information", (String) poJSon.get("message"));
+                        ShowMessageFX.Warning(null, "Vehicle Type Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransType.openRecord(oTransType.getModel().getModel().getTypeID());
                     if ("success".equals((String) loJSON.get("result"))) {

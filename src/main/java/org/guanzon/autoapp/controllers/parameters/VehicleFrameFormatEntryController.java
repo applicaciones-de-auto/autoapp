@@ -311,7 +311,7 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject poJson = new JSONObject();
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
@@ -319,8 +319,8 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                     clearFields();
                     if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
                         oTransModelFrameFormat = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
-                        poJson = oTransModelFrameFormat.newRecord();
-                        if ("success".equals((String) poJson.get("result"))) {
+                        loJSON = oTransModelFrameFormat.newRecord();
+                        if ("success".equals((String) loJSON.get("result"))) {
                             if (pbOpenEvent) {
                                 oTransModelFrameFormat.getModel().getModel().setMakeID(psMakeID);
                                 oTransModelFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
@@ -330,12 +330,12 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                             loadFrameFormatFields();
                             pnEditMode = oTransModelFrameFormat.getEditMode();
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         }
                     } else {
                         oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
-                        poJson = oTransMakeFrameFormat.newRecord();
-                        if ("success".equals((String) poJson.get("result"))) {
+                        loJSON = oTransMakeFrameFormat.newRecord();
+                        if ("success".equals((String) loJSON.get("result"))) {
                             if (pbOpenEvent) {
                                 oTransMakeFrameFormat.getModel().getModel().setMakeID(psMakeID);
                                 oTransMakeFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
@@ -343,7 +343,7 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                             loadFrameFormatFields();
                             pnEditMode = oTransMakeFrameFormat.getEditMode();
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         }
                     }
                 } else {
@@ -352,16 +352,16 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                 break;
             case "btnEdit":
                 if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                    poJson = oTransModelFrameFormat.updateRecord();
+                    loJSON = oTransModelFrameFormat.updateRecord();
                     pnEditMode = oTransModelFrameFormat.getEditMode();
-                    if ("error".equals((String) poJson.get("result"))) {
-                        ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
                 } else {
-                    poJson = oTransMakeFrameFormat.updateRecord();
+                    loJSON = oTransMakeFrameFormat.updateRecord();
                     pnEditMode = oTransMakeFrameFormat.getEditMode();
-                    if ("error".equals((String) poJson.get("result"))) {
-                        ShowMessageFX.Warning((String) poJson.get("message"), "Warning", null);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
                 }
                 break;
@@ -369,33 +369,33 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                 if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
                     if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
                         if (ShowMessageFX.YesNo(null, "Vehicle FrameFormat Information Saving....", "Are you sure, do you want to save?")) {
-                            poJson = oTransModelFrameFormat.saveRecord();
-                            if ("success".equals((String) poJson.get("result"))) {
-                                ShowMessageFX.Information(null, "Vehicle FrameFormat Information", (String) poJson.get("message"));
-                                poJson = oTransModelFrameFormat.openRecord(oTransModelFrameFormat.getModel().getModel().getModelID(), oTransModelFrameFormat.getModel().getModel().getEntryNo());
-                                if ("success".equals((String) poJson.get("result"))) {
+                            loJSON = oTransModelFrameFormat.saveRecord();
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, "Vehicle FrameFormat Information", (String) loJSON.get("message"));
+                                loJSON = oTransModelFrameFormat.openRecord(oTransModelFrameFormat.getModel().getModel().getModelID(), oTransModelFrameFormat.getModel().getModel().getEntryNo());
+                                if ("success".equals((String) loJSON.get("result"))) {
                                     loadFrameFormatFields();
                                     initFields(pnEditMode);
                                     pnEditMode = oTransModelFrameFormat.getEditMode();
                                 }
                             } else {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 return;
                             }
                         }
                     } else {
                         if (ShowMessageFX.YesNo(null, "Vehicle FrameFormat Information Saving....", "Are you sure, do you want to save?")) {
-                            poJson = oTransMakeFrameFormat.saveRecord();
-                            if ("success".equals((String) poJson.get("result"))) {
-                                ShowMessageFX.Information(null, "Vehicle FrameFormat Information", (String) poJson.get("message"));
-                                poJson = oTransMakeFrameFormat.openRecord(oTransMakeFrameFormat.getModel().getModel().getMakeID(), oTransMakeFrameFormat.getModel().getModel().getEntryNo());
-                                if ("success".equals((String) poJson.get("result"))) {
+                            loJSON = oTransMakeFrameFormat.saveRecord();
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, "Vehicle FrameFormat Information", (String) loJSON.get("message"));
+                                loJSON = oTransMakeFrameFormat.openRecord(oTransMakeFrameFormat.getModel().getModel().getMakeID(), oTransMakeFrameFormat.getModel().getModel().getEntryNo());
+                                if ("success".equals((String) loJSON.get("result"))) {
                                     loadFrameFormatFields();
                                     initFields(pnEditMode);
                                     pnEditMode = oTransMakeFrameFormat.getEditMode();
                                 }
                             } else {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJson.get("message"));
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 return;
                             }
                         }
@@ -415,7 +415,6 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                 break;
             case "btnBrowse":
                 if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
-                    JSONObject poJSon;
                     if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                         if (ShowMessageFX.YesNo(null, "Search Vehicle Frame Format Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                         } else {
@@ -423,22 +422,22 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                         }
                     }
                     if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                        poJSon = oTransModelFrameFormat.searchRecord("", false);
-                        if ("success".equals((String) poJSon.get("result"))) {
+                        loJSON = oTransModelFrameFormat.searchRecord("", false);
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadFrameFormatFields();
                             pnEditMode = oTransModelFrameFormat.getEditMode();
                             initFields(pnEditMode);
                         } else {
-                            ShowMessageFX.Warning(null, "Search Vehicle Model Frame Format Information", (String) poJSon.get("message"));
+                            ShowMessageFX.Warning(null, "Search Vehicle Model Frame Format Information", (String) loJSON.get("message"));
                         }
                     } else {
-                        poJSon = oTransMakeFrameFormat.searchRecord("", false);
-                        if ("success".equals((String) poJSon.get("result"))) {
+                        loJSON = oTransMakeFrameFormat.searchRecord("", false);
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadFrameFormatFields();
                             pnEditMode = oTransMakeFrameFormat.getEditMode();
                             initFields(pnEditMode);
                         } else {
-                            ShowMessageFX.Warning(null, "Search Vehicle Make Frame Format Information", (String) poJSon.get("message"));
+                            ShowMessageFX.Warning(null, "Search Vehicle Make Frame Format Information", (String) loJSON.get("message"));
                         }
                     }
                 } else {

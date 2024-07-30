@@ -122,27 +122,25 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private TableView<ModelCustomerVehicleInfo> tblViewVhclInfo, tblViewCoVhclInfo;
     /* -------------------TABLE COLUMN--------------------- */
     @FXML
-    private TableColumn<String, ModelCustomerAddress> addrindex01, addrindex02,
+    private TableColumn< ModelCustomerAddress, String> addrindex01, addrindex02,
             addrindex03, addrindex04, addrindex05, addrindex06, addrindex07,
             addrindex08, addrindex09, addrindex10;
 
     @FXML
-    private TableColumn<String, ModelCustomerMobile> contindex01, contindex02, contindex03,
+    private TableColumn< ModelCustomerMobile, String> contindex01, contindex02, contindex03,
             contindex04, contindex05, contindex06, contindex07;
 
     @FXML
-    private TableColumn<String, ModelCustomerEmail> emadindex01, emadindex02, emadindex03,
+    private TableColumn<ModelCustomerEmail, String> emadindex01, emadindex02, emadindex03,
             emadindex04, emadindex05;
 
     @FXML
-    private TableColumn<String, ModelCustomerSocialMedia> socmindex01, socmindex02, socmindex03, socmindex04;
+    private TableColumn< ModelCustomerSocialMedia, String> socmindex01, socmindex02, socmindex03, socmindex04;
     @FXML
-    private TableColumn<String, ModelCustomerVehicleInfo> tblVhcllist01, tblVhcllist02, tblVhcllist03,
-            tblVhcllist04, tblVhcllist06, tblVhcllist07, tblVhcllist05;
-
+    private TableColumn< ModelCustomerVehicleInfo, String> tblVhcllist01, tblVhcllist02, tblVhcllist03, tblVhcllist04, tblVhcllist05, tblVhcllist06;
     @FXML
-    private TableColumn<String, ModelCustomerVehicleInfo> tblCoVhcllist01, tblCoVhcllist02, tblCoVhcllist03, tblCoVhcllist04,
-            tblCoVhcllist06, tblCoVhcllist07, tblCoVhcllist05;
+    private TableColumn< ModelCustomerVehicleInfo, String> tblCoVhcllist01, tblCoVhcllist02, tblCoVhcllist03, tblCoVhcllist04,
+            tblCoVhcllist06, tblCoVhcllist05;
     private TextField txtField01;
 
     /* -------------------TEXTFIELDS----------------------- */
@@ -168,6 +166,8 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     private Label lblType;
     @FXML
     private Label lblTypeValue;
+    @FXML
+    private TableColumn<?, ?> tblCoVhcllist07;
 
     /**
      * Initializes the controller class.
@@ -570,7 +570,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject loJson = new JSONObject();
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         iTabIndex = tabPCustCont.getSelectionModel().getSelectedIndex();
         switch (lsButton) {
@@ -578,19 +578,19 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 clearFields();
                 clearTables();
                 oTrans = new Client(oApp, false, oApp.getBranchCode());
-                loJson = oTrans.newRecord();
-                if ("success".equals((String) loJson.get("result"))) {
+                loJSON = oTrans.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadCustomerInformation();
                     pnEditMode = oTrans.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pModuleName, (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJson = oTrans.updateRecord();
+                loJSON = oTrans.updateRecord();
                 pnEditMode = oTrans.getEditMode();
-                if ("error".equals((String) loJson.get("result"))) {
-                    ShowMessageFX.Warning((String) loJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
@@ -673,11 +673,11 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     return;
                 }
                 if (setSelection()) {
-                    loJson = oTrans.saveRecord();
-                    if ("success".equals((String) loJson.get("result"))) {
-                        ShowMessageFX.Information(null, "Customer Information", (String) loJson.get("message"));
-                        loJson = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
-                        if ("success".equals((String) loJson.get("result"))) {
+                    loJSON = oTrans.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Customer Information", (String) loJSON.get("message"));
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
                             loadCustomerInformation();
                             loadAddress();
                             loadContact();
@@ -689,7 +689,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                             pnEditMode = oTrans.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, pModuleName, (String) loJson.get("message"));
+                        ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
                         return;
                     }
                 } else {
@@ -705,15 +705,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnBrowse":
-                JSONObject poJSon;
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Customer Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                poJSon = oTrans.searchRecord("", false);
-                if ("success".equals((String) poJSon.get("result"))) {
+                loJSON = oTrans.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadCustomerInformation();
                     loadAddress();
                     loadContact();
@@ -724,7 +723,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Customer Information Confirmation", (String) poJSon.get("message"));
+                    ShowMessageFX.Warning(null, "Search Customer Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
@@ -1549,6 +1548,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     ) {
     }
 
+    private String getVehicleInfo(String fsValue, Integer rowCounter, String fsCol) {
+        fsValue = "";
+        if (oTransVehicle.getVehicleSerial(rowCounter, fsCol) != null) {
+            fsValue = String.valueOf(oTransVehicle.getVehicleSerial(rowCounter, fsCol));
+        }
+        return fsValue;
+    }
+
     private void loadVehicleInfoTable() {
         JSONObject loJSON;
         vhclinfodata.clear();
@@ -1557,14 +1564,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {
                 vhclinfodata.add(new ModelCustomerVehicleInfo(
                         String.valueOf(lnCtr + 1), //ROW
-                        oTransVehicle.getVehicleSerial(lnCtr, 8).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 20).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 33).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 9).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 1).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 6).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 35).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 36).toString()
+                        getVehicleInfo("fsCSNo", lnCtr, "sCSNoxxxx"),
+                        getVehicleInfo("fsPlateNo", lnCtr, "sPlateNox"),
+                        getVehicleInfo("fsDescript", lnCtr, "sDescript"),
+                        getVehicleInfo("fsCompany", lnCtr, "sCOwnerNm"),
+                        getVehicleInfo("fsDealerNm", lnCtr, "sDealerNm"),
+                        "",
+                        "",
+                        ""
                 ));
             }
         }
@@ -1577,8 +1584,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         tblVhcllist03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
         tblVhcllist04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
         tblVhcllist05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
-        tblVhcllist06.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
-        tblVhcllist07.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
+        tblVhcllist06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
 
         tblViewVhclInfo.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewVhclInfo.lookup("TableHeaderRow");
@@ -1599,14 +1605,14 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             for (lnCtr = 0; lnCtr <= oTransVehicle.getVehicleSerialList().size() - 1; lnCtr++) {
                 coownvhclinfodata.add(new ModelCustomerVehicleInfo(
                         String.valueOf(lnCtr + 1), //ROW
-                        oTransVehicle.getVehicleSerial(lnCtr, 8).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 20).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 33).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 9).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 1).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 6).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 35).toString(),
-                        oTransVehicle.getVehicleSerial(lnCtr, 36).toString()
+                        getVehicleInfo("fsCSNo", lnCtr, "sCSNoxxxx"),
+                        getVehicleInfo("fsPlateNo", lnCtr, "sPlateNox"),
+                        getVehicleInfo("fsDescript", lnCtr, "sDescript"),
+                        getVehicleInfo("fsCompany", lnCtr, "sOwnerNmx"),
+                        getVehicleInfo("fsDealerNm", lnCtr, "sDealerNm"),
+                        "",
+                        "",
+                        ""
                 ));
             }
         }
@@ -1619,8 +1625,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         tblCoVhcllist03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
         tblCoVhcllist04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
         tblCoVhcllist05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
-        tblCoVhcllist06.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
-        tblCoVhcllist07.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
+        tblCoVhcllist06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
 
         tblViewCoVhclInfo.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewCoVhclInfo.lookup("TableHeaderRow");

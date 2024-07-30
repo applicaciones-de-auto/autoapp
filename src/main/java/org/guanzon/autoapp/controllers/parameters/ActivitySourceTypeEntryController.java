@@ -11,11 +11,14 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -24,7 +27,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.auto.main.parameter.Vehicle_Make;
+import org.guanzon.auto.main.parameter.Activity_Source;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -33,14 +36,15 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author Auto Group Programmers
+ * @author User
  */
-public class VehicleMakeEntryController implements Initializable, ScreenInterface {
+public class ActivitySourceTypeEntryController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-    private Vehicle_Make oTransMake;
-    private final String pxeModuleName = "Vehicle Make";
+    private Activity_Source oTransActivity;
+    private final String pxeModuleName = "Activity Source";
     private int pnEditMode;
+    ObservableList<String> cType = FXCollections.observableArrayList("EVENT", "SALES CALL", "PROMO");
     @FXML
     private Button btnAdd;
     @FXML
@@ -52,17 +56,19 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     @FXML
     private Button btnDeactivate;
     @FXML
+    private Button btnActive;
+    @FXML
     private Button btnBrowse;
     @FXML
     private Button btnClose;
     @FXML
     private TextField txtField01;
     @FXML
-    private TextField txtField02;
-    @FXML
     private CheckBox cboxActivate;
     @FXML
-    private Button btnActive;
+    private TextField txtField03;
+    @FXML
+    private ComboBox<String> comboBox02;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -70,7 +76,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     }
 
     private Stage getStage() {
-        return (Stage) txtField02.getScene().getWindow();
+        return (Stage) txtField03.getScene().getWindow();
     }
 
     /**
@@ -78,21 +84,61 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
+        oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
         initTextFieldPattern();
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
         initButtons();
         clearFields();
+        initComboBoxAction();
+        comboBox02.setItems(cType);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadMakeFields() {
-        txtField01.setText(oTransMake.getModel().getModel().getMakeID());
-        txtField02.setText(oTransMake.getModel().getModel().getMakeDesc());
-        if (oTransMake.getModel().getModel().getRecdStat().equals("1")) {
+    private void initComboBoxAction() {
+        comboBox02.setOnAction(e
+                -> {
+            int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox02 >= 0) {
+                    switch (selectedComboBox02) {
+                        case 0:
+                            oTransActivity.getModel().getModel().setEventTyp("eve");
+                            break;
+                        case 1:
+                            oTransActivity.getModel().getModel().setEventTyp("sal");
+                            break;
+                        case 2:
+                            oTransActivity.getModel().getModel().setEventTyp("pro");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        );
+    }
+
+    private void loadActivitySource() {
+        txtField01.setText(oTransActivity.getModel().getModel().getActTypID());
+        if (oTransActivity.getModel().getModel().getEventTyp() != null && !oTransActivity.getModel().getModel().getEventTyp().trim().isEmpty()) {
+            switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
+                case "eve":
+                    comboBox02.setValue("EVENT");
+                    break;
+                case "sal":
+                    comboBox02.setValue("SALES CALL");
+                    break;
+                case "pro":
+                    comboBox02.setValue("PROMO");
+                    break;
+            }
+        }
+        txtField03.setText(oTransActivity.getModel().getModel().getActTypDs());
+        if (oTransActivity.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
@@ -100,19 +146,18 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     }
 
     private void initTextFieldPattern() {
-        Pattern makePat;
-        makePat = Pattern.compile("[A-Za-z ]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(makePat));
-
+        Pattern actPat;
+        actPat = Pattern.compile("[A-Za-z ,/'.]*");
+        txtField03.setTextFormatter(new InputTextFormatterUtil(actPat));
     }
 
     private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
@@ -131,7 +176,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        List<TextField> loTxtField = Arrays.asList(txtField03);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /*Set TextField Value to Master Class*/
@@ -145,8 +190,8 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
-                    oTransMake.getModel().getModel().setMakeDesc(lsValue);
+                case 3:
+                    oTransActivity.getModel().getModel().setActTypDs(lsValue);
                     break;
             }
         } else {
@@ -167,45 +212,48 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
-                loJSON = oTransMake.newRecord();
+                oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
+                loJSON = oTransActivity.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMakeFields();
-                    pnEditMode = oTransMake.getEditMode();
+                    loadActivitySource();
+                    pnEditMode = oTransActivity.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransMake.updateRecord();
-                pnEditMode = oTransMake.getEditMode();
+                loJSON = oTransActivity.updateRecord();
+                pnEditMode = oTransActivity.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Vehicle Make Information Saving....", "Are you sure, do you want to save?")) {
-                    if (txtField02.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", "Please enter valid make information.");
-                        txtField02.setText("");
+                if (ShowMessageFX.YesNo(null, "Activity Source Information Saving....", "Are you sure, do you want to save?")) {
+                    if (txtField03.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, "Activity Source Information", "Please enter valid make information.");
+                        txtField03.setText("");
                         return;
                     }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", "Please enter value make information.");
-                        txtField02.setText("");
+                    if (txtField03.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, "Activity Source Information", "Please enter value make information.");
+                        txtField03.setText("");
                         return;
                     }
-                    loJSON = oTransMake.saveRecord();
+                    if (!setSelection()) {
+                        return;
+                    }
+                    loJSON = oTransActivity.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
-                        loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                        ShowMessageFX.Information(null, "Activity Source Information", (String) loJSON.get("message"));
+                        loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadMakeFields();
+                            loadActivitySource();
                             initFields(pnEditMode);
-                            pnEditMode = oTransMake.getEditMode();
+                            pnEditMode = oTransActivity.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "Activity Source Information", (String) loJSON.get("message"));
                         return;
                     }
                 }
@@ -214,24 +262,25 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
+                    oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
             case "btnBrowse":
+                JSONObject poJSon;
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                    if (ShowMessageFX.YesNo(null, "Search Vehicle Make Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    if (ShowMessageFX.YesNo(null, "Search  Activity Source Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                loJSON = oTransMake.searchRecord("", false);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadMakeFields();
-                    pnEditMode = oTransMake.getEditMode();
+                poJSon = oTransActivity.searchRecord("", false);
+                if ("success".equals((String) poJSon.get("result"))) {
+                    loadActivitySource();
+                    pnEditMode = oTransActivity.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Make Information", (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, "Search  Activity Source Information", (String) poJSon.get("message"));
                 }
                 break;
             case "btnClose":
@@ -239,35 +288,36 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    loJSON = oTransMake.deactivateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                    String fsValue = oTransActivity.getModel().getModel().getActTypID();
+                    poJSon = oTransActivity.deactivateRecord(fsValue);
+                    if ("success".equals((String) poJSon.get("result"))) {
+                        ShowMessageFX.Information(null, " Activity Source Information", (String) poJSon.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, " Activity Source Information", (String) poJSon.get("message"));
                     }
-                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID()
+                    );
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMakeFields();
+                        loadActivitySource();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMake.getEditMode();
+                        pnEditMode = oTransActivity.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    loJSON = oTransMake.activateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                    String fsValue = oTransActivity.getModel().getModel().getActTypID();
+                    poJSon = oTransActivity.activateRecord(fsValue);
+                    if ("success".equals((String) poJSon.get("result"))) {
+                        ShowMessageFX.Information(null, " Activity Source Information", (String) poJSon.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, " Activity Source Information", (String) poJSon.get("message"));
                     }
-                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMakeFields();
+                        loadActivitySource();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMake.getEditMode();
+                        pnEditMode = oTransActivity.getEditMode();
                     }
                 }
                 break;
@@ -278,16 +328,41 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
         initFields(pnEditMode);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
+                return false;
+            } else {
+                switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
+                    case "eve":
+                        comboBox02.setValue("EVENT");
+                        break;
+                    case "sal":
+                        comboBox02.setValue("SALES CALL");
+                        break;
+                    case "pro":
+                        comboBox02.setValue("PROMO");
+                        break;
+                }
+            }
+        }
+        return true;
+    }
+
     private void clearFields() {
         cboxActivate.setSelected(false);
         txtField01.clear();
-        txtField02.clear();
+        comboBox02.setValue("");
+        txtField03.clear();
     }
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         txtField01.setDisable(true);
-        txtField02.setDisable(!lbShow);
+        comboBox02.setDisable(!lbShow);
+        txtField03.setDisable(!lbShow);
         cboxActivate.setDisable(true);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
@@ -302,7 +377,7 @@ public class VehicleMakeEntryController implements Initializable, ScreenInterfac
         btnActive.setVisible(false);
         btnActive.setManaged(false);
         if (fnValue == EditMode.READY) {
-            if (oTransMake.getModel().getModel().getRecdStat().equals("1")) {
+            if (oTransActivity.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
                 btnDeactivate.setVisible(true);

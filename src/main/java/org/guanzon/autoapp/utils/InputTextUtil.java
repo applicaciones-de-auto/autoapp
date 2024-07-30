@@ -4,13 +4,15 @@
  */
 package org.guanzon.autoapp.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.function.UnaryOperator;
+import java.util.Date;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
  *
@@ -20,9 +22,27 @@ public class InputTextUtil {
 
     /*Convert Date to String*/
     public static LocalDate strToDate(String val) {
-        DateTimeFormatter date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(val, date_formatter);
-        return localDate;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(val, dateFormatter);
+    }
+
+    public static String xsDateShort(Date fdValue) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(fdValue);
+        return date;
+    }
+
+    public static String xsDateShort(String fsValue) throws ParseException {
+        SimpleDateFormat fromUser = new SimpleDateFormat("MMMM dd, yyyy");
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String lsResult = "";
+        try {
+            lsResult = myFormat.format(fromUser.parse(fsValue));
+        } catch (ParseException e) {
+            ShowMessageFX.Error(e.getMessage(), "xsDateShort", "Please inform MIS Department.");
+            System.exit(1);
+        }
+        return lsResult;
     }
 
     public static void setCapsLockBehavior(TextField textField) {

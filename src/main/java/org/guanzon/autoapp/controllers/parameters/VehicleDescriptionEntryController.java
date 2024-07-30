@@ -461,20 +461,19 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                 }
                 break;
             case "btnBrowse":
-                JSONObject poJSon;
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Vehicle Description Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                poJSon = oTransVehicleDescription.searchRecord("", false);
-                if ("success".equals((String) poJSon.get("result"))) {
+                loJSON = oTransVehicleDescription.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadVehicleDescriptionFields();
                     pnEditMode = oTransVehicleDescription.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Description Information", (String) poJSon.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle Description Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
@@ -483,11 +482,11 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransVehicleDescription.getModel().getModel().getVhclID();
-                    poJSon = oTransVehicleDescription.deactivateRecord(fsValue);
-                    if ("success".equals((String) poJSon.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Description Information", (String) poJSon.get("message"));
+                    loJSON = oTransVehicleDescription.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Description Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Description Information", (String) poJSon.get("message"));
+                        ShowMessageFX.Warning(null, "Vehicle Description Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -500,11 +499,11 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransVehicleDescription.getModel().getModel().getVhclID();
-                    poJSon = oTransVehicleDescription.activateRecord(fsValue);
-                    if ("success".equals((String) poJSon.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Description Information", (String) poJSon.get("message"));
+                    loJSON = oTransVehicleDescription.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Description Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Description Information", (String) poJSon.get("message"));
+                        ShowMessageFX.Warning(null, "Vehicle Description Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransVehicleDescription.openRecord(oTransVehicleDescription.getModel().getModel().getVhclID());
                     if ("success".equals((String) loJSON.get("result"))) {

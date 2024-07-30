@@ -1,29 +1,32 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.guanzon.autoapp.models.general;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.CheckBox;
 
 /**
  *
- * @author Arsiela Date Created: 06-03-2023
+ * @author John Dave
  */
-public class ModelCustomerVehicleInfo {
+public class ModelActivityApproval {
 
-    private SimpleStringProperty tblindex01; //Row
-    private SimpleStringProperty tblindex02; //CS No
-    private SimpleStringProperty tblindex03; //Plate No
-    private SimpleStringProperty tblindex04; //Vhcl Desc
-    private SimpleStringProperty tblindex05; //sClientID
-    private SimpleStringProperty tblindex06; //Seller Dealer
-    private SimpleStringProperty tblindex07;
-    private SimpleStringProperty tblindex08; //
-    private SimpleStringProperty tblindex09; //
+    private SimpleStringProperty tblindex01; // Row
+    private CheckBox select;
+    private SimpleStringProperty tblindex02; //ActNo
+    private SimpleStringProperty tblindex03; //ActPeriod From
+    private SimpleStringProperty tblindex04; //Activity Title
+    private SimpleStringProperty tblindex05; //Person in Charge
+    private SimpleStringProperty tblindex06; //Department
+    private SimpleStringProperty tblindex07; //Branch in Charge
+    private SimpleStringProperty tblindex08; //Activity Location
+    private SimpleStringProperty tblindex09; //Budget Proposal
+    private SimpleStringProperty tblindex10; //ActPeriod From To
+    private SimpleStringProperty tblindex11; //Activity Type Source
 
-    public ModelCustomerVehicleInfo(String tblindex01,
+    public ModelActivityApproval(String tblindex01,
             String tblindex02,
             String tblindex03,
             String tblindex04,
@@ -31,10 +34,12 @@ public class ModelCustomerVehicleInfo {
             String tblindex06,
             String tblindex07,
             String tblindex08,
-            String tblindex09
+            String tblindex09,
+            String tblindex10,
+            String tblindex11
     ) {
-
         this.tblindex01 = new SimpleStringProperty(tblindex01);
+        this.select = new CheckBox();
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
         this.tblindex04 = new SimpleStringProperty(tblindex04);
@@ -43,9 +48,10 @@ public class ModelCustomerVehicleInfo {
         this.tblindex07 = new SimpleStringProperty(tblindex07);
         this.tblindex08 = new SimpleStringProperty(tblindex08);
         this.tblindex09 = new SimpleStringProperty(tblindex09);
+        this.tblindex10 = new SimpleStringProperty(tblindex10);
+        this.tblindex11 = new SimpleStringProperty(tblindex11);
     }
 
-    //
     public String getTblindex01() {
         return tblindex01.get();
     }
@@ -54,7 +60,14 @@ public class ModelCustomerVehicleInfo {
         this.tblindex01.set(tblindex01);
     }
 
-    //
+    public CheckBox getSelect() {
+        return select;
+    }
+
+    public void setSelect(CheckBox select) {
+        this.select = select;
+    }
+
     public String getTblindex02() {
         return tblindex02.get();
     }
@@ -63,7 +76,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex02.set(tblindex02);
     }
 
-    //
     public String getTblindex03() {
         return tblindex03.get();
     }
@@ -72,7 +84,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex03.set(tblindex03);
     }
 
-    //
     public String getTblindex04() {
         return tblindex04.get();
     }
@@ -81,7 +92,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex04.set(tblindex04);
     }
 
-    //
     public String getTblindex05() {
         return tblindex05.get();
     }
@@ -90,7 +100,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex05.set(tblindex05);
     }
 
-    //
     public String getTblindex06() {
         return tblindex06.get();
     }
@@ -99,7 +108,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex06.set(tblindex06);
     }
 
-    //
     public String getTblindex07() {
         return tblindex07.get();
     }
@@ -108,7 +116,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex07.set(tblindex07);
     }
 
-    //
     public String getTblindex08() {
         return tblindex08.get();
     }
@@ -117,13 +124,28 @@ public class ModelCustomerVehicleInfo {
         this.tblindex08.set(tblindex08);
     }
 
-    //
     public String getTblindex09() {
         return tblindex09.get();
     }
 
     public void setTblindex09(String tblindex09) {
         this.tblindex09.set(tblindex09);
+    }
+
+    public String getTblindex10() {
+        return tblindex10.get();
+    }
+
+    public void setTblindex10(String tblindex10) {
+        this.tblindex10.set(tblindex10);
+    }
+
+    public String getTblindex11() {
+        return tblindex11.get();
+    }
+
+    public void setTblindex11(String tblindex11) {
+        this.tblindex11.set(tblindex11);
     }
 
 }

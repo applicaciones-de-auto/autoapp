@@ -5,9 +5,12 @@
 package org.guanzon.autoapp.controllers.parameters;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -315,20 +318,19 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
                 }
                 break;
             case "btnBrowse":
-                JSONObject poJSon;
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Vehicle EngineFormat Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                poJSon = oTransEngineFormat.searchRecord("", false);
-                if ("success".equals((String) poJSon.get("result"))) {
+                loJSON = oTransEngineFormat.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
                     loadEngineFormatFields();
                     pnEditMode = oTransEngineFormat.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle EngineFormat Information", (String) poJSon.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle EngineFormat Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
