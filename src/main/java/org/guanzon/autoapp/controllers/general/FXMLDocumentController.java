@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXML2.java to edit this template
  */
-package org.guanzon.autoapp;
+package org.guanzon.autoapp.controllers.general;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,6 +52,8 @@ import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
@@ -64,8 +66,6 @@ import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
-import org.guanzon.autoapp.controllers.parameters.InsuranceBranchInformationController;
-import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
@@ -650,12 +650,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //                return new VehicleSalesApprovalController();
             case "BankEntry.fxml":
                 return new BankEntryController();
-            case "BankBranchInformation.fxml":
+            case "BankInformation.fxml":
                 return new BankBranchInformationController();
-            case "InsuranceCompanyEntry.fxml":
-                return new InsuranceCompanyEntryController();
-            case "InsuranceBranchInformation.fxml":
-                return new InsuranceBranchInformationController();
 //            case "UnitDeliveryReceiptForm.fxml":
 //                return new UnitDeliveryReceiptFormController();
 //            case "VSPForm.fxml":
@@ -1028,7 +1024,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuBankInfoClick(ActionEvent event) {
-        String sformname = "BankBranchInformation.fxml";
+        String sformname = "BankInformation.fxml";
         //check tab
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
@@ -1195,20 +1191,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
     }
 
-    @FXML
-    private void mnuInsurClick(ActionEvent event) {
-        String sformname = "InsuranceCompanyEntry.fxml";
-        //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
-    }
-
-    @FXML
-    private void mnuInsurInfoClick(ActionEvent event) {
-        String sformname = "InsuranceBranchInformation.fxml";
-        //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
-    }
-
     /*Service*/
     @FXML
     private void mnuJobOrderClick(ActionEvent event) {
@@ -1221,7 +1203,17 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     /*Service*/
- /*SET CURRENT TIME*/
+    @FXML
+    private void mnuInsurInfoClick(ActionEvent event) {
+        String sformname = "InsuranceInformation_1.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+
+    /*SET CURRENT TIME*/
     private void getTime() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             Calendar cal = Calendar.getInstance();
@@ -1339,5 +1331,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //        //Bank Transasctions
 //        mnuBank.setVisible("A008;026".contains(oApp.getDepartment()));
 //    }
+
+    @FXML
+    private void mnuInsurClick(ActionEvent event) {
+    }
 
 }

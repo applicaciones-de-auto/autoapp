@@ -141,7 +141,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     @FXML
     private TableColumn< ModelCustomerVehicleInfo, String> tblCoVhcllist01, tblCoVhcllist02, tblCoVhcllist03, tblCoVhcllist04,
             tblCoVhcllist06, tblCoVhcllist05;
-    private TextField txtField01;
 
     /* -------------------TEXTFIELDS----------------------- */
     @FXML

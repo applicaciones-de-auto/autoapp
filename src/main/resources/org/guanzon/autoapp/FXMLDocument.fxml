@@ -98,10 +98,15 @@
                                                                 <Menu mnemonicParsing="false" text="Bank">
                                                                     <items>
                                                                         <MenuItem fx:id="mnuBank" mnemonicParsing="false" onAction="#mnuBankClick" text="Bank" />
-                                                                        <MenuItem fx:id="mnuBankInfo" mnemonicParsing="false" onAction="#mnuBankInfoClick" text="Bank Information" />
+                                                                        <MenuItem fx:id="mnuBankInfo" mnemonicParsing="false" onAction="#mnuBankInfoClick" text="Bank Branch Information" />
                                                                     </items>
                                                                 </Menu>
-                                                                <Menu mnemonicParsing="false" text="Insurance" />
+                                                                <Menu mnemonicParsing="false" text="Insurance">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuInsurInfo1" mnemonicParsing="false" onAction="#mnuInsurClick" text="Insurance" />
+                                                                        <MenuItem fx:id="mnuInsurInfo" mnemonicParsing="false" onAction="#mnuInsurInfoClick" text="Insurance Branch Information" />
+                                                                    </items>
+                                                                </Menu>
                                                                 <Menu mnemonicParsing="false" text="Activity">
                                                                     <items>
                                                                         <MenuItem fx:id="mnuActType" mnemonicParsing="false" onAction="#mnuActivityTypeClick" text="Activity Type" />
@@ -158,11 +163,7 @@
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
                                                             </items>
                                                         </Menu>
-                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
-                                                            <items>
-                                                                <MenuItem fx:id="mnuInsurInfo" mnemonicParsing="false" onAction="#mnuInsurInfoClick" text="Insurance" />
-                                                            </items>
-                                                        </Menu>
+                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance" />
                                                         <Menu mnemonicParsing="false" text="Cashiering">
                                                             <items>
                                                                 <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />
