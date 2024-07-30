@@ -439,7 +439,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
+        txtField01.setDisable(!lbShow);
         txtField02.setDisable(!lbShow);
         cboxActivate.setDisable(true);
         btnAdd.setVisible(!lbShow);
