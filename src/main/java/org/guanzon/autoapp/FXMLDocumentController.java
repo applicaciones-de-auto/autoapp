@@ -54,18 +54,22 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
-import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
-import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.general.SalesExecutiveFormController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
+import org.guanzon.autoapp.controllers.parameters.BinEntryParamController;
+import org.guanzon.autoapp.controllers.parameters.BrandEntryParamController;
+import org.guanzon.autoapp.controllers.parameters.CategoryEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.InsuranceBranchInformationController;
 import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyEntryController;
+import org.guanzon.autoapp.controllers.parameters.InvTypeEntryParamController;
+import org.guanzon.autoapp.controllers.parameters.InventoryLocationParamController;
+import org.guanzon.autoapp.controllers.parameters.MeasurementEntryParamController;
+import org.guanzon.autoapp.controllers.parameters.SectionEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
@@ -73,6 +77,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryControl
 import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
+import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -620,11 +625,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CustomerFormController();
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
                 return new CustomerVehicleInfoFormController();
+            case psGeneralPath + "SalesExecutiveForm.fxml":
+                return new SalesExecutiveFormController();
 ////               case "SupplierInfo.fxml":
 ////                    return new SupplierInfoController();
 //            /*SALES*/
-//            case "SalesAgentForm.fxml":
-//                return new SalesAgentFormController();
             case "VehicleDescriptionEntry.fxml":
                 return new VehicleDescriptionEntryController();
             case "VehicleMakeEntry.fxml":
@@ -672,22 +677,22 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //                return new VSPPendingPartsRequestController();
 //
 //            /*PARAMETERS*/
-//            case "InventoryLocationParam.fxml":
-//                return new InventoryLocationParamController();
-//            case "BinEntryParam.fxml":
-//                return new BinEntryParamController();
-//            case "SectionEntryParam.fxml":
-//                return new SectionEntryParamController();
-//            case "WareHouseEntryParam.fxml":
-//                return new WareHouseEntryParamController();
-//            case "CategoryEntryParam.fxml":
-//                return new CategoryEntryParamController();
-//            case "InvTypeEntryParam.fxml":
-//                return new InvTypeEntryParamController();
-//            case "MeasurementEntryParam.fxml":
-//                return new MeasurementEntryParamController();
-//            case "BrandEntryParam.fxml":
-//                return new BrandEntryParamController();
+            case "InventoryLocationParam.fxml":
+                return new InventoryLocationParamController();
+            case "BinEntryParam.fxml":
+                return new BinEntryParamController();
+            case "SectionEntryParam.fxml":
+                return new SectionEntryParamController();
+            case "WareHouseEntryParam.fxml":
+                return new WareHouseEntryParamController();
+            case "CategoryEntryParam.fxml":
+                return new CategoryEntryParamController();
+            case "InvTypeEntryParam.fxml":
+                return new InvTypeEntryParamController();
+            case "MeasurementEntryParam.fxml":
+                return new MeasurementEntryParamController();
+            case "BrandEntryParam.fxml":
+                return new BrandEntryParamController();
 //            case "InvoiceForm.fxml":
 //                return new InvoiceFormController();
 //            case "VehicleSalesInvoiceForm.fxml":
@@ -714,6 +719,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Activity Approval";
             case psGeneralPath + "CustomerForm.fxml":
                 return "Customer";
+            case psGeneralPath + "SalesExecutiveForm.fxml":
+                return "Sales Executive Information";
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
 //                if (sVehicleInfoType.isEmpty()) {
 //                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
@@ -730,13 +737,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "SupplierInfo.fxml":
                 return "Supplier";
             /*SALES*/
-            case "SalesAgentForm.fxml":
-                if (sSalesInfoType.isEmpty()) {
-                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
-                    return null;
-                }
-                return sSalesInfoType;
-//                return "Sales Agent";
 //            case "VehicleEntryForm.fxml":
 //                return "Vehicle Information";
             case "UnitReceivingForm.fxml":
@@ -877,7 +877,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuSalesAgentClick(ActionEvent event) {
         sSalesInfoType = "Referral Agent";
-        String sformname = "SalesAgentForm.fxml";
+        String sformname = "ReferralAgentForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -886,8 +886,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesExecutiveClick(ActionEvent event) {
-        sSalesInfoType = "Sales Executive";
-        String sformname = "SalesAgentForm.fxml";
+        String sformname = psGeneralPath + "SalesExecutiveForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
