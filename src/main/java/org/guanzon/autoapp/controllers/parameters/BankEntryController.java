@@ -76,34 +76,32 @@ public class BankEntryController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
 
         oTransBank = new Bank(oApp, false, oApp.getBranchCode());
-
-        InputTextUtil.addTextLimiter(txtField03, 10);
-
-        pnEditMode = EditMode.UNKNOWN;
+        InputTextUtil.addTextLimiter(txtField03, 30);
+        InputTextUtil.addTextLimiter(txtField04, 10);
 
         initTextKeyPressed();
         comboBox02.setItems(cBankType);
         comboBox02.setOnAction(e -> {
             int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                if (selectedComboBox02 >= 0) {
-//                    switch (selectedComboBox02) {
-//                        case 0:
-//                            oTransBank.getModel().getModel().setBankType("BANK");
-//                            break;
-//                        case 1:
-//                            oTransBank.getModel().getModel().setBankType("CRED");
-//                            break;
-//                        case 2:
-//                            oTransBank.getModel().getModel().setBankType("INSC");
-//                            break;
-//                        case 3:
-//                            oTransBank.getModel().getModel().setBankType("INVC");
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//                }
+                if (selectedComboBox02 >= 0) {
+                    switch (selectedComboBox02) {
+                        case 0:
+                            oTransBank.getModel().getModel().setBankType("bank");
+                            break;
+                        case 1:
+                            oTransBank.getModel().getModel().setBankType("cred");
+                            break;
+                        case 2:
+                            oTransBank.getModel().getModel().setBankType("insc");
+                            break;
+                        case 3:
+                            oTransBank.getModel().getModel().setBankType("invc");
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 initFields(pnEditMode);
             }
         });
@@ -117,6 +115,8 @@ public class BankEntryController implements Initializable, ScreenInterface {
 
         clearFields();
 
+        pnEditMode = EditMode.UNKNOWN;
+
         initFields(pnEditMode);
     }
 
@@ -128,20 +128,20 @@ public class BankEntryController implements Initializable, ScreenInterface {
                 return false;
             } else {
                 switch (comboBox02.getSelectionModel().getSelectedIndex()) {
-//                    case 0:
-//                        oTransBank.getModel().getModel().setBankType("BANK");
-//                        break;
-//                    case 1:
-//                        oTransBank.getModel().getModel().setBankType("CRED");
-//                        break;
-//                    case 2:
-//                        oTransBank.getModel().getModel().setBankType("INSC");
-//                        break;
-//                    case 3:
-//                        oTransBank.getModel().getModel().setBankType("INVC");
-//                        break;
-//                    default:
-//                        break;
+                    case 0:
+                        oTransBank.getModel().getModel().setBankType("bank");
+                        break;
+                    case 1:
+                        oTransBank.getModel().getModel().setBankType("cred");
+                        break;
+                    case 2:
+                        oTransBank.getModel().getModel().setBankType("insc");
+                        break;
+                    case 3:
+                        oTransBank.getModel().getModel().setBankType("invc");
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -380,26 +380,25 @@ public class BankEntryController implements Initializable, ScreenInterface {
 
     private void loadBankField() {
         txtField01.setText(oTransBank.getModel().getModel().getBankID());
-//        if (oTransBank.getModel().getModel().getBankType() != null && !oTransBank.getModel().getModel().getBankType().trim().isEmpty()) {
-//            switch ((String.valueOf(oTransBank.getModel().getModel().getBankType()))) {
-//                case "BANK":
-//                    comboBox02.setValue("BANK");
-//                    break;
-//                case "CRED":
-//                    comboBox02.setValue("CREDIT UNION");
-//                    break;
-//                case "INSC":
-//                    comboBox02.setValue("INSURANCE COMPANY");
-//                    break;
-//                case "INVC":
-//                    comboBox02.setValue("INVESTMENT COMPANIES");
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
+        if (oTransBank.getModel().getModel().getBankType() != null && !oTransBank.getModel().getModel().getBankType().trim().isEmpty()) {
+            switch ((String.valueOf(oTransBank.getModel().getModel().getBankType()))) {
+                case "bank":
+                    comboBox02.setValue("BANK");
+                    break;
+                case "cred":
+                    comboBox02.setValue("CREDIT UNION");
+                    break;
+                case "insc":
+                    comboBox02.setValue("INSURANCE COMPANY");
+                    break;
+                case "invc":
+                    comboBox02.setValue("INVESTMENT COMPANIES");
+                    break;
+                default:
+                    break;
+            }
+        }
         txtField03.setText(oTransBank.getModel().getModel().getBankName());
-
         txtField04.setText(oTransBank.getModel().getModel().getBankCode());
         if (oTransBank.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
