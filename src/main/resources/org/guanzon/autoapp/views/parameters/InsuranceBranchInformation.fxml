@@ -76,12 +76,12 @@
                                                             </font>
                                                         </Label>
                                                         <TextField fx:id="txtField01_Branch" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
-                                                        <Button fx:id="btnAddInsuranceCompany" mnemonicParsing="false" text="..." GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="txtField02_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                        <Button fx:id="btnAddInsuranceCompany" mnemonicParsing="false" text="..." GridPane.columnIndex="4" GridPane.rowIndex="1">
                                                             <tooltip>
-                                                                <Tooltip text="Please fill in Insurance Company Name field." />
+                                                                <Tooltip text="Insurance Company Entry button." />
                                                             </tooltip>
-                                                        </TextField>
+                                                        </Button>
+                                                        <TextField fx:id="txtField02_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                         <Label id="LabelDesc" text="Insurance Type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                         <ComboBox fx:id="comboBox03_Branch" prefHeight="24.0" prefWidth="230.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                     </children>
