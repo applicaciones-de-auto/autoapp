@@ -7,7 +7,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="217.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.controllers.parameters.InsuranceCompanyEntryController">
+<AnchorPane id="AnchorPane" prefHeight="217.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -67,19 +66,11 @@
                                             </font>
                                         </Label>
                                         <Label id="LabelDesc" text="Insurance Company Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtField01" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Insurance Company Name." />
-                                            </tooltip>
-                                        </TextField>
-                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
                                         <Label id="LabelDesc" layoutX="20.0" layoutY="46.0" text="Insurance Company Code" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Insurance Company Code." />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
+                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />
@@ -94,6 +85,14 @@
                     <bottom>
                         <AnchorPane prefHeight="0.0" prefWidth="527.0" style="-fx-background-color: #515151;">
                             <children>
+                                <Button fx:id="btnClose" contentDisplay="TOP" layoutX="416.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                    </graphic>
+                                </Button>
                                 <HBox prefHeight="53.0" prefWidth="430.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
                                     <children>
                                         <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
@@ -140,14 +139,6 @@
                                                 <Insets />
                                             </HBox.margin>
                                         </Button>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
                                             <effect>
                                                 <Blend />
@@ -159,16 +150,24 @@
                                                 <Insets />
                                             </HBox.margin>
                                         </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Activate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
+                                            </graphic>
+                                        </Button>
                                     </children>
                                 </HBox>
-                                <Button fx:id="btnClose" contentDisplay="TOP" layoutX="416.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
-                                    <effect>
-                                        <Blend />
-                                    </effect>
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
-                                    </graphic>
-                                </Button>
                             </children>
                         </AnchorPane>
                     </bottom>
