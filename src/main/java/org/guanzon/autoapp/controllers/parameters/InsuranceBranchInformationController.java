@@ -366,6 +366,9 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                             txtField02_Branch.requestFocus();
                             return;
                         }
+                        if (!setSelection()) {
+                            return;
+                        }
                         if (!txtField02_Branch.getText().isEmpty()) {
                             if (txtField05_Branch.getText().trim().equals("")) {
                                 ShowMessageFX.Warning(getStage(), "Please enter a valid value for Branch Name", "Warning", null);
@@ -418,9 +421,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                     } else {
                         return;
                     }
-                    if (!setSelection()) {
-                        return;
-                    }
+
                     loJSON = oTransInsuranceBranch.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
@@ -435,7 +436,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                         return;
                     }
                     break;
-                case "btnAddInsuranceEntry":
+                case "btnAddInsuranceCompany":
                     loadInsuranceEntry();
                     break;
                 case "btnDeactivate":
@@ -471,6 +472,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                             pnEditMode = oTransInsuranceBranch.getEditMode();
                         }
                     }
+                    break;
                 case "btnClose":
                     CommonUtils.closeStage(btnClose);
                     break;
@@ -485,7 +487,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/perameters/InsuranceCompanyEntry.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/InsuranceCompanyEntry.fxml"));
 
             InsuranceCompanyEntryController loControl = new InsuranceCompanyEntryController();
             loControl.setGRider(oApp);
@@ -594,7 +596,14 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         btnDeactivate.setManaged(false);
         btnActive.setVisible(false);
         btnActive.setManaged(false);
-
+        if (fnValue == EditMode.UPDATE) {
+            txtField02_Branch.setDisable(true);
+            txtField05_Branch.setDisable(true);
+            txtField06_Branch.setDisable(true);
+            txtField08_Branch.setDisable(true);
+            txtField09_Branch.setDisable(true);
+            txtField11_Branch.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
             if (oTransInsuranceBranch.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
