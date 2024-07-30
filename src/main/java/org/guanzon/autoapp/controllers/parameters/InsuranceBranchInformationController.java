@@ -13,13 +13,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,6 +38,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.parameter.InsuranceBranch;
 //import org.guanzon.auto.main.parameter.InsuranceBranch;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
@@ -49,12 +48,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class InsuranceBranchInformationController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-//    private InsuranceBranch oTrans;
+    private InsuranceBranch oTransInsuranceBranch;
     private final String pxeModuleName = "Insurance"; //Form Title
     private int pnEditMode;//Modifying fields
     private double xOffset = 0;
@@ -65,14 +64,13 @@ public class InsuranceBranchInformationController implements Initializable, Scre
     @FXML
     private Button btnAdd, btnEdit, btnSave, btnCancel, btnDeactivate, btnBrowse, btnClose, btnAddInsuranceCompany, btnActive;
     @FXML
-    private TextField txtField01_Branch, txtField02_Branch, txtField03_Branch, txtField05_Branch, txtField06_Branch,
+    private TextField txtField01_Branch, txtField02_Branch, txtField04_Branch, txtField05_Branch, txtField06_Branch,
             txtField07_Branch, txtField08_Branch, txtField09_Branch, txtField10_Branch, txtField11_Branch,
-            txtField12_Branch, txtField13_Branch, txtField14_Branch;
-    private ComboBox<String> comboBox04;
-    @FXML
-    private ComboBox<String> comboBox04_Branch;
+            txtField12_Branch, txtField13_Branch;
     @FXML
     private CheckBox cboxActivate;
+    @FXML
+    private ComboBox<String> comboBox03_Branch;
 
     private Stage getStage() {
         return (Stage) txtField05_Branch.getScene().getWindow();
@@ -88,17 +86,25 @@ public class InsuranceBranchInformationController implements Initializable, Scre
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
+        oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
         initTextFieldPattern();
         initCapitalizationFields();
-        comboBox04_Branch.setItems(cInsurType);
+        comboBox03_Branch.setItems(cInsurType);
         initTextKeyPressed();
         initTextFieldFocus();
         initCmboxFieldAction();
         initButtons();
         clearFields();
+        initTextFieldLimiter();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
+    }
+
+    private void initTextFieldLimiter() {
+        InputTextUtil.addTextLimiter(txtField05_Branch, 30);
+        InputTextUtil.addTextLimiter(txtField06_Branch, 10);
+        InputTextUtil.addTextLimiter(txtField12_Branch, 30);
+        InputTextUtil.addTextLimiter(txtField13_Branch, 15);
     }
 
     private void initTextFieldPattern() {
@@ -109,14 +115,14 @@ public class InsuranceBranchInformationController implements Initializable, Scre
     }
 
     private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01_Branch, txtField02_Branch, txtField03_Branch, txtField05_Branch, txtField06_Branch, txtField07_Branch, txtField08_Branch,
-                txtField09_Branch, txtField10_Branch, txtField11_Branch, txtField12_Branch, txtField13_Branch, txtField14_Branch);
+        List<TextField> loTxtField = Arrays.asList(txtField01_Branch, txtField02_Branch, txtField04_Branch, txtField05_Branch, txtField06_Branch, txtField07_Branch, txtField08_Branch,
+                txtField09_Branch, txtField10_Branch, txtField11_Branch, txtField12_Branch, txtField13_Branch);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField06_Branch, txtField07_Branch, txtField08_Branch,
-                txtField09_Branch, txtField13_Branch, txtField14_Branch);
+        List<TextField> loTxtField = Arrays.asList(txtField05_Branch, txtField06_Branch, txtField07_Branch,
+                txtField11_Branch, txtField12_Branch, txtField13_Branch);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /* Set TextField Value to Master Class */
@@ -130,24 +136,24 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         if (!nv) {
             /* Lost Focus */
             switch (lnIndex) {
-//                case 6:
-//                    oTransInsuranceBranch.getModel().getModel().setInsuranceNm(lsValue);
-//                    break;
-//                case 7:
-//                    oTransInsuranceBranch.getModel().getModel().setInsuranceCd(lsValue);
-//                    break;
-//                case 8:
-//                    oTransInsuranceBranch.getModel().getModel().setContactP(lsValue);
-//                    break;
-//                case 9:
-//                    oTransInsuranceBranch.getModel().getModel().setAddress(lsValue);
-//                    break;
-//                case 13:
-//                    oTransInsuranceBranch.getModel().getModel().setTelNo(lsValue);
-//                    break;
-//                case 14:
-//                    oTransInsuranceBranch.getModel().getModel().setFaxNo(lsValue);
-//                    break;
+                case 5:
+                    oTransInsuranceBranch.getModel().getModel().setBrInsNme(lsValue);
+                    break;
+                case 6:
+                    oTransInsuranceBranch.getModel().getModel().setBrInsCde(lsValue);
+                    break;
+                case 7:
+                    oTransInsuranceBranch.getModel().getModel().setContactP(lsValue);
+                    break;
+                case 11:
+                    oTransInsuranceBranch.getModel().getModel().setAddress(lsValue);
+                    break;
+                case 12:
+                    oTransInsuranceBranch.getModel().getModel().setTelNo(lsValue);
+                    break;
+                case 13:
+                    oTransInsuranceBranch.getModel().getModel().setFaxNo(lsValue);
+                    break;
             }
         } else {
             loTxtField.selectAll();
@@ -155,8 +161,8 @@ public class InsuranceBranchInformationController implements Initializable, Scre
     };
 
     private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02_Branch, txtField03_Branch, txtField06_Branch, txtField07_Branch, txtField08_Branch,
-                txtField09_Branch, txtField10_Branch, txtField11_Branch, txtField13_Branch, txtField14_Branch);
+        List<TextField> loTxtField = Arrays.asList(txtField02_Branch, txtField05_Branch, txtField06_Branch, txtField07_Branch, txtField08_Branch,
+                txtField09_Branch, txtField10_Branch, txtField11_Branch, txtField12_Branch, txtField13_Branch);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
@@ -173,42 +179,45 @@ public class InsuranceBranchInformationController implements Initializable, Scre
             }
             JSONObject loJSON = new JSONObject();
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-
                 switch (txtFieldID) {
                     case "txtField02_Branch":
-//                        loJSON = oTransInsuranceBranch.searchInsuranceName(lsValue);
-//                        if (!"error".equals(loJSON.get("result"))) {
-//                            txtField02_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsuranceName());
-//                        } else {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                            txtField02_Branch.setText("");
-//                            txtField02_Branch.requestFocus();
-//                            return;
-//                        }
+                        loJSON = oTransInsuranceBranch.searchInsurance(lsValue, true);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField01_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurID());
+                            txtField02_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurNme());
+                            comboBox03_Branch.getSelectionModel().select(Integer.parseInt(oTransInsuranceBranch.getModel().getModel().getCompnyTp()));
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField02_Branch.setText("");
+                            txtField02_Branch.requestFocus();
+                            return;
+                        }
                         break;
-                    case "txtField10_Branch":
-//                        loJSON = oTransInsuranceBranch.searchProvinceName(lsValue);
-//                        if (!"error".equals(loJSON.get("result"))) {
-//                            txtField10_Branch.setText(oTransInsuranceBranch.getModel().getModel().getProvName());
-//                        } else {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                            txtField10_Branch.setText("");
-//                            txtField10_Branch.requestFocus();
-//                            return;
-//                        }
+                    case "txtField08_Branch":
+                        loJSON = oTransInsuranceBranch.searchProvince(lsValue, false);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField08_Branch.setText(oTransInsuranceBranch.getModel().getModel().getProvName());
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField08_Branch.setText("");
+                            txtField08_Branch.requestFocus();
+                            return;
+                        }
                         break;
-                    case "txtField11_Branch":
-//                        loJSON = oTransInsuranceBranch.searchTownName(lsValue);
-//                        if (!"error".equals(loJSON.get("result"))) {
-//                            txtField11_Branch.setText(oTransInsuranceBranch.getModel().getModel().getTownName());
-//                        } else {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                            txtField11_Branch.setText("");
-//                            txtField11_Branch.requestFocus();
-//                            return;
-//                        }
+                    case "txtField09_Branch":
+                        loJSON = oTransInsuranceBranch.searchTown(lsValue, false);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField09_Branch.setText(oTransInsuranceBranch.getModel().getModel().getTownName());
+                            txtField10_Branch.setText(oTransInsuranceBranch.getModel().getModel().getZippCode());
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField09_Branch.setText("");
+                            txtField09_Branch.requestFocus();
+                            return;
+                        }
                         break;
                 }
+                initFields(pnEditMode);
                 event.consume();
                 CommonUtils.SetNextFocus((TextField) event.getSource());
             } else if (event.getCode() == KeyCode.UP) {
@@ -218,41 +227,61 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (!txtField02_Branch.getText().isEmpty()) {
+                if (comboBox03_Branch.getSelectionModel().getSelectedIndex() < 0) {
+                    ShowMessageFX.Warning(null, "Insurance Company Type", "Please select `Insurance Company Type` value.");
+                    return false;
+                } else {
+                    oTransInsuranceBranch.getModel().getModel().setCompnyTp(String.valueOf((comboBox03_Branch.getSelectionModel().getSelectedIndex())));
+                }
+            }
+        }
+        return true;
+    }
+
     private void initCmboxFieldAction() {
         txtField02_Branch.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-//                                oTransInsuranceBranch.getModel().getModel().setInsuranceID("");
-//                                oTransInsuranceBranch.getModel().getModel().setInsuranceName("");
-//                                oTransInsuranceBranch.getModel().getModel().setProvName("");
-//                                oTransInsuranceBranch.getModel().getModel().setTownID("");
-//                                oTransInsuranceBranch.getModel().getModel().setTownName("");
+                                oTransInsuranceBranch.getModel().getModel().setInsurID("");
+                                oTransInsuranceBranch.getModel().getModel().setInsurNme("");
+                                oTransInsuranceBranch.getModel().getModel().setProvName("");
+                                oTransInsuranceBranch.getModel().getModel().setTownID("");
+                                oTransInsuranceBranch.getModel().getModel().setTownName("");
+                                txtField01_Branch.setText("");
+                                comboBox03_Branch.setValue("");
                                 clearBranchFields();
-                                initFields(pnEditMode);
+
                             }
                         }
+                        initFields(pnEditMode);
                     }
                 }
                 );
-        comboBox04_Branch.setOnAction(e -> {
+        comboBox03_Branch.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox04_Branch.getSelectionModel().getSelectedIndex() >= 0) {
-//                    oTransInsuranceBranch.getModel().getModel().setInsuranceType(String.valueOf((comboBox04_Branch.getSelectionModel().getSelectedIndex())));
+                if (comboBox03_Branch.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTransInsuranceBranch.getModel().getModel().setCompnyTp(String.valueOf((comboBox03_Branch.getSelectionModel().getSelectedIndex())));
                     initFields(pnEditMode);
                 }
             }
         });
 
-        txtField10_Branch.textProperty()
+        txtField08_Branch.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-//                                oTransInsuranceBranch.getModel().getModel().setProvName("");
-//                                oTransInsuranceBranch.getModel().getModel().setTownID("");
+                                oTransInsuranceBranch.getModel().getModel().setProvName("");
+                                oTransInsuranceBranch.getModel().getModel().setTownID("");
+                                txtField09_Branch.setText("");
                                 txtField10_Branch.setText("");
+                                txtField11_Branch.setText("");
                                 initFields(pnEditMode);
                             }
                         }
@@ -260,13 +289,15 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                     }
                 }
                 );
-        txtField11_Branch.textProperty()
+        txtField09_Branch.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-//                                oTransInsuranceBranch.getModel().getModel().setTownID("");
-//                                oTransInsuranceBranch.getModel().getModel().setTownName("");
+                                oTransInsuranceBranch.getModel().getModel().setTownID("");
+                                oTransInsuranceBranch.getModel().getModel().setTownName("");
+                                txtField10_Branch.setText("");
+                                txtField11_Branch.setText("");
                                 initFields(pnEditMode);
                             }
                         }
@@ -287,29 +318,45 @@ public class InsuranceBranchInformationController implements Initializable, Scre
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnAdd":
-//                    clearFields();
-//                    oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
-//                    loJSON = oTransInsuranceBranch.newRecord();
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        loadInsurancebranchField();
-//                        pnEditMode = oTransInsuranceBranch.getEditMode();
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                    }
+                    clearFields();
+                    oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
+                    loJSON = oTransInsuranceBranch.newRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadInsurancebranchField();
+                        pnEditMode = oTransInsuranceBranch.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
                 case "btnEdit":
-//                    loJSON = oTransInsuranceBranch.updateRecord();
-//                    pnEditMode = oTransInsuranceBranch.getEditMode();
-//                    if ("error".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
-//                    }
-//                    break;
+                    loJSON = oTransInsuranceBranch.updateRecord();
+                    pnEditMode = oTransInsuranceBranch.getEditMode();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                    }
+                    break;
                 case "btnCancel":
-//                    if (ShowMessageFX.OkayCancel(getStage(), "Are you sure you want to cancel?", pxeModuleName, null) == true) {
-//                        clearFields();
-//                        oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
-//                        pnEditMode = EditMode.UNKNOWN;
-//                    }
+                    if (ShowMessageFX.OkayCancel(getStage(), "Are you sure you want to cancel?", pxeModuleName, null) == true) {
+                        clearFields();
+                        oTransInsuranceBranch = new InsuranceBranch(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    }
+                    break;
+                case "btnBrowse":
+                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                        if (ShowMessageFX.YesNo(null, "Search Insurance Branch Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                        } else {
+                            return;
+                        }
+                    }
+                    loJSON = oTransInsuranceBranch.searchRecord("", false);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadInsurancebranchField();
+                        pnEditMode = oTransInsuranceBranch.getEditMode();
+                        initFields(pnEditMode);
+                    } else {
+                        ShowMessageFX.Warning(null, "Search Insurance Branch Information", (String) loJSON.get("message"));
+                    }
                     break;
                 case "btnSave":
                     //Validate before saving
@@ -320,49 +367,50 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                             return;
                         }
                         if (!txtField02_Branch.getText().isEmpty()) {
-                            if (txtField06_Branch.getText().trim().equals("")) {
+                            if (txtField05_Branch.getText().trim().equals("")) {
                                 ShowMessageFX.Warning(getStage(), "Please enter a valid value for Branch Name", "Warning", null);
+                                txtField05_Branch.requestFocus();
+                                return;
+                            }
+                            if (txtField06_Branch.getText().trim().equals("")) {
+                                ShowMessageFX.Warning(getStage(), "Please enter a valid value for Branch Code", "Warning", null);
                                 txtField06_Branch.requestFocus();
                                 return;
                             }
                             if (txtField07_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a valid value for Branch Code", "Warning", null);
+                                ShowMessageFX.Warning(getStage(), "Please enter a value for Contact Person", "Warning", null);
                                 txtField07_Branch.requestFocus();
                                 return;
                             }
+
                             if (txtField08_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a value for Contact Person", "Warning", null);
+                                ShowMessageFX.Warning(getStage(), "Please enter a value value for Province.", "Warning", null);
                                 txtField08_Branch.requestFocus();
                                 return;
                             }
                             if (txtField09_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a value for HouseNo/Street/Barangay.", "Warning", null);
+                                ShowMessageFX.Warning(getStage(), "Please enter a value for Municipality.", "Warning", null);
                                 txtField09_Branch.requestFocus();
                                 return;
                             }
-                            if (txtField10_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a value value for Province.", "Warning", null);
-                                txtField10_Branch.requestFocus();
-                                return;
-                            }
                             if (txtField11_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a value for Municipality.", "Warning", null);
+                                ShowMessageFX.Warning(getStage(), "Please enter a value for HouseNo/Street/Barangay.", "Warning", null);
                                 txtField11_Branch.requestFocus();
                                 return;
                             }
-                            if (txtField13_Branch.getText().length() <= 4) {
+                            if (txtField12_Branch.getText().length() <= 4) {
                                 ShowMessageFX.Warning(getStage(), "Telephone No. cannot be less than 4 digits.", "Warning", null);
-                                txtField13_Branch.requestFocus();
+                                txtField12_Branch.requestFocus();
+                                return;
+                            }
+                            if (txtField12_Branch.getText().trim().equals("")) {
+                                ShowMessageFX.Warning(getStage(), "Please enter a value for Telephone No.", "Warning", null);
+                                txtField12_Branch.requestFocus();
                                 return;
                             }
                             if (txtField13_Branch.getText().trim().equals("")) {
-                                ShowMessageFX.Warning(getStage(), "Please enter a value for Telephone No.", "Warning", null);
-                                txtField13_Branch.requestFocus();
-                                return;
-                            }
-                            if (txtField14_Branch.getText().trim().equals("")) {
                                 ShowMessageFX.Warning(getStage(), "Please enter a value for Fax No.", "Warning", null);
-                                txtField14_Branch.requestFocus();
+                                txtField13_Branch.requestFocus();
                                 return;
                             }
                         }
@@ -370,56 +418,59 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                     } else {
                         return;
                     }
-//                    loJSON = oTransInsuranceBranch.saveRecord();
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
-//                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getInsuranceID());
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            loadInsurancebranchField();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTransInsuranceBranch.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                        return;
-//                    }
+                    if (!setSelection()) {
+                        return;
+                    }
+                    loJSON = oTransInsuranceBranch.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
+                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getBrInsID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadInsurancebranchField();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransInsuranceBranch.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
                     break;
                 case "btnAddInsuranceEntry":
                     loadInsuranceEntry();
                     break;
                 case "btnDeactivate":
-//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-//                        String fsValue = oTransInsuranceBranch.getModel().getModel().getBrInsuranceID();
-//                        loJSON = oTransInsuranceBranch.deactivateRecord(fsValue);
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            ShowMessageFX.Information(null, "Insurance Branch Information", (String) loJSON.get("message"));
-//                        } else {
-//                            ShowMessageFX.Warning(null, "Insurance Branch Information", (String) loJSON.get("message"));
-//                        }
-//                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getBrInsuranceID());
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            loadInsurancebranchField();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTransInsuranceBranch.getEditMode();
-//                        }
-//                    }
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                        String fsValue = oTransInsuranceBranch.getModel().getModel().getBrInsID();
+                        loJSON = oTransInsuranceBranch.deactivateRecord(fsValue);
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Insurance Branch Information", (String) loJSON.get("message"));
+                        } else {
+                            ShowMessageFX.Warning(null, "Insurance Branch Information", (String) loJSON.get("message"));
+                        }
+                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getBrInsID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadInsurancebranchField();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransInsuranceBranch.getEditMode();
+                        }
+                    }
                     break;
                 case "btnActive":
-//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-//                        String fsValue = oTransInsuranceBranch.getModel().getModel().getBrInsuranceID();
-//                        loJSON = oTransInsuranceBranch.activateRecord(fsValue);
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            ShowMessageFX.Information(null, "Insurance Branch Information", (String) loJSON.get("message"));
-//                        } else {
-//                            ShowMessageFX.Warning(null, "Insurance Branch Information", (String) loJSON.get("message"));
-//                        }
-//                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getBrInsuranceID());
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            loadInsurancebranchField();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTransInsuranceBranch.getEditMode();
-//                        }
-//                    }
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                        String fsValue = oTransInsuranceBranch.getModel().getModel().getBrInsID();
+                        loJSON = oTransInsuranceBranch.activateRecord(fsValue);
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Insurance Branch Information", (String) loJSON.get("message"));
+                        } else {
+                            ShowMessageFX.Warning(null, "Insurance Branch Information", (String) loJSON.get("message"));
+                        }
+                        loJSON = oTransInsuranceBranch.openRecord(oTransInsuranceBranch.getModel().getModel().getBrInsID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadInsurancebranchField();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransInsuranceBranch.getEditMode();
+                        }
+                    }
                 case "btnClose":
                     CommonUtils.closeStage(btnClose);
                     break;
@@ -434,7 +485,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("InsuranceCompanyEntry.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/perameters/InsuranceCompanyEntry.fxml"));
 
             InsuranceCompanyEntryController loControl = new InsuranceCompanyEntryController();
             loControl.setGRider(oApp);
@@ -467,27 +518,26 @@ public class InsuranceBranchInformationController implements Initializable, Scre
     }
 
     private void loadInsurancebranchField() {
-//        txtField01_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsuranceID());
-//        txtField02_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsuranceName());
-//        txtField03_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsuranceCode());
-//        if (oTransInsuranceBranch.getModel().getModel().getInsuranceType() != null && !oTransInsuranceBranch.getModel().getModel().getInsuranceType().trim().isEmpty()) {
-//            comboBox04_Branch.getSelectionModel().select(Integer.parseInt(oTransInsuranceBranch.getModel().getModel().getInsuranceType()));
-//        }
-//        txtField05_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsuranceBranchID());
-//        txtField06_Branch.setText("");
-//        txtField07_Branch.setText("");
-//        txtField08_Branch.setText("");
-//        txtField09_Branch.setText("");
-//        txtField10_Branch.setText("");
-//        txtField11_Branch.setText("");
-//        txtField12_Branch.setText("");
-//        txtField13_Branch.setText("");
-//        txtField14_Branch.setText("");
-//        if (oTransInsuranceBranch.getModel().getModel().getRecdStat().equals("1")) {
-//            cboxActivate.setSelected(true);
-//        } else {
-//            cboxActivate.setSelected(false);
-//        }
+        txtField01_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurID());
+        txtField02_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurNme());
+        if (oTransInsuranceBranch.getModel().getModel().getCompnyTp() != null && !oTransInsuranceBranch.getModel().getModel().getCompnyTp().trim().isEmpty()) {
+            comboBox03_Branch.getSelectionModel().select(Integer.parseInt(oTransInsuranceBranch.getModel().getModel().getCompnyTp()));
+        }
+        txtField04_Branch.setText(oTransInsuranceBranch.getModel().getModel().getBrInsID());
+        txtField05_Branch.setText(oTransInsuranceBranch.getModel().getModel().getBrInsNme());
+        txtField06_Branch.setText(oTransInsuranceBranch.getModel().getModel().getBrInsCde());
+        txtField07_Branch.setText(oTransInsuranceBranch.getModel().getModel().getContactP());
+        txtField08_Branch.setText(oTransInsuranceBranch.getModel().getModel().getProvName());
+        txtField09_Branch.setText(oTransInsuranceBranch.getModel().getModel().getTownName());
+        txtField10_Branch.setText(oTransInsuranceBranch.getModel().getModel().getZippCode());
+        txtField11_Branch.setText(oTransInsuranceBranch.getModel().getModel().getAddress());
+        txtField12_Branch.setText(oTransInsuranceBranch.getModel().getModel().getTelNo());
+        txtField13_Branch.setText(oTransInsuranceBranch.getModel().getModel().getFaxNo());
+        if (oTransInsuranceBranch.getModel().getModel().getRecdStat().equals("1")) {
+            cboxActivate.setSelected(true);
+        } else {
+            cboxActivate.setSelected(false);
+        }
     }
 
     private void clearBranchFields() {
@@ -500,14 +550,13 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         txtField11_Branch.setText("");
         txtField12_Branch.setText("");
         txtField13_Branch.setText("");
-        txtField14_Branch.setText("");
     }
 
     private void clearFields() {
         txtField01_Branch.setText("");
         txtField02_Branch.setText("");
-        txtField03_Branch.setText("");
-        comboBox04_Branch.setValue("");
+        comboBox03_Branch.setValue("");
+        txtField04_Branch.setText("");
         txtField05_Branch.setText("");
         txtField06_Branch.setText("");
         txtField07_Branch.setText("");
@@ -517,21 +566,19 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         txtField11_Branch.setText("");
         txtField12_Branch.setText("");
         txtField13_Branch.setText("");
-        txtField14_Branch.setText("");
         cboxActivate.setSelected(false);
     }
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         txtField02_Branch.setDisable(!lbShow);
-        txtField03_Branch.setDisable(!lbShow);
+        comboBox03_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         txtField05_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         txtField06_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         txtField07_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         txtField08_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
-        txtField09_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
-        txtField10_Branch.setDisable(!(lbShow && !txtField10_Branch.getText().isEmpty()));
-        txtField11_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
+        txtField09_Branch.setDisable(!(lbShow && !txtField08_Branch.getText().isEmpty()));
+        txtField11_Branch.setDisable(!(lbShow && !txtField09_Branch.getText().isEmpty()));
         txtField12_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         txtField13_Branch.setDisable(!(lbShow && !txtField02_Branch.getText().isEmpty()));
         cboxActivate.setDisable(true);
@@ -549,19 +596,19 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         btnActive.setManaged(false);
 
         if (fnValue == EditMode.READY) {
-//            if (oTransInsuranceBranch.getModel().getModel().getRecdStat().equals("1")) {
-//                btnEdit.setVisible(true);
-//                btnEdit.setManaged(true);
-//                btnDeactivate.setVisible(true);
-//                btnDeactivate.setManaged(true);
-//                btnActive.setVisible(false);
-//                btnActive.setManaged(false);
-//            } else {
-//                btnDeactivate.setVisible(false);
-//                btnDeactivate.setManaged(false);
-//                btnActive.setVisible(true);
-//                btnActive.setManaged(true);
-//            }
+            if (oTransInsuranceBranch.getModel().getModel().getRecdStat().equals("1")) {
+                btnEdit.setVisible(true);
+                btnEdit.setManaged(true);
+                btnDeactivate.setVisible(true);
+                btnDeactivate.setManaged(true);
+                btnActive.setVisible(false);
+                btnActive.setManaged(false);
+            } else {
+                btnDeactivate.setVisible(false);
+                btnDeactivate.setManaged(false);
+                btnActive.setVisible(true);
+                btnActive.setManaged(true);
+            }
         }
     }
 }
