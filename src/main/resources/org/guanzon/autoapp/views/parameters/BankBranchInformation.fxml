@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="507.0" prefWidth="513.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="507.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -30,7 +30,7 @@
                     <top>
                         <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" prefHeight="17.0" text="Bank Information" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                <Label alignment="CENTER" prefHeight="17.0" text="Bank Branch" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                     <font>
                                         <Font name="Arial Bold" size="12.0" />
                                     </font>
@@ -44,7 +44,7 @@
                                 <Insets />
                             </BorderPane.margin>
                             <children>
-                                <VBox fillWidth="false" prefHeight="429.0" prefWidth="496.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                                <VBox fillWidth="false" prefHeight="429.0" prefWidth="496.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                     <children>
                                         <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5; -fx-background-color: white; -fx-background-radius: 5;" styleClass="unity-container">
                                             <children>
@@ -59,11 +59,10 @@
                                                         <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="260.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
                                                     </columnConstraints>
                                                     <rowConstraints>
-                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
@@ -78,10 +77,8 @@
                                                         <TextField fx:id="txtField01_Branch" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
                                                         <Button fx:id="btnAddBankEntry" mnemonicParsing="false" text="..." GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                         <TextField fx:id="txtField02_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                        <Label id="LabelDesc" text="Bank Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                        <ComboBox fx:id="comboBox04_Branch" disable="true" prefHeight="24.0" prefWidth="263.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                        <Label id="LabelDesc" text="Bank Code" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtField03_Branch" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <Label id="LabelDesc" text="Bank Type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <ComboBox fx:id="comboBox03_Branch" disable="true" prefHeight="24.0" prefWidth="263.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
                                             </children>
@@ -94,20 +91,20 @@
                                                         <Font name="Arial Bold" size="11.0" />
                                                     </font>
                                                 </Label>
-                                                <GridPane fx:id="branchFields" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                                <GridPane fx:id="branchFields" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                                     <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                         <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
                                                     </columnConstraints>
                                                     <rowConstraints>
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
@@ -125,23 +122,23 @@
                                                                 <Font name="Arial Bold" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <Label id="LabelDesc" text="Street/Barangay" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                        <Label id="LabelDesc" text="FAX No" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                                        <Label id="LabelDesc" text="TEL No" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                                        <CheckBox fx:id="cboxActivate" disable="true" mnemonicParsing="false" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                                                        <Label id="LabelDesc" text="Province" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                        <Label id="LabelDesc" text="Municipality/City" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                        <Label id="LabelDesc" text="Zip Code" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                        <TextField fx:id="txtField05_Branch" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
-                                                        <TextField fx:id="txtField06_Branch" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="txtField07_Branch" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtField08_Branch" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                        <TextField fx:id="txtField09_Branch" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                        <TextField fx:id="txtField10_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                        <TextField fx:id="txtField11_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                        <TextField fx:id="txtField12_Branch" disable="true" editable="false" maxWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                        <Label id="LabelDesc" text="Street/Barangay" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                        <Label id="LabelDesc" text="FAX No" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                        <Label id="LabelDesc" text="TEL No" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                        <CheckBox fx:id="cboxActivate" disable="true" mnemonicParsing="false" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                                                        <Label id="LabelDesc" text="Province" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <Label id="LabelDesc" text="Municipality/City" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                        <Label id="LabelDesc" text="Zip Code" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtField04_Branch" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
+                                                        <TextField fx:id="txtField05_Branch" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField06_Branch" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField07_Branch" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="txtField08_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="txtField09_Branch" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtField10_Branch" disable="true" editable="false" maxWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtField11_Branch" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                        <TextField fx:id="txtField12_Branch" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                                         <TextField fx:id="txtField13_Branch" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                                                        <TextField fx:id="txtField14_Branch" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                                     </children>
                                                 </GridPane>
                                             </children>
