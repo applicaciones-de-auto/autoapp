@@ -8,7 +8,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -70,18 +69,10 @@
                                         </Label>
                                         <Label id="LabelDesc" text="Bank Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtField01" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Bank Name." />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
                                         <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                         <Label id="LabelDesc" layoutX="20.0" layoutY="46.0" text="Bank Code" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                        <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="3">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Bank Code." />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="3" />
                                         <Label id="LabelDesc" text="Bank Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <ComboBox fx:id="comboBox02" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
                                     </children>
