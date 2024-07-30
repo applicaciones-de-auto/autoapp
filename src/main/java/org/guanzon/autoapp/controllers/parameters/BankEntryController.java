@@ -361,6 +361,7 @@ public class BankEntryController implements Initializable, ScreenInterface {
         btnDeactivate.setManaged(false);
         btnActive.setVisible(false);
         btnActive.setManaged(false);
+
         if (fnValue == EditMode.READY) {
             if (oTransBank.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
