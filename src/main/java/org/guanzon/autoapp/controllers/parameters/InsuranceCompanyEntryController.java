@@ -11,14 +11,11 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -36,7 +33,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class InsuranceCompanyEntryController implements Initializable, ScreenInterface {
 
@@ -45,17 +42,11 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
     private int pnEditMode;//Modifying fields
     private Insurance oTransInsurance;
     @FXML
-    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose;
+    private Button btnAdd, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose, btnActive, btnSave;
     @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
+    private TextField txtField01, txtField02, txtField03;
     @FXML
     private CheckBox cboxActivate;
-    @FXML
-    private Button btnActive;
-    @FXML
-    private TextField txtField03;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -72,10 +63,9 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-//        oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
-        InputTextUtil.addTextLimiter(txtField03, 10);
+        oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
 
-        pnEditMode = EditMode.UNKNOWN;
+        InputTextUtil.addTextLimiter(txtField03, 10);
 
         initTextKeyPressed();
 
@@ -88,7 +78,7 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
         initButtons();
 
         clearFields();
-
+        pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
@@ -138,12 +128,12 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
         if (!nv) {
             /* Lost Focus */
             switch (lnIndex) {
-//                case 2:
-//                    oTransInsurance.getModel().getModel().setInsuranceName(lsValue);
-//                    break;
-//                case 3:
-//                    oTransInsurance.getModel().getModel().setInsuranceCode(lsValue);
-//                    break;
+                case 2:
+                    oTransInsurance.getModel().getModel().setInsurNme(lsValue);
+                    break;
+                case 3:
+                    oTransInsurance.getModel().getModel().setInsurCde(lsValue);
+                    break;
             }
         } else {
             loTxtField.selectAll();
@@ -161,16 +151,15 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
-//                clearFields();
-//                oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
-//                loJSON = oTransInsurance.newRecord();
-//                if ("success".equals((String) loJSON.get("result"))) {
-//                    loadInsuranceField();
-//                    pnEditMode = oTransInsurance.getEditMode();
-//                } else {
-//                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//
-//                }
+                clearFields();
+                oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
+                loJSON = oTransInsurance.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadInsuranceField();
+                    pnEditMode = oTransInsurance.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, " Insurance Information Saving....", "Are you sure, do you want to save?")) {
@@ -194,85 +183,85 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
                         txtField03.setText("");
                         return;
                     }
-//                    loJSON = oTransInsurance.saveRecord();
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
-//                        loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsuranceID());
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            loadInsuranceField();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTransInsurance.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
-//                        return;
-//                    }
+                    loJSON = oTransInsurance.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
+                        loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsurID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadInsuranceField();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransInsurance.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
+                        return;
+                    }
                 }
                 break;
             case "btnEdit":
-//                loJSON = oTransInsurance.updateRecord();
-//                pnEditMode = oTransInsurance.getEditMode();
-//                if ("error".equals((String) loJSON.get("result"))) {
-//                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                }
+                loJSON = oTransInsurance.updateRecord();
+                pnEditMode = oTransInsurance.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
                 break;
             case "btnCancel":
-//                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-//                    clearFields();
-//                    oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
-//                    pnEditMode = EditMode.UNKNOWN;
-//                }
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
+                    clearFields();
+                    oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
+                    pnEditMode = EditMode.UNKNOWN;
+                }
                 break;
             case "btnDeactivate":
-//                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-//                    String fsValue = oTransInsurance.getModel().getModel().getInsuranceID();
-//                    loJSON = oTransInsurance.deactivateRecord(fsValue);
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
-//                    } else {
-//                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
-//                    }
-//                    loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsuranceID());
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        loadInsuranceField();
-//                        initFields(pnEditMode);
-//                        pnEditMode = oTransInsurance.getEditMode();
-//                    }
-//                }
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransInsurance.getModel().getModel().getInsurID();
+                    loJSON = oTransInsurance.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsurID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadInsuranceField();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransInsurance.getEditMode();
+                    }
+                }
                 break;
             case "btnActive":
-//                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-//                    String fsValue = oTransInsurance.getModel().getModel().getInsuranceID();
-//                    loJSON = oTransInsurance.activateRecord(fsValue);
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
-//                    } else {
-//                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
-//                    }
-//                    loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsuranceID());
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        loadInsuranceField();
-//                        initFields(pnEditMode);
-//                        pnEditMode = oTransInsurance.getEditMode();
-//                    }
-//                }
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransInsurance.getModel().getModel().getInsurID();
+                    loJSON = oTransInsurance.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Insurance Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Insurance Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransInsurance.openRecord(oTransInsurance.getModel().getModel().getInsurID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadInsuranceField();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransInsurance.getEditMode();
+                    }
+                }
                 break;
             case "btnBrowse":
-//                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-//                    if (ShowMessageFX.YesNo(null, "Search Insurance Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
-//                    } else {
-//                        return;
-//                    }
-//                }
-//                loJSON = oTransInsurance.searchRecord("", false);
-//                if ("success".equals((String) loJSON.get("result"))) {
-//                    loadInsuranceField();
-//                    pnEditMode = oTransInsurance.getEditMode();
-//                    initFields(pnEditMode);
-//                } else {
-//                    ShowMessageFX.Warning(null, "Search Insurance Information", (String) loJSON.get("message"));
-//                }
-//                break;
+                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                    if (ShowMessageFX.YesNo(null, "Search Insurance Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    } else {
+                        return;
+                    }
+                }
+                loJSON = oTransInsurance.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadInsuranceField();
+                    pnEditMode = oTransInsurance.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Insurance Information", (String) loJSON.get("message"));
+                }
+                break;
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
@@ -285,7 +274,6 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
         txtField02.setDisable(!lbShow);
         txtField03.setDisable(!lbShow);
         cboxActivate.setDisable(true);
@@ -301,32 +289,32 @@ public class InsuranceCompanyEntryController implements Initializable, ScreenInt
         btnDeactivate.setManaged(false);
         btnActive.setVisible(false);
         btnActive.setManaged(false);
-//        if (fnValue == EditMode.READY) {
-//            if (oTransInsurance.getModel().getModel().getRecdStat().equals("1")) {
-//                btnEdit.setVisible(true);
-//                btnEdit.setManaged(true);
-//                btnDeactivate.setVisible(true);
-//                btnDeactivate.setManaged(true);
-//                btnActive.setVisible(false);
-//                btnActive.setManaged(false);
-//            } else {
-//                btnDeactivate.setVisible(false);
-//                btnDeactivate.setManaged(false);
-//                btnActive.setVisible(true);
-//                btnActive.setManaged(true);
-//            }
-//    }
+        if (fnValue == EditMode.READY) {
+            if (oTransInsurance.getModel().getModel().getRecdStat().equals("1")) {
+                btnEdit.setVisible(true);
+                btnEdit.setManaged(true);
+                btnDeactivate.setVisible(true);
+                btnDeactivate.setManaged(true);
+                btnActive.setVisible(false);
+                btnActive.setManaged(false);
+            } else {
+                btnDeactivate.setVisible(false);
+                btnDeactivate.setManaged(false);
+                btnActive.setVisible(true);
+                btnActive.setManaged(true);
+            }
+        }
     }
 
     private void loadInsuranceField() {
-//        txtField01.setText(oTransInsurance.getModel().getModel().getInsuranceID());
-//        txtField02.setText(oTransInsurance.getModel().getModel().getInsuranceName());
-//        txtField03.setText(oTransInsurance.getModel().getModel().getInsuranceCode());
-//        if (oTransInsurance.getModel().getModel().getRecdStat().equals("1")) {
-//            cboxActivate.setSelected(true);
-//        } else {
-//            cboxActivate.setSelected(false);
-//        }
+        txtField01.setText(oTransInsurance.getModel().getModel().getInsurID());
+        txtField02.setText(oTransInsurance.getModel().getModel().getInsurNme());
+        txtField03.setText(oTransInsurance.getModel().getModel().getInsurCde());
+        if (oTransInsurance.getModel().getModel().getRecdStat().equals("1")) {
+            cboxActivate.setSelected(true);
+        } else {
+            cboxActivate.setSelected(false);
+        }
     }
 
     private void clearFields() {
