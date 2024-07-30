@@ -560,6 +560,7 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         txtField01_Branch.setText("");
         txtField02_Branch.setText("");
         comboBox03_Branch.setValue("");
+        txtField04_Branch.setText("");
         txtField05_Branch.setText("");
         txtField06_Branch.setText("");
         txtField07_Branch.setText("");
@@ -596,7 +597,14 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         btnDeactivate.setManaged(false);
         btnActive.setVisible(false);
         btnActive.setManaged(false);
-
+        if (fnValue == EditMode.UPDATE) {
+            txtField02_Branch.setDisable(true);
+            txtField05_Branch.setDisable(true);
+            txtField06_Branch.setDisable(true);
+            txtField08_Branch.setDisable(true);
+            txtField09_Branch.setDisable(true);
+            txtField11_Branch.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
             if (oTransBankBranch.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
