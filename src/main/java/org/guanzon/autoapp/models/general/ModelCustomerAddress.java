@@ -8,9 +8,9 @@ package org.guanzon.autoapp.models.general;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * Date: 03-07-2023
  *
- * @author Arsiela
+ *
+ * @author AutoGroup Programmers
  */
 public class ModelCustomerAddress {
 
