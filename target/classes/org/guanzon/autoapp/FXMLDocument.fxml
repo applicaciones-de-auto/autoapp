@@ -95,8 +95,18 @@
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Parameters">
                                                             <items>
-                                                                <Menu mnemonicParsing="false" text="Bank" />
-                                                                <Menu mnemonicParsing="false" text="Insurance" />
+                                                                <Menu mnemonicParsing="false" text="Bank">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuBank" mnemonicParsing="false" onAction="#mnuBankClick" text="Bank" />
+                                                                        <MenuItem fx:id="mnuBankInfo" mnemonicParsing="false" onAction="#mnuBankInfoClick" text="Bank Branch Information" />
+                                                                    </items>
+                                                                </Menu>
+                                                                <Menu mnemonicParsing="false" text="Insurance">
+                                                                    <items>
+                                                                        <MenuItem fx:id="mnuInsurInfo1" mnemonicParsing="false" onAction="#mnuInsurClick" text="Insurance" />
+                                                                        <MenuItem fx:id="mnuInsurInfo" mnemonicParsing="false" onAction="#mnuInsurInfoClick" text="Insurance Branch Information" />
+                                                                    </items>
+                                                                </Menu>
                                                                 <Menu mnemonicParsing="false" text="Activity">
                                                                     <items>
                                                                         <MenuItem fx:id="mnuActType" mnemonicParsing="false" onAction="#mnuActivityTypeClick" text="Activity Type" />
@@ -145,7 +155,7 @@
                                                                 <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />
                                                                 <MenuItem fx:id="mnuSalesAgent" mnemonicParsing="false" onAction="#mnuSalesAgentClick" text="Referral Agent" />
                                                                 <MenuItem fx:id="mnuSalesExecutive" mnemonicParsing="false" onAction="#mnuSalesExecutiveClick" text="Sales Executive" />
-                                                                <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclEntryClick" text="Vehicle Sales Information" />
+                                                                <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclSalesEntryClick" text="Vehicle Sales Information" />
                                                                 <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
                                                                 <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
                                                                 <MenuItem fx:id="mnuAddOnsApproval" mnemonicParsing="false" onAction="#mnuAddOnsApprovalClick" text="VSP Add Ons Approval" />
@@ -153,11 +163,7 @@
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
                                                             </items>
                                                         </Menu>
-                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
-                                                            <items>
-                                                                <MenuItem fx:id="mnuInsurInfo" mnemonicParsing="false" onAction="#mnuInsurInfoClick" text="Insurance" />
-                                                            </items>
-                                                        </Menu>
+                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance" />
                                                         <Menu mnemonicParsing="false" text="Cashiering">
                                                             <items>
                                                                 <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />
@@ -168,11 +174,7 @@
                                                                 <MenuItem fx:id="mnuVhclSalesInv" mnemonicParsing="false" onAction="#mnuVhclSalesInvClick" text="Vehicle Sales Invoice" />
                                                             </items>
                                                         </Menu>
-                                                        <Menu mnemonicParsing="false" text="Bank Transactions">
-                                                            <items>
-                                                                <MenuItem fx:id="mnuBank" mnemonicParsing="false" onAction="#mnuBankClick" text="Bank" />
-                                                            </items>
-                                                        </Menu>
+                                                        <Menu mnemonicParsing="false" text="Bank Transactions" />
                                                     </menus>
                                                 </MenuBar>
                                             </children>
