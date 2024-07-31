@@ -9,7 +9,7 @@ import javafx.scene.control.CheckBox;
 
 /**
  *
- * @author
+ * @author AutoGroup Programmers
  */
 public class ModelActivityMember {
 
