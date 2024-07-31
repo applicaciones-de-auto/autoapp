@@ -10,7 +10,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -38,7 +41,7 @@ public class FXMLMenuParameterForm {
      * @param oApp The GRider object.
      * @param fsFxml The path to the FXML file for the parameter form.
      */
-    public void FXMLMenuParameterForm(ScreenInterface fsiController, GRider oApp, String fsFxml) {
+    public void FXMLMenuParameterForm(ScreenInterface fsiController, GRider oApp, String fsFxml, String fxmlPathDirectory) {
         try {
             Stage stage = new Stage();
             ScreenInterface fxObj = fsiController;
@@ -51,7 +54,7 @@ public class FXMLMenuParameterForm {
             // Get the class of any class in the desired package to retrieve the package information
             Class<?> clazz = fxObj.getClass();
             // Construct the correct path to the FXML file using the package information
-            String fxmlPath = "/org/guanzon/autoapp/views/parameters/" + fsFxml;
+            String fxmlPath = fxmlPathDirectory + fsFxml;
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
                 System.out.println("Resource not found: " + fxmlPath);
@@ -65,6 +68,16 @@ public class FXMLMenuParameterForm {
 
             //load the main interface
             Parent parent = fxmlLoader.load();
+
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setOffsetX(5.0);
+            dropShadow.setOffsetY(5.0);
+            dropShadow.setBlurType(BlurType.GAUSSIAN);
+            dropShadow.setRadius(10.0);
+            dropShadow.setSpread(0.2);
+            dropShadow.setColor(Color.DARKGRAY);
+
+            parent.setEffect(dropShadow);
 
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
