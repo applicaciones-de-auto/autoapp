@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
@@ -80,7 +79,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     DecimalFormat poSetDecimalFormat = new DecimalFormat("###0.00");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    CancelForm cancelform = new CancelForm(); //Object for closing form
     private final String pxeModuleName = "Activity Information"; //Form Title
     private int pnEditMode;//Modifying fields
     private double xOffset = 0;
@@ -489,13 +487,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
                     loJSON = oTransActivity.newTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-//                        oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-//                        oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-//                        System.out.println("Date From value: " + dateFrom03.getValue().toString());
-//                        System.out.println("Date To value: " + dateTo04.getValue().toString());
-//                        System.out.println("Date From set to: " + oTransActivity.getMasterModel().getModel().getDateFrom());
-//                        System.out.println("Date To set to: " + oTransActivity.getMasterModel().getModel().getDateThru());
-
                         loadActivityInformation();
                         pnEditMode = oTransActivity.getEditMode();
                         initFields(pnEditMode);
