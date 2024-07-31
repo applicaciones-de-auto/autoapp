@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
- * @author Arsiela Date Created: 06-03-2023
+ * @author AutoGroup Programmers
  */
 public class ModelCustomerVehicleInfo {
 
