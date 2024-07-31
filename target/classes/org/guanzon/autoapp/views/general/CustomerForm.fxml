@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="622.0" prefWidth="1025.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -155,7 +155,7 @@
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
-                                                                                <AnchorPane maxWidth="-Infinity" prefWidth="977.0" style="-fx-border-color: orange; -fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                                                                <AnchorPane maxWidth="-Infinity" prefWidth="977.0" style="-fx-border-color: orange; -fx-border-radius: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0">
                                                                                     <children>
                                                                                         <VBox spacing="3.0" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                                                             <children>
@@ -250,7 +250,7 @@
                                                                                                         </Label>
                                                                                                     </children>
                                                                                                 </AnchorPane>
-                                                                                                <AnchorPane VBox.vgrow="SOMETIMES">
+                                                                                                <AnchorPane>
                                                                                                     <children>
                                                                                                         <TabPane fx:id="tabPCustCont" prefWidth="880.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                                             <tabs>
@@ -381,7 +381,7 @@
                                                                                                         </Label>
                                                                                                     </children>
                                                                                                 </AnchorPane>
-                                                                                                <HBox maxHeight="100.0" VBox.vgrow="ALWAYS">
+                                                                                                <HBox maxHeight="100.0">
                                                                                                     <children>
                                                                                                         <GridPane>
                                                                                                             <columnConstraints>
@@ -437,7 +437,7 @@
                                                                             <children>
                                                                                 <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="977.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                                                                     <children>
-                                                                                        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                        <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                             <children>
                                                                                                 <GridPane>
                                                                                                     <columnConstraints>
@@ -457,13 +457,13 @@
                                                                                                     <children>
                                                                                                         <TableView fx:id="tblViewVhclInfo" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                                                             <columns>
-                                                                                                                <TableColumn fx:id="tblVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="tblVhcllist02" editable="false" minWidth="-Infinity" prefWidth="75.0" sortable="false" text="CS No" />
-                                                                                                                <TableColumn fx:id="tblVhcllist03" editable="false" prefWidth="75.0" sortable="false" text="Plate No" />
-                                                                                                                <TableColumn fx:id="tblVhcllist04" editable="false" minWidth="-Infinity" prefWidth="280.0" sortable="false" text="Description" />
+                                                                                                                <TableColumn fx:id="tblVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                <TableColumn fx:id="tblVhcllist02" editable="false" minWidth="80.0" resizable="false" sortable="false" text="CS No" />
+                                                                                                                <TableColumn fx:id="tblVhcllist03" editable="false" minWidth="80.0" resizable="false" sortable="false" text="Plate No" />
+                                                                                                                <TableColumn fx:id="tblVhcllist04" editable="false" minWidth="400.0" prefWidth="400.0" resizable="false" sortable="false" text="Description" />
                                                                                                                 <TableColumn fx:id="tblVhcllist06" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Owner Name" visible="false" />
-                                                                                                                <TableColumn fx:id="tblVhcllist07" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Co-Owner Name" />
-                                                                                                                <TableColumn fx:id="tblVhcllist05" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Selling Dealer" />
+                                                                                                                <TableColumn fx:id="tblVhcllist05" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Co-Owner Name" />
+                                                                                                                <TableColumn fx:id="tblVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                             </columns>
                                                                                                         </TableView>
                                                                                                         <Label text="Vehicle/s Owned" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -474,12 +474,12 @@
                                                                                                         <TableView fx:id="tblViewCoVhclInfo" layoutX="20.0" layoutY="254.0" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="tblCoVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="tblCoVhcllist02" editable="false" minWidth="-Infinity" prefWidth="75.0" sortable="false" text="CS No" />
-                                                                                                                <TableColumn fx:id="tblCoVhcllist03" editable="false" prefWidth="75.0" sortable="false" text="Plate No" />
-                                                                                                                <TableColumn fx:id="tblCoVhcllist04" editable="false" minWidth="-Infinity" prefWidth="280.0" sortable="false" text="Description" />
-                                                                                                                <TableColumn fx:id="tblCoVhcllist06" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Owner Name" />
+                                                                                                                <TableColumn fx:id="tblCoVhcllist02" editable="false" minWidth="80.0" sortable="false" text="CS No" />
+                                                                                                                <TableColumn fx:id="tblCoVhcllist03" editable="false" minWidth="80.0" sortable="false" text="Plate No" />
+                                                                                                                <TableColumn fx:id="tblCoVhcllist04" editable="false" minWidth="400.0" prefWidth="400.0" sortable="false" text="Description" />
+                                                                                                                <TableColumn fx:id="tblCoVhcllist05" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Owner Name" />
                                                                                                                 <TableColumn fx:id="tblCoVhcllist07" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Co-Owner Name" visible="false" />
-                                                                                                                <TableColumn fx:id="tblCoVhcllist05" editable="false" minWidth="-Infinity" prefWidth="250.0" sortable="false" text="Selling Dealer" />
+                                                                                                                <TableColumn fx:id="tblCoVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                             </columns>
                                                                                                         </TableView>
                                                                                                         <Label text="Vehicle/s Co - Owned" GridPane.columnIndex="1" GridPane.rowIndex="4">
