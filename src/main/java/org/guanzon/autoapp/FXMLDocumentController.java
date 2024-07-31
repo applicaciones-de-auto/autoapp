@@ -95,6 +95,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private String sJobOrderType = "";
     private String sSalesInfoType = "";
     private final String psGeneralPath = "/org/guanzon/autoapp/views/general/";
+    private final String psParameterPath = "/org/guanzon/autoapp/views/parameters/";
     private final String psInsurancePath = "/org/guanzon/autoapp/views/insurance/";
     private final String psPartsPath = "/org/guanzon/autoapp/views/parts/";
     private final String psSalesPath = "/org/guanzon/autoapp/views/sales/";
@@ -625,7 +626,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CustomerFormController();
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
                 return new CustomerVehicleInfoFormController();
-            case psGeneralPath + "SalesExecutiveForm.fxml":
+            case "SalesExecutiveForm.fxml":
                 return new SalesExecutiveFormController();
 ////               case "SupplierInfo.fxml":
 ////                    return new SupplierInfoController();
@@ -719,7 +720,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Activity Approval";
             case psGeneralPath + "CustomerForm.fxml":
                 return "Customer";
-            case psGeneralPath + "SalesExecutiveForm.fxml":
+            case "SalesExecutiveForm.fxml":
                 return "Sales Executive Information";
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
 //                if (sVehicleInfoType.isEmpty()) {
@@ -886,11 +887,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesExecutiveClick(ActionEvent event) {
-        String sformname = psGeneralPath + "SalesExecutiveForm.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+        String sformname = "SalesExecutiveForm.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
     }
 
     @FXML
@@ -975,44 +973,44 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     public void mnuVhclDescClick(ActionEvent event) {
         String sformname = "VehicleDescriptionEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclMakeEntryClicked(ActionEvent event) {
         String sformname = "VehicleMakeEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclModelEntryClicked(ActionEvent event) {
         String sformname = "VehicleModelEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclTypeEntryClicked(ActionEvent event) {
         String sformname = "VehicleTypeEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclColorEntryClicked(ActionEvent event) {
         String sformname = "VehicleColorEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclEngEntryClicked(ActionEvent event) {
         String sformname = "VehicleEngineFormatEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
 
     @FXML
     private void mnuVhclFrmEntryClicked(ActionEvent event) {
         String sformname = "VehicleFrameFormatEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
 
@@ -1022,14 +1020,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuBankClick(ActionEvent event) {
         String sformname = "BankEntry.fxml";
         //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuBankInfoClick(ActionEvent event) {
         String sformname = "BankBranchInformation.fxml";
         //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     /*CASHIERING*/
@@ -1115,7 +1113,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuActivityTypeClick(ActionEvent event) {
         String sformname = "ActivitySourceTypeEntry.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
 
@@ -1149,63 +1147,63 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuBinEntryClicked(ActionEvent event) {
         String sformname = "BinEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInvLocEntryClicked(ActionEvent event) {
         String sformname = "InventoryLocationParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuMeasureEntryClicked(ActionEvent event) {
         String sformname = "MeasurementEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuSectionEntryClicked(ActionEvent event) {
         String sformname = "SectionEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuWarehsEntryClicked(ActionEvent event) {
         String sformname = "WareHouseEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuBrandEntryClicked(ActionEvent event) {
         String sformname = "BrandEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuCategoryEntryClicked(ActionEvent event) {
         String sformname = "CategoryEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInvTypeEntryClicked(ActionEvent event) {
         String sformname = "InvTypeEntryParam.fxml";
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInsurClick(ActionEvent event) {
         String sformname = "InsuranceCompanyEntry.fxml";
         //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInsurInfoClick(ActionEvent event) {
         String sformname = "InsuranceBranchInformation.fxml";
         //check tab
-        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname);
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     /*Service*/
