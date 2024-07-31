@@ -5,7 +5,6 @@
 package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -40,33 +39,23 @@ import org.guanzon.auto.main.clients.Sales_Executive;
 import org.guanzon.autoapp.models.general.ModelSalesExecutiveTrans;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
-import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class SalesExecutiveFormController implements Initializable, ScreenInterface {
 
     private GRider oApp;
     private Sales_Executive oTransSalesExe;
-    private UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private final String pxeModuleName = "Sales Executive Information"; //Form Title
     private int pnEditMode;
     private int lnCtr;
     private ObservableList<ModelSalesExecutiveTrans> transData = FXCollections.observableArrayList();
     @FXML
-    private AnchorPane AnchorMain;
-    @FXML
-    private Label lblFormTitle;
-    @FXML
     private Button btnAdd, btnSave, btnBrowse, btnCancel, btnActive, btnDeactivate, btnClose;
-    @FXML
-    private FontAwesomeIconView ActIconNm1;
-    @FXML
-    private FontAwesomeIconView ActIconNm;
     @FXML
     private Label lblNameInfo;
     @FXML
@@ -145,9 +134,22 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnSave, btnBrowse, btnCancel,
-                btnClose);
+                btnClose, btnActive, btnDeactivate);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    private void txtFieldNullHandleException(TextField txtField, String fsColName) {
+        try {
+            if (txtField.getText().trim().equals("")) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please enter value " + fsColName + " information.");
+                txtField.setText("");
+                return;
+            }
+        } catch (NullPointerException e) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value " + fsColName + " information.");
+            return;
+        }
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -169,17 +171,8 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Sales Executive Information Saving....", "Are you sure, do you want to save?")) {
-                    if (txtField01.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value Employee ID information.");
-                        txtField01.setText("");
-                        return;
-                    }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value Employee Name information.");
-                        txtField02.setText("");
-                        return;
-                    }
-
+                    txtFieldNullHandleException(txtField01, "Employee ID");
+                    txtFieldNullHandleException(txtField02, "Employee Name");
                 } else {
                     return;
                 }
@@ -190,14 +183,16 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadSalesExeField();
                         loadSalesTransaction();
+                        pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
-                        pnEditMode = oTransSalesExe.getEditMode();
+
                     }
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
                 break;
+
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
@@ -217,35 +212,29 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadSalesExeField();
                     loadSalesTransaction();
-                    pnEditMode = oTransSalesExe.getEditMode();
+                    pnEditMode = EditMode.READY;
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Sales Executive Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
-                    if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Sales Executive");
-                    } else {
-                        ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-                    }
-                }
+                CommonUtils.closeStage(btnClose);
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
                     String fsValue = oTransSalesExe.getModel().getModel().getClientID();
                     loJSON = oTransSalesExe.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransSalesExe.openRecord(oTransSalesExe.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadSalesExeField();
+                        pnEditMode = pnEditMode = EditMode.READY;;
                         initFields(pnEditMode);
-                        pnEditMode = oTransSalesExe.getEditMode();
                     }
                 }
                 break;
@@ -254,15 +243,15 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                     String fsValue = oTransSalesExe.getModel().getModel().getClientID();
                     loJSON = oTransSalesExe.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransSalesExe.openRecord(oTransSalesExe.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadSalesExeField();
+                        pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
-                        pnEditMode = oTransSalesExe.getEditMode();
                     }
                 }
                 break;
@@ -274,7 +263,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
     }
 
     private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField04, txtField05);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField04);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
         /*TextArea*/
         InputTextUtil.setCapsLockBehavior(textArea03);
@@ -365,9 +354,11 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
             fsValue = "";
             if (oTransSalesExe.getVSPTransDetail(loRow, fsCol) != null) {
                 fsValue = String.valueOf(oTransSalesExe.getVSPTransDetail(loRow, fsCol)).toUpperCase();
+
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveFormController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return fsValue;
     }
@@ -377,9 +368,11 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
             fsValue = "";
             if (oTransSalesExe.getVSPTransDetail(loRow, fsCol) != null) {
                 fsValue = InputTextUtil.xsDateShort((Date) oTransSalesExe.getVSPTransDetail(loRow, fsCol));
+
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveFormController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return fsValue;
     }
@@ -391,7 +384,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
             loJSON = oTransSalesExe.loadTransaction();
             if ("success".equals((String) loJSON.get("result"))) {
                 for (lnCtr = 0; lnCtr <= oTransSalesExe.getVSPTransCount() - 1; lnCtr++) {
-                    String csPlate = oTransSalesExe.getVSPTransDetail(lnCtr, "sCSNoxxxx") + "/" + oTransSalesExe.getVSPTransDetail(lnCtr, "sCSNoxxxx");
+                    String csPlate = String.valueOf(oTransSalesExe.getVSPTransDetail(lnCtr, "sCSNoxxxx")).toUpperCase() + "/" + String.valueOf(oTransSalesExe.getVSPTransDetail(lnCtr, "sPlateNox")).toUpperCase();
                     transData.add(new ModelSalesExecutiveTrans(
                             String.valueOf(lnCtr + 1), //ROW
                             getValueDate("ldVSPDate", lnCtr, ""),
@@ -403,10 +396,12 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                             getValue("lsDrNo", lnCtr, "sUDRNoxxx"),
                             getValue("lsSalesExe", lnCtr, "sSaleExNm  ")
                     ));
+
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveFormController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -438,7 +433,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
     }
 
     private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        boolean lbShow = (fnValue == EditMode.ADDNEW);
         txtField01.setDisable(!lbShow);
         txtField02.setDisable(!lbShow);
         cboxActivate.setDisable(true);
