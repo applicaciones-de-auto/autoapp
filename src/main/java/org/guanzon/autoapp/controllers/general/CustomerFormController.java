@@ -731,7 +731,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     return;
                 }
                 break;
-
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
