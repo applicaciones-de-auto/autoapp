@@ -110,7 +110,7 @@ public class ActivityMemberEntryDialogController implements Initializable, Scree
                     String lsEmpName = item.getTblindexMem05();
                     String lsDeptName = item.getTblindexMem03();
                     boolean isEmpExist = false;
-                    if (oTransActMembers.getMasterModel().getModel().getEmployID().equals(lsEmployID)) {
+                    if (oTransActMembers.getModel().getModel().getEmployID().equals(lsEmployID)) {
                         ShowMessageFX.Error(null, pxeModuleName, "Person in charge: " + lsEmpName + " cannot be one of the member.");
                         isEmpExist = true;
                         addedCount++;
