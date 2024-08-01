@@ -158,6 +158,31 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
+    private boolean checkExistingActivityInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActivity.validateExistingRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransActivity.openRecord((String) loJSON.get("sActvtyID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadActivityLocationTable();
+                    loadActMembersTable();
+                    loadActivityVehicleTable();
+                    loadActivityInformation();
+                    pnEditMode = EditMode.READY;
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     private void initTextFieldPattern() {
         Pattern numOnly = Pattern.compile("[0-9]*");
         Pattern decOnly = Pattern.compile("[0-9,.]*");
@@ -216,7 +241,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     case "txtField06":
                         loJSON = oTransActivity.searchEventType(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField06.setText(oTransActivity.getMasterModel().getModel().getActTypDs());
+                            txtField06.setText(oTransActivity.getModel().getModel().getActTypDs());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField06.setText("");
@@ -227,7 +252,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     case "txtField11":
                         loJSON = oTransActivity.searchDepartment(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField11.setText(oTransActivity.getMasterModel().getModel().getDeptName());
+                            txtField11.setText(oTransActivity.getModel().getModel().getDeptName());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField11.setText("");
@@ -238,7 +263,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     case "txtField12":
                         loJSON = oTransActivity.searchEmployee(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField12.setText(oTransActivity.getMasterModel().getModel().getEmpInCharge());
+                            txtField12.setText(oTransActivity.getModel().getModel().getEmpInCharge());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField12.setText("");
@@ -249,8 +274,9 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     case "txtField13":
                         loJSON = oTransActivity.searchBranch(lsValue);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField13.setText(oTransActivity.getMasterModel().getModel().getBranchNm());
-                            txtField14.setText(oTransActivity.getMasterModel().getModel().getLocation());
+                            txtField13.setText(oTransActivity.getModel().getModel().getBranchNm());
+                            txtField14.setText(oTransActivity.getModel().getModel().getLocation());
+                            checkExistingActivityInformation();
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField13.setText("");
@@ -301,14 +327,14 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 15:/*No of Target Client*/
-                    oTransActivity.getMasterModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
+                    oTransActivity.getModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
                     break;
                 case 16:/*Total Event Budget*/
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransActivity.getMasterModel().getModel().setRcvdBdgt(Double.valueOf(lsValue.replace(",", "")));
-                    txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getMasterModel().getModel().getRcvdBdgt()))));
+                    oTransActivity.getModel().getModel().setRcvdBdgt(Double.valueOf(lsValue.replace(",", "")));
+                    txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getModel().getModel().getRcvdBdgt()))));
                     break;
             }
         } else {
@@ -327,16 +353,17 @@ public class ActivityFormController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 7:
-                    oTransActivity.getMasterModel().getModel().setActTitle(lsValue);
+                    oTransActivity.getModel().getModel().setActTitle(lsValue);
+                    checkExistingActivityInformation();
                     break;
                 case 8:
-                    oTransActivity.getMasterModel().getModel().setActDesc(lsValue);
+                    oTransActivity.getModel().getModel().setActDesc(lsValue);
                     break;
                 case 9:
-                    oTransActivity.getMasterModel().getModel().setLogRemrk(lsValue);
+                    oTransActivity.getModel().getModel().setLogRemrk(lsValue);
                     break;
                 case 10:
-                    oTransActivity.getMasterModel().getModel().setRemarks(lsValue);
+                    oTransActivity.getModel().getModel().setRemarks(lsValue);
                     break;
             }
         } else {
@@ -356,31 +383,33 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         dateFrom03.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-
+                checkExistingActivityInformation();
             }
         });
         dateTo04.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                checkExistingActivityInformation();
             }
         });
         comboBox05.setOnAction(e -> {
-            int selectedComboBox02 = comboBox05.getSelectionModel().getSelectedIndex();
+            int selectedComboBox05 = comboBox05.getSelectionModel().getSelectedIndex();
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox02 >= 0) {
-                    switch (selectedComboBox02) {
+                if (selectedComboBox05 >= 0) {
+                    switch (selectedComboBox05) {
                         case 0:
-                            oTransActivity.getMasterModel().getModel().setEventTyp("eve");
+                            oTransActivity.getModel().getModel().setEventTyp("eve");
                             break;
                         case 1:
-                            oTransActivity.getMasterModel().getModel().setEventTyp("sal");
+                            oTransActivity.getModel().getModel().setEventTyp("sal");
                             break;
                         case 2:
-                            oTransActivity.getMasterModel().getModel().setEventTyp("pro");
+                            oTransActivity.getModel().getModel().setEventTyp("pro");
                             break;
                         default:
                             break;
                     }
+                    checkExistingActivityInformation();
                 }
                 initFields(pnEditMode);
             }
@@ -391,7 +420,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransActivity.getMasterModel().getModel().setActTypDs("");
+                                oTransActivity.getModel().getModel().setActTypDs("");
                                 initFields(pnEditMode);
                             }
                         }
@@ -403,8 +432,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransActivity.getMasterModel().getModel().setDeptID("");
-                                oTransActivity.getMasterModel().getModel().setEmployID("");
+                                oTransActivity.getModel().getModel().setDeptID("");
+                                oTransActivity.getModel().getModel().setEmployID("");
                                 txtField12.setText("");
                                 initFields(pnEditMode);
                             }
@@ -417,7 +446,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransActivity.getMasterModel().getModel().setEmployID("");
+                                oTransActivity.getModel().getModel().setEmployID("");
                                 initFields(pnEditMode);
                             }
                         }
@@ -429,8 +458,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransActivity.getMasterModel().getModel().setBranchNm("");
-                                oTransActivity.getMasterModel().getModel().setLocation("");
+                                oTransActivity.getModel().getModel().setBranchNm("");
+                                oTransActivity.getModel().getModel().setLocation("");
                                 txtField14.setText("");
                                 initFields(pnEditMode);
                             }
@@ -453,7 +482,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
                 return false;
             } else {
-                switch (String.valueOf(oTransActivity.getMasterModel().getModel().getEventTyp())) {
+                switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
                     case "eve":
                         comboBox05.setValue("EVENT");
                         break;
@@ -485,7 +514,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     clearFields();
                     clearTables();
                     oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
-                    loJSON = oTransActivity.newTransaction();
+                    loJSON = oTransActivity.newRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadActivityInformation();
                         pnEditMode = oTransActivity.getEditMode();
@@ -495,7 +524,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnEdit":
-                    loJSON = oTransActivity.updateTransaction();
+                    loJSON = oTransActivity.updateRecord();
                     pnEditMode = oTransActivity.getEditMode();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
@@ -505,6 +534,9 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     LocalDate loDateFrom = dateFrom03.getValue();
                     LocalDate loDateTo = dateTo04.getValue();
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
+                        if (checkExistingActivityInformation()) {
+                            return;
+                        }
                         if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
                             ShowMessageFX.Warning(getStage(), "Please enter a valid date from.", "Warning", null);
                             return;
@@ -547,10 +579,10 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         if (!setSelection()) {
                             return;
                         }
-                        loJSON = oTransActivity.saveTransaction();
+                        loJSON = oTransActivity.saveRecord();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, "Activity Information", (String) loJSON.get("message"));
-                            loJSON = oTransActivity.openTransaction(oTransActivity.getMasterModel().getModel().getActvtyID());
+                            loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActvtyID());
                             if ("success".equals((String) loJSON.get("result"))) {
                                 loadActivityLocationTable();
                                 loadActMembersTable();
@@ -565,7 +597,6 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         }
                     }
                     break;
-
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         clearFields();
@@ -581,7 +612,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             return;
                         }
                     }
-                    loJSON = oTransActivity.searchTransaction("", false);
+                    loJSON = oTransActivity.searchRecord("", false);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadActivityLocationTable();
                         loadActMembersTable();
@@ -613,11 +644,11 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                             loadActivityLocationTable();
                             break;
                         case 1: //Members
-                            if (oTransActivity.getMasterModel().getModel().getEmployID() == null) {
+                            if (oTransActivity.getModel().getModel().getEmployID() == null) {
                                 ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
                                 return;
                             } else {
-                                if (oTransActivity.getMasterModel().getModel().getEmployID().isEmpty()) {
+                                if (oTransActivity.getModel().getModel().getEmployID().isEmpty()) {
                                     ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
                                     return;
                                 }
@@ -664,7 +695,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     btnTabRem.setVisible(false);
                     break;
                 case "btnPrint":
-                    String lsTransNox = oTransActivity.getMasterModel().getModel().getActvtyID();
+                    String lsTransNox = oTransActivity.getModel().getModel().getActvtyID();
                      {
                         try {
                             loadActivityPrint(lsTransNox);
@@ -673,7 +704,26 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         }
                     }
                     break;
-
+                case "btnActCancel":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to cancel this activity?") == true) {
+                        String fsValue = oTransActivity.getModel().getModel().getActvtyID();
+                        loJSON = oTransActivity.cancelRecord(fsValue);
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, "Activity Information", (String) loJSON.get("message"));
+                        } else {
+                            ShowMessageFX.Warning(null, "Activity Information", (String) loJSON.get("message"));
+                        }
+                        loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActvtyID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadActivityLocationTable();
+                            loadActMembersTable();
+                            loadActivityVehicleTable();
+                            loadActivityInformation();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransActivity.getEditMode();
+                        }
+                    }
+                    break;
                 default:
                     ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                     break;
@@ -760,22 +810,22 @@ public class ActivityFormController implements Initializable, ScreenInterface {
     }
 
     private void loadActivityInformation() {
-        if (oTransActivity.getMasterModel().getModel().getActvtyID() != null) {
+        if (oTransActivity.getModel().getModel().getActvtyID() != null) {
             lblActivityID.setText("ACTIVITY ID: ");
-            lblActivityIDValue.setText(oTransActivity.getMasterModel().getModel().getActvtyID());
+            lblActivityIDValue.setText(oTransActivity.getModel().getModel().getActvtyID());
         } else {
             lblActivityIDValue.setText("");
             lblActivityID.setText("");
         }
-        txtField02.setText(oTransActivity.getMasterModel().getModel().getActNo());
-        if (oTransActivity.getMasterModel().getModel().getDateFrom() != null && !oTransActivity.getMasterModel().getModel().getDateFrom().toString().isEmpty()) {
-            dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMasterModel().getModel().getDateFrom())));
+        txtField02.setText(oTransActivity.getModel().getModel().getActNo());
+        if (oTransActivity.getModel().getModel().getDateFrom() != null && !oTransActivity.getModel().getModel().getDateFrom().toString().isEmpty()) {
+            dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getDateFrom())));
         }
-        if (oTransActivity.getMasterModel().getModel().getDateThru() != null && !oTransActivity.getMasterModel().getModel().getDateThru().toString().isEmpty()) {
-            dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getMasterModel().getModel().getDateThru())));
+        if (oTransActivity.getModel().getModel().getDateThru() != null && !oTransActivity.getModel().getModel().getDateThru().toString().isEmpty()) {
+            dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getDateThru())));
         }
-        if (oTransActivity.getMasterModel().getModel().getEventTyp() != null && !oTransActivity.getMasterModel().getModel().getEventTyp().trim().isEmpty()) {
-            switch (String.valueOf(oTransActivity.getMasterModel().getModel().getEventTyp())) {
+        if (oTransActivity.getModel().getModel().getEventTyp() != null && !oTransActivity.getModel().getModel().getEventTyp().trim().isEmpty()) {
+            switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
                 case "eve":
                     comboBox05.setValue("EVENT");
                     break;
@@ -787,33 +837,40 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     break;
             }
         }
-        txtField06.setText(oTransActivity.getMasterModel().getModel().getActTypDs());
-        textArea07.setText(oTransActivity.getMasterModel().getModel().getActTitle());
-        textArea08.setText(oTransActivity.getMasterModel().getModel().getActDesc());
-        textArea09.setText(oTransActivity.getMasterModel().getModel().getLogRemrk());
-        textArea10.setText(oTransActivity.getMasterModel().getModel().getRemarks());
-        txtField11.setText(oTransActivity.getMasterModel().getModel().getDeptName());
-        txtField12.setText(oTransActivity.getMasterModel().getModel().getEmpInCharge());
-        txtField13.setText(oTransActivity.getMasterModel().getModel().getBranchNm());
-        txtField14.setText(oTransActivity.getMasterModel().getModel().getLocation());
-        txtField15.setText(String.valueOf(oTransActivity.getMasterModel().getModel().getTrgtClnt()));
-        txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getMasterModel().getModel().getRcvdBdgt()))));
+        txtField06.setText(oTransActivity.getModel().getModel().getActTypDs());
+        textArea07.setText(oTransActivity.getModel().getModel().getActTitle());
+        textArea08.setText(oTransActivity.getModel().getModel().getActDesc());
+        textArea09.setText(oTransActivity.getModel().getModel().getLogRemrk());
+        textArea10.setText(oTransActivity.getModel().getModel().getRemarks());
+        txtField11.setText(oTransActivity.getModel().getModel().getDeptName());
+        txtField12.setText(oTransActivity.getModel().getModel().getEmpInCharge());
+        txtField13.setText(oTransActivity.getModel().getModel().getBranchNm());
+        txtField14.setText(oTransActivity.getModel().getModel().getLocation());
+        txtField15.setText(String.valueOf(oTransActivity.getModel().getModel().getTrgtClnt()));
+        txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getModel().getModel().getRcvdBdgt()))));
 
-//        if (oTransActivity.getMasterModel().getModel().getApproved() != null) {
-//            lblApprovedBy.setText(oTransActivity.getMasterModel().getModel().getApproved());
-//            if (oTransActivity.getMasterModel().getModel().getApprovedDte() != null && !oTransActivity.getMasterModel().getModel().getApprovedDte().toString().isEmpty()) {
-//                lblApprovedDate.setText(oTransActivity.getMaster(23).toString());//dApproved
+//        if (oTransActivity.getModel().getModel().getApproved() != null) {
+//            lblApprovedBy.setText(oTransActivity.getModel().getModel().getApproved());
+//            if (oTransActivity.getModel().getModel().getApprovedDte() != null && !oTransActivity.getModel().getModel().getApprovedDte().toString().isEmpty()) {
+//                lblApprovedDate.setText(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getApprovedDte()));//dApproved
 //            }
 //        } else {
 //            lblApprovedBy.setText("");
 //            lblApprovedDate.setText("");//dApproved
 //        }
-        if (oTransActivity.getMasterModel().getModel().getTranStat().equals("2")) {
-            lblCancelStatus.setText("Cancelled");
-        } else if (oTransActivity.getMasterModel().getModel().getTranStat().equals("1")) {
-            lblCancelStatus.setText("Active");
-        } else {
-            lblCancelStatus.setText("");
+        switch (oTransActivity.getModel().getModel().getTranStat()) {
+            case "1":
+                lblCancelStatus.setText("Active");
+                break;
+            case "2":
+                lblCancelStatus.setText("Cancelled");
+                break;
+            case "3":
+                lblCancelStatus.setText("Approved");
+                break;
+            default:
+                lblCancelStatus.setText("");
+                break;
         }
     }
 
@@ -1139,8 +1196,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         btnEdit.setManaged(false);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
-        btnActivityHistory.setVisible(false);
-        btnActivityHistory.setManaged(false);
+//        btnActivityHistory.setVisible(false);
+//        btnActivityHistory.setManaged(false);
         btnPrint.setVisible(false);
         btnPrint.setManaged(false);
         btnCancel.setVisible(lbShow);
@@ -1154,8 +1211,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                 btnEdit.setManaged(false);
                 btnPrint.setVisible(false);
                 btnPrint.setManaged(false);
-                btnActivityHistory.setVisible(true);
-                btnActivityHistory.setManaged(true);
+//                btnActivityHistory.setVisible(true);
+//                btnActivityHistory.setManaged(true);
             } else {
                 btnActCancel.setVisible(true);
                 btnActCancel.setManaged(true);
@@ -1163,8 +1220,8 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                 btnEdit.setManaged(true);
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
-                btnActivityHistory.setVisible(true);
-                btnActivityHistory.setManaged(true);
+//                btnActivityHistory.setVisible(true);
+//                btnActivityHistory.setManaged(true);
             }
         }
 
