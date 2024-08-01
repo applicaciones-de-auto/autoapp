@@ -57,6 +57,7 @@ import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
+import org.guanzon.autoapp.controllers.general.ReferralAgentFormController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveFormController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankEntryController;
@@ -628,6 +629,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CustomerVehicleInfoFormController();
             case "SalesExecutiveForm.fxml":
                 return new SalesExecutiveFormController();
+            case psGeneralPath + "ReferralAgentForm.fxml":
+                return new ReferralAgentFormController();
 ////               case "SupplierInfo.fxml":
 ////                    return new SupplierInfoController();
 //            /*SALES*/
@@ -722,6 +725,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Customer";
             case "SalesExecutiveForm.fxml":
                 return "Sales Executive Information";
+            case psGeneralPath + "ReferralAgentForm.fxml":
+                return "Referral Agent Information";
             case psGeneralPath + "CustomerVehicleInfoForm.fxml":
 //                if (sVehicleInfoType.isEmpty()) {
 //                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
@@ -877,8 +882,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesAgentClick(ActionEvent event) {
-        sSalesInfoType = "Referral Agent";
-        String sformname = "ReferralAgentForm.fxml";
+        String sformname = psGeneralPath + "ReferralAgentForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
