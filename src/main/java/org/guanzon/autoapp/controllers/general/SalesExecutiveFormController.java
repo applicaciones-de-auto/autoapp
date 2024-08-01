@@ -80,6 +80,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTransSalesExe = new Sales_Executive(oApp, false, oApp.getBranchCode());
+
         initCapitalizationFields();
         initTextKeyPressed();
         initCmboxFieldAction();
