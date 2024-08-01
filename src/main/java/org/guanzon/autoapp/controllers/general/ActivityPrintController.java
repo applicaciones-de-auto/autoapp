@@ -215,7 +215,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private boolean loadReport() throws SQLException {
         int lnCtr;
         JSONObject loJSON = new JSONObject();
-        loJSON = oTransPrint.openTransaction(psTransNox);
+        loJSON = oTransPrint.openRecord(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("actNo", getValueReport("actNo", "sActNoxxx"));
             params.put("actID", getValueReport("actID", "sActvtyID"));
