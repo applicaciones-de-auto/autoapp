@@ -163,7 +163,6 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
                 }
                 );
         pnEditMode = EditMode.UNKNOWN;
-
         initFields(pnEditMode);
     }
 
@@ -267,6 +266,9 @@ public class VehicleFrameFormatEntryController implements Initializable, ScreenI
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
 
