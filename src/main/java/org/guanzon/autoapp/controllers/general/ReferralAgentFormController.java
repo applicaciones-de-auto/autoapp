@@ -100,7 +100,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage;
+    private Button btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage, btnTabAdd, btnTabRem;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField12;
     @FXML
@@ -138,10 +138,6 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
     private TableView<ModelCustomerSocialMedia> tblSocMed;
     @FXML
     private TableColumn<ModelCustomerSocialMedia, String> socmindex01, socmindex02, socmindex03, socmindex04;
-    @FXML
-    private Button btnTabAdd;
-    @FXML
-    private Button btnTabRem;
     @FXML
     private TableView<ModelRefAgentRequirements> tblRequirementsInfo;
     @FXML
@@ -382,6 +378,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        btnUploadImage.setDisable(true);
         txtField01.setDisable(!lbShow);
         txtField02.setDisable(!lbShow);
         txtField03.setDisable(!lbShow);
@@ -394,7 +391,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         comboBox10.setDisable(!lbShow);
         comboBox11.setDisable(!lbShow);
         txtField12.setDisable(!lbShow);
-        btnUploadImage.setDisable(!lbShow);
+//        btnUploadImage.setDisable(!lbShow);
 
 //        if (oTransClient.getModel().getModel().getImage() != null) {
 //            btnRemoveImage.setDisable(false);
@@ -420,13 +417,18 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         }
         if (fnValue == EditMode.READY) {
             if (oTransRef.getModel().getModel().getRecdStat().equals("2")) {
+                btnDisapprove.setVisible(false);
+                btnDisapprove.setManaged(false);
+                btnApprove.setVisible(true);
+                btnApprove.setManaged(true);
+            } else if (oTransRef.getModel().getModel().getRecdStat().equals("1")) {
                 btnDisapprove.setVisible(true);
                 btnDisapprove.setManaged(true);
                 btnApprove.setVisible(false);
                 btnApprove.setManaged(false);
             } else {
-                btnDisapprove.setVisible(false);
-                btnDisapprove.setManaged(false);
+                btnDisapprove.setVisible(true);
+                btnDisapprove.setManaged(true);
                 btnApprove.setVisible(true);
                 btnApprove.setManaged(true);
             }
@@ -505,8 +507,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
     }
 
     private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
-                btnClose, btnTabAdd, btnTabRem);
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage, btnTabAdd, btnTabRem);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -708,6 +709,52 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                 }
                 btnTabRem.setVisible(false);
                 break;
+            case "btnDisapprove":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransRef.getModel().getModel().getClientID();
+                    loJSON = oTransRef.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransClient.openRecord(oTransRef.getModel().getModel().getClientID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadReferralAgentInformation();
+                        loadAddress();
+                        loadContact();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadAgentTrans();
+                        loadAgentRequirements();
+                        pnEditMode = oTransClient.getEditMode();
+                        initFields(pnEditMode);
+                    }
+                }
+                break;
+            case "btnApprove":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransRef.getModel().getModel().getClientID();
+                    loJSON = oTransRef.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransClient.openRecord(oTransRef.getModel().getModel().getClientID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadReferralAgentInformation();
+                        loadAddress();
+                        loadContact();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadAgentTrans();
+                        loadAgentRequirements();
+                        pnEditMode = oTransClient.getEditMode();
+                        initFields(pnEditMode);
+                    }
+                }
+                break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
@@ -761,6 +808,19 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         }
         if (oTransClient.getModel().getModel().getCvilStat() != null && !oTransClient.getModel().getModel().getCvilStat().trim().isEmpty()) {
             comboBox08.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getCvilStat()));
+        }
+        if (oTransRef.getModel().getModel().getRecdStat() != null) {
+            switch (oTransRef.getModel().getModel().getRecdStat()) {
+                case "1":
+                    lblStatus.setText("Approved");
+                    break;
+                case "2":
+                    lblStatus.setText("Disapproved");
+                    break;
+                default:
+                    lblStatus.setText("Inactive");
+                    break;
+            }
         }
         if (oTransRef.getModel().getModel().getAgentTyp() != null && !oTransRef.getModel().getModel().getAgentTyp().trim().isEmpty()) {
             switch (String.valueOf(oTransRef.getModel().getModel().getAgentTyp())) {
@@ -893,6 +953,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             loControl.setOrigProv((String) oTransClient.getAddress(fnRow, 25));
             loControl.setOrigTown((String) oTransClient.getAddress(fnRow, 16));
             loControl.setOrigBrgy((String) oTransClient.getAddress(fnRow, 18));
+            loControl.setFormStateName("Referral Agent Information");
             loControl.setClientID(oTransClient.getModel().getModel().getClientID());
             fxmlLoader.setController(loControl);
             //load the main interface
@@ -1022,6 +1083,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             CustomerContactFormController loControl = new CustomerContactFormController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransClient);
+            loControl.setFormStateName("Referral Agent Information");
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
@@ -1158,6 +1220,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             CustomerEmailFormController loControl = new CustomerEmailFormController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransClient);
+            loControl.setFormStateName("Referral Agent Information");
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
@@ -1271,6 +1334,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             CustomerSocialMediaFormController loControl = new CustomerSocialMediaFormController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransClient);
+            loControl.setFormStateName("Referral Agent Information");
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
