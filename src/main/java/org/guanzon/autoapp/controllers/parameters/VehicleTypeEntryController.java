@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -119,9 +120,7 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
         initTextFieldFocus();
         initButtons();
         clearFields();
-        if (pbOpenEvent) {
-            txtField07.setText(psMakeDesc);
-        }
+
         comboBox03.setOnAction(event -> {
             JSONObject loJSON = new JSONObject();
             loJSON = oTransType.loadFormatType();
@@ -184,6 +183,9 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
     }
 
     private void loadTypeFields() {
+        if (pbOpenEvent) {
+            txtField02.setText(oTransType.getModel().getModel().getMakeID());
+        }
         txtField01.setText(oTransType.getModel().getModel().getTypeID());
         txtField07.setText(oTransType.getModel().getModel().getTypeDesc());
         if (oTransType.getModel().getModel().getRecdStat().equals("1")) {
@@ -281,6 +283,9 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
     }
@@ -362,11 +367,12 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
                 loJSON = oTransType.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
                     if (pbOpenEvent) {
+                        oTransType.getModel().getModel().setMakeID(psMakeID);
+                        oTransType.getModel().getModel().setMakeDesc(psMakeDesc);
                         loJSON = oTransType.loadFormatType();
                         if ("success".equals((String) loJSON.get("result"))) {
                             txtField02.setText(psMakeDesc);
-                            oTransType.getModel().getModel().setMakeDesc(psMakeID);
-                            oTransType.getModel().getModel().setMakeDesc(psMakeDesc);
+                            loadTypeFormat();
                         } else {
                             ShowMessageFX.Warning(getStage(), "Error found while loading vehicle type format.", "Warning", null);
                             return;
@@ -375,6 +381,7 @@ public class VehicleTypeEntryController implements Initializable, ScreenInterfac
                         psMakeDesc = "";
                         psMakeID = "";
                     }
+
                     loadTypeFields();
                     pnEditMode = oTransType.getEditMode();
                 } else {
