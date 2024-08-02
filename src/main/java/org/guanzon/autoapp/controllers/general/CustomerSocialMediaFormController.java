@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -40,7 +41,9 @@ public class CustomerSocialMediaFormController implements Initializable, ScreenI
 
     private GRider oApp;
     private Client oTransSocMed;
-    private final String pxeModuleName = "Customer Social Media";
+    private final String pxeCustomerModuleName = "Customer Social Media";
+    private final String pxeRefModuleName = "Referral Agent Social Media";
+    private String psFormStateName;
     private int pnRow = 0;
     private boolean pbState = true;
     private ObservableList<String> cSocType = FXCollections.observableArrayList("FACEBOOK", "WHATSAPP", "INSTAGRAM", "TIKTOK", "TWITTER");
@@ -54,6 +57,8 @@ public class CustomerSocialMediaFormController implements Initializable, ScreenI
     private TextField txtField03Socm;
     @FXML
     private ComboBox comboBox04Socm;
+    @FXML
+    private Label lblFormTitle;
 
     public void setObject(Client foObject) {
         oTransSocMed = foObject;
@@ -73,6 +78,10 @@ public class CustomerSocialMediaFormController implements Initializable, ScreenI
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public void setFormStateName(String fsValue) {
+        psFormStateName = fsValue;
     }
 
     /**
@@ -96,6 +105,14 @@ public class CustomerSocialMediaFormController implements Initializable, ScreenI
             btnAdd.setManaged(false);
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
+        }
+    }
+
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 
@@ -132,24 +149,23 @@ public class CustomerSocialMediaFormController implements Initializable, ScreenI
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                showWarning(psFormStateName, "Information", "Button with name " + lsButton + " not registered.");
                 break;
         }
     }
 
     private boolean settoClass() {
-
         //Validate Before adding to tables
         if (txtField03Socm.getText().isEmpty() || txtField03Socm.getText().trim().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Social Media Warning", "Invalid Account. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Invalid Account. Insert to table Aborted!");
             return false;
         }
         if (!radiobtn05SocY.isSelected() && !radiobtn05SocN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Social Media Warning", "Please select Account Type.Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Account Type.Insert to table Aborted!");
             return false;
         }
         if (comboBox04Socm.getValue().equals("") || comboBox04Socm.getValue() == null) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Social Media Warning", "Please select Social Media Type. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Social Media Type. Insert to table Aborted!");
             return false;
         }
         oTransSocMed.setSocialMed(pnRow, 3, txtField03Socm.getText());
