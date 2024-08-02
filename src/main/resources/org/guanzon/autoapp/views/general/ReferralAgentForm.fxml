@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane>
+                    <StackPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </StackPane.margin>
+                    <top>
+                        <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="REFERRAL AGENT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <Separator style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <bottom>
+                        <AnchorPane prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="10.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                        <Label prefHeight="17.0" prefWidth="100.0" text="Status:" textFill="WHITE" />
+                                        <Label fx:id="lblStatus" prefHeight="17.0" prefWidth="100.0" textFill="WHITE" GridPane.columnIndex="1">
+                                            <font>
+                                                <Font name="System Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PLUS" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnEdit" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Edit">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Approve">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="THUMBS_UP" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnDisapprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Disapprove">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="THUMBS_DOWN" size="20" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                    <center>
+                        <AnchorPane BorderPane.alignment="CENTER">
+                            <children>
+                                <StackPane AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                    <children>
+                                        <BorderPane>
+                                            <top>
+                                                <AnchorPane style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <GridPane prefHeight="30.0" prefWidth="279.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="95.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                        </GridPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </top>
+                                            <center>
+                                                <AnchorPane BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets />
+                                                    </BorderPane.margin>
+                                                    <children>
+                                                        <TabPane fx:id="tabPaneMain" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <tabs>
+                                                                <Tab fx:id="tabReferral" style="-fx-font-weight: bold; -fx-font-family: arial;" text="Information">
+                                                                    <content>
+                                                                        <AnchorPane>
+                                                                            <children>
+                                                                                <AnchorPane maxWidth="-Infinity" prefWidth="977.0" style="-fx-border-color: orange; -fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                                                                    <children>
+                                                                                        <VBox spacing="3.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                                                                            <children>
+                                                                                                <HBox>
+                                                                                                    <children>
+                                                                                                        <AnchorPane>
+                                                                                                            <children>
+                                                                                                                <GridPane vgap="3.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                                                                                    <columnConstraints>
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="125.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                                                                                    </columnConstraints>
+                                                                                                                    <rowConstraints>
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                                                    </rowConstraints>
+                                                                                                                    <children>
+                                                                                                                        <TextField fx:id="txtField01" disable="true" layoutX="110.0" layoutY="37.0" promptText="Search: F3" GridPane.columnIndex="1" />
+                                                                                                                        <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                                                        <TextField fx:id="txtField03" promptText="Search: F3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                                                        <TextField fx:id="txtField04" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                                                        <TextField fx:id="txtField05" prefColumnCount="8" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                                                                        <ComboBox fx:id="comboBox06" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                                                                        <ComboBox fx:id="comboBox07" prefWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="2" />
+                                                                                                                        <ComboBox fx:id="comboBox08" prefWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                                                                                                                        <DatePicker fx:id="datePicker09" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                                                                        <ComboBox fx:id="comboBox10" prefHeight="24.0" prefWidth="180.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                                                                        <ComboBox fx:id="comboBox11" prefWidth="180.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+                                                                                                                        <TextField fx:id="txtField12" GridPane.columnIndex="4" GridPane.columnSpan="5" GridPane.rowIndex="7" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Last Name" GridPane.rowIndex="2" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="First Name" GridPane.rowIndex="3" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Middle name" GridPane.rowIndex="4" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Suffix" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Birth Date" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Gender" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Civil Status" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                                                                        <Label id="LabelDesc" layoutX="304.0" layoutY="15.0" stylesheets="@../css/FrameStyle.css" text="Title" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Referral Type" GridPane.rowIndex="6" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Profession" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                                                                                                                        <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Educational Attainment" GridPane.rowIndex="7" />
+                                                                                                                        <Separator prefWidth="200.0" GridPane.columnSpan="9" GridPane.rowIndex="5" />
+                                                                                                                        <Label id="LabelDesc" layoutX="10.0" layoutY="93.0" style="-fx-font-weight: bold;" stylesheets="@../css/FrameStyle.css" text="Agent ID" />
+                                                                                                                        <Separator layoutX="10.0" layoutY="149.0" prefWidth="200.0" GridPane.columnSpan="9" GridPane.rowIndex="1" />
+                                                                                                                    </children>
+                                                                                                                </GridPane>
+                                                                                                            </children>
+                                                                                                        </AnchorPane>
+                                                                                                        <VBox alignment="CENTER" fillWidth="false" prefHeight="184.0" HBox.hgrow="ALWAYS">
+                                                                                                            <children>
+                                                                                                                <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="232.0">
+                                                                                                                    <children>
+                                                                                                                        <ImageView fx:id="imageView" fitHeight="170.0" fitWidth="200.0" onMouseClicked="#ImageViewClicked" pickOnBounds="true" preserveRatio="true">
+                                                                                                                            <image>
+                                                                                                                                <Image url="@../../images/defaultimage.png" />
+                                                                                                                            </image>
+                                                                                                                            <VBox.margin>
+                                                                                                                                <Insets bottom="5.0" top="5.0" />
+                                                                                                                            </VBox.margin>
+                                                                                                                        </ImageView>
+                                                                                                                        <HBox alignment="CENTER" fillHeight="false" prefHeight="34.0" prefWidth="236.0" spacing="5.0">
+                                                                                                                            <children>
+                                                                                                                                <Button fx:id="btnUploadImage" mnemonicParsing="false" text="Upload Image">
+                                                                                                                                    <graphic>
+                                                                                                                                        <FontAwesomeIconView glyphName="UPLOAD" />
+                                                                                                                                    </graphic>
+                                                                                                                                </Button>
+                                                                                                                                <Button fx:id="btnRemoveImage" disable="true" mnemonicParsing="false" text="Remove Image">
+                                                                                                                                    <graphic>
+                                                                                                                                        <FontAwesomeIconView glyphName="TRASH" />
+                                                                                                                                    </graphic>
+                                                                                                                                </Button>
+                                                                                                                            </children>
+                                                                                                                            <VBox.margin>
+                                                                                                                                <Insets bottom="5.0" />
+                                                                                                                            </VBox.margin>
+                                                                                                                        </HBox>
+                                                                                                                    </children>
+                                                                                                                </VBox>
+                                                                                                            </children>
+                                                                                                        </VBox>
+                                                                                                    </children>
+                                                                                                </HBox>
+                                                                                                <AnchorPane prefHeight="17.0" style="-fx-background-color: #FACEA1;">
+                                                                                                    <children>
+                                                                                                        <Label alignment="CENTER" text="Contact Information" textFill="#5b5b5b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                                            <font>
+                                                                                                                <Font name="System Bold" size="11.0" />
+                                                                                                            </font>
+                                                                                                        </Label>
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                                <AnchorPane VBox.vgrow="ALWAYS">
+                                                                                                    <children>
+                                                                                                        <TabPane fx:id="tabPCustCont" prefWidth="880.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                                            <tabs>
+                                                                                                                <Tab fx:id="tabAddrInf" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Address">
+                                                                                                                    <content>
+                                                                                                                        <AnchorPane>
+                                                                                                                            <children>
+                                                                                                                                <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                    <children>
+                                                                                                                                        <TableView fx:id="tblAddress" layoutX="14.0" layoutY="5.0" onMouseClicked="#tblAddress_Clicked" prefHeight="100.0" prefWidth="415.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                            <columns>
+                                                                                                                                                <TableColumn fx:id="addrindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                                                <TableColumn fx:id="addrindex02" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Primary" />
+                                                                                                                                                <TableColumn fx:id="addrindex03" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="House No." />
+                                                                                                                                                <TableColumn fx:id="addrindex04" editable="false" maxWidth="370.0" minWidth="328.0" prefWidth="363.0" resizable="false" sortable="false" text="Address" />
+                                                                                                                                                <TableColumn fx:id="addrindex05" editable="false" maxWidth="92.0" minWidth="50.0" prefWidth="57.0" resizable="false" sortable="false" text="Zip Code" />
+                                                                                                                                                <TableColumn fx:id="addrindex06" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Current" />
+                                                                                                                                                <TableColumn fx:id="addrindex07" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Province" />
+                                                                                                                                                <TableColumn fx:id="addrindex08" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Office" />
+                                                                                                                                                <TableColumn fx:id="addrindex09" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Status" />
+                                                                                                                                                <TableColumn fx:id="addrindex10" editable="false" prefWidth="400.0" sortable="false" text="Remarks" />
+                                                                                                                                            </columns>
+                                                                                                                                        </TableView>
+                                                                                                                                    </children>
+                                                                                                                                </AnchorPane>
+                                                                                                                            </children>
+                                                                                                                        </AnchorPane>
+                                                                                                                    </content>
+                                                                                                                </Tab>
+                                                                                                                <Tab fx:id="tabContNo" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Contact Number">
+                                                                                                                    <content>
+                                                                                                                        <AnchorPane>
+                                                                                                                            <children>
+                                                                                                                                <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                    <children>
+                                                                                                                                        <TableView fx:id="tblContact" onMouseClicked="#tblContact_Clicked" prefHeight="150.0" prefWidth="495.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                            <columns>
+                                                                                                                                                <TableColumn fx:id="contindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                                                <TableColumn fx:id="contindex02" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Primary" />
+                                                                                                                                                <TableColumn fx:id="contindex03" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="Ownership" />
+                                                                                                                                                <TableColumn fx:id="contindex04" editable="false" prefWidth="100.0" resizable="false" sortable="false" text="Type" />
+                                                                                                                                                <TableColumn fx:id="contindex05" editable="false" maxWidth="300.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Contact No" />
+                                                                                                                                                <TableColumn fx:id="contindex06" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Status" />
+                                                                                                                                                <TableColumn fx:id="contindex07" editable="false" prefWidth="400.0" resizable="false" sortable="false" text="Remarks" />
+                                                                                                                                            </columns>
+                                                                                                                                        </TableView>
+                                                                                                                                    </children>
+                                                                                                                                </AnchorPane>
+                                                                                                                            </children>
+                                                                                                                        </AnchorPane>
+                                                                                                                    </content>
+                                                                                                                </Tab>
+                                                                                                                <Tab fx:id="tabEmail" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Email Address">
+                                                                                                                    <content>
+                                                                                                                        <AnchorPane>
+                                                                                                                            <children>
+                                                                                                                                <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                    <children>
+                                                                                                                                        <TableView fx:id="tblEmail" onMouseClicked="#tblEmail_Clicked" prefHeight="155.0" prefWidth="495.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                            <columns>
+                                                                                                                                                <TableColumn fx:id="emadindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                                                <TableColumn fx:id="emadindex02" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Primary" />
+                                                                                                                                                <TableColumn fx:id="emadindex03" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="Ownership" />
+                                                                                                                                                <TableColumn fx:id="emadindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Email Address" />
+                                                                                                                                                <TableColumn fx:id="emadindex05" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Status" />
+                                                                                                                                            </columns>
+                                                                                                                                        </TableView>
+                                                                                                                                    </children>
+                                                                                                                                </AnchorPane>
+                                                                                                                            </children>
+                                                                                                                        </AnchorPane>
+                                                                                                                    </content>
+                                                                                                                </Tab>
+                                                                                                                <Tab fx:id="tabSocMed" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Social Media">
+                                                                                                                    <content>
+                                                                                                                        <AnchorPane>
+                                                                                                                            <children>
+                                                                                                                                <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                    <children>
+                                                                                                                                        <TableView fx:id="tblSocMed" onMouseClicked="#tblSocMed_Clicked" prefHeight="155.0" prefWidth="495.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                                            <columns>
+                                                                                                                                                <TableColumn fx:id="socmindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                                                <TableColumn fx:id="socmindex02" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" text="Social Type" />
+                                                                                                                                                <TableColumn fx:id="socmindex03" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Account" />
+                                                                                                                                                <TableColumn fx:id="socmindex04" editable="false" prefWidth="60.0" resizable="false" sortable="false" text="Status" />
+                                                                                                                                            </columns>
+                                                                                                                                        </TableView>
+                                                                                                                                    </children>
+                                                                                                                                </AnchorPane>
+                                                                                                                            </children>
+                                                                                                                        </AnchorPane>
+                                                                                                                    </content>
+                                                                                                                </Tab>
+                                                                                                            </tabs>
+                                                                                                        </TabPane>
+                                                                                                        <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="45.0">
+                                                                                                            <children>
+                                                                                                                <VBox spacing="5.0" AnchorPane.topAnchor="5.0">
+                                                                                                                    <children>
+                                                                                                                        <Button fx:id="btnTabAdd" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Add">
+                                                                                                                            <graphic>
+                                                                                                                                <FontAwesomeIconView glyphName="PLUS" />
+                                                                                                                            </graphic>
+                                                                                                                            <effect>
+                                                                                                                                <Blend />
+                                                                                                                            </effect>
+                                                                                                                        </Button>
+                                                                                                                        <Button fx:id="btnTabRem" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove">
+                                                                                                                            <graphic>
+                                                                                                                                <FontAwesomeIconView glyphName="MINUS" />
+                                                                                                                            </graphic>
+                                                                                                                            <effect>
+                                                                                                                                <Blend />
+                                                                                                                            </effect>
+                                                                                                                        </Button>
+                                                                                                                    </children>
+                                                                                                                </VBox>
+                                                                                                            </children>
+                                                                                                        </AnchorPane>
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                            </children>
+                                                                                        </VBox>
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                </Tab>
+                                                                <Tab style="-fx-font-family: arial; -fx-font-weight: bold;" text="Requirements Submitted">
+                                                                    <content>
+                                                                        <AnchorPane>
+                                                                            <children>
+                                                                                <StackPane prefHeight="443.0" prefWidth="800.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="3.0">
+                                                                                    <children>
+                                                                                        <GridPane>
+                                                                                            <columnConstraints>
+                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" prefWidth="800.0" />
+                                                                                            </columnConstraints>
+                                                                                            <rowConstraints>
+                                                                                                <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="ALWAYS" />
+                                                                                            </rowConstraints>
+                                                                                            <children>
+                                                                                                <TableView fx:id="tblRequirementsInfo">
+                                                                                                    <columns>
+                                                                                                        <TableColumn fx:id="rqrmIndex01" prefWidth="33.0" sortable="false" />
+                                                                                                        <TableColumn fx:id="rqrmIndex02" editable="false" prefWidth="255.0" sortable="false" text="Requirements" />
+                                                                                                        <TableColumn fx:id="rqrmIndex03" editable="false" prefWidth="239.0" sortable="false" text="Received By" />
+                                                                                                        <TableColumn fx:id="rqrmIndex04" editable="false" prefWidth="110.0" sortable="false" text="Received Date" />
+                                                                                                    </columns>
+                                                                                                </TableView>
+                                                                                            </children>
+                                                                                        </GridPane>
+                                                                                    </children>
+                                                                                </StackPane>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                </Tab>
+                                                                <Tab style="-fx-font-weight: bold; -fx-font-family: arial;" text="Transaction Details">
+                                                                    <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                            <children>
+                                                                                <StackPane prefHeight="443.0" prefWidth="977.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                                                                    <children>
+                                                                                        <GridPane>
+                                                                                            <columnConstraints>
+                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
+                                                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="700.0" />
+                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
+                                                                                            </columnConstraints>
+                                                                                            <rowConstraints>
+                                                                                                <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                                                            </rowConstraints>
+                                                                                            <children>
+                                                                                                <TableView fx:id="tblTransaction" GridPane.columnIndex="1">
+                                                                                                    <columns>
+                                                                                                        <TableColumn fx:id="tblindex01" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
+                                                                                                        <TableColumn fx:id="tblindex02" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="VSP Date" />
+                                                                                                        <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="VSP No." />
+                                                                                                        <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer" />
+                                                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="CS / Plate No." />
+                                                                                                        <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Vehicle Description" />
+                                                                                                        <TableColumn fx:id="tblindex07" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="DR Date" />
+                                                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="DR No." />
+                                                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Executive" />
+                                                                                                    </columns>
+                                                                                                </TableView>
+                                                                                            </children>
+                                                                                        </GridPane>
+                                                                                    </children>
+                                                                                </StackPane>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                </Tab>
+                                                            </tabs>
+                                                        </TabPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </center>
+                                        </BorderPane>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
+</AnchorPane>
