@@ -273,7 +273,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
 
                 switch (txtFieldID) {
                     case "txtField10":
@@ -315,7 +315,11 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
+
         }
     }
 
