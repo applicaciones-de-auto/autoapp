@@ -151,7 +151,6 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTransVchInfo = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
-
         initOwnHistory();
         initWareHouseHistory();
         initComboBoxValue();

@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class ModelVehicleOwnerHistory {
 

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.guanzon.autoapp.models.general;
 
@@ -11,19 +10,19 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author AutoGroup Programmers
  */
-public class ModelCustomerVehicleInfo {
+public class ModelSalesExecutiveTrans {
 
-    private SimpleStringProperty tblindex01; //Row
-    private SimpleStringProperty tblindex02; //CS No
-    private SimpleStringProperty tblindex03; //Plate No
-    private SimpleStringProperty tblindex04; //Vhcl Desc
-    private SimpleStringProperty tblindex05; //sClientID
-    private SimpleStringProperty tblindex06; //Seller Dealer
-    private SimpleStringProperty tblindex07;
-    private SimpleStringProperty tblindex08; //
-    private SimpleStringProperty tblindex09; //
+    private SimpleStringProperty tblindex01; // Row
+    private SimpleStringProperty tblindex02; // VSP Date
+    private SimpleStringProperty tblindex03; // VSP No
+    private SimpleStringProperty tblindex04; // Customer Name
+    private SimpleStringProperty tblindex05; // CS / Plate No.
+    private SimpleStringProperty tblindex06; // Vehicle Description
+    private SimpleStringProperty tblindex07; // DR Dates
+    private SimpleStringProperty tblindex08; // DR No.
+    private SimpleStringProperty tblindex09; // Sales Executive
 
-    public ModelCustomerVehicleInfo(String tblindex01,
+    public ModelSalesExecutiveTrans(String tblindex01,
             String tblindex02,
             String tblindex03,
             String tblindex04,
@@ -33,7 +32,6 @@ public class ModelCustomerVehicleInfo {
             String tblindex08,
             String tblindex09
     ) {
-
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
@@ -45,7 +43,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex09 = new SimpleStringProperty(tblindex09);
     }
 
-    //
     public String getTblindex01() {
         return tblindex01.get();
     }
@@ -54,7 +51,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex01.set(tblindex01);
     }
 
-    //
     public String getTblindex02() {
         return tblindex02.get();
     }
@@ -63,7 +59,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex02.set(tblindex02);
     }
 
-    //
     public String getTblindex03() {
         return tblindex03.get();
     }
@@ -72,7 +67,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex03.set(tblindex03);
     }
 
-    //
     public String getTblindex04() {
         return tblindex04.get();
     }
@@ -81,7 +75,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex04.set(tblindex04);
     }
 
-    //
     public String getTblindex05() {
         return tblindex05.get();
     }
@@ -90,7 +83,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex05.set(tblindex05);
     }
 
-    //
     public String getTblindex06() {
         return tblindex06.get();
     }
@@ -99,7 +91,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex06.set(tblindex06);
     }
 
-    //
     public String getTblindex07() {
         return tblindex07.get();
     }
@@ -108,7 +99,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex07.set(tblindex07);
     }
 
-    //
     public String getTblindex08() {
         return tblindex08.get();
     }
@@ -117,7 +107,6 @@ public class ModelCustomerVehicleInfo {
         this.tblindex08.set(tblindex08);
     }
 
-    //
     public String getTblindex09() {
         return tblindex09.get();
     }

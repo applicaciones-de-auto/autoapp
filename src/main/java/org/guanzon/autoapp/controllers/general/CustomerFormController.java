@@ -172,6 +172,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
      * Initializes the controller class.
      *
      * @param foValue
+     *
      */
     @Override
     public void setGRider(GRider foValue) {
@@ -235,9 +236,13 @@ public class CustomerFormController implements Initializable, ScreenInterface {
     }
 
     private void getDate(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
         /*CLIENT INFORMATION*/
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            oTrans.setMaster(11, SQLUtil.toDate(txtField11.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                oTrans.setMaster(11, SQLUtil.toDate(txtField11.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                checkExistingCustomerInformation(true);
+            }
         }
     }
 
@@ -336,11 +341,40 @@ public class CustomerFormController implements Initializable, ScreenInterface {
 
     }
 
+    private boolean checkExistingCustomerInformation(boolean fbIsClient) {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.validateExistingClientInfo(fbIsClient);
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadCustomerInformation();
+                    loadAddress();
+                    loadContact();
+                    loadEmail();
+                    loadSocialMedia();
+                    loadVehicleInfoTable();
+                    loadCoOwnVehicleInfoTable();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
+
         if (lsValue == null) {
             return;
         }
@@ -349,12 +383,15 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             switch (lnIndex) {
                 case 16:/*company name*/
                     oTrans.getModel().getModel().setCompnyNm(lsValue);
+                    checkExistingCustomerInformation(false);
                     break;
                 case 2:/*last name*/
                     oTrans.getModel().getModel().setLastName(lsValue);
+                    checkExistingCustomerInformation(true);
                     break;
                 case 3:/*frist name*/
                     oTrans.getModel().getModel().setFirstName(lsValue);
+                    checkExistingCustomerInformation(true);
                     break;
                 case 4:/*middle name*/
                     oTrans.getModel().getModel().setMiddleName(lsValue);
@@ -370,6 +407,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     break;
                 case 13:
                     oTrans.getModel().getModel().setTaxIDNo(lsValue);
+                    checkExistingCustomerInformation(false);
                     break;
             }
         } else {
@@ -438,7 +476,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                         oTrans.getModel().getModel().setGender(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
                     }
                 }
-
                 txtField25.setText("");
                 oTrans.getModel().getModel().setSpouseID("");
                 oTrans.getModel().getModel().setSpouseNm("");
@@ -482,60 +519,52 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     } else {
                         txtField25.setDisable(true);
                     }
-
                     if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
                         oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
                     }
                 }
             }
-        }
-        );
-        txtField12.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                            if (newValue != null) {
-                                if (newValue.isEmpty()) {
-                                    oTrans.getModel().getModel().setBirthPlc("");
-                                }
-                            }
+        });
+        txtField12.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTrans.getModel().getModel().setBirthPlc("");
                         }
                     }
                 }
-                );
+            }
+        });
 
-        txtField25.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                            if (newValue != null) {
-                                if (newValue.isEmpty()) {
-                                    oTrans.getModel().getModel().setSpouseID("");
-                                    oTrans.getModel().getModel().setSpouseNm("");
-                                }
-                            }
+        txtField25.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTrans.getModel().getModel().setSpouseID("");
+                            oTrans.getModel().getModel().setSpouseNm("");
                         }
                     }
                 }
-                );
-        txtField10.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getModel().getModel().setCitizen("");
-                            }
-                        }
+            }
+        });
+
+        txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setCitizen("");
                     }
                 }
-                );
+            }
+        });
+
         //Tab Process
-        tabPCustCont.getSelectionModel()
-                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
-                    pnRow = 0;
-                    btnTabRem.setVisible(false);
-                }
-                );
+        tabPCustCont.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+            pnRow = 0;
+            btnTabRem.setVisible(false);
+        });
     }
 
     private void comboChange() {
@@ -599,6 +628,9 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                     Period age = Period.between(selectedDate, currentDate);
                     //check fields before saving
                     if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                        if (checkExistingCustomerInformation(true)) {
+                            return;
+                        }
                         if (txtField02.getText().matches("[^a-zA-Z].*")) {
                             ShowMessageFX.Warning(null, pModuleName, "Please enter valid last name information.");
                             txtField02.setText("");
@@ -657,6 +689,9 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                             return;
                         }
                     } else {
+                        if (checkExistingCustomerInformation(false)) {
+                            return;
+                        }
                         if (txtField16.getText().matches("[^a-zA-Z].*")) {
                             ShowMessageFX.Warning(null, pModuleName, "Please enter valid company name information.");
                             txtField16.setText("");
@@ -671,6 +706,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 } else {
                     return;
                 }
+
                 if (setSelection()) {
                     loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {

@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  *
- * @author
+ * @author AutoGroup Programmers
  */
 public class ModelActivityLocation {
 
