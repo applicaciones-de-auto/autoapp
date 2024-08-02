@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -59,6 +60,7 @@ import org.guanzon.autoapp.models.general.ModelCustomerMobile;
 import org.guanzon.autoapp.models.general.ModelCustomerSocialMedia;
 import org.guanzon.autoapp.models.general.ModelRefAgentRequirements;
 import org.guanzon.autoapp.models.general.ModelRefAgentTrans;
+import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -193,6 +195,13 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
     }
 
     private void initTextFieldPattern() {
+        Pattern textOnly, suffOnly;
+        textOnly = Pattern.compile("[A-Za-z ]*");
+        suffOnly = Pattern.compile("[A-Za-z .]*");
+        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly)); //lastname
+        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly)); //firstname
+        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly)); //middlename
+        txtField05.setTextFormatter(new InputTextFormatterUtil(suffOnly));
     }
 
     private void initCapitalizationFields() {
@@ -216,86 +225,86 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            if (event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField01":
-                        loJSON = oTransClient.searchClient(lsValue, true);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                            loJSON = oTransRef.newRecord();
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            loJSON = oTransClient.searchClient(lsValue, true);
                             if (!"error".equals(loJSON.get("result"))) {
-                                oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-                                loadReferralAgentInformation();
-                                loadAddress();
-                                loadContact();
-                                loadEmail();
-                                loadSocialMedia();
-                                loadAgentTrans();
-                                loadAgentRequirements();
-                                initFields(pnEditMode);
-                                pnEditMode = oTransClient.getEditMode();
+                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                                loJSON = oTransRef.newRecord();
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+                                    loadReferralAgentInformation();
+                                    loadAddress();
+                                    loadContact();
+                                    loadEmail();
+                                    loadSocialMedia();
+                                    loadAgentTrans();
+                                    loadAgentRequirements();
+                                    pnEditMode = oTransClient.getEditMode();
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    return;
+                                }
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 return;
                             }
-
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
                         }
                         break;
-                    case "txtField02":
-                        loJSON = oTransClient.searchClient(lsValue, false);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                            loJSON = oTransRef.newRecord();
-                            if (!"error".equals(loJSON.get("result"))) {
-                                oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-                                loadReferralAgentInformation();
-                                loadAddress();
-                                loadContact();
-                                loadEmail();
-                                loadSocialMedia();
-                                loadAgentTrans();
-                                loadAgentRequirements();
-                                initFields(pnEditMode);
-                                pnEditMode = oTransClient.getEditMode();
-                            } else {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                return;
-                            }
-
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        }
-                        break;
-                    case "txtField03":
-                        loJSON = oTransClient.searchClient(lsValue, false);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                            loJSON = oTransRef.newRecord();
-                            if (!"error".equals(loJSON.get("result"))) {
-                                oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-                                loadReferralAgentInformation();
-                                loadAddress();
-                                loadContact();
-                                loadEmail();
-                                loadSocialMedia();
-                                loadAgentTrans();
-                                loadAgentRequirements();
-                                initFields(pnEditMode);
-                                pnEditMode = oTransClient.getEditMode();
-                            } else {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                return;
-                            }
-
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        }
-                        break;
+//                    case "txtField02":
+//                        if (pnEditMode == EditMode.ADDNEW) {
+//                            loJSON = oTransClient.searchClient(lsValue, false);
+//                            if (!"error".equals(loJSON.get("result"))) {
+//                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+//                                loJSON = oTransRef.newRecord();
+//                                if (!"error".equals(loJSON.get("result"))) {
+//                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+//                                    loadReferralAgentInformation();
+//                                    loadAddress();
+//                                    loadContact();
+//                                    loadEmail();
+//                                    loadSocialMedia();
+//                                    loadAgentTrans();
+//                                    loadAgentRequirements();
+//                                    pnEditMode = oTransClient.getEditMode();
+//                                } else {
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                    return;
+//                                }
+//                            } else {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                return;
+//                            }
+//                        }
+//                        break;
+//                    case "txtField03":
+//                        if (pnEditMode == EditMode.ADDNEW) {
+//                            loJSON = oTransClient.searchClient(lsValue, false);
+//                            if (!"error".equals(loJSON.get("result"))) {
+//                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+//                                loJSON = oTransRef.newRecord();
+//                                if (!"error".equals(loJSON.get("result"))) {
+//                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+//                                    loadReferralAgentInformation();
+//                                    loadAddress();
+//                                    loadContact();
+//                                    loadEmail();
+//                                    loadSocialMedia();
+//                                    loadAgentTrans();
+//                                    loadAgentRequirements();
+//                                    pnEditMode = oTransClient.getEditMode();
+//                                } else {
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                    return;
+//                                }
+//                            } else {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                return;
+//                            }
+//                        }
+//                        break;
                 }
                 initFields(pnEditMode);
                 event.consume();
@@ -303,8 +312,71 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.ENTER) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.TAB) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
+    }
+
+    private boolean checkExistingReferralAgentInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransClient.validateExistingClientInfo(true);
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransClient.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                    loJSON = oTransRef.newRecord();
+                    if (!"error".equals(loJSON.get("result"))) {
+                        oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+                        loadReferralAgentInformation();
+                        loadAddress();
+                        loadContact();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadAgentTrans();
+                        loadAgentRequirements();
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return false;
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        }
+
+        loJSON = oTransRef.validateExistingRA();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransClient.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadReferralAgentInformation();
+                    loadAddress();
+                    loadContact();
+                    loadEmail();
+                    loadSocialMedia();
+                    loadAgentTrans();
+                    loadAgentRequirements();
+                    pnEditMode = oTransClient.getEditMode();
+                    initFields(pnEditMode);
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
     private void initTextFieldFocus() {
@@ -325,12 +397,21 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             switch (lnIndex) {
                 case 1:/*agent id*/
                     oTransClient.getModel().getModel().setClientID(lsValue);
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        checkExistingReferralAgentInformation();
+                    }
                     break;
                 case 2:/*last name*/
                     oTransClient.getModel().getModel().setLastName(lsValue);
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        checkExistingReferralAgentInformation();
+                    }
                     break;
-                case 3:/*frist name*/
+                case 3:/*first name*/
                     oTransClient.getModel().getModel().setFirstName(lsValue);
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        checkExistingReferralAgentInformation();
+                    }
                     break;
                 case 4:/*middle name*/
                     oTransClient.getModel().getModel().setMiddleName(lsValue);
@@ -411,10 +492,11 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         btnDisapprove.setManaged(false);
         btnApprove.setVisible(false);
         btnApprove.setManaged(false);
-        if (fnValue == EditMode.READY) {
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
+
+        if (fnValue == EditMode.UPDATE) {
+            txtField01.setDisable(true);
         }
+
         if (fnValue == EditMode.READY) {
             if (oTransRef.getModel().getModel().getRecdStat().equals("2")) {
                 btnDisapprove.setVisible(false);
@@ -441,10 +523,13 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         datePicker09.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTransClient.setMaster(11, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                if (pnEditMode == EditMode.ADDNEW) {
+                    checkExistingReferralAgentInformation();
+                }
             }
         });
         comboBox06.setOnAction(e -> {
-            int selectedComboBox06 = comboBox10.getSelectionModel().getSelectedIndex();
+            int selectedComboBox06 = comboBox06.getSelectionModel().getSelectedIndex();
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (selectedComboBox06 >= 0) {
                     oTransClient.getModel().getModel().setTitle(String.valueOf(selectedComboBox06));
@@ -454,7 +539,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
         }
         );
         comboBox07.setOnAction(e -> {
-            int selectedComboBox07 = comboBox08.getSelectionModel().getSelectedIndex();
+            int selectedComboBox07 = comboBox07.getSelectionModel().getSelectedIndex();
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (selectedComboBox07 >= 0) {
                     oTransClient.getModel().getModel().setGender(String.valueOf(selectedComboBox07));
@@ -504,6 +589,45 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                     btnTabRem.setVisible(false);
                 }
                 );
+//        txtField01.textProperty()
+//                .addListener((observable, oldValue, newValue) -> {
+//                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                        if (newValue != null) {
+//                            if (newValue.isEmpty()) {
+//                                oTransClient.getModel().getModel().setClientID("");
+//                                clearFields();
+//                                clearTables();
+//                            }
+//                        }
+//                    }
+//                }
+//                );
+//        txtField02.textProperty()
+//                .addListener((observable, oldValue, newValue) -> {
+//                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                        if (newValue != null) {
+//                            if (newValue.isEmpty()) {
+//                                oTransClient.getModel().getModel().setClientID("");
+//                                clearFields();
+//                                clearTables();
+//                            }
+//                        }
+//                    }
+//                }
+//                );
+//        txtField03.textProperty()
+//                .addListener((observable, oldValue, newValue) -> {
+//                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                        if (newValue != null) {
+//                            if (newValue.isEmpty()) {
+//                                oTransClient.getModel().getModel().setClientID("");
+//                                clearFields();
+//                                clearTables();
+//                            }
+//                        }
+//                    }
+//                }
+//                );
     }
 
     private void initButtons() {
@@ -537,7 +661,6 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
-
                 break;
             case "btnEdit":
                 loJSON = oTransClient.updateRecord();
@@ -556,10 +679,73 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                     LocalDate selectedDate = datePicker09.getValue();
                     LocalDate currentDate = LocalDate.now();
                     Period age = Period.between(selectedDate, currentDate);
-                    //check fields before saving
-//                    if (checkExistingReferalAgentInformation(true)) {
-//                        return;
-//                    }
+                    if (txtField01.getText().matches("[^a-zA-Z0-9].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid agent id information.");
+                        txtField01.setText("");
+                        return;
+                    }
+                    if (txtField01.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid agent id information.");
+                        txtField01.setText("");
+                        return;
+                    }
+                    if (txtField02.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid last name information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    if (txtField02.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value last name information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    if (txtField03.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid first name information.");
+                        txtField03.setText("");
+                        return;
+                    }
+                    if (txtField03.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value first name information.");
+                        txtField03.setText("");
+                        return;
+                    }
+                    if (txtField04.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid middle name information.");
+                        txtField04.setText("");
+                        return;
+                    }
+                    if (txtField05.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid maiden name information.");
+                        txtField05.setText("");
+                        return;
+                    }
+                    if (txtField05.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid suffix information.");
+                        txtField05.setText("");
+                        return;
+                    }
+                    if (age.getYears() < 18) {
+                        ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Less than 18 years old is not allowed.");
+                        datePicker09.requestFocus();
+                        return;
+                    }
+                    if (age.getYears() >= 100) {
+                        ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Greater than 100 years old is not allowed.");
+                        datePicker09.requestFocus();
+                        return;
+                    }
+                    if (comboBox08.getSelectionModel().getSelectedIndex() == 1 && comboBox06.getSelectionModel().getSelectedIndex() == 1) {
+                        ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Civil Status.");
+                        return;
+                    }
+                    if (comboBox07.getSelectionModel().getSelectedIndex() == 0 && comboBox06.getSelectionModel().getSelectedIndex() >= 1) {
+                        ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Gender.");
+                        return;
+                    }
+                    if (comboBox07.getSelectionModel().getSelectedIndex() == 1 && comboBox06.getSelectionModel().getSelectedIndex() < 1) {
+                        ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Gender.");
+                        return;
+                    }
                 } else {
                     return;
                 }
@@ -581,8 +767,8 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                                     loadSocialMedia();
                                     loadAgentTrans();
                                     loadAgentRequirements();
-                                    initFields(pnEditMode);
                                     pnEditMode = oTransClient.getEditMode();
+                                    initFields(pnEditMode);
                                 }
                             }
                         } else {
