@@ -114,18 +114,8 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
      */
     @Override
 
-    public void initialize(URL url, ResourceBundle rb
-    ) {
+    public void initialize(URL url, ResourceBundle rb) {
         oTransEngineFormat = new Vehicle_ModelEnginePattern(oApp, false, oApp.getBranchCode());
-        if (pbOpenEvent) {
-            txtField01.setText(psMakeDesc);
-            txtField02.setText(psModelDesc);
-        }
-        Platform.runLater(() -> {
-            if (pbOpenEvent) {
-                btnAdd.fire();
-            }
-        });
         initTextFieldPattern();
         initCapitalizationFields();
         initTextKeyPressed();
@@ -226,6 +216,9 @@ public class VehicleEngineFormatEntryController implements Initializable, Screen
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
 
