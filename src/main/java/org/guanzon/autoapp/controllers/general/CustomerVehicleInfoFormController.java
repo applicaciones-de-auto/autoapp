@@ -179,6 +179,30 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
 
     }
 
+    private boolean checkExistingVchlInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransVchInfo.validateExistingRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransVchInfo.openRecord((String) loJSON.get("sSerialID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadVehicleInformation();
+                    //                        loadWareHouseHistory();
+//                        loadOwnerHistory();
+                    pnEditMode = EditMode.READY;
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     private String getParentTabTitle() {
         Node loParent = AnchorMain.getParent();
         Parent tabContentParent = loParent.getParent();
@@ -398,6 +422,9 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
     }
@@ -435,18 +462,22 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
             switch (lnIndex) {
                 case 11:/*Plate Number*/
                     oTransVchInfo.getModel().getModel().setPlateNo(lsValue);
+                    checkExistingVchlInformation();
                     break;
                 case 13:/*Frame Number*/
                     oTransVchInfo.getModel().getModel().setFrameNo(lsValue);
+                    checkExistingVchlInformation();
                     break;
                 case 15:/*Key Number*/
                     oTransVchInfo.getModel().getModel().setKeyNo(lsValue);
                     break;
                 case 12:/*CS Number*/
                     oTransVchInfo.getModel().getModel().setCSNo(lsValue);
+                    checkExistingVchlInformation();
                     break;
                 case 14:/*Engine Number */
                     oTransVchInfo.getModel().getModel().setEngineNo(lsValue);
+                    checkExistingVchlInformation();
                     break;
                 case 24:/*Dealer*/
                     oTransVchInfo.getModel().getModel().setDealerNm(lsValue);
@@ -719,6 +750,9 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
                             txtField24.setText("");
                             return;
                         }
+                    }
+                    if (checkExistingVchlInformation()) {
+                        return;
                     }
                 } else {
                     return;
