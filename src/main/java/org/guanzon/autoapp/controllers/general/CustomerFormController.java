@@ -273,7 +273,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
 
                 switch (txtFieldID) {
                     case "txtField10":
@@ -315,7 +315,11 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
+
         }
     }
 
@@ -1110,6 +1114,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setOrigProv((String) oTrans.getAddress(fnRow, 25));
             loControl.setOrigTown((String) oTrans.getAddress(fnRow, 16));
             loControl.setOrigBrgy((String) oTrans.getAddress(fnRow, 18));
+            loControl.setFormStateName("Customer Information");
             loControl.setClientID(oTrans.getModel().getModel().getClientID());
             fxmlLoader.setController(loControl);
             //load the main interface
@@ -1242,6 +1247,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
+            loControl.setFormStateName("Customer Information");
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -1376,6 +1382,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
             loControl.setRow(fnRow);
+            loControl.setFormStateName("Customer Information");
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
 
@@ -1489,6 +1496,7 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
             loControl.setRow(fnRow);
+            loControl.setFormStateName("Customer Information");
             loControl.setState(isAdd);
             fxmlLoader.setController(loControl);
 

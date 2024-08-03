@@ -297,7 +297,7 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            if (event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField01":
                         loJSON = oTransSalesExe.searchEmployee(lsValue, true);
@@ -331,6 +331,15 @@ public class SalesExecutiveFormController implements Initializable, ScreenInterf
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.ENTER) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.TAB) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
     }

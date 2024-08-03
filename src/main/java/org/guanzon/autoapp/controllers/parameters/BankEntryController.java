@@ -172,6 +172,9 @@ public class BankEntryController implements Initializable, ScreenInterface {
         } else if (event.getCode() == KeyCode.UP) {
             event.consume();
             CommonUtils.SetPreviousFocus((TextField) event.getSource());
+        } else if (event.getCode() == KeyCode.DOWN) {
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 

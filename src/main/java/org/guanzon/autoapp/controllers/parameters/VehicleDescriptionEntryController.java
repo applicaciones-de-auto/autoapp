@@ -242,6 +242,9 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             } else if (event.getCode() == KeyCode.UP) {
                 event.consume();
                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
 
@@ -389,6 +392,11 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
     private void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
+
+        String lsMakeID = "";
+        if (oTransVehicleDescription.getModel().getModel().getMakeID() != null) {
+            lsMakeID = oTransVehicleDescription.getModel().getModel().getMakeID();
+        }
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
@@ -517,26 +525,23 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
                 loadVehicleMake();
                 break;
             case "btnModel":
+                try {
+                loadVehicleModel(lsMakeID, oTransVehicleDescription.getModel().getModel().getMakeDesc());
+
+            } catch (SQLException ex) {
+                Logger.getLogger(VehicleDescriptionEntryController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
             case "btnType":
-                if (txtField02.getText() == null) {
-                    ShowMessageFX.Warning(getStage(), "Kindly ensure that the Vehicle Make is selected.", "Warning", "");
-                    txtField02.requestFocus();
-                    return;
-                }
-                if (lsButton.equals("btnModel")) {
-                    try {
-                        loadVehicleModel(oTransVehicleDescription.getModel().getModel().getMakeID(), oTransVehicleDescription.getModel().getModel().getMakeDesc());
-                    } catch (SQLException ex) {
-                        Logger.getLogger(VehicleDescriptionEntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (lsButton.equals("btnType")) {
-                    try {
-                        loadVehicleType(oTransVehicleDescription.getModel().getModel().getMakeID(), oTransVehicleDescription.getModel().getModel().getMakeDesc());
-                    } catch (SQLException ex) {
-                        Logger.getLogger(VehicleDescriptionEntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                break;
+                try {
+                loadVehicleType(lsMakeID, oTransVehicleDescription.getModel().getModel().getMakeDesc());
+
+            } catch (SQLException ex) {
+                Logger.getLogger(VehicleDescriptionEntryController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
             case "btnColor":
                 loadVehicleColor();
                 break;
@@ -580,7 +585,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
     }
 
     /*MODEL WINDOW*/
-    private void loadVehicleModel(String sSourceID, String sSourceDesc) throws SQLException {
+    private void loadVehicleModel(String fsMakeID, String fsMakeDesc) throws SQLException {
         try {
             Stage stage = new Stage();
 
@@ -588,9 +593,14 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/VehicleModelEntry.fxml"));
             VehicleModelEntryController loControl = new VehicleModelEntryController();
             loControl.setGRider(oApp);
-            loControl.setMakeID(sSourceID);
-            loControl.setMakeDesc(sSourceDesc);
-            loControl.setOpenEvent(true);
+            loControl.setMakeID(fsMakeID);
+            loControl.setMakeDesc(fsMakeDesc);
+
+            if (fsMakeID.isEmpty()) {
+                loControl.setOpenEvent(false);
+            } else {
+                loControl.setOpenEvent(true);
+            }
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -620,8 +630,7 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
         }
     }
 
-    /*TYPE WINDOW*/
-    private void loadVehicleType(String sSourceID, String sSourceDesc) throws SQLException {
+    private void loadVehicleType(String fsMakeID, String fsMakeDesc) throws SQLException {
         try {
             Stage stage = new Stage();
 
@@ -629,9 +638,14 @@ public class VehicleDescriptionEntryController implements Initializable, ScreenI
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/VehicleTypeEntry.fxml"));
             VehicleTypeEntryController loControl = new VehicleTypeEntryController();
             loControl.setGRider(oApp);
-            loControl.setMakeID(sSourceID);
-            loControl.setMakeDesc(sSourceDesc);
-            loControl.setOpenEvent(true);
+            loControl.setMakeID(fsMakeID);
+            loControl.setMakeDesc(fsMakeDesc);
+
+            if (fsMakeID.isEmpty()) {
+                loControl.setOpenEvent(false);
+            } else {
+                loControl.setOpenEvent(true);
+            }
             fxmlLoader.setController(loControl);
 
             //load the main interface

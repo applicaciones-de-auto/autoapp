@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -39,7 +40,9 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
 
     private GRider oApp;
     private Client oTransEmail;
-    private final String pxeModuleName = "Customer Email";
+    private final String pxeCustomerModuleName = "Customer Email";
+    private final String pxeRefModuleName = "Referral Agent Email";
+    private String psFormStateName;
     private int pnRow = 0;
     private boolean pbState = true;
     private ObservableList<String> cOwnEmAd = FXCollections.observableArrayList("PERSONAL", "OFFICE", "OTHERS");
@@ -53,6 +56,8 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
     private ToggleGroup eml_active, eml_prim;
     @FXML
     private TextField txtField03EmAd;
+    @FXML
+    private Label lblFormTitle;
 
     public void setObject(Client foObject) {
         oTransEmail = foObject;
@@ -74,6 +79,10 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
         oApp = foValue;
     }
 
+    public void setFormStateName(String fsValue) {
+        psFormStateName = fsValue;
+    }
+
     /**
      * Initializes the controller class.
      *
@@ -85,6 +94,11 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
         //CLIENT Email
         txtField03EmAd.setOnKeyPressed(this::txtField_KeyPressed); // Email Address
         initButtons();
+        if (!psFormStateName.equals("Referral Agent Information")) {
+            lblFormTitle.setText(pxeCustomerModuleName);
+        } else {
+            lblFormTitle.setText(pxeRefModuleName);
+        }
         if (pbState) {
             int lnSize = oTransEmail.getEmailList().size() - 1;
             if (lnSize == 0) {
@@ -115,6 +129,14 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
         }
     }
 
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
+        }
+    }
+
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -135,9 +157,8 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
                 }
                 CommonUtils.closeStage(btnClose);
                 break;
-
             default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                showWarning(psFormStateName, "Information", "Button with name " + lsButton + " not registered.");
                 break;
         }
     }
@@ -146,35 +167,35 @@ public class CustomerEmailFormController implements Initializable, ScreenInterfa
         for (int lnCtr = 0; lnCtr <= oTransEmail.getEmailList().size() - 1; lnCtr++) {
             if (oTransEmail.getEmail(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
                 if (radiobtn05EmaY.isSelected()) {
-                    ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Please note that you cannot add more than 1 primary email.");
+                    showWarning(psFormStateName, "Email Warning", "Please note that you cannot add more than 1 primary email.");
                     return false;
                 }
             }
         }
         //User cannot set primary that is inactive
         if (radiobtn05EmaY.isSelected() && radiobtn06EmaN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Please note that you cannot set primary email that is inactive.");
+            showWarning(psFormStateName, "Email Warning", "Please note that you cannot set primary email that is inactive.");
             return false;
         }
         //Validate Before adding to tables
         if (txtField03EmAd.getText().isEmpty() || txtField03EmAd.getText().trim().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Invalid Email. Insert to table Aborted!");
+            showWarning(psFormStateName, "Email Warning", "Invalid Email. Insert to table Aborted!");
             return false;
         }
         if (!CommonUtils.isValidEmail(txtField03EmAd.getText())) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Invalid Email. Insert to table Aborted!");
+            showWarning(psFormStateName, "Email Warning", "Invalid Email. Insert to table Aborted!");
             return false;
         }
         if (!radiobtn05EmaY.isSelected() && !radiobtn05EmaN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Please select Email Type.Insert to table Aborted!");
+            showWarning(psFormStateName, "Email Warning", "Please select Email Type.Insert to table Aborted!");
             return false;
         }
         if (!radiobtn06EmaY.isSelected() && !radiobtn06EmaN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Please select Email Status. Insert to table Aborted!");
+            showWarning(psFormStateName, "Email Warning", "Please select Email Status. Insert to table Aborted!");
             return false;
         }
         if (comboBox04EmAd.getValue().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Email Warning", "Please select Email Ownership. Insert to table Aborted!");
+            showWarning(psFormStateName, "Email Warning", "Please select Email Ownership. Insert to table Aborted!");
             return false;
         }
         oTransEmail.setEmail(pnRow, 3, txtField03EmAd.getText());

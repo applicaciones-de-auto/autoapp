@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -44,9 +45,11 @@ public class CustomerContactFormController implements Initializable, ScreenInter
 
     private GRider oApp;
     private Client oTransMobile;
-    private final String pxeModuleName = "Customer Mobile";
+    private final String pxeCustomerModuleName = "Customer Mobile";
+    private final String pxeRefModuleName = "Referral Agent Mobile";
     private int pnRow = 0;
     private boolean pbState = true;
+    private String psFormStateName = "";
     @FXML
     private Button btnAdd, btnEdit, btnClose;
     ObservableList<String> cOwnCont = FXCollections.observableArrayList("PERSONAL", "OFFICE", "OTHERS");
@@ -61,6 +64,8 @@ public class CustomerContactFormController implements Initializable, ScreenInter
     private RadioButton radiobtn14CntY, radiobtn14CntN, radiobtn11CntY, radiobtn11CntN;
     @FXML
     private TextArea textArea13Cont;
+    @FXML
+    private Label lblFormTitle;
 
     public void setObject(Client foObject) {
         oTransMobile = foObject;
@@ -82,6 +87,10 @@ public class CustomerContactFormController implements Initializable, ScreenInter
         oApp = foValue;
     }
 
+    public void setFormStateName(String fsValue) {
+        psFormStateName = fsValue;
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -92,7 +101,11 @@ public class CustomerContactFormController implements Initializable, ScreenInter
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Cont.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Mobile No
         initComboBoxItems();
-
+        if (!psFormStateName.equals("Referral Agent Information")) {
+            lblFormTitle.setText(pxeCustomerModuleName);
+        } else {
+            lblFormTitle.setText(pxeRefModuleName);
+        }
         // Set the action handler for the combo box
         comboBox04Cont.setOnAction(event -> {
             // Clear the text field when an action is performed on the combo box
@@ -137,6 +150,14 @@ public class CustomerContactFormController implements Initializable, ScreenInter
             btnAdd.setManaged(false);
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
+        }
+    }
+
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 
@@ -199,9 +220,8 @@ public class CustomerContactFormController implements Initializable, ScreenInter
                 }
                 CommonUtils.closeStage(btnClose);
                 break;
-
             default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                showWarning(psFormStateName, "", "Button with name " + lsButton + " not registered.");
                 break;
 
         }
@@ -211,40 +231,40 @@ public class CustomerContactFormController implements Initializable, ScreenInter
         for (int lnCtr = 0; lnCtr <= oTransMobile.getMobileList().size() - 1; lnCtr++) {
             if (oTransMobile.getMobile(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
                 if (radiobtn11CntY.isSelected()) {
-                    ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
-                    return false;
+                    showWarning(psFormStateName, "Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
+                    break;
                 }
             }
         }
         if (radiobtn11CntY.isSelected() && radiobtn14CntN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please note that you cannot set primary contact that is inactive.");
+            showWarning(psFormStateName, "Mobile Warning", "Please note that you cannot set primary contact that is inactive.");
             return false;
         }
         if (comboBox04Cont.getSelectionModel().getSelectedIndex() == 0) {
             if (CommonUtils.classifyNetwork(txtField03Cont.getText()).isEmpty()) {
-                ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Prefix not registered " + txtField03Cont.getText());
+                showWarning(psFormStateName, "Mobile Warning", "Prefix not registered " + txtField03Cont.getText());
                 return false;
             }
         }
         //Validate Before adding to tables
         if (txtField03Cont.getText().isEmpty() || txtField03Cont.getText().trim().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Invalid Mobile. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Invalid Mobile. Insert to table Aborted!");
             return false;
         }
         if (!radiobtn11CntY.isSelected() && !radiobtn11CntN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
             return false;
         }
         if (!radiobtn14CntY.isSelected() && !radiobtn14CntN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please select Mobile Status. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Status. Insert to table Aborted!");
             return false;
         }
         if (comboBox05Cont.getValue().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please select Contact Ownership. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Contact Ownership. Insert to table Aborted!");
             return false;
         }
         if (comboBox04Cont.getValue().equals("")) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
+            showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
             return false;
         }
         oTransMobile.setMobile(pnRow, 3, txtField03Cont.getText());

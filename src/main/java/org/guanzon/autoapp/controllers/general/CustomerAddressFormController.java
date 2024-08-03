@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -42,10 +43,11 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
 
     private GRider oApp;
     private Client oTransAddress;
-    private final String pxeModuleName = "Customer Address";
+    private final String pxeCustomerModuleName = "Customer Address";
+    private final String pxeRefModuleName = "Referral Agent Address";
     private int pnRow = 0;
     private boolean pbState = true;
-    private String psClientID, psOrigProv, psOrigTown, psOrigBrgy = "";
+    private String psClientID, psOrigProv, psOrigTown, psOrigBrgy, psFormStateName = "";
     @FXML
     private Button btnAdd, btnEdit, btnClose;
     @FXML
@@ -60,6 +62,8 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
     private CheckBox checkBox14Addr, checkBox17Addr, checkBox12Addr, checkBox13Addr;
     @FXML
     private TextArea textArea11Addr;
+    @FXML
+    private Label lblFormTitle;
 
     public void setObject(Client foObject) {
         oTransAddress = foObject;
@@ -89,10 +93,13 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         psClientID = fsValue;
     }
 
+    public void setFormStateName(String fsValue) {
+        psFormStateName = fsValue;
+    }
+
     private Stage getStage() {
         return (Stage) btnClose.getScene().getWindow();
     }
-//
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -107,7 +114,11 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //House No
         txtField07Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Zip code
-
+        if (!psFormStateName.equals("Referral Agent Information")) {
+            lblFormTitle.setText(pxeCustomerModuleName);
+        } else {
+            lblFormTitle.setText(pxeRefModuleName);
+        }
         initCapitalizationFields();
         initTextKeyPressed();
         initButtons();
@@ -129,6 +140,14 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
             btnAdd.setManaged(false);
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
+        }
+    }
+
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 
@@ -160,7 +179,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                         txtField23Addr.setText((String) oTransAddress.getAddress(pnRow, "sProvName"));
                         txtField05Addr.setDisable(false);
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        showWarning(psFormStateName, "Address Warning", (String) loJSON.get("message"));
                         txtField23Addr.clear(); // Province
                         txtField05Addr.setDisable(true);
                         txtField23Addr.focusedProperty();
@@ -177,7 +196,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                         txtField07Addr.setText((String) oTransAddress.getAddress(pnRow, "sZippCode"));
                         txtField06Addr.setDisable(false);
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        showWarning(psFormStateName, "Address Warning", (String) loJSON.get("message"));
                         txtField05Addr.clear(); // Town
                         txtField07Addr.clear(); //Zip code
                         txtField06Addr.setDisable(true);
@@ -239,7 +258,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                     if (lsConcatAddresses.equals(lsAddress)) {
                         if (lnCtr != pnRow) {
                             lnCtr += 1;
-                            ShowMessageFX.Warning(null, pxeModuleName, "Address Information already exist in client address at row " + lnCtr + ". ");
+                            showWarning(psFormStateName, "Information", "Address Information already exist in referral agent address at row " + lnCtr + ".  ");
                             return;
                         }
                     }
@@ -248,15 +267,27 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 if ((String) oTransAddress.getAddress(pnRow, "sAddrssID") != null) {
                     loJSON = oTransAddress.checkClientAddress(lsAddrsID, lsAddress, psClientID, pnRow);
                     if ("confirm".equals((String) loJSON.get("result"))) {
-                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
-                            return;
+                        if (psFormStateName.equals("Referral Agent Information")) {
+                            if (!ShowMessageFX.YesNo(null, "Referral Agent Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        } else {
+                            if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
                         }
                     }
                 } else {
                     loJSON = oTransAddress.checkClientAddress(lsAddress, pnRow, true);
                     if ("confirm".equals((String) loJSON.get("result"))) {
-                        if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
-                            return;
+                        if (psFormStateName.equals("Referral Agent Information")) {
+                            if (!ShowMessageFX.YesNo(null, "Referral Agent Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        } else {
+                            if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
                         }
                     }
                 }
@@ -289,7 +320,7 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                showWarning(psFormStateName, "Address Warning", "Button with name " + lsButton + " not registered.");
                 break;
 
         }
@@ -353,7 +384,6 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         txtField05Addr.textProperty().addListener((observable, oldValue, newValue) -> {
             if (oTransAddress != null && pnRow >= 0) {
                 if (newValue.isEmpty() || newValue == null) {
-
                     oTransAddress.setAddress(pnRow, 16, ""); //town id
                     oTransAddress.setAddress(pnRow, 23, ""); //town
                     oTransAddress.setAddress(pnRow, 17, ""); //zip
@@ -390,13 +420,13 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
         for (int lnCtr = 0; lnCtr <= oTransAddress.getAddressList().size() - 1; lnCtr++) {
             if (oTransAddress.getAddress(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
                 if (checkBox14Addr.isSelected()) {
-                    ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please note that you cannot add more than 1 primary address.");
+                    showWarning(psFormStateName, "Address Warning", "Please note that you cannot add more than 1 primary address.");
                     return false;
                 }
             }
         }
         if (checkBox14Addr.isSelected() && radiobtn18AddN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please note that you cannot set primary address that is inactive.");
+            showWarning(psFormStateName, "Address Warning", "Please note that you cannot set primary address that is inactive.");
             return false;
         }
         //Validate Before adding to tables
@@ -404,14 +434,15 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 || txtField07Addr.getText().trim().equals("") || txtField05Addr.getText().trim().equals("") || txtField06Addr.getText().trim().equals("")) {
             ShowMessageFX.Warning(getStage(), "Invalid Address. Insert to table Aborted!", "Warning", null);
             return false;
+
         }
         if (!radiobtn18AddY.isSelected() && !radiobtn18AddN.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please select Address Status. Insert to table Aborted!");
+            showWarning(psFormStateName, "Address Warning", "Please select Address Status. Insert to table Aborted!");
             return false;
         }
         if (!checkBox12Addr.isSelected() && !checkBox13Addr.isSelected()
                 && !checkBox14Addr.isSelected() && !checkBox17Addr.isSelected()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please select Address Type. Insert to table Aborted!");
+            showWarning(psFormStateName, "Address Warning", "Please select Address Type. Insert to table Aborted!");
             return false;
         }
         String sHouseNox = "";
@@ -419,12 +450,13 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
             sHouseNox = txtField03Addr.getText();
         }
         if (((String) oTransAddress.getAddress(pnRow, "sTownIDxx")).isEmpty()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please select Town. Insert to table Aborted!");
+            showWarning(psFormStateName, "Address Warning", "Please select Town. Insert to table Aborted!");
             return false;
         }
         if (((String) oTransAddress.getAddress(pnRow, "sBrgyIDxx")).isEmpty()) {
-            ShowMessageFX.Warning(getStage(), null, "Customer Address Warning", "Please select Barangay. Insert to table Aborted!");
+            showWarning(psFormStateName, "Address Warning", "Please select Barangay. Insert to table Aborted!");
             return false;
+
         }
         oTransAddress.setAddress(pnRow, 14, sHouseNox);
         oTransAddress.setAddress(pnRow, 15, txtField04Addr.getText());
