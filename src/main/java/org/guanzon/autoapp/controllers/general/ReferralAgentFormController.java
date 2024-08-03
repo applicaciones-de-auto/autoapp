@@ -8,6 +8,7 @@ import org.guanzon.autoapp.controllers.components.ViewPhotoDialogController;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
@@ -15,6 +16,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -671,11 +674,6 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                         return;
                     }
                     if (txtField01.getText().matches("[^a-zA-Z0-9].*")) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid agent id information.");
-                        txtField01.setText("");
-                        return;
-                    }
-                    if (txtField01.getText().trim().equals("")) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid agent id information.");
                         txtField01.setText("");
                         return;
@@ -1606,58 +1604,60 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
 
     }
 
-//    private String getValue(String fsValue, Integer loRow, String fsCol) {
-//        try {
-//            fsValue = "";
-//            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
-//                fsValue = String.valueOf(oTransRef.getVSPTransDetail(loRow, fsCol)).toUpperCase();
-//
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(SalesExecutiveFormController.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return fsValue;
-//    }
-//    private String getValueDate(String fsValue, Integer loRow, String fsCol) {
-//        try {
-//            fsValue = "";
-//            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
-//                fsValue = InputTextUtil.xsDateShort((Date) oTransRef.getVSPTransDetail(loRow, fsCol));
-//
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(SalesExecutiveFormController.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return fsValue;
-//    }
+    private String getValue(String fsValue, Integer loRow, String fsCol) {
+        try {
+            fsValue = "";
+            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
+                fsValue = String.valueOf(oTransRef.getVSPTransDetail(loRow, fsCol)).toUpperCase();
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return fsValue;
+    }
+
+    private String getValueDate(String fsValue, Integer loRow, String fsCol) {
+        try {
+            fsValue = "";
+            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
+                fsValue = InputTextUtil.xsDateShort((Date) oTransRef.getVSPTransDetail(loRow, fsCol));
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return fsValue;
+    }
+
     private void loadAgentTrans() {
         transData.clear();
-//        JSONObject loJSON = new JSONObject();
-//        try {
-//            loJSON = oTransRef.loadTransaction();
-//            if ("success".equals((String) loJSON.get("result"))) {
-//                for (lnCtr = 0; lnCtr <= oTransRef.getVSPTransCount() - 1; lnCtr++) {
-//                    String csPlate = String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sCSNoxxxx")).toUpperCase() + "/" + String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sPlateNox")).toUpperCase();
-//                    transData.add(new ModelRefAgentTrans(
-//                            String.valueOf(lnCtr + 1), //ROW
-//                            getValueDate("ldVSPDate", lnCtr, ""),
-//                            getValue("lsVSPNo", lnCtr, "sVSPNOxxx"),
-//                            getValue("lsCustomName", lnCtr, "sBuyCltNm"),
-//                            csPlate,
-//                            getValue("lsCSPlateNo", lnCtr, "sDescript"),
-//                            getValueDate("ldDrDate", lnCtr, "dUDRDatex"),
-//                            getValue("lsDrNo", lnCtr, "sUDRNoxxx"),
-//                            getValue("lsSalesExe", lnCtr, "sSaleExNm  ")
-//                    ));
-//
-//                }
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(SalesExecutiveFormController.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
+        JSONObject loJSON = new JSONObject();
+        try {
+            loJSON = oTransRef.loadTransaction();
+            if ("success".equals((String) loJSON.get("result"))) {
+                for (lnCtr = 0; lnCtr <= oTransRef.getVSPTransCount() - 1; lnCtr++) {
+                    String csPlate = String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sCSNoxxxx")).toUpperCase() + "/" + String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sPlateNox")).toUpperCase();
+                    transData.add(new ModelRefAgentTrans(
+                            String.valueOf(lnCtr + 1), //ROW
+                            getValueDate("ldVSPDate", lnCtr, ""),
+                            getValue("lsVSPNo", lnCtr, "sVSPNOxxx"),
+                            getValue("lsCustomName", lnCtr, "sBuyCltNm"),
+                            csPlate,
+                            getValue("lsCSPlateNo", lnCtr, "sDescript"),
+                            getValueDate("ldDrDate", lnCtr, "dUDRDatex"),
+                            getValue("lsDrNo", lnCtr, "sUDRNoxxx"),
+                            getValue("lsSalesExe", lnCtr, "sSaleExNm  ")
+                    ));
+
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesExecutiveFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initAgentTransaction() {
