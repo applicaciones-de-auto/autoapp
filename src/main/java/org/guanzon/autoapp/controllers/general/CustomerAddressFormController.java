@@ -267,14 +267,28 @@ public class CustomerAddressFormController implements Initializable, ScreenInter
                 if ((String) oTransAddress.getAddress(pnRow, "sAddrssID") != null) {
                     loJSON = oTransAddress.checkClientAddress(lsAddrsID, lsAddress, psClientID, pnRow);
                     if ("confirm".equals((String) loJSON.get("result"))) {
-                        showWarning(psFormStateName, "Address Confirmation", (String) loJSON.get("message"));
-                        return;
+                        if (psFormStateName.equals("Referral Agent Information")) {
+                            if (!ShowMessageFX.YesNo(null, "Referral Agent Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        } else {
+                            if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        }
                     }
                 } else {
                     loJSON = oTransAddress.checkClientAddress(lsAddress, pnRow, true);
                     if ("confirm".equals((String) loJSON.get("result"))) {
-                        showWarning(psFormStateName, "Address Confirmation", (String) loJSON.get("message"));
-                        return;
+                        if (psFormStateName.equals("Referral Agent Information")) {
+                            if (!ShowMessageFX.YesNo(null, "Referral Agent Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        } else {
+                            if (!ShowMessageFX.YesNo(null, "Customer Address Confirmation", (String) loJSON.get("message"))) {
+                                return;
+                            }
+                        }
                     }
                 }
                 if (settoClass()) {
