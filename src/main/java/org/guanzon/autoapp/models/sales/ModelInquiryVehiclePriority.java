@@ -20,7 +20,7 @@ public class ModelInquiryVehiclePriority {
     private Button upBtn;
     private Button downBtn;
 
-    ModelInquiryVehiclePriority(String tblindex01,
+    public ModelInquiryVehiclePriority(String tblindex01,
             String tblindex02
     ) {
 
