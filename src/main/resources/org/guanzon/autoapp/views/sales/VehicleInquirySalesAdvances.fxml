@@ -101,7 +101,7 @@
                                                 <Tooltip text="Please Fill in the Advances Amount" />
                                             </tooltip>
                                         </TextField>
-                                        <TextArea fx:id="textArea05" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="3" GridPane.rowSpan="2">
+                                        <TextArea fx:id="textArea05" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" GridPane.rowSpan="2">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
