@@ -402,12 +402,21 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                     switch (selectedComboBox05) {
                         case 0:
                             oTransActivity.getModel().getModel().setEventTyp("eve");
+                            oTransActivity.getModel().getModel().setActTypDs("");
+                            oTransActivity.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
                             break;
                         case 1:
                             oTransActivity.getModel().getModel().setEventTyp("sal");
+                            oTransActivity.getModel().getModel().setActTypDs("");
+                            oTransActivity.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
                             break;
                         case 2:
                             oTransActivity.getModel().getModel().setEventTyp("pro");
+                            oTransActivity.getModel().getModel().setActTypDs("");
+                            oTransActivity.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
                             break;
                         default:
                             break;
@@ -424,7 +433,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
                                 oTransActivity.getModel().getModel().setActTypDs("");
-                                initFields(pnEditMode);
+                                oTransActivity.getModel().getModel().setActSrce("");
                             }
                         }
                     }
