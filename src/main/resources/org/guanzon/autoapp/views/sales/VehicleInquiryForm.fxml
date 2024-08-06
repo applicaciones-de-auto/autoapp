@@ -155,24 +155,24 @@
                                                                                                                                 <TextField fx:id="txtField06" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                                                                                 <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="7" />
                                                                                                                                 <TextField fx:id="txtField08" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                                                                                                                                <TextField fx:id="txtField09" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="9">
+                                                                                                                                <TextField fx:id="txtField09" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="9">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets />
                                                                                                                                     </GridPane.margin>
                                                                                                                                 </TextField>
                                                                                                                                 <ComboBox fx:id="comboBox10" maxWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                                                                                                                                <TextField fx:id="txtField11" editable="false" maxWidth="200.0" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="11" />
-                                                                                                                                <TextField fx:id="txtField12" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="12">
+                                                                                                                                <TextField fx:id="txtField11" maxWidth="200.0" promptText="Search: F3" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+                                                                                                                                <TextField fx:id="txtField12" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="12">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets />
                                                                                                                                     </GridPane.margin>
                                                                                                                                 </TextField>
-                                                                                                                                <TextField fx:id="txtField13" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="13">
+                                                                                                                                <TextField fx:id="txtField13" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="13">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets />
                                                                                                                                     </GridPane.margin>
                                                                                                                                 </TextField>
-                                                                                                                                <TextField fx:id="txtField14" disable="true" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="14" />
+                                                                                                                                <TextField fx:id="txtField14" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="14" />
                                                                                                                                 <TextField fx:id="txtField15" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="16" />
                                                                                                                                 <TextField fx:id="txtField17" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="16" />
                                                                                                                                 <TextField fx:id="txtField16" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="17" />
@@ -269,12 +269,12 @@
                                                                                                                                                                 <TextField fx:id="txtField20" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                                                                                                 <ComboBox fx:id="comboBox21" maxWidth="150.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                                                                                                                 <DatePicker fx:id="datePicker22" maxWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                                                                                                                <TableView fx:id="tblPriorityUnit" GridPane.columnSpan="8" GridPane.rowIndex="4" GridPane.rowSpan="4">
+                                                                                                                                                                <TableView fx:id="tblPriorityUnit" onMouseClicked="#tblVehiclePrio_Clicked" GridPane.columnSpan="8" GridPane.rowIndex="4" GridPane.rowSpan="4">
                                                                                                                                                                     <columns>
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex03" minWidth="58.0" prefWidth="58.6666259765625" resizable="false" sortable="false" />
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex04" minWidth="50.0" prefWidth="50.6666259765625" resizable="false" sortable="false" />
                                                                                                                                                                         <TableColumn fx:id="trgvIndex01" minWidth="77.0" prefWidth="77.0" resizable="false" sortable="false" text="Priority No." />
                                                                                                                                                                         <TableColumn fx:id="trgvIndex02" minWidth="345.0" prefWidth="345.66668701171875" resizable="false" sortable="false" text="Vehicle Description" />
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex03" minWidth="58.0" prefWidth="58.6666259765625" resizable="false" sortable="false" text="Up" />
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex04" minWidth="50.0" prefWidth="50.6666259765625" resizable="false" sortable="false" text="Down" />
                                                                                                                                                                     </columns>
                                                                                                                                                                 </TableView>
                                                                                                                                                                 <Button fx:id="btnTargetVhclRemove" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove" GridPane.columnIndex="7" GridPane.rowIndex="3">
@@ -349,7 +349,7 @@
                                                                                                                                                                         <Tooltip text="Add Promo Offered Button" />
                                                                                                                                                                     </tooltip>
                                                                                                                                                                 </Button>
-                                                                                                                                                                <TableView fx:id="tblPromosOffered" GridPane.columnSpan="6" GridPane.rowIndex="1" GridPane.rowSpan="4">
+                                                                                                                                                                <TableView fx:id="tblPromosOffered" onMouseClicked="#tblPromo_Clicked" GridPane.columnSpan="6" GridPane.rowIndex="1" GridPane.rowSpan="4">
                                                                                                                                                                     <columns>
                                                                                                                                                                         <TableColumn fx:id="prmoIndex01" editable="false" minWidth="34.0" prefWidth="34.0" resizable="false" sortable="false" text="Row" />
                                                                                                                                                                         <TableColumn fx:id="prmoIndex02" editable="false" minWidth="116.0" prefWidth="116.0" resizable="false" sortable="false" text="Start Date" />
@@ -392,7 +392,7 @@
                                                                                                                                             </GridPane.margin>
                                                                                                                                         </TextArea>
                                                                                                                                         <Label id="LabelDesc" text="MIS Remarks" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                                                                                        <TextArea fx:id="textArea24" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                                                                                                                        <TextArea fx:id="textArea24" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1" GridPane.rowSpan="2">
                                                                                                                                             <GridPane.margin>
                                                                                                                                                 <Insets bottom="5.0" />
                                                                                                                                             </GridPane.margin>
@@ -478,8 +478,8 @@
                                                                                                 <ComboBox fx:id="comboBox25" prefWidth="220.0" GridPane.columnIndex="2" />
                                                                                                 <Label id="LabelDesc" prefHeight="14.0" prefWidth="109.0" text="Customer Type" GridPane.columnIndex="4" />
                                                                                                 <ComboBox fx:id="comboBox26" prefWidth="150.0" GridPane.columnIndex="5" />
-                                                                                                <TextField fx:id="txtField27" promptText="Search: F3" GridPane.columnIndex="9" GridPane.rowIndex="1" />
-                                                                                                <TextArea fx:id="textArea28" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="2" GridPane.rowSpan="2" />
+                                                                                                <TextField fx:id="txtField27" promptText="Search: F3" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                                <TextArea fx:id="textArea28" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2" />
                                                                                             </children>
                                                                                         </GridPane>
                                                                                         <AnchorPane prefHeight="17.0" prefWidth="1321.0" style="-fx-background-color: #FACEA1;">
@@ -642,39 +642,6 @@
                                                                                                             </effect>
                                                                                                             <tooltip>
                                                                                                                 <Tooltip text="Add Bank Application Button" />
-                                                                                                            </tooltip>
-                                                                                                        </Button>
-                                                                                                        <Button fx:id="btnBankAppView" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="View" GridPane.columnIndex="7">
-                                                                                                            <effect>
-                                                                                                                <Blend />
-                                                                                                            </effect>
-                                                                                                            <graphic>
-                                                                                                                <FontAwesomeIconView glyphName="EXPAND" />
-                                                                                                            </graphic>
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="View Bank Application Button" />
-                                                                                                            </tooltip>
-                                                                                                        </Button>
-                                                                                                        <Button fx:id="btnBankAppUpdate" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Update" GridPane.columnIndex="3">
-                                                                                                            <effect>
-                                                                                                                <Blend />
-                                                                                                            </effect>
-                                                                                                            <graphic>
-                                                                                                                <FontAwesomeIconView glyphName="EDIT" text="" />
-                                                                                                            </graphic>
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Update Bank Application Button" />
-                                                                                                            </tooltip>
-                                                                                                        </Button>
-                                                                                                        <Button fx:id="btnBankAppCancel" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Cancel" GridPane.columnIndex="5">
-                                                                                                            <effect>
-                                                                                                                <Blend />
-                                                                                                            </effect>
-                                                                                                            <graphic>
-                                                                                                                <FontAwesomeIconView glyphName="TIMES" />
-                                                                                                            </graphic>
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Cancel Bank Application Button" />
                                                                                                             </tooltip>
                                                                                                         </Button>
                                                                                                     </children>
@@ -844,7 +811,7 @@
                                                 <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnConvertSales" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="102.0" text="Convert to Sales">
+                                        <Button fx:id="btnConvertSales" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="102.0" text="Convert to Sales" visible="false">
                                             <effect>
                                                 <Blend />
                                             </effect>
