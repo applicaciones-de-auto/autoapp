@@ -80,7 +80,6 @@ import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
-import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController1;
 import org.guanzon.autoapp.utils.UnloadForm;
 
 /**
