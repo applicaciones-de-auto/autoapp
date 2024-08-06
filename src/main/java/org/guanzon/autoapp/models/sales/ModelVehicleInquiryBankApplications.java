@@ -11,9 +11,11 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Date Created: 04-25-2023
+ *
  * @author Arsiela
  */
 public class ModelVehicleInquiryBankApplications {
+
     private SimpleBooleanProperty tblcheck01; //Check box
     private SimpleStringProperty tblindex01; //Row
     private SimpleStringProperty tblindex02; //Bank Name
@@ -27,25 +29,24 @@ public class ModelVehicleInquiryBankApplications {
     private SimpleStringProperty tblindex10; //sTransNox
     private SimpleStringProperty tblindex11; //Cancelled By
     private SimpleStringProperty tblindex12; //Cancelled Date
-    //private SimpleStringProperty tblindex13; //Cancelled 
+    //private SimpleStringProperty tblindex13; //Cancelled
 
-     
-    ModelVehicleInquiryBankApplications(   Boolean tblcheck01,
-                                    String tblindex01,
-                                    String tblindex02,
-                                    String tblindex03,
-                                    String tblindex04,
-                                    String tblindex05,
-                                    String tblindex06,
-                                    String tblindex07,
-                                    String tblindex08,
-                                    String tblindex09,
-                                    String tblindex10,
-                                    String tblindex11,
-                                    String tblindex12
-                                    //String tblindex13
-                                ){
-          
+    public ModelVehicleInquiryBankApplications(Boolean tblcheck01,
+            String tblindex01,
+            String tblindex02,
+            String tblindex03,
+            String tblindex04,
+            String tblindex05,
+            String tblindex06,
+            String tblindex07,
+            String tblindex08,
+            String tblindex09,
+            String tblindex10,
+            String tblindex11,
+            String tblindex12
+    //String tblindex13
+    ) {
+
         this.tblcheck01 = new SimpleBooleanProperty(tblcheck01);
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
@@ -61,49 +62,128 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex12 = new SimpleStringProperty(tblindex12);
 //        this.tblindex13 = new SimpleStringProperty(tblindex13);
     }
+
     //Check box
-    public boolean isTblcheck01() { return tblcheck01.get();}
-    public void setTblcheck01(boolean tblcheck01) { this.tblcheck01.set(tblcheck01);}
-    public BooleanProperty selectedProperty() {return tblcheck01;}
+    public boolean isTblcheck01() {
+        return tblcheck01.get();
+    }
+
+    public void setTblcheck01(boolean tblcheck01) {
+        this.tblcheck01.set(tblcheck01);
+    }
+
+    public BooleanProperty selectedProperty() {
+        return tblcheck01;
+    }
 
     //Row
-    public String getTblindex01(){return tblindex01.get();}
-    public void setTblindex01(String tblindex01){this.tblindex01.set(tblindex01);}
+    public String getTblindex01() {
+        return tblindex01.get();
+    }
+
+    public void setTblindex01(String tblindex01) {
+        this.tblindex01.set(tblindex01);
+    }
+
     //Bank Name
-    public String getTblindex02(){return tblindex02.get();}
-    public void setTblindex02(String tblindex02){this.tblindex02.set(tblindex02);}
+    public String getTblindex02() {
+        return tblindex02.get();
+    }
+
+    public void setTblindex02(String tblindex02) {
+        this.tblindex02.set(tblindex02);
+    }
+
     //Bank Branch
-    public String getTblindex03(){return tblindex03.get();}
-    public void setTblindex03(String tblindex03){this.tblindex03.set(tblindex03);}
+    public String getTblindex03() {
+        return tblindex03.get();
+    }
+
+    public void setTblindex03(String tblindex03) {
+        this.tblindex03.set(tblindex03);
+    }
+
     //Payment Mode
-    public String getTblindex04(){return tblindex04.get();}
-    public void setTblindex04(String tblindex04){this.tblindex04.set(tblindex04);}
+    public String getTblindex04() {
+        return tblindex04.get();
+    }
+
+    public void setTblindex04(String tblindex04) {
+        this.tblindex04.set(tblindex04);
+    }
+
     //Bank Address
-    public String getTblindex05(){return tblindex05.get();}
-    public void setTblindex05(String tblindex05){this.tblindex05.set(tblindex05);}
+    public String getTblindex05() {
+        return tblindex05.get();
+    }
+
+    public void setTblindex05(String tblindex05) {
+        this.tblindex05.set(tblindex05);
+    }
+
     //Remarks
-    public String getTblindex06(){return tblindex06.get();}
-    public void setTblindex06(String tblindex06){this.tblindex06.set(tblindex06);}
+    public String getTblindex06() {
+        return tblindex06.get();
+    }
+
+    public void setTblindex06(String tblindex06) {
+        this.tblindex06.set(tblindex06);
+    }
+
     //Applied Date
-    public String getTblindex07(){return tblindex07.get();}
-    public void setTblindex07(String tblindex07){this.tblindex07.set(tblindex07);}
+    public String getTblindex07() {
+        return tblindex07.get();
+    }
+
+    public void setTblindex07(String tblindex07) {
+        this.tblindex07.set(tblindex07);
+    }
+
     //Approved By
-    public String getTblindex08(){return tblindex08.get();}
-    public void setTblindex08(String tblindex08){this.tblindex08.set(tblindex08);}
+    public String getTblindex08() {
+        return tblindex08.get();
+    }
+
+    public void setTblindex08(String tblindex08) {
+        this.tblindex08.set(tblindex08);
+    }
+
     //Application Status
-    public String getTblindex09(){return tblindex09.get();}
-    public void setTblindex09(String tblindex09){this.tblindex09.set(tblindex09);}
+    public String getTblindex09() {
+        return tblindex09.get();
+    }
+
+    public void setTblindex09(String tblindex09) {
+        this.tblindex09.set(tblindex09);
+    }
+
     //sTransNo
-    public String getTblindex10(){return tblindex10.get();}
-    public void setTblindex10(String tblindex10){this.tblindex10.set(tblindex10);}
+    public String getTblindex10() {
+        return tblindex10.get();
+    }
+
+    public void setTblindex10(String tblindex10) {
+        this.tblindex10.set(tblindex10);
+    }
+
     //Cancelled By
-    public String getTblindex11(){return tblindex11.get();}
-    public void setTblindex11(String tblindex11){this.tblindex11.set(tblindex11);}
+    public String getTblindex11() {
+        return tblindex11.get();
+    }
+
+    public void setTblindex11(String tblindex11) {
+        this.tblindex11.set(tblindex11);
+    }
+
     //Cancelled Date
-    public String getTblindex12(){return tblindex12.get();}
-    public void setTblindex12(String tblindex12){this.tblindex12.set(tblindex12);}
-//    //Cancelled 
+    public String getTblindex12() {
+        return tblindex12.get();
+    }
+
+    public void setTblindex12(String tblindex12) {
+        this.tblindex12.set(tblindex12);
+    }
+//    //Cancelled
 //    public String getTblindex13(){return tblindex13.get();}
 //    public void setTblindex13(String tblindex13){this.tblindex13.set(tblindex13);}
 }
-
