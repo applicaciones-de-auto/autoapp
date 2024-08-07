@@ -83,6 +83,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     UnloadForm poUnload = new UnloadForm(); //Object for closing form
     private int pnSelectedIndex = 0;
     private int pnSelectedTblRowIndex = -1;
+    private int iTabIndex = 0; //Set tab index
     //    /* ------------------DATA TABLES----------------------- */
     private ObservableList<ModelInquiryVehiclePriority> priorityunitdata = FXCollections.observableArrayList();
     private ObservableList<ModelInquiryPromoOffered> promosoffereddata = FXCollections.observableArrayList();
@@ -101,7 +102,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnAdd, btnEdit, btnSave, btnApply, btnConvertSales, btnLostSale, btnProcess, btnModify, btnCancel, btnClose;
+    private Button btnAdd;
+    @FXML
+    private Button btnEdit, btnSave, btnConvertSales, btnLostSale, btnProcess, btnCancel, btnClose, btnBrowse;
     @FXML
     private Label lblInqStatus;
     @FXML
@@ -109,8 +112,12 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @FXML
     private Tab tabCustomerInquiry;
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField05, txtField06, txtField07, txtField08, txtField09,
-            txtField11, txtField12, txtField13, txtField14, txtField15, txtField16, txtField17, txtField18, txtField20, txtField27, txtField29, txtField30;
+    private TextField txtField01;
+    @FXML
+    private TextField txtField02;
+    @FXML
+    private TextField txtField03, txtField05, txtField06, txtField07, txtField08, txtField09,
+            txtField11, txtField12, txtField13, txtField14, txtField16, txtField18, txtField20, txtField27, txtField29, txtField30;
     @FXML
     private ToggleGroup hotCategoryToggleGroup;
     @FXML
@@ -171,6 +178,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private DatePicker datePicker22;
     @FXML
     private TextArea textArea04, textArea23, textArea24, textArea28;
+    @FXML
+    private Button btnTestDriveModel;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -204,7 +213,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         clearTables();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
-        initBtnProcess(pnEditMode);
+//        initBtnProcess(pnEditMode);
     }
 
     //TODO
@@ -241,7 +250,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField05, txtField06, txtField07, txtField08, txtField09,
-                txtField11, txtField12, txtField13, txtField14, txtField15, txtField16, txtField17, txtField18, txtField20, txtField27, txtField29, txtField30);
+                txtField11, txtField12, txtField13, txtField14, txtField16, txtField18, txtField20, txtField27, txtField29, txtField30);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
         List<TextArea> loTxtArea = Arrays.asList(textArea04, textArea23, textArea24, textArea28);
 
@@ -250,7 +259,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField05, txtField06, txtField07, txtField08, txtField09,
-                txtField11, txtField12, txtField13, txtField14, txtField15, txtField16, txtField17, txtField18, txtField20, txtField27, txtField29, txtField30);
+                txtField11, txtField12, txtField13, txtField14, txtField16, txtField18, txtField20, txtField27, txtField29, txtField30);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
         /*TextArea*/
         List<TextArea> loTxtArea = Arrays.asList(textArea04, textArea23, textArea24, textArea28);
@@ -353,7 +362,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                         break;
                 }
                 initFields(pnEditMode);
-                initBtnProcess(pnEditMode);
+//                initBtnProcess(pnEditMode);
                 event.consume();
                 CommonUtils.SetNextFocus((TextField) event.getSource());
             } else if (event.getCode() == KeyCode.UP) {
@@ -451,7 +460,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                         break;
                 }
                 initFields(pnEditMode);
-                initBtnProcess(pnEditMode);
+//                initBtnProcess(pnEditMode);
             }
         });
         comboBox21.setOnAction(e -> {
@@ -467,7 +476,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 if (comboBox25.getSelectionModel().getSelectedIndex() >= 0) {
 //                    oTransInquiry.getModel().getModel().setTitle(String.valueOf((comboBox25.getSelectionModel().getSelectedIndex())));
                     initFields(pnEditMode);
-                    initBtnProcess(pnEditMode);
+//                    initBtnProcess(pnEditMode);
                 }
             }
         });
@@ -567,11 +576,60 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             }
         });
 
+        tabPaneMain.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+            pnRow = 0;
+            initFields(pnEditMode);
+        });
+    }
+
+    /*Set ComboBox Value to Master Class*/
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (rdbtnHtA19.isSelected()) {
+            oTransInquiry.getMasterModel().getMasterModel().setIntrstLv("a");
+        } else if (rdbtnHtB19.isSelected()) {
+            oTransInquiry.getMasterModel().getMasterModel().setIntrstLv("b");
+        } else if (rdbtnHtC19.isSelected()) {
+            oTransInquiry.getMasterModel().getMasterModel().setIntrstLv("c");
+        }
+        if (comboBox10.getSelectionModel().getSelectedIndex() < 0) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please select `Inquiry Type` value.");
+            return false;
+        } else {
+            oTransInquiry.getMasterModel().getMasterModel().setSourceCD(String.valueOf(comboBox10.getSelectionModel().getSelectedIndex()));
+        }
+        if (comboBox10.getSelectionModel().getSelectedIndex() == 3) {
+            if (txtField13.getText().equals("") || txtField13.getText() == null) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please select `Refferal Agent` value.");
+                txtField13.requestFocus();
+                return false;
+            }
+        } else if (comboBox10.getSelectionModel().getSelectedIndex() == 4 || comboBox10.getSelectionModel().getSelectedIndex() == 5) {
+            if (txtField12.getText().equals("") || txtField12.getText() == null) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please select `Event` value.");
+                txtField12.requestFocus();
+                return false;
+            }
+        } else if (comboBox10.getSelectionModel().getSelectedIndex() == 2) {
+            if (txtField11.getText().equals("") || txtField11.getText() == null) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please select `Online Store` value.");
+                txtField11.requestFocus();
+                return false;
+            }
+        }
+        if (comboBox21.getSelectionModel().getSelectedIndex() < 0) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please select `Vehicle Category` value.");
+            return false;
+        } else {
+            oTransInquiry.getMasterModel().getMasterModel().setIsVhclNw(String.valueOf(comboBox21.getSelectionModel().getSelectedIndex()));
+        }
+
+        return true;
     }
 
     private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnApply, btnConvertSales, btnLostSale, btnProcess, btnModify, btnCancel,
-                btnClose,
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnConvertSales, btnLostSale, btnProcess, btnCancel,
+                btnClose, btnTestDriveModel,
                 btnTargetVhclRemove, btnTargetVhclAdd,
                 btnPromoAdd, btnPromoRemove,
                 btnASadd, btnASremove, btnASprint, btnAScancel,
@@ -583,6 +641,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
+        iTabIndex = tabPaneMain.getSelectionModel().getSelectedIndex();
         switch (lsButton) {
             case "btnAdd":
                 clearCustomerFields();
@@ -606,7 +665,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 break;
             case "btnBrowse":
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                    if (ShowMessageFX.YesNo(null, "Search Customer Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    if (ShowMessageFX.YesNo(null, "Search Vehicle Inquiry Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
@@ -623,41 +682,53 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     loadFollowHistory();
                     pnEditMode = oTransInquiry.getEditMode();
                     initFields(pnEditMode);
-                    initBtnProcess(pnEditMode);
+//                    initBtnProcess(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Inquiry Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
             case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Customer Information Saving....", "Are you sure, do you want to save?")) {
+                if (ShowMessageFX.YesNo(null, "Vehicle Inquiry Information Saving....", "Are you sure, do you want to save?")) {
                 } else {
                     return;
                 }
-
-                loJSON = oTransInquiry.saveTransaction();
-                if ("success".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Information(null, "Customer Information", (String) loJSON.get("message"));
-                    loJSON = oTransInquiry.openTransaction("");
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadCustomerInquiryInformation();
-                        loadVehiclePriority();
-                        loadPromoOffered();
-                        loadInquiryRequirements();
-                        loadAdvancesSlip();
-                        loadBankApplications();
-                        loadFollowHistory();
-                        initFields(pnEditMode);
-                        pnEditMode = oTransInquiry.getEditMode();
-                    }
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    return;
+                switch (iTabIndex) {
+                    case 0:
+                        for (int lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
+                            if (oTransInquiry.getVehiclePriority(lnCtr, "nPriority").equals(1)) {
+                                oTransInquiry.getMasterModel().getMasterModel().setVhclID(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx").toString());
+                                System.out.println("vehicleID: " + oTransInquiry.getMasterModel().getMasterModel().getVhclID());
+                                break;
+                            }
+                        }
+                        if (setSelection()) {
+                            loJSON = oTransInquiry.saveTransaction();
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, "Vehicle Inquiry Information", (String) loJSON.get("message"));
+                                loJSON = oTransInquiry.openTransaction("");
+                                if ("success".equals((String) loJSON.get("result"))) {
+                                    loadCustomerInquiryInformation();
+                                    loadVehiclePriority();
+                                    loadPromoOffered();
+                                    loadInquiryRequirements();
+                                    loadAdvancesSlip();
+                                    loadBankApplications();
+                                    loadFollowHistory();
+                                    initFields(pnEditMode);
+                                    pnEditMode = oTransInquiry.getEditMode();
+                                }
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                        }
+                        break;
                 }
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Customer");
+                        poUnload.unloadForm(AnchorMain, oApp, "Vehicle Inquiry");
                     } else {
                         ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
                     }
@@ -674,9 +745,26 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             case "btnTargetVhclAdd":
                 loJSON = oTransInquiry.searchVehicle();
                 if (!"error".equals((String) loJSON.get("result"))) {
-                    oTransInquiry.addVehiclePriority();
-                    loadVehiclePriority();
+                    boolean isExist = false;
+                    for (lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
+                        if (String.valueOf(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx")).equals((String) loJSON.get("sVhclIDxx"))) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) {
+                        oTransInquiry.addVehiclePriority();
+                        oTransInquiry.setVehiclePriority(oTransInquiry.getVehiclePriorityList().size() - 1, "nPriority", oTransInquiry.getVehiclePriorityList().size());
+                        oTransInquiry.setVehiclePriority(oTransInquiry.getVehiclePriorityList().size() - 1, "sVhclIDxx", (String) loJSON.get("sVhclIDxx"));
+                        oTransInquiry.setVehiclePriority(oTransInquiry.getVehiclePriorityList().size() - 1, "sDescript", (String) loJSON.get("sDescript"));
+                        ShowMessageFX.Information(null, pxeModuleName, "Vehicle Priority added successfully.");
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Vehicle is already exist.");
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                loadVehiclePriority();
                 break;
             case "btnTargetVhclRemove":
                 if (ShowMessageFX.YesNo(null, "Vehicle Confirmation", "Are you sure you want to remove this Vehicle Information?")) {
@@ -690,9 +778,28 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             case "btnPromoAdd":
                 loJSON = oTransInquiry.searchPromo();
                 if (!"error".equals((String) loJSON.get("result"))) {
-                    oTransInquiry.addPromo();
-                    loadPromoOffered();
+                    boolean isExist = false;
+                    for (lnCtr = 0; lnCtr <= oTransInquiry.getPromoList().size() - 1; lnCtr++) {
+                        if (String.valueOf(oTransInquiry.getPromo(lnCtr, "sPromoIDx")).equals((String) loJSON.get("sActvtyID"))) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) {
+                        oTransInquiry.addPromo();
+                        oTransInquiry.setPromo(oTransInquiry.getPromoList().size() - 1, "sPromoIDx", (String) loJSON.get("sActvtyID"));
+                        oTransInquiry.setPromo(oTransInquiry.getPromoList().size() - 1, "sActNoxxx", (String) loJSON.get("sActNoxxx"));
+                        oTransInquiry.setPromo(oTransInquiry.getPromoList().size() - 1, "sActTitle", (String) loJSON.get("sActTitle"));
+                        oTransInquiry.setPromo(oTransInquiry.getPromoList().size() - 1, "dDateFrom", SQLUtil.toDate((String) loJSON.get("dDateFrom"), SQLUtil.FORMAT_SHORT_DATE));
+                        oTransInquiry.setPromo(oTransInquiry.getPromoList().size() - 1, "dDateThru", SQLUtil.toDate((String) loJSON.get("dDateThru"), SQLUtil.FORMAT_SHORT_DATE));
+                        ShowMessageFX.Information(null, pxeModuleName, "Promo added successfully.");
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Promo is already exist.");
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                loadPromoOffered();
                 break;
             case "btnPromoRemove":
                 if (ShowMessageFX.YesNo(null, "Promo Confirmation", "Are you sure you want to remove this Promo?")) {
@@ -703,12 +810,54 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 pnRow = 0;
                 loadPromoOffered();
                 break;
+            case "btnTestDriveModel":
+                laodTestModelWindow();
+                break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
         initFields(pnEditMode);
-        initBtnProcess(pnEditMode);
+//        initBtnProcess(pnEditMode);
+    }
+
+    private void laodTestModelWindow() {
+        /**
+         * if state = true : ADD else if state = false : UPDATE *
+         */
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VehicleTestDriveDialog.fxml"));
+            VehicleTestDriveDialogController loControl = new VehicleTestDriveDialogController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransInquiry);
+            fxmlLoader.setController(loControl);
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            txtField20.setText(oTransInquiry.getMasterModel().getMasterModel().getTestModl());
+        } catch (IOException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
     }
 
     private void loadInquiryProcess(String fsTransNo) {
@@ -775,9 +924,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         txtField12.setText(oTransInquiry.getMasterModel().getMasterModel().getActTitle());
         txtField13.setText(oTransInquiry.getMasterModel().getMasterModel().getSalesAgn());
         txtField14.setText(oTransInquiry.getMasterModel().getMasterModel().getBranchNm());
-        txtField15.setText("");
 //        txtField16.setText(oTransInquiry.getMasterModel().getMasterModel().getRE);
-        txtField17.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getRsrvTotl()))));
         txtField18.setText(poGetDecimalFormat.format(Double.parseDouble("0.00")));
         switch (oTransInquiry.getMasterModel().getMasterModel().getIntrstLv()) {
             case "a":
@@ -913,12 +1060,14 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         bankCheck01.setVisible(false);
         //For Follow up
         btnFollowUp.setVisible(false);
-
+        btnProcess.setVisible(false);
+        btnProcess.setManaged(false);
         boolean lbTab = (fnValue == EditMode.READY);
         //tabCustomerInquiry.setDisable(!lbTab);
         tabInquiryProcess.setDisable(!lbTab);
         tabBankHistory.setDisable(!lbTab);
         tabFollowingHistory.setDisable(!lbTab);
+        btnTestDriveModel.setDisable(!lbShow);
 
         if (fnValue == EditMode.READY) { //show edit if user clicked save / browse
             btnEdit.setVisible(true);
@@ -926,9 +1075,18 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             //Enable Button / textfield based on Inquiry Status
             switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) { // cTranStat
                 case "0"://For Follow up
-                    btnLostSale.setVisible(true);
-                    btnLostSale.setManaged(true);
-                    btnFollowUp.setVisible(true);
+                    if (tabPaneMain.getSelectionModel().getSelectedIndex() == 1) {
+                        btnLostSale.setVisible(true);
+                        btnLostSale.setManaged(true);
+                        btnFollowUp.setVisible(true);
+                        btnFollowUp.setVisible(true);
+                        btnEdit.setVisible(false);
+                        btnEdit.setManaged(false);
+                        btnSave.setVisible(false);
+                        btnSave.setManaged(false);
+                        btnProcess.setVisible(true);
+                        btnProcess.setManaged(true);
+                    }
                     break;
                 case "1": //On process
                     btnLostSale.setVisible(true);
@@ -956,38 +1114,86 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     //For Follow up
                     btnFollowUp.setVisible(true);
                     break;
-                case "5": //Retired
-                    tabInquiryProcess.setDisable(true);
-                    tabBankHistory.setDisable(true);
-                    btnFollowUp.setVisible(true);
-                    btnEdit.setVisible(false);
-                    btnEdit.setManaged(false);
-                    break;
                 case "4": //Sold
-                case "6": //Cancelled
+                case "5": //Cancelled
                     btnEdit.setVisible(false);
                     btnEdit.setManaged(false);
                     break;
             }
         }
-
-        if (pnSelectedIndex == 1) {
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-            btnSave.setVisible(false);
-            btnSave.setManaged(false);
-            btnCancel.setVisible(false);
-            btnCancel.setManaged(false);
-        } else {
-            btnProcess.setVisible(false);
-            btnProcess.setManaged(false);
-            btnModify.setVisible(false);
-            btnModify.setManaged(false);
-            btnApply.setVisible(false);
-            btnApply.setManaged(false);
+        if (fnValue == EditMode.READY) {
+            switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    btnEdit.setVisible(true);
+                    btnEdit.setManaged(true);
+                    btnProcess.setVisible(false);
+                    btnProcess.setManaged(false);
+                    break;
+                case 1:
+                    switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) {
+                        case "0":
+                            btnEdit.setVisible(false);
+                            btnEdit.setManaged(false);
+                            break;
+                        case "1":
+                        case "3":
+                            btnEdit.setVisible(true);
+                            btnEdit.setManaged(true);
+                            break;
+                    }
+                    break;
+            }
         }
+        //disable fields according to the tab index
+        if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
+            switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    initCustomerInquiryFields();
+                    break;
+                case 1:
+                    initInquiryProcessFields();
+                    break;
+            }
+        }
+    }
+
+    private void initInquiryProcessFields() {
+        txtField03.setDisable(true);
+        txtField05.setDisable(true);
+        txtField09.setDisable(true);
+        comboBox10.setDisable(true);
+        txtField11.setDisable(true);
+        txtField12.setDisable(true);
+        txtField13.setDisable(true);
+        txtField14.setDisable(true);
+        comboBox21.setDisable(true);
+        datePicker22.setDisable(true);
+        rdbtnHtA19.setDisable(true);
+        rdbtnHtB19.setDisable(true);
+        rdbtnHtC19.setDisable(true);
+        btnTargetVhclAdd.setDisable(true);
+        btnTargetVhclRemove.setDisable(true);
+        trgvIndex03.setVisible(false);
+        trgvIndex04.setVisible(false);
+        btnPromoAdd.setDisable(true);
+        btnPromoRemove.setDisable(true);
+        btnTestDriveModel.setDisable(true);
+    }
+
+    private void initCustomerInquiryFields() {
+        btnFollowUp.setDisable(true);
+        btnBankAppNew.setDisable(true);
+        comboBox25.setDisable(true);
+        comboBox26.setDisable(true);
+        btnASadd.setDisable(true);
+        btnASremove.setDisable(true);
+        btnASprint.setDisable(true);
+        if (pnEditMode == EditMode.READY) {
+            btnASprint.setDisable(false);
+        }
+        btnAScancel.setDisable(true);
+        txtField27.setDisable(true);
+        btnSndMngerApprov.setDisable(true);
     }
 
     /*INQUIRY PROCESS*/
@@ -1033,17 +1239,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         //General button
         btnProcess.setVisible(false);
         btnProcess.setManaged(false);
-        btnModify.setVisible(false);
-        btnModify.setManaged(false);
-        btnApply.setVisible(lbShow);
-        btnApply.setManaged(lbShow);
 
         if (fnValue == EditMode.READY || (lbShow)) {
             btnAScancel.setVisible(true);
             btnASprint.setVisible(true);
-
-            btnModify.setVisible(fnValue == EditMode.READY);
-            btnModify.setManaged(fnValue == EditMode.READY);
 
             //Enable Button / textfield based on Inquiry Status
             switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) { // cTranStat
@@ -1061,8 +1260,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     //General button
                     btnProcess.setVisible(true);
                     btnProcess.setManaged(true);
-                    btnModify.setVisible(false);
-                    btnModify.setManaged(false);
                     break;
 //                    case "1": //On process
 //                    case "3": //VSP
@@ -1080,10 +1277,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 //
 //                         //General button
 //                         btnProcess.setVisible(true);
-//                         btnModify.setVisible(false);
-//                         btnModify.setManaged(false);
-//                         btnApply.setVisible(false);
-//                         btnApply.setManaged(false);
 //                         break;
                 case "2": //Lost Sale
                 case "4": //Sold
@@ -1099,10 +1292,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
                     //General button
                     btnProcess.setVisible(false);
-                    btnModify.setVisible(false);
-                    btnModify.setManaged(false);
-                    btnApply.setVisible(false);
-                    btnApply.setManaged(false);
                     break;
             }
 
@@ -1113,6 +1302,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private void clearCustomerFields() {
         pnRow = 0;
         pnSelectedTblRowIndex = 0;
+        lblInqStatus.setText("");
         txtField01.setText("");
         txtField02.setText("");
         txtField03.setText("");
@@ -1127,9 +1317,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         txtField12.setText("");
         txtField13.setText("");
         txtField14.setText("");
-        txtField15.setText("");
         txtField16.setText("");
-        txtField17.setText("0.00");
         txtField18.setText("0.00");
         rdbtnHtA19.setSelected(false);
         rdbtnHtB19.setSelected(false);
@@ -1161,13 +1349,13 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private void tblVehiclePrio_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             int lnSel = tblPriorityUnit.getSelectionModel().getSelectedIndex();
-            pnRow = Integer.parseInt(priorityunitdata.get(lnSel).getTblindex02());
+//            pnRow = Integer.parseInt(priorityunitdata.get(lnSel).getTblindex03());
             if (lnSel < 0 || lnSel >= tblPriorityUnit.getItems().size()) {
                 ShowMessageFX.Warning(getStage(), "Please select valid vehicle information.", "Warning", null);
                 return;
             }
             if (event.getClickCount() == 1) {
-                btnTargetVhclRemove.setVisible(true);
+                btnTargetVhclRemove.setDisable(false);
             }
         }
     }
@@ -1176,8 +1364,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         priorityunitdata.clear();
         for (lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
             priorityunitdata.add(new ModelInquiryVehiclePriority(
-                    String.valueOf(lnCtr + 1), //ROW
-                    String.valueOf(oTransInquiry.getVehiclePriority(lnCtr, "sDescript")).toUpperCase()
+                    String.valueOf(oTransInquiry.getVehiclePriority(lnCtr, "nPriority")),
+                    String.valueOf(oTransInquiry.getVehiclePriority(lnCtr, "sDescript")).toUpperCase(),
+                    String.valueOf(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx")).toUpperCase()
             ));
         }
     }
@@ -1201,10 +1390,15 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     int currentIndex = getIndex();
 
                     if (currentIndex > 0) {
-
+                        // Swap items
                         ModelInquiryVehiclePriority prevModel = items.get(currentIndex - 1);
                         items.set(currentIndex - 1, model);
                         items.set(currentIndex, prevModel);
+
+                        // Update data model
+                        updateModel(items);
+
+                        // Select new position
                         getTableView().getSelectionModel().select(currentIndex - 1);
                     }
                 });
@@ -1237,11 +1431,15 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     int currentIndex = getIndex();
 
                     if (currentIndex < items.size() - 1) {
-
+                        // Swap items
                         ModelInquiryVehiclePriority nextModel = items.get(currentIndex + 1);
                         items.set(currentIndex + 1, model);
                         items.set(currentIndex, nextModel);
 
+                        // Update data model
+                        updateModel(items);
+
+                        // Select new position
                         getTableView().getSelectionModel().select(currentIndex + 1);
                     }
                 });
@@ -1257,7 +1455,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 }
             }
         });
-
         tblPriorityUnit.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblPriorityUnit.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -1268,12 +1465,37 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         tblPriorityUnit.setItems(priorityunitdata);
     }
 
+    private void updateModel(ObservableList<ModelInquiryVehiclePriority> items) {
+        int minSize = Math.min(oTransInquiry.getVehiclePriorityList().size(), items.size());
+        for (int pnCtr = 0; pnCtr < minSize; pnCtr++) {
+            ModelInquiryVehiclePriority unit = items.get(pnCtr);
+            try {
+                int lnPrio = Integer.parseInt(unit.getTblindex01());
+                String lsDescript = unit.getTblindex02();
+                String lsVhclID = unit.getTblindex03();
+                oTransInquiry.setVehiclePriority(pnCtr, "nPriority", lnPrio);
+                oTransInquiry.setVehiclePriority(pnCtr, "sDescript", lsDescript);
+                oTransInquiry.setVehiclePriority(pnCtr, "sVhclIDxx", lsVhclID);
+
+                System.out.println(oTransInquiry.getVehiclePriority(pnCtr, "nPriority"));
+                System.out.println(oTransInquiry.getVehiclePriority(pnCtr, "sDescript"));
+                System.out.println(oTransInquiry.getVehiclePriority(pnCtr, "sVhclIDxx"));
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println("Error updating index: " + pnCtr + " - " + e.getMessage());
+            }
+        }
+
+        // If items were removed or added, consider how to update `oTransInquiry` accordingly
+        loadVehiclePriority();
+        tblPriorityUnit.refresh();
+    }
+
     @FXML
     private void tblPromo_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            int lnSel = tblPriorityUnit.getSelectionModel().getSelectedIndex();
-            pnRow = Integer.parseInt(priorityunitdata.get(lnSel).getTblindex02());
-            if (lnSel < 0 || lnSel >= tblPriorityUnit.getItems().size()) {
+            int lnSel = tblPromosOffered.getSelectionModel().getSelectedIndex();
+//            pnRow = Integer.parseInt(promosoffereddata.get(lnSel).getTblindex05());
+            if (lnSel < 0 || lnSel >= tblPromosOffered.getItems().size()) {
                 ShowMessageFX.Warning(getStage(), "Please select valid promo information.", "Warning", null);
                 return;
             }
@@ -1288,11 +1510,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         for (lnCtr = 0; lnCtr <= oTransInquiry.getPromoList().size() - 1; lnCtr++) {
             promosoffereddata.add(new ModelInquiryPromoOffered(
                     String.valueOf(lnCtr + 1), //ROW
-                    String.valueOf(oTransInquiry.getPromo(lnCtr, "dDateFrom")),
-                    String.valueOf(oTransInquiry.getPromo(lnCtr, "dDateThru")),
-                    String.valueOf(oTransInquiry.getPromo(lnCtr, "sActTitle")).toUpperCase()
+                    InputTextUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateFrom")),
+                    InputTextUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateThru")),
+                    String.valueOf(oTransInquiry.getPromo(lnCtr, "sActTitle")).toUpperCase(),
+                    String.valueOf(oTransInquiry.getPromo(lnCtr, "sPromoIDx")).toUpperCase()
             ));
-
         }
     }
 
