@@ -18,17 +18,20 @@ public class ModelInquiryPromoOffered {
     private SimpleStringProperty tblindex02; //Start Date
     private SimpleStringProperty tblindex03; //End Date
     private SimpleStringProperty tblindex04; //Promo Title
+    private SimpleStringProperty tblindex05; //ActivityID
 
     public ModelInquiryPromoOffered(String tblindex01,
             String tblindex02,
             String tblindex03,
-            String tblindex04
+            String tblindex04,
+            String tblindex05
     ) {
 
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
         this.tblindex04 = new SimpleStringProperty(tblindex04);
+        this.tblindex05 = new SimpleStringProperty(tblindex05);
 
     }
 
@@ -66,6 +69,14 @@ public class ModelInquiryPromoOffered {
 
     public void setTblindex04(String tblindex04) {
         this.tblindex04.set(tblindex04);
+    }
+
+    public String getTblindex05() {
+        return tblindex05.get();
+    }
+
+    public void setTblindex05(String tblindex05) {
+        this.tblindex05.set(tblindex05);
     }
 
 }
