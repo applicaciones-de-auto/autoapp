@@ -29,7 +29,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="631.0" prefWidth="1392.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="631.0" prefWidth="1392.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -117,22 +117,21 @@
                                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                             </columnConstraints>
                                                                                                                             <rowConstraints>
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -173,10 +172,8 @@
                                                                                                                                     </GridPane.margin>
                                                                                                                                 </TextField>
                                                                                                                                 <TextField fx:id="txtField14" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="14" />
-                                                                                                                                <TextField fx:id="txtField15" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="16" />
-                                                                                                                                <TextField fx:id="txtField17" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="16" />
-                                                                                                                                <TextField fx:id="txtField16" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="17" />
-                                                                                                                                <TextField fx:id="txtField18" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="17" />
+                                                                                                                                <TextField fx:id="txtField16" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                                                                                                <TextField fx:id="txtField18" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="16" />
                                                                                                                                 <Label id="LabelDesc" text="Event" GridPane.columnIndex="1" GridPane.rowIndex="12">
                                                                                                                                     <font>
                                                                                                                                         <Font name="Arial Bold" size="11.5" />
@@ -210,10 +207,8 @@
                                                                                                                                 <Label id="LabelDesc" text="Online Store" GridPane.columnIndex="1" GridPane.rowIndex="11" />
                                                                                                                                 <Label id="LabelDesc" text="Branch" GridPane.columnIndex="1" GridPane.rowIndex="14" />
                                                                                                                                 <Label id="LabelDesc" text="Address" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                                                                                <Label id="LabelDesc" text="RSV/DEP Slip No." GridPane.columnIndex="1" GridPane.rowIndex="16" />
-                                                                                                                                <Label id="LabelDesc" text="Refund Slp No." GridPane.columnIndex="1" GridPane.rowIndex="17" />
-                                                                                                                                <Label id="LabelDesc" prefHeight="35.0" prefWidth="101.0" text="Amount" GridPane.columnIndex="4" GridPane.rowIndex="16" />
-                                                                                                                                <Label id="LabelDesc" text="Amount" GridPane.columnIndex="4" GridPane.rowIndex="17" />
+                                                                                                                                <Label id="LabelDesc" text="Refund Slp No." GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                                                                                                <Label id="LabelDesc" text="Amount" GridPane.columnIndex="4" GridPane.rowIndex="16" />
                                                                                                                                 <Separator prefHeight="18.0" prefWidth="470.0" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="15" />
                                                                                                                                 <Label text="Inquiry ID" GridPane.columnIndex="1">
                                                                                                                                     <font>
@@ -240,6 +235,8 @@
                                                                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="100.0" />
                                                                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="100.0" />
                                                                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="100.0" />
+                                                                                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="5.0" prefWidth="5.0" />
+                                                                                                                                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
                                                                                                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="100.0" />
                                                                                                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="80.0" />
                                                                                                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="80.0" prefWidth="100.0" />
@@ -266,18 +263,18 @@
                                                                                                                                                                 <RadioButton fx:id="rdbtnHtC19" mnemonicParsing="false" text="Hot C" toggleGroup="$hotCategoryToggleGroup" GridPane.columnIndex="3" />
                                                                                                                                                                 <Label id="LabelDesc" text="Test Drive Model" GridPane.rowIndex="1" />
                                                                                                                                                                 <Label id="LabelDesc" text="Target Vehicle" GridPane.rowIndex="2" />
-                                                                                                                                                                <TextField fx:id="txtField20" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                                                                                                <TextField fx:id="txtField20" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                                                                                                 <ComboBox fx:id="comboBox21" maxWidth="150.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                                                                                                                 <DatePicker fx:id="datePicker22" maxWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                                                                                                                <TableView fx:id="tblPriorityUnit" onMouseClicked="#tblVehiclePrio_Clicked" GridPane.columnSpan="8" GridPane.rowIndex="4" GridPane.rowSpan="4">
+                                                                                                                                                                <TableView fx:id="tblPriorityUnit" onMouseClicked="#tblVehiclePrio_Clicked" GridPane.columnSpan="10" GridPane.rowIndex="4" GridPane.rowSpan="4">
                                                                                                                                                                     <columns>
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex03" minWidth="58.0" prefWidth="58.6666259765625" resizable="false" sortable="false" />
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex04" minWidth="50.0" prefWidth="50.6666259765625" resizable="false" sortable="false" />
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex01" minWidth="77.0" prefWidth="77.0" resizable="false" sortable="false" text="Priority No." />
-                                                                                                                                                                        <TableColumn fx:id="trgvIndex02" minWidth="345.0" prefWidth="345.66668701171875" resizable="false" sortable="false" text="Vehicle Description" />
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex03" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex04" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex01" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" text="Priority No." />
+                                                                                                                                                                        <TableColumn fx:id="trgvIndex02" maxWidth="447.0" minWidth="345.0" prefWidth="447.0" resizable="false" sortable="false" text="Vehicle Description" />
                                                                                                                                                                     </columns>
                                                                                                                                                                 </TableView>
-                                                                                                                                                                <Button fx:id="btnTargetVhclRemove" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove" GridPane.columnIndex="7" GridPane.rowIndex="3">
+                                                                                                                                                                <Button fx:id="btnTargetVhclRemove" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove" GridPane.columnIndex="9" GridPane.rowIndex="3">
                                                                                                                                                                     <graphic>
                                                                                                                                                                         <FontAwesomeIconView glyphName="TRASH" />
                                                                                                                                                                     </graphic>
@@ -288,7 +285,7 @@
                                                                                                                                                                         <Tooltip text="Remove Vehicle Priority Button" />
                                                                                                                                                                     </tooltip>
                                                                                                                                                                 </Button>
-                                                                                                                                                                <Button fx:id="btnTargetVhclAdd" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="71.0" text="Add" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                                                                                                                                                                <Button fx:id="btnTargetVhclAdd" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="71.0" text="Add" GridPane.columnIndex="8" GridPane.rowIndex="3">
                                                                                                                                                                     <graphic>
                                                                                                                                                                         <FontAwesomeIconView glyphName="PLUS" />
                                                                                                                                                                     </graphic>
@@ -300,6 +297,17 @@
                                                                                                                                                                     </tooltip>
                                                                                                                                                                 </Button>
                                                                                                                                                                 <Label id="LabelDesc" text="Target Release Date" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                                                                                                                <Button fx:id="btnTestDriveModel" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                                                                                                                                                    <graphic>
+                                                                                                                                                                        <FontAwesomeIconView glyphName="PLUS" />
+                                                                                                                                                                    </graphic>
+                                                                                                                                                                    <effect>
+                                                                                                                                                                        <Blend />
+                                                                                                                                                                    </effect>
+                                                                                                                                                                    <tooltip>
+                                                                                                                                                                        <Tooltip text="Add Test Model Vehicle Button" />
+                                                                                                                                                                    </tooltip>
+                                                                                                                                                                </Button>
                                                                                                                                                             </children>
                                                                                                                                                         </GridPane>
                                                                                                                                                     </children>
@@ -351,9 +359,9 @@
                                                                                                                                                                 </Button>
                                                                                                                                                                 <TableView fx:id="tblPromosOffered" onMouseClicked="#tblPromo_Clicked" GridPane.columnSpan="6" GridPane.rowIndex="1" GridPane.rowSpan="4">
                                                                                                                                                                     <columns>
-                                                                                                                                                                        <TableColumn fx:id="prmoIndex01" editable="false" minWidth="34.0" prefWidth="34.0" resizable="false" sortable="false" text="Row" />
-                                                                                                                                                                        <TableColumn fx:id="prmoIndex02" editable="false" minWidth="116.0" prefWidth="116.0" resizable="false" sortable="false" text="Start Date" />
-                                                                                                                                                                        <TableColumn fx:id="prmoIndex03" editable="false" minWidth="75.0" prefWidth="75.0" resizable="false" sortable="false" text="End Date" />
+                                                                                                                                                                        <TableColumn fx:id="prmoIndex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                                                                                        <TableColumn fx:id="prmoIndex02" editable="false" maxWidth="116.0" minWidth="116.0" prefWidth="116.0" resizable="false" sortable="false" text="Start Date" />
+                                                                                                                                                                        <TableColumn fx:id="prmoIndex03" editable="false" maxWidth="116.0" minWidth="116.0" prefWidth="116.0" resizable="false" sortable="false" text="End Date" />
                                                                                                                                                                         <TableColumn fx:id="prmoIndex04" editable="false" minWidth="425.0" prefWidth="425.0" resizable="false" sortable="false" text="Promo Title" />
                                                                                                                                                                     </columns>
                                                                                                                                                                 </TableView>
@@ -803,20 +811,12 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnApply" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnConvertSales" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="102.0" text="Convert to Sales" visible="false">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="EXCHANGE" size="20" />
                                             </graphic>
                                         </Button>
                                         <Button fx:id="btnLostSale" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Lost of Sale">
@@ -835,28 +835,20 @@
                                                 <FontAwesomeIconView glyphName="CARET_DOWN" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnModify" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Modify">
+                                        <Button fx:id="btnConvertSales" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="102.0" text="Convert to Sales" visible="false">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
-                                                <FontAwesomeIconView glyphName="EDIT" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnApply" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Apply">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="PLUS_CIRCLE" size="20" />
+                                                <FontAwesomeIconView glyphName="EXCHANGE" size="20" />
                                             </graphic>
                                         </Button>
                                     </children>
                                 </HBox>
-                                <GridPane layoutY="9.0" prefHeight="43.0" prefWidth="128.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="9.0">
+                                <GridPane layoutY="9.0" prefHeight="43.0" prefWidth="169.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="79.0" AnchorPane.topAnchor="9.0">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="200.0" />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
