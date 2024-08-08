@@ -8,23 +8,32 @@ package org.guanzon.autoapp.models.sales;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.CheckBox;
 
 public class ModelInquiryRequirements {
 
+    private CheckBox select;
     private SimpleBooleanProperty tblindex01; //Check box
     private SimpleStringProperty tblindex02; //Requirements
     private SimpleStringProperty tblindex03; //Received By
     private SimpleStringProperty tblindex04; //Received Date
 
-    public ModelInquiryRequirements(boolean tblindex01,
-             String tblindex02,
-             String tblindex03,
-             String tblindex04
+    public ModelInquiryRequirements(String tblindex02,
+            String tblindex03,
+            String tblindex04
     ) {
-        this.tblindex01 = new SimpleBooleanProperty(tblindex01);
+        this.select = new CheckBox();
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
         this.tblindex04 = new SimpleStringProperty(tblindex04);
+    }
+
+    public CheckBox getSelect() {
+        return select;
+    }
+
+    public void setSelect(CheckBox select) {
+        this.select = select;
     }
 
     //Check box
