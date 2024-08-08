@@ -15,20 +15,23 @@ import javafx.scene.control.Button;
  */
 public class ModelInquiryVehiclePriority {
 
-    private SimpleStringProperty tblindex01; //Prio
-    private SimpleStringProperty tblindex02; //Vehicle Description
-    private SimpleStringProperty tblindex03; //Vehicle ID
+    private SimpleStringProperty tblindex01; //row
+    private SimpleStringProperty tblindex02; //prio
+    private SimpleStringProperty tblindex03; //desc
+    private SimpleStringProperty tblindex04; //Vehicle ID
     private Button upBtn;
     private Button downBtn;
 
     public ModelInquiryVehiclePriority(String tblindex01,
             String tblindex02,
-            String tblindex03
+            String tblindex03,
+            String tblindex04
     ) {
 
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
+        this.tblindex04 = new SimpleStringProperty(tblindex04);
         this.upBtn = new Button();
         this.downBtn = new Button();
     }
@@ -57,6 +60,14 @@ public class ModelInquiryVehiclePriority {
 
     public void setTblindex03(String tblindex03) {
         this.tblindex03.set(tblindex03);
+    }
+
+    public String getTblindex04() {
+        return tblindex04.get();
+    }
+
+    public void setTblindex04(String tblindex04) {
+        this.tblindex04.set(tblindex04);
     }
 
     public Button getUpButton() {
