@@ -8,9 +8,15 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import org.guanzon.autoapp.models.sales.*;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -38,7 +45,8 @@ public class VehicleTestDriveDialogController implements Initializable {
     private GRider oApp;
     private String pxeModuleName = "Vehicle Test Drive Model";
     ObservableList<ModelInquiryTestDrive> testVhclModelData = FXCollections.observableArrayList();
-    private String psTransNox;
+    private List<String> existingModelDescriptions = new ArrayList<>();
+    private Set<String> selectedModelIDs = new HashSet<>();
     @FXML
     private Button btnAdd, btnClose;
 
@@ -48,10 +56,8 @@ public class VehicleTestDriveDialogController implements Initializable {
     private TableColumn<ModelInquiryTestDrive, Boolean> tblindex02;
     @FXML
     private TableView<ModelInquiryTestDrive> tblViewInquiryVhcl;
-
-    public void setTransNo(String fsValue) {
-        psTransNox = fsValue;
-    }
+    @FXML
+    private TableColumn<ModelInquiryTestDrive, String> tblindex04;
 
     public void setObject(Inquiry foValue) {
         oTransTestVhcl = foValue;
@@ -68,8 +74,8 @@ public class VehicleTestDriveDialogController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         btnClose.setOnAction(this::handleButtonAction);
         btnAdd.setOnAction(this::handleButtonAction);
-        initVehicleTestModelTable();
         loadVhclTestModelTable();
+        initVehicleTestModelTable();
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -80,6 +86,7 @@ public class VehicleTestDriveDialogController implements Initializable {
                 break;
             case "btnAdd":
                 ObservableList<ModelInquiryTestDrive> selectedItems = FXCollections.observableArrayList();
+                // Collect selected items from the TableView
                 for (ModelInquiryTestDrive item : tblViewInquiryVhcl.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
@@ -92,57 +99,68 @@ public class VehicleTestDriveDialogController implements Initializable {
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                     return;
                 }
+
                 int addedCount = 0;
+                StringBuilder fsModels = new StringBuilder();
                 for (ModelInquiryTestDrive item : selectedItems) {
-                    String lsModel = item.getTblindex02();
-                    boolean isVhclExist = false;
                     try {
-                        for (int lnCtr = 0; lnCtr <= oTransTestVhcl.getTestModelCount() - 1; lnCtr++) {
-                            if (oTransTestVhcl.getTestModelDetail(lnCtr, "lsModel").toString().equals(lsModel)) {
-                                ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add vehicle model, " + lsModel + " already exist.");
-                                isVhclExist = true;
-                                break;
+                        String lsModelDesc = item.getTblindex05();
+
+                        if (fsModels.indexOf(lsModelDesc) == -1) {
+                            if (fsModels.length() > 0) {
+                                fsModels.append(", ");
                             }
+                            fsModels.append(lsModelDesc);
                         }
-                    } catch (SQLException ex) {
+                        addedCount++;
+                    } catch (Exception ex) {
                         Logger.getLogger(VehicleTestDriveDialogController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (!isVhclExist) {
-                        int fnRow;
-                        try {
-                            fnRow = oTransTestVhcl.getTestModelCount() - 1;
-//                            oTransTestVhcl(fnRow, "sDescript", lsModel);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(VehicleTestDriveDialogController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        addedCount++;
-                    }
                 }
+                oTransTestVhcl.getMasterModel().getMasterModel().setTestModl(fsModels.toString());
                 if (addedCount > 0) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Added vehicle successfully.");
+                    ShowMessageFX.Information(null, pxeModuleName, "Added test vehicle(s) successfully.");
                 } else {
-                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle");
+                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle(s).");
                 }
                 CommonUtils.closeStage(btnAdd);
                 break;
+
         }
     }
 
     private void loadVhclTestModelTable() {
-        /*Populate table*/
         testVhclModelData.clear();
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransTestVhcl.loadTestModel();
-        if ("success".equals((String) loJSON.get("result"))) {
+
+        String existingModels = oTransTestVhcl.getMasterModel().getMasterModel().getTestModl();
+        existingModelDescriptions = Arrays.stream(existingModels.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
+
+        JSONObject loJSON = oTransTestVhcl.loadTestModel();
+        if (!"error".equals(loJSON.get("result"))) {
             try {
-                for (int lnCtr = 0; lnCtr <= oTransTestVhcl.getTestModelCount(); lnCtr++) {
-                    testVhclModelData.add(new ModelInquiryTestDrive(
-                            String.valueOf(lnCtr + 1), //ROW
-                            oTransTestVhcl.getTestModelDetail(lnCtr, lnCtr).toString()
-                    ));
+                for (int lnCtr = 1; lnCtr <= oTransTestVhcl.getTestModelCount(); lnCtr++) {
+                    // Retrieve data for each model
+                    String makeID = oTransTestVhcl.getTestModelDetail(lnCtr, "sMakeIDxx").toString();
+                    String makeDesc = oTransTestVhcl.getTestModelDetail(lnCtr, "sMakeDesc").toString();
+                    String modelID = oTransTestVhcl.getTestModelDetail(lnCtr, "sModelIDx").toString();
+                    String modelDesc = oTransTestVhcl.getTestModelDetail(lnCtr, "sModelDsc").toString();
+
+                    ModelInquiryTestDrive item = new ModelInquiryTestDrive(
+                            String.valueOf(lnCtr),
+                            makeID,
+                            makeDesc,
+                            modelID,
+                            modelDesc
+                    );
+
+                    if (existingModelDescriptions.contains(modelDesc)) {
+                        item.getSelect().setSelected(true);
+                    }
+
+                    testVhclModelData.add(item);
                 }
-                System.out.println("test count: " + oTransTestVhcl.getTestModelCount());
             } catch (SQLException ex) {
                 Logger.getLogger(VehicleTestDriveDialogController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -152,9 +170,26 @@ public class VehicleTestDriveDialogController implements Initializable {
 
     private void initVehicleTestModelTable() {
         tblViewInquiryVhcl.setItems(testVhclModelData);
-        tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));  //Row
+        tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
+        tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
+        tblViewInquiryVhcl.setRowFactory(tv -> {
+            TableRow<ModelInquiryTestDrive> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    ModelInquiryTestDrive rowData = row.getItem();
+                    String modelDesc = rowData.getTblindex05();
+
+                    if (rowData.getSelect().isSelected()) {
+                        existingModelDescriptions.add(modelDesc);
+                    } else {
+                        existingModelDescriptions.remove(modelDesc);
+                    }
+                }
+            });
+            return row;
+        });
         tblViewInquiryVhcl.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewInquiryVhcl.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
