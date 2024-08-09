@@ -10,12 +10,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -41,6 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,6 +53,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -140,11 +145,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @FXML
     private Tab tabInquiryProcess;
     @FXML
-    private TableView<ModelInquiryRequirements> tblRequirementsInfo;
+    private TableView tblRequirementsInfo;
     @FXML
-    private TableColumn<ModelInquiryRequirements, Boolean> rqrmIndex01;
+    private TableColumn rqrmIndex01;
     @FXML
-    private TableColumn<ModelInquiryRequirements, String> rqrmIndex02, rqrmIndex03, rqrmIndex04;
+    private TableColumn rqrmIndex02, rqrmIndex03, rqrmIndex04;
     @FXML
     private Button btnASadd, btnASremove, btnASprint, btnAScancel;
     @FXML
@@ -478,14 +483,32 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 //            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (comboBox25.getSelectionModel().getSelectedIndex() >= 0) {
                 oTransInquiry.getMasterModel().getMasterModel().setPayMode(String.valueOf((comboBox25.getSelectionModel().getSelectedIndex())));
+                switch (comboBox25.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                    case 1:
+                    case 3:
+                        comboBox26.setValue("ANY");
+                        oTransInquiry.getMasterModel().getMasterModel().setCustGrp("4");
+                        comboBox26.getSelectionModel().select(Integer.parseInt(oTransInquiry.getMasterModel().getMasterModel().getCustGrp()));
+                        System.out.println("combobox26: " + oTransInquiry.getMasterModel().getMasterModel().getCustGrp());
+                        loadInquiryRequirements();
+                        break;
+                    case 2:
+                    case 4:
+                        comboBox26.getItems().remove("ANY");
+                        comboBox26.setValue("");
+                        System.out.println("combobox26: " + oTransInquiry.getMasterModel().getMasterModel().getCustGrp());
+                        oTransInquiry.getMasterModel().getMasterModel().setCustGrp("");
+                        comboBox26.setValue(oTransInquiry.getMasterModel().getMasterModel().getCustGrp());
+                        inqrequirementsdata.clear();
+                        break;
+                }
                 initFields(pnEditMode);
                 initBtnProcess(pnEditMode);
-                loadInquiryRequirements();
             }
 //            }
         });
         comboBox26.setOnAction(e -> {
-//
 //            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (comboBox26.getSelectionModel().getSelectedIndex() >= 0) {
                 oTransInquiry.getMasterModel().getMasterModel().setCustGrp(String.valueOf((comboBox26.getSelectionModel().getSelectedIndex())));
@@ -592,6 +615,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
+
     private boolean setSelection() {
         if (rdbtnHtA19.isSelected()) {
             oTransInquiry.getMasterModel().getMasterModel().setIntrstLv("a");
@@ -998,6 +1022,52 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             }
             lblInqStatus.setText(inqStats);
         }
+        if (oTransInquiry.getMasterModel().getMasterModel().getPayMode() != null && !oTransInquiry.getMasterModel().getMasterModel().getPayMode().trim().isEmpty()) {
+            comboBox25.setValue(oTransInquiry.getMasterModel().getMasterModel().getPayMode());
+            String sModeOfPayment = "";
+            switch (oTransInquiry.getMasterModel().getMasterModel().getPayMode()) {
+                case "0":
+                    sModeOfPayment = "CASH";
+                    break;
+                case "1":
+                    sModeOfPayment = "BANK PURCHASE ORDER";
+                    break;
+                case "2":
+                    sModeOfPayment = "BANK FINANCING";
+                    break;
+                case "3":
+                    sModeOfPayment = "COMPANY PURCHASE ORDER";
+                    break;
+                case "4":
+                    sModeOfPayment = "COMPANY FINANCING";
+                    break;
+
+            }
+            comboBox25.setValue(sModeOfPayment);
+        }
+        if (oTransInquiry.getMasterModel().getMasterModel().getCustGrp() != null && !oTransInquiry.getMasterModel().getMasterModel().getCustGrp().trim().isEmpty()) {
+            comboBox25.setValue(oTransInquiry.getMasterModel().getMasterModel().getCustGrp());
+            String sCustomerType = "";
+            switch (oTransInquiry.getMasterModel().getMasterModel().getPayMode()) {
+                case "0":
+                    sCustomerType = "BUSINESS";
+                    break;
+                case "1":
+                    sCustomerType = "EMPLOYED";
+                    break;
+                case "2":
+                    sCustomerType = "OFW";
+                    break;
+                case "3":
+                    sCustomerType = "SEAMAN";
+                    break;
+                case "4":
+                    sCustomerType = "ANY";
+                    break;
+
+            }
+            comboBox25.setValue(sCustomerType);
+        }
     }
 
     private void initFields(int fnValue) {
@@ -1017,8 +1087,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         datePicker22.setDisable(!lbShow);
         textArea23.setDisable(!lbShow);
         textArea24.setDisable(!lbShow);
-        comboBox25.setDisable(!lbShow);
-        comboBox26.setDisable(!lbShow);
         txtField27.setDisable(!lbShow);
         txtField14.setDisable(true);
         if (fnValue == EditMode.ADDNEW) {
@@ -1244,8 +1312,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             lbShow (FALSE)= invisible
             !lbShow (TRUE)= visible
          */
+
         boolean lbShow = (fnValue == EditMode.UPDATE);
-        if (oTransInquiry.getMaster("cTranStat") != null) {
+        if (oTransInquiry.getMaster(
+                "cTranStat") != null) {
             if (oTransInquiry.getMaster("cTranStat").equals("0")) {
                 rqrmIndex01.setVisible(true);
             } else {
@@ -1255,7 +1325,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
         /*INQUIRY PROCESS*/
         //Requirements
-        comboBox25.setDisable(!lbShow);
+        comboBox25.setDisable(
+                !lbShow);
         switch (comboBox25.getSelectionModel().getSelectedIndex()) {
             case 0: //CASH
             case 1: // Bank Purchase order
@@ -1266,20 +1337,26 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             case 4: //Company Financing
                 comboBox26.setDisable(!lbShow);
                 break;
-        }
-//        if (cmbInqpr01.getSelectionModel().getSelectedIndex() == 1){
-//            cmbInqpr02.setDisable(true);
-//        } else {
-//            cmbInqpr02.setDisable(!lbShow);
-//        }
+        } //        if (cmbInqpr01.getSelectionModel().getSelectedIndex() == 1){
+        //            cmbInqpr02.setDisable(true);
+        //        } else {
+        //            cmbInqpr02.setDisable(!lbShow);
+        //        }
         //Reservation
-        btnASadd.setVisible(lbShow);
+        btnASadd
+                .setVisible(lbShow);
+
         btnASremove.setVisible(lbShow);
+
         btnAScancel.setVisible(lbShow);
+
         btnASprint.setVisible(lbShow);
         //General button
-        btnProcess.setVisible(false);
-        btnProcess.setManaged(false);
+
+        btnProcess.setVisible(
+                false);
+        btnProcess.setManaged(
+                false);
 
         if (fnValue == EditMode.READY || (lbShow)) {
             btnAScancel.setVisible(true);
@@ -1291,7 +1368,17 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     rqrmIndex01.setVisible(true);
                     //Requirements
                     comboBox25.setDisable(false);
-                    comboBox26.setDisable(false);
+                    switch (comboBox25.getSelectionModel().getSelectedIndex()) {
+                        case 0:
+                        case 1:
+                        case 3:
+                            comboBox26.setDisable(true);
+                            break;
+                        case 2:
+                        case 4:
+                            comboBox26.setDisable(false);
+                            break;
+                    }
                     //Reservation
                     btnASadd.setVisible(true);
                     btnASremove.setVisible(true);
@@ -1524,32 +1611,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         tblPriorityUnit.refresh();
     }
 
-//    private void updateModel(ObservableList<ModelInquiryVehiclePriority> items) {
-//        int minSize = Math.min(oTransInquiry.getVehiclePriorityList().size(), items.size());
-//        for (int pnCtr = 0; pnCtr < minSize; pnCtr++) {
-//            ModelInquiryVehiclePriority unit = items.get(pnCtr);
-//            try {
-//                // Extract the values
-//                int lnPrio = Integer.parseInt(unit.getTblindex01());
-//                String lsDescript = unit.getTblindex03();
-//                String lsVhclID = unit.getTblindex04();
-//
-//                // Update only the specific fields
-//                oTransInquiry.setVehiclePriority(pnCtr, "nPriority", lnPrio);
-//                oTransInquiry.setVehiclePriority(pnCtr, "sDescript", lsDescript);
-//                oTransInquiry.setVehiclePriority(pnCtr, "sVhclIDxx", lsVhclID);
-//
-//                // Optionally print the updated values for debugging
-//                System.out.println(oTransInquiry.getVehiclePriority(pnCtr, "sDescript"));
-//                System.out.println(oTransInquiry.getVehiclePriority(pnCtr, "sVhclIDxx"));
-//            } catch (IndexOutOfBoundsException e) {
-//                System.err.println("Error updating index: " + pnCtr + " - " + e.getMessage());
-//                // If items were removed or added, consider how to update `oTransInquiry` accordingly
-//                loadVehiclePriority();
-//                tblPriorityUnit.refresh();
-//            }
-//        }
-//    }
     @FXML
     private void tblPromo_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -1595,36 +1656,66 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private void loadInquiryRequirements() {
         inqrequirementsdata.clear();
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransInquiry.loadRequirements();
+        JSONObject loJSON = oTransInquiry.loadRequirements();
+        boolean lbCheck = false;
         if (!"error".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 0; lnCtr <= oTransInquiry.getRequirementList().size() - 1; lnCtr++) {
+            for (int lnCtr = 0; lnCtr < oTransInquiry.getRequirementList().size(); lnCtr++) { // Changed loop condition
+//                lbCheck = String.valueOf(oTransInquiry.getRequirement(lnCtr, "cSubmittd")).equals("1");
+
                 inqrequirementsdata.add(new ModelInquiryRequirements(
+                        lbCheck,
                         String.valueOf(oTransInquiry.getRequirement(lnCtr, "sDescript")),
                         String.valueOf(oTransInquiry.getRequirement(lnCtr, "sCompnyNm")),
-                        String.valueOf(oTransInquiry.getRequirement(lnCtr, "dReceived"))
+                        String.valueOf(oTransInquiry.getRequirement(lnCtr, "dReceived")),
+                        String.valueOf(oTransInquiry.getRequirement(lnCtr, "sRqrmtCde"))
                 ));
             }
         }
     }
 
-    private void initInquiryRequirements() {
-        rqrmIndex01.setCellValueFactory(new PropertyValueFactory<>("select"));
+    @SuppressWarnings("unchecked")
+    public void initInquiryRequirements() {
+        tblRequirementsInfo.setEditable(true);
+        tblRequirementsInfo.setSelectionModel(null);
+
+        rqrmIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
         rqrmIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
         rqrmIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
         rqrmIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
 
+        rqrmIndex01.setCellFactory(CheckBoxTableCell.forTableColumn((Integer index) -> {
+            ModelInquiryRequirements requirement = inqrequirementsdata.get(index);
+            BooleanProperty selected = requirement.selectedProperty();
+            loadInquiryRequirements();
+            selected.addListener((obs, oldValue, newValue) -> {
+                if (newValue) {
+                    int currentIndex = tblRequirementsInfo.getItems().indexOf(requirement) + 1;
+                    JSONObject loJSON = oTransInquiry.searchEmployee(requirement.getTblindex05(), requirement.getTblindex02());
+                    System.out.println("current index: " + currentIndex);
+                    if (!"error".equals(loJSON.get("result"))) {
+                    } else {
+                        ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                    }
+                } else {
+//                    oTransInquiry.removeEmployee(requirement.getTblindex05());
+                }
+            });
+            return selected;
+        }));
+
+        // Prevent column reordering
         tblRequirementsInfo.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblRequirementsInfo.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
         });
+
         tblRequirementsInfo.setItems(inqrequirementsdata);
+        tblRequirementsInfo.refresh();
+        loadInquiryRequirements();
     }
 
-    /*INQUIRY: PROCESS*/
-    // Load Inquiry Process Requirements
     private void loadAdvancesSlip() {
 
     }
