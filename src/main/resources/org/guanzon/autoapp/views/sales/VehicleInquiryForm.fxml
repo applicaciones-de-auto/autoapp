@@ -479,7 +479,7 @@
                                                                                                         <TableColumn fx:id="rqrmIndex01" minWidth="33.0" prefWidth="33.0" resizable="false" sortable="false" />
                                                                                                         <TableColumn fx:id="rqrmIndex02" editable="false" minWidth="255.0" prefWidth="255.0" resizable="false" sortable="false" text="Requirements" />
                                                                                                         <TableColumn fx:id="rqrmIndex03" editable="false" minWidth="239.0" prefWidth="239.0" resizable="false" sortable="false" text="Received By" />
-                                                                                                        <TableColumn fx:id="rqrmIndex04" editable="false" minWidth="110.0" prefWidth="110.0" resizable="false" sortable="false" text="Received Date" />
+                                                                                                        <TableColumn fx:id="rqrmIndex04" editable="false" minWidth="110.0" prefWidth="190.0" resizable="false" sortable="false" text="Received Date" />
                                                                                                     </columns>
                                                                                                 </TableView>
                                                                                                 <Label id="LabelDesc" text="Mode of Payment" GridPane.columnIndex="1" />
