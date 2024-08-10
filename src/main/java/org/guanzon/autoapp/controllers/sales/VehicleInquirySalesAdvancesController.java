@@ -30,6 +30,7 @@ import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.json.simple.JSONObject;
@@ -45,6 +46,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     private final String pxeModuleName = "Inquiry Vehicle Sales Advances";
     ObservableList<String> cSlipType = FXCollections.observableArrayList("RESERVATION", "DEPOSIT", "SAFEGUARD DUTY");
     public int pnTbl_Row = 0;
+    private Inquiry oTransAS;
     private int pnIinqStat;
     private int pnIEditMode;
     private boolean pbState = false;
@@ -61,9 +63,10 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         oApp = foValue;
     }
 
-//    public void setVSAObject(InquiryProcess foValue) {
-//        oTransProcess = foValue;
-//    }
+    public void setVSAObject(Inquiry foValue) {
+        oTransAS = foValue;
+    }
+
     public void setTableRows(int row) {
         pnTbl_Row = row;
     }
