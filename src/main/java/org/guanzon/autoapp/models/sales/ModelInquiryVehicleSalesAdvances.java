@@ -8,6 +8,7 @@ package org.guanzon.autoapp.models.sales;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.CheckBox;
 
 /**
  * Date Created: 04-25-2023
@@ -16,9 +17,10 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class ModelInquiryVehicleSalesAdvances {
 
-    private SimpleBooleanProperty tblcheck01; //Check box
+    private CheckBox select;
+//    private SimpleBooleanProperty tblcheck01; //Check box
     private SimpleStringProperty tblindex01; //Row
-    private SimpleStringProperty tblindex02; //Slip Date
+    private SimpleStringProperty tblindex02; //Slip Date / Advances Date
     private SimpleStringProperty tblindex03; //Slip Type
     private SimpleStringProperty tblindex04; //Slip No
     private SimpleStringProperty tblindex05; //Slip Amount
@@ -26,12 +28,12 @@ public class ModelInquiryVehicleSalesAdvances {
     private SimpleStringProperty tblindex07; //Remarks
     private SimpleStringProperty tblindex08; //Approved By
     private SimpleStringProperty tblindex09; //Approved Date
-    private SimpleStringProperty tblindex10; //rsvcode	sTransNox
+    private SimpleStringProperty tblindex10; //RefNo
     private SimpleStringProperty tblindex11; //clientname	sCompnyNm
     private SimpleStringProperty tblindex12; //SE Name sSeName
     private SimpleStringProperty tblindex13; //unit description sDescript
 
-    public ModelInquiryVehicleSalesAdvances(Boolean tblcheck01,
+    public ModelInquiryVehicleSalesAdvances(
             String tblindex01,
             String tblindex02,
             String tblindex03,
@@ -47,7 +49,8 @@ public class ModelInquiryVehicleSalesAdvances {
             String tblindex13
     ) {
 
-        this.tblcheck01 = new SimpleBooleanProperty(tblcheck01);
+        this.select = new CheckBox();
+//        this.tblcheck01 = new SimpleBooleanProperty(tblcheck01);
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
@@ -64,16 +67,23 @@ public class ModelInquiryVehicleSalesAdvances {
     }
     //Check box
 
-    public boolean isTblcheck01() {
-        return tblcheck01.get();
+//    public boolean isTblcheck01() {
+//        return tblcheck01.get();
+//    }
+//
+//    public void setTblcheck01(boolean tblcheck01) {
+//        this.tblcheck01.set(tblcheck01);
+//    }
+//
+//    public BooleanProperty selectedProperty() {
+//        return tblcheck01;
+//    }
+    public CheckBox getSelect() {
+        return select;
     }
 
-    public void setTblcheck01(boolean tblcheck01) {
-        this.tblcheck01.set(tblcheck01);
-    }
-
-    public BooleanProperty selectedProperty() {
-        return tblcheck01;
+    public void setSelect(CheckBox select) {
+        this.select = select;
     }
 
     //Row
