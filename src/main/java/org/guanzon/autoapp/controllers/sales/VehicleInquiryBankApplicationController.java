@@ -35,6 +35,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.sales.BankApplication;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.json.simple.JSONObject;
 
@@ -46,7 +47,7 @@ import org.json.simple.JSONObject;
 public class VehicleInquiryBankApplicationController implements Initializable {
 
     private GRider oApp;
-//    private InquiryBankApplication oTransBankApp;
+    private BankApplication oTransBankApp;
 
     private String psTransNo = "";
     private String psOApplieddate = "";
