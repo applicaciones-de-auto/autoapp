@@ -16,22 +16,20 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class ModelVehicleInquiryBankApplications {
 
-    private SimpleBooleanProperty tblcheck01; //Check box
     private SimpleStringProperty tblindex01; //Row
-    private SimpleStringProperty tblindex02; //Bank Name
-    private SimpleStringProperty tblindex03; //Bank Branch
-    private SimpleStringProperty tblindex04; //Payment Mode
-    private SimpleStringProperty tblindex05; //Bank Address
-    private SimpleStringProperty tblindex06; //Remarks
-    private SimpleStringProperty tblindex07; //Applied Date
-    private SimpleStringProperty tblindex08; //Application Status
-    private SimpleStringProperty tblindex09; //Approved Date
-    private SimpleStringProperty tblindex10; //sTransNox
-    private SimpleStringProperty tblindex11; //Cancelled By
-    private SimpleStringProperty tblindex12; //Cancelled Date
-    //private SimpleStringProperty tblindex13; //Cancelled
+    private SimpleStringProperty tblindex02; // sTransNox
+    private SimpleStringProperty tblindex03; // Bank Type
+    private SimpleStringProperty tblindex04; // Bank ID
+    private SimpleStringProperty tblindex05; // Bank Name
+    private SimpleStringProperty tblindex06; //  Bank Branch
+    private SimpleStringProperty tblindex07; // Payment Mode
+    private SimpleStringProperty tblindex08; // Application Status
+    private SimpleStringProperty tblindex09; // Application Date
+    private SimpleStringProperty tblindex10; // Cancelled Date
+    private SimpleStringProperty tblindex11; // Cancelled By
+    private SimpleStringProperty tblindex12; // Approved Date
 
-    public ModelVehicleInquiryBankApplications(Boolean tblcheck01,
+    public ModelVehicleInquiryBankApplications(
             String tblindex01,
             String tblindex02,
             String tblindex03,
@@ -44,10 +42,8 @@ public class ModelVehicleInquiryBankApplications {
             String tblindex10,
             String tblindex11,
             String tblindex12
-    //String tblindex13
     ) {
 
-        this.tblcheck01 = new SimpleBooleanProperty(tblcheck01);
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
@@ -60,23 +56,8 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex10 = new SimpleStringProperty(tblindex10);
         this.tblindex11 = new SimpleStringProperty(tblindex11);
         this.tblindex12 = new SimpleStringProperty(tblindex12);
-//        this.tblindex13 = new SimpleStringProperty(tblindex13);
     }
 
-    //Check box
-    public boolean isTblcheck01() {
-        return tblcheck01.get();
-    }
-
-    public void setTblcheck01(boolean tblcheck01) {
-        this.tblcheck01.set(tblcheck01);
-    }
-
-    public BooleanProperty selectedProperty() {
-        return tblcheck01;
-    }
-
-    //Row
     public String getTblindex01() {
         return tblindex01.get();
     }
@@ -85,7 +66,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex01.set(tblindex01);
     }
 
-    //Bank Name
     public String getTblindex02() {
         return tblindex02.get();
     }
@@ -94,7 +74,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex02.set(tblindex02);
     }
 
-    //Bank Branch
     public String getTblindex03() {
         return tblindex03.get();
     }
@@ -103,7 +82,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex03.set(tblindex03);
     }
 
-    //Payment Mode
     public String getTblindex04() {
         return tblindex04.get();
     }
@@ -112,7 +90,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex04.set(tblindex04);
     }
 
-    //Bank Address
     public String getTblindex05() {
         return tblindex05.get();
     }
@@ -121,7 +98,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex05.set(tblindex05);
     }
 
-    //Remarks
     public String getTblindex06() {
         return tblindex06.get();
     }
@@ -130,7 +106,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex06.set(tblindex06);
     }
 
-    //Applied Date
     public String getTblindex07() {
         return tblindex07.get();
     }
@@ -139,7 +114,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex07.set(tblindex07);
     }
 
-    //Approved By
     public String getTblindex08() {
         return tblindex08.get();
     }
@@ -148,7 +122,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex08.set(tblindex08);
     }
 
-    //Application Status
     public String getTblindex09() {
         return tblindex09.get();
     }
@@ -157,7 +130,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex09.set(tblindex09);
     }
 
-    //sTransNo
     public String getTblindex10() {
         return tblindex10.get();
     }
@@ -166,7 +138,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex10.set(tblindex10);
     }
 
-    //Cancelled By
     public String getTblindex11() {
         return tblindex11.get();
     }
@@ -175,7 +146,6 @@ public class ModelVehicleInquiryBankApplications {
         this.tblindex11.set(tblindex11);
     }
 
-    //Cancelled Date
     public String getTblindex12() {
         return tblindex12.get();
     }
@@ -183,7 +153,5 @@ public class ModelVehicleInquiryBankApplications {
     public void setTblindex12(String tblindex12) {
         this.tblindex12.set(tblindex12);
     }
-//    //Cancelled
-//    public String getTblindex13(){return tblindex13.get();}
-//    public void setTblindex13(String tblindex13){this.tblindex13.set(tblindex13);}
+
 }
