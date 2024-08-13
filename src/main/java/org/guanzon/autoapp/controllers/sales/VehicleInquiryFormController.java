@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -56,13 +57,14 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.sales.BankApplication;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.models.sales.ModelInquiryBankApplications;
 import org.guanzon.autoapp.models.sales.ModelInquiryFollowUp;
 import org.guanzon.autoapp.models.sales.ModelInquiryPromoOffered;
 import org.guanzon.autoapp.models.sales.ModelInquiryRequirements;
 import org.guanzon.autoapp.models.sales.ModelInquiryVehiclePriority;
 import org.guanzon.autoapp.models.sales.ModelInquiryVehicleSalesAdvances;
+import org.guanzon.autoapp.models.sales.ModelVehicleInquiryBankApplications;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -77,6 +79,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private GRider oApp;
     private Inquiry oTransInquiry;
+    private BankApplication oTransBank;
     private String pxeModuleName = "Vehicle Inquiry";
     private int pnEditMode;//Modifying fields for Customer Entry
     private double xOffset, yOffset = 0;
@@ -95,7 +98,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private ObservableList<ModelInquiryPromoOffered> promosoffereddata = FXCollections.observableArrayList();
     private ObservableList<ModelInquiryRequirements> inqrequirementsdata = FXCollections.observableArrayList();
     private ObservableList<ModelInquiryVehicleSalesAdvances> inqvsadata = FXCollections.observableArrayList();
-    private ObservableList<ModelInquiryBankApplications> bankappdata = FXCollections.observableArrayList();
+    private ObservableList<ModelVehicleInquiryBankApplications> bankappdata = FXCollections.observableArrayList();
     private ObservableList<ModelInquiryFollowUp> followupdata = FXCollections.observableArrayList();
 
     //    /* ------------------COMBO BOX ITEMS/VALUE----------------------- */
@@ -167,11 +170,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @FXML
     private Button btnBankAppNew;
     @FXML
-    private TableView<ModelInquiryBankApplications> tblBankApplication;
+    private TableView<ModelVehicleInquiryBankApplications> tblBankApplication;
     @FXML
-    private TableColumn<ModelInquiryBankApplications, Boolean> bankCheck01;
-    @FXML
-    private TableColumn<ModelInquiryBankApplications, String> bankIndex01, bankIndex02, bankIndex03, bankIndex04, bankIndex05, bankIndex06;
+    private TableColumn<ModelVehicleInquiryBankApplications, String> bankIndex01, bankIndex02, bankIndex03, bankIndex04, bankIndex05, bankIndex06, bankIndex07, bankIndex08;
     @FXML
     private Tab tabFollowingHistory;
     @FXML
@@ -212,6 +213,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTransInquiry = new Inquiry(oApp, false, oApp.getBranchCode());
+        oTransBank = new BankApplication(oApp, false, oApp.getBranchCode());
         initVehiclePriority();
         initPromoOffered();
         initInquiryRequirements();
@@ -785,16 +787,16 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 }
                 break;
             case "btnBrowse":
-                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.YesNo(null, "Search Vehicle Inquiry Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                        pnEditMode = EditMode.READY;
                     } else {
+                        pnEditMode = oTransInquiry.getEditMode();
                         return;
                     }
                 }
                 loJSON = oTransInquiry.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    clearCustomerFields();
-                    clearTables();
                     loadCustomerInquiryInformation();
 //                    loadInquiryProcess();
                     loadVehiclePriority();
@@ -1062,22 +1064,27 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             }
                             break;
                         case "btnASprint":
-                            lnRow = 0;
-                            String[] lsrowdata = new String[pnCtr];
+                            // Determine the size of the array
+                            int numberOfItems = selectedItems.size();
+
+                            // Initialize the array with the determined size
+                            Integer[] lnSelRow = new Integer[numberOfItems];
+
+                            // Iterate through the selected items and populate the array
+                            int lnCtr = 0;
                             for (ModelInquiryVehicleSalesAdvances item : selectedItems) {
-                                String sRow = item.getTblindex01(); // Assuming there is a method to retrieve the transaction number
-                                String sTrans = item.getTblindex10();
-                                if (Integer.parseInt(sRow) >= 1) {
-                                    lsrowdata[lnRow] = sTrans;
-                                }
-                                lnRow++;
+                                lnRow = Integer.valueOf(item.getTblindex01()) - 1; // Assuming getTblindex01() returns a valid integer
+                                lnSelRow[lnCtr] = lnRow;
+                                lnCtr++;
                             }
+
                             try {
-                                loadVehicleSalesAdvancesPrint(lsrowdata);
+                                loadVehicleSalesAdvancesPrint(lnSelRow);
                             } catch (SQLException ex) {
                                 Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             break;
+
                         default:
                             break;
                     }
@@ -1085,6 +1092,20 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 }
                 break;
 
+            case "btnBankAppNew":
+                loJSON = oTransBank.newTransaction();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    try {
+                        loadBankApplicationWindow(pnRow, Integer.parseInt(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getPayMode())), pnEditMode, true, "");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, "Integrated Automotive System", (String) loJSON.get("message"));
+
+                }
+
+                break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
@@ -1094,7 +1115,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     }
 
     /*INQUIRY PROCESS: PRINT VEHICLE SALES ADVANCES*/
-    private void loadVehicleSalesAdvancesPrint(String[] fsTransno) throws SQLException {
+    private void loadVehicleSalesAdvancesPrint(Integer[] fnRows) throws SQLException {
         try {
             Stage stage = new Stage();
 
@@ -1102,7 +1123,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VehicleInquiryReservationPrint.fxml"));
             VehicleInquiryReservationPrintController loControl = new VehicleInquiryReservationPrintController();
             loControl.setGRider(oApp);
-            loControl.setTransNox(fsTransno);
+            loControl.setVSObject(oTransInquiry);
+            loControl.setRows(fnRows);
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -1247,7 +1269,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         txtField12.setText(oTransInquiry.getMasterModel().getMasterModel().getActTitle());
         txtField13.setText(oTransInquiry.getMasterModel().getMasterModel().getSalesAgn());
         txtField14.setText(oTransInquiry.getMasterModel().getMasterModel().getBranchNm());
-//        txtField16.setText(oTransInquiry.getMasterModel().getMasterModel().getRE);
         txtField18.setText(poGetDecimalFormat.format(Double.parseDouble("0.00")));
         switch (oTransInquiry.getMasterModel().getMasterModel().getIntrstLv()) {
             case "a":
@@ -1434,7 +1455,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         btnCancel.setManaged(lbShow);
         //Bank Application
         btnBankAppNew.setVisible(false);
-        bankCheck01.setVisible(false);
         //For Follow up
         btnFollowUp.setVisible(false);
         btnProcess.setVisible(false);
@@ -1477,7 +1497,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     if (comboBox25.getSelectionModel().getSelectedIndex() > 0) {
                         //Bank Application
                         btnBankAppNew.setVisible(true);
-                        bankCheck01.setVisible(true);
                     }
                     //For Follow up
                     btnFollowUp.setVisible(true);
@@ -1489,7 +1508,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 case "3": //VSP
                     //Bank Application
                     btnBankAppNew.setVisible(true);
-                    bankCheck01.setVisible(true);
                     //For Follow up
                     btnFollowUp.setVisible(true);
                     break;
@@ -2078,8 +2096,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 try {
                     loadVehicleSalesAdvancesWindow(pnRow, false, pnEditMode);
                     loadAdvancesSlip();
+
                 } catch (SQLException ex) {
-                    Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(VehicleInquiryFormController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -2224,20 +2244,22 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     }
 
     /*INQUIRY BANK APPLICATION*/
-    private void loadBankApplicationWindow(String fsTransnox, Integer fnPaymentMode, Integer fniEditmode) throws SQLException {
+    private void loadBankApplicationWindow(Integer fnRow, Integer fnPaymentMode, Integer fnEditmode, boolean isAdd, String fsTransNox) throws SQLException {
         try {
             Stage stage = new Stage();
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("InquiryBankApplicationForm.fxml"));
-
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VehicleInquiryBankApplication.fxml"));
             VehicleInquiryBankApplicationController loControl = new VehicleInquiryBankApplicationController();
-//            loControl.setGRider(oApp);
-//            loControl.setObject(oTransBankApp);
-//            loControl.setEditMode(fniEditmode);
-//            loControl.setInqPaymentMode(fnPaymentMode - 1);
-//            loControl.setsTransNo(fsTransnox);
-//            fxmlLoader.setController(loControl);
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransBank);
+            loControl.setSource(oTransInquiry.getMasterModel().getMasterModel().getInqryID());
+            loControl.setState(isAdd);
+            loControl.setEditMode(fnEditmode);
+            loControl.setInqPaymentMode(fnPaymentMode);
+            loControl.setTableRows(fnRow);
+            loControl.setTransNox(fsTransNox);
+            fxmlLoader.setController(loControl);
 
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -2265,8 +2287,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-
-//            oTransBankApp.loadBankApplication((String) oTrans.getMaster(1), true);
             loadBankApplications();
 
         } catch (IOException e) {
@@ -2276,19 +2296,132 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         }
     }
 
+    @FXML
+    private void tblBankAppli_Clicked(MouseEvent event) {
+        pnRow = tblBankApplication.getSelectionModel().getSelectedIndex();
+        if (pnRow < 0 || pnRow >= tblBankApplication.getItems().size()) {
+            ShowMessageFX.Warning(getStage(), "Please select valid bank application information.", "Warning", null);
+            return;
+        }
+        if (event.getClickCount() == 2) {
+            try {
+                String lsTransNox = "";
+                for (ModelVehicleInquiryBankApplications item : tblBankApplication.getItems()) {
+                    lsTransNox = item.getTblindex02();
+
+                }
+                System.out.println("transNox: " + lsTransNox);
+                loadBankApplicationWindow(pnRow, Integer.parseInt(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getPayMode())), pnEditMode, false, lsTransNox);
+                loadBankApplications();
+            } catch (SQLException ex) {
+                Logger.getLogger(VehicleInquiryFormController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     private void loadBankApplications() {
+        JSONObject loJSON = new JSONObject();
+        try {
+            bankappdata.clear();
+            String lsStatus = "";
+            String lsPaymode = "";
+            String lsBanktype = "";
+            String lsCancelledDt = "";
+            loJSON = oTransInquiry.loadBankApplicationList();
+            if ("success".equals((String) loJSON.get("result"))) {
+                for (int lnCtr = 1; lnCtr <= oTransInquiry.getBankApplicationCount(); lnCtr++) {
+                    if (!String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sCancelld")).isEmpty()) {
+                        lsCancelledDt = InputTextUtil.xsDateShort((Date) oTransInquiry.getBankApplicationDetail(lnCtr, "dCancelld"));
+                        lsStatus = "CANCELLED";
+                    } else {
+                        if (oTransInquiry.getBankApplicationDetail(lnCtr, "cTranStat") != null) {
+                            switch (String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "cTranStat"))) {
+                                case "0":
+                                    lsStatus = "ON-GOING";
+                                    break;
+                                case "1":
+                                    lsStatus = "DECLINE";
+                                    break;
+                                case "2":
+                                    lsStatus = "APPROVED";
+                                    break;
+                            }
+                        }
+                    }
+                    if (String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "cPayModex")) != null) {
+                        switch (String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "cPayModex"))) {
+                            case "1":
+                                lsPaymode = "BANK PURCHASE ORDER";
+                                break;
+                            case "2":
+                                lsPaymode = "BANK FINANCING";
+                                break;
+                            case "3":
+                                lsPaymode = "COMPANY PURCHASE ORDER";
+                                break;
+                            case "4":
+                                lsPaymode = "COMPANY FINANCING";
+                                break;
+                        }
+                    }
+                    try {
+                        if (oTransInquiry.getBankApplicationDetail(lnCtr, "sBankType") != null) {
+                            switch ((String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sBankType")))) {
+                                case "bank":
+                                    lsBanktype = "BANK";
+                                    break;
+                                case "cred":
+                                    lsBanktype = "CREDIT UNION";
+                                    break;
+                                case "insc":
+                                    lsBanktype = "INSURANCE COMPANY";
+                                    break;
+                                case "invc":
+                                    lsBanktype = "INVESTMENT COMPANIES";
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(VehicleInquiryFormController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+                    bankappdata.add(new ModelVehicleInquiryBankApplications(
+                            String.valueOf(lnCtr),
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sTransNox")),
+                            lsBanktype,
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sBankIDxx")),
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sBankName")),
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sBrBankNm")),
+                            lsPaymode,
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "dAppliedx")),
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sApplicNo")),
+                            lsCancelledDt,
+                            lsStatus,
+                            String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "dApproved"))
+                    ));
+
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VehicleInquiryFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
     private void initBankApplications() {
         bankIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
-        bankCheck01.setCellValueFactory(new PropertyValueFactory<>("tblcheck01"));
-        bankIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
+        bankIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
         bankIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
         bankIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
-        bankIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
-        bankIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex12"));
-
+        bankIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
+        bankIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
+        bankIndex07.setCellValueFactory(new PropertyValueFactory<>("tblindex11"));
+        bankIndex08.setCellValueFactory(new PropertyValueFactory<>("tblindex10"));
         tblBankApplication.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblBankApplication.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
