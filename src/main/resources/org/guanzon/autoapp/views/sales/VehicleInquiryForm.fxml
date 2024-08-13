@@ -29,7 +29,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="631.0" prefWidth="1392.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="631.0" prefWidth="1392.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -666,22 +666,22 @@
                                                                                                 <GridPane>
                                                                                                     <columnConstraints>
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="820.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="10.0" />
+                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="1000.0" prefWidth="1000.0" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
                                                                                                         <RowConstraints minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
-                                                                                                        <TableView fx:id="tblBankApplication" prefHeight="400.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                                                                                        <TableView fx:id="tblBankApplication" onMouseClicked="#tblBankAppli_Clicked" prefHeight="400.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="bankIndex01" editable="false" minWidth="34.0" prefWidth="34.0" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="bankCheck01" minWidth="25.0" prefWidth="25.0" resizable="false" sortable="false" />
-                                                                                                                <TableColumn fx:id="bankIndex02" editable="false" minWidth="270.0" prefWidth="270.0" resizable="false" sortable="false" text="Bank Name" />
-                                                                                                                <TableColumn fx:id="bankIndex03" editable="false" minWidth="178.0" prefWidth="178.0" resizable="false" sortable="false" text="Bank Branch" />
-                                                                                                                <TableColumn fx:id="bankIndex04" editable="false" minWidth="218.0" prefWidth="218.0" resizable="false" sortable="false" text="Payment Mode" />
-                                                                                                                <TableColumn fx:id="bankIndex05" editable="false" minWidth="76.0" prefWidth="76.0" resizable="false" sortable="false" text="Status" />
-                                                                                                                <TableColumn fx:id="bankIndex06" editable="false" minWidth="115.0" prefWidth="115.0" resizable="false" sortable="false" text="Cancelled date" />
+                                                                                                                <TableColumn fx:id="bankIndex02" editable="false" minWidth="131.0" prefWidth="161.0" resizable="false" sortable="false" text="Bank Application No." />
+                                                                                                                <TableColumn fx:id="bankIndex03" editable="false" minWidth="141.0" prefWidth="163.0" resizable="false" sortable="false" text="Bank Type" />
+                                                                                                                <TableColumn fx:id="bankIndex04" editable="false" minWidth="270.0" prefWidth="465.0" resizable="false" sortable="false" text="Bank Name" />
+                                                                                                                <TableColumn fx:id="bankIndex05" editable="false" minWidth="178.0" prefWidth="199.0" resizable="false" sortable="false" text="Bank Branch" />
+                                                                                                                <TableColumn fx:id="bankIndex06" editable="false" minWidth="218.0" prefWidth="218.0" resizable="false" sortable="false" text="Payment Mode" />
+                                                                                                                <TableColumn fx:id="bankIndex07" editable="false" minWidth="76.0" prefWidth="76.0" resizable="false" sortable="false" text="Status" />
+                                                                                                                <TableColumn fx:id="bankIndex08" editable="false" minWidth="115.0" prefWidth="115.0" resizable="false" sortable="false" text="Cancelled date" />
                                                                                                             </columns>
                                                                                                         </TableView>
                                                                                                     </children>
