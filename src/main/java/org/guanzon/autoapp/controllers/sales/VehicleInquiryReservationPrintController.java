@@ -63,7 +63,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Reservation Print";
-    private String[] psTransNox;
+    private Integer[] pnRows;
     private boolean running = false;
     private ObservableList<ModelInquiryVehicleSalesAdvances> vhlApprovalPrintData = FXCollections.observableArrayList();
     Map<String, Object> params = new HashMap<>();
@@ -90,8 +90,12 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         return (Stage) btnClose.getScene().getWindow();
     }
 
-    public void setTransNox(String[] fsValue) {
-        psTransNox = fsValue;
+    public void setVSObject(Inquiry foValue) {
+        oTransPrint = foValue;
+    }
+
+    public void setRows(Integer[] fnValue) {
+        pnRows = fnValue;
     }
 
     /**
@@ -99,7 +103,6 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransPrint = new Inquiry(oApp, false, oApp.getBranchCode());
         vbProgress.setVisible(true);
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
@@ -162,7 +165,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
 
     private String getValueReport(Integer fnRow, String fsValue, String fsCol) {
         fsValue = "";
-        if (oTransPrint.getMaster(fsCol) != null) {
+        if (oTransPrint.getReservation(fnRow, fsCol) != null) {
             fsValue = oTransPrint.getReservation(fnRow, fsCol).toString().toUpperCase();
         }
         return fsValue;
@@ -170,7 +173,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
 
     private String getValueDateReport(Integer fnRow, String fsValue, String fsCol) {
         fsValue = "";
-        if (oTransPrint.getMaster(fsCol) != null) {
+        if (oTransPrint.getReservation(fnRow, fsCol) != null) {
             fsValue = InputTextUtil.xsDateShort((Date) oTransPrint.getReservation(fnRow, fsCol));
         }
         return fsValue;
@@ -182,19 +185,31 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         params.put("sCompnyNm", "Guanzon Group of Companies");
         params.put("sBranchNm", oApp.getBranchName());
         params.put("sAddressx", oApp.getAddress());
+        String lsPlateCSNo = "";
+        String lsDescript = "";
+        if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPlateNo()) != null) {
+            lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getPlateNo();
+        } else {
+            lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();
+        }
+        if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getDescript()) != null) {
+            lsDescript = oTransPrint.getMasterModel().getMasterModel().getDescript();
+        }
+        params.put("sDescript", lsPlateCSNo + " " + lsDescript);
         vhlApprovalPrintData.clear();
         loJSON = oTransPrint.loadReservationList();
         if ("success".equals((String) loJSON.get("result"))) {
-            for (pnCtr = 1; pnCtr <= oTransPrint.getReservationList().size(); pnCtr++) {
+            for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
+                Integer lnCtr = pnRows[pnCtr];
                 //Iterate over the data and count the approved item
-                String amountString = oTransPrint.getReservation(pnCtr, "nAmountxx").toString();
+                String amountString = oTransPrint.getReservation(lnCtr, "nAmountxx").toString();
                 //Convert the amount to a decimal value
                 double amount = Double.parseDouble(amountString);
                 //Format the decimal value with decimal separators
                 DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
                 String formattedAmount = decimalFormat.format(amount);
                 String lsResType = "";
-                switch (String.valueOf(oTransPrint.getReservation(pnCtr, "cResrvTyp"))) {
+                switch (String.valueOf(oTransPrint.getReservation(lnCtr, "cResrvTyp"))) {
                     case "0":
                         lsResType = "RESERVATION";
                         break;
@@ -206,8 +221,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                         break;
                 }
                 String lsInqStat = "";
-                if (String.valueOf(oTransPrint.getReservation(pnCtr, "cTranStat")) != null) {
-                    switch (String.valueOf(oTransPrint.getReservation(pnCtr, "cTranStat"))) {
+                if (String.valueOf(oTransPrint.getReservation(lnCtr, "cTranStat")) != null) {
+                    switch (String.valueOf(oTransPrint.getReservation(lnCtr, "cTranStat"))) {
                         case "0":
                             lsInqStat = "CANCELLED";
                             break;
@@ -220,19 +235,20 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                     }
                 }
                 vhlApprovalPrintData.add(new ModelInquiryVehicleSalesAdvances(
-                        String.valueOf(pnCtr),
-                        getValueDateReport(pnCtr, "lsSlipDate", "dTransact"),
+                        String.valueOf(lnCtr),
+                        getValueDateReport(lnCtr, "lsSlipDate", "dTransact"),
                         lsResType,
-                        getValueReport(pnCtr, "lsRefNox", "sReferNox"),
+                        getValueReport(lnCtr, "lsRefNox", "sReferNox"),
                         formattedAmount,
                         lsInqStat,
-                        getValueReport(pnCtr, "lsRemarks", "sRemarksx"),
-                        getValueReport(pnCtr, "lsApprovBy", "sApprovby"),
-                        getValueDateReport(pnCtr, "lsApprovDate", "dApproved"),
-                        getValueReport(pnCtr, "lsRefNo", "sReferNox"),
-                        getValueReport(pnCtr, "lsCompanyName", "sCompnyNm"),
-                        getValueReport(pnCtr, "lsSeName", "sSeNamexx"),
-                        getValueReport(pnCtr, "lsVhclDesc", "sDescript")));
+                        getValueReport(lnCtr, "lsRemarks", "sRemarksx"),
+                        "",
+                        getValueDateReport(lnCtr, "lsApprovDate", "dApproved"),
+                        getValueReport(lnCtr, "lsRefNo", "sReferNox"),
+                        getValueReport(lnCtr, "lsCompanyName", "sCompnyNm"),
+                        "",
+                        ""));
+
             }
         }
         String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/reserve.jasper";
