@@ -6,6 +6,7 @@ package org.guanzon.autoapp.controllers.sales;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,6 @@ public class VehicleInquiryBankApplicationController implements Initializable {
     private BankApplication oTransBankApp;
     private Inquiry oTransInquiry;
     private int pnRow = 0;
-    private String psTransNo = "";
     private String psOApplieddate = "";
     private int pnInqPayMode;
     private int pnEditMode;
@@ -70,6 +70,8 @@ public class VehicleInquiryBankApplicationController implements Initializable {
     private DatePicker datePicker08, datePicker09;
     @FXML
     private TextField txtField02, txtField01, txtField04, txtField05;
+    @FXML
+    private Button btnEdit;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -121,11 +123,9 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         initButtonClick();
         loadBankApplication();
         initCapitalizationFields();
-        initFields();
-
         btnBACancel.setVisible(!pbState);
         btnBACancel.setManaged(!pbState);
-
+        initFields(pnEditMode);
     }
 
     private void initCapitalizationFields() {
@@ -143,6 +143,8 @@ public class VehicleInquiryBankApplicationController implements Initializable {
     private void initButtonClick() {
         btnClose.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
+        btnEdit.setOnAction(this::handleButtonAction);
+        btnBACancel.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -151,6 +153,22 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
+                break;
+            case "btnEdit":
+                loJSON = oTransBankApp.updateTransaction();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    pnEditMode = oTransBankApp.getEditMode();
+                }
+                break;
+            case "btnBACancel":
+                loJSON = oTransBankApp.cancelTransaction(psTransNox);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                    pnEditMode = oTransBankApp.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    return;
+                }
                 break;
             case "btnSave":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to save?")) {
@@ -178,9 +196,8 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
-
         }
-        initFields();
+        initFields(pnEditMode);
     }
 
     /*Set ComboBox Value to Master Class*/
@@ -191,7 +208,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             comboBox06.requestFocus();
             return false;
         } else {
-            if (comboBox06.getSelectionModel().getSelectedIndex() != pnInqPayMode) {
+            if (comboBox06.getSelectionModel().getSelectedIndex() + 1 != pnInqPayMode) {
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && (comboBox07.getSelectionModel().getSelectedIndex() != 1)) {
                     ShowMessageFX.Warning("Invalid `Payment Mode` selected.", pxeModuleName, "Payment Mode selected is not the same with Inquiry Payment Mode.");
                     return false;
@@ -277,7 +294,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                     }
                     break;
             }
-            initFields();
+            initFields(pnEditMode);
             event.consume();
             CommonUtils.SetNextFocus((TextField) event.getSource());
         } else if (event.getCode() == KeyCode.UP) {
@@ -334,7 +351,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             comboBox06.getSelectionModel().select(pnInqPayMode - 1); //Payment Mode
             if (!oTransBankApp.getMasterModel().getMasterModel().getCancelld().isEmpty()) {
                 comboBox07.setValue("CANCELLED");
-                initFields();
+                initFields(pnEditMode);
             } else {
                 if (String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getTranStat()) != null) {
                     comboBox07.getSelectionModel().select(Integer.parseInt(oTransBankApp.getMasterModel().getMasterModel().getTranStat())); //Bank Application Status
@@ -350,7 +367,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             textArea10.setText(oTransBankApp.getMasterModel().getMasterModel().getRemarks()); //Remarks
         } else {
             loJSON = oTransBankApp.openTransaction(psTransNox);
-            if ("sucess".equals((String) loJSON.get("result"))) {
+            if ("success".equals((String) loJSON.get("result"))) {
                 txtField01.setText(oTransBankApp.getMasterModel().getMasterModel().getApplicNo());
                 txtField02.setText(oTransBankApp.getMasterModel().getMasterModel().getBankName());
                 if (oTransBankApp.getMasterModel().getMasterModel().getBankType() != null && !oTransBankApp.getMasterModel().getMasterModel().getBankType().trim().isEmpty()) {
@@ -394,7 +411,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 }
                 if (!oTransBankApp.getMasterModel().getMasterModel().getCancelld().isEmpty()) {
                     comboBox07.setValue("CANCELLED");
-                    initFields();
+                    initFields(pnEditMode);
                 } else {
                     if (String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getTranStat()) != null) {
                         comboBox07.getSelectionModel().select(Integer.parseInt(oTransBankApp.getMasterModel().getMasterModel().getTranStat())); //Bank Application Status
@@ -425,12 +442,12 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                     super.updateItem(foItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
                     LocalDate loToday = LocalDate.now();
                     if (pbState) {
-                        LocalDate loMinDate = LocalDate.now().minusDays(7);
-                        setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(loToday) > 0);
+                        setDisable(fbEmpty || foItem.compareTo(loToday) > 0);
                     } else {
-                        LocalDate loMinDate = InputTextUtil.strToDate(psOApplieddate).minusDays(7);
-                        setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(InputTextUtil.strToDate(psOApplieddate)) > 0);
-
+                        if (pnEditMode == EditMode.UPDATE) {
+                            LocalDate loMinDate = InputTextUtil.strToDate(psOApplieddate).minusDays(7);
+                            setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(InputTextUtil.strToDate(psOApplieddate)) > 0);
+                        }
                     }
                 }
             };
@@ -444,40 +461,54 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 @Override
                 public void updateItem(LocalDate foItem, boolean fbEmpty) {
                     super.updateItem(foItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
-                    LocalDate loToday = LocalDate.now();
-                    LocalDate loMinDate = LocalDate.now().minusDays(7);
-                    setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(loToday) > 0);
+//                    LocalDate loToday = LocalDate.now();
+                    LocalDate loMinDate = datePicker08.getValue();
+                    setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(loMinDate) > 0);
                 }
             };
         }
     };
 
     private void initCmboxFieldAction() {
+        datePicker08.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                datePicker08.setDayCellFactory(callApplied);
+                datePicker09.setDayCellFactory(callApprove);
+                datePicker09.setValue(newValue);
+            }
+        }
+        );
         datePicker08.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransInquiry.setMaster(3, SQLUtil.toDate(datePicker08.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-            }
-        });
+            oTransBankApp.setMaster(3, SQLUtil.toDate(datePicker08.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+        }
+        );
         datePicker09.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransInquiry.setMaster(4, SQLUtil.toDate(datePicker08.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-            }
-        });
+            oTransBankApp.setMaster(4, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+
+        }
+        );
         comboBox06.setOnAction(event -> {
             if (comboBox06.getSelectionModel().getSelectedIndex() == 2) {
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    datePicker08.setDisable(false);
-                    datePicker08.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
-                }
+                datePicker08.setDisable(false);
+                datePicker08.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
             }
-        });
-        comboBox07.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransInquiry.getMasterModel().getMasterModel().setTranStat(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
+        }
+        );
+        comboBox07.setOnAction(e
+                -> {
+            if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
+                if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                    datePicker09.setDisable(false);
+
+                    datePicker09.setDayCellFactory(callApprove);
+                } else {
+                    datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
                 }
+                oTransBankApp.getMasterModel().getMasterModel().setTranStat(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
             }
-        });
+            initFields(pnEditMode);
+        }
+        );
     }
 
     private void initTextFieldFocus() {
@@ -525,28 +556,66 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         }
     };
 
-    public void initFields() {
-        datePicker09.setDisable(true); //Approved Date
+    public void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.UPDATE);
         txtField01.setDisable(true); //Bank Name
         txtField02.setDisable(true);
+        comboBox07.setDisable(true);
+        datePicker08.setDisable(true); //Approved Date
+        datePicker09.setDisable(true); //Approved Date
+        textArea10.setDisable(true);
+
         if (pbState) {
             txtField01.setDisable(false); //Bank Name
             txtField02.setDisable(false);
+            comboBox07.setDisable(false);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+            btnSave.setVisible(true);
+            btnSave.setManaged(true);
+            datePicker08.setDisable(false); //Approved Date
+            if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                datePicker09.setDisable(false); //Approved Date
+            }
+            textArea10.setDisable(false);
+        } else {
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+            btnSave.setVisible(false);
+            btnSave.setManaged(false);
+            if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                btnEdit.setVisible(false);
+                btnEdit.setManaged(false);
+                btnBACancel.setVisible(false);
+                btnBACancel.setManaged(false);
+            }
         }
+        if (fnValue == EditMode.UPDATE) {
+            comboBox07.setDisable(false);
+            datePicker08.setDisable(true); //Approved Date
+            if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                datePicker09.setDisable(false); //Approved Date
+            }
+            if ((comboBox07.getSelectionModel().getSelectedIndex() == 1) || (comboBox07.getSelectionModel().getSelectedIndex() == 2)) {
+                datePicker08.setDisable(true); //Applied Date
+            }
+            btnSave.setVisible(true);
+            btnSave.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+            btnBACancel.setVisible(false);
+            btnBACancel.setManaged(false);
+            textArea10.setDisable(false);
+        }
+
         if (comboBox07.getValue().equals("CANCELLED")) {
             btnSave.setVisible(false);
             btnSave.setManaged(false);
             btnBACancel.setVisible(false);
             btnBACancel.setManaged(false);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
         }
-        if (!pbState) {
-            if ((comboBox07.getSelectionModel().getSelectedIndex() == 1) || (comboBox07.getSelectionModel().getSelectedIndex() == 2)) {
-                comboBox03.setDisable(true); //Payment Mode
-                comboBox07.setDisable(true); //Application Status
-                datePicker08.setDisable(true); //Applied Date
-            }
-        }
-
     }
 
 }
