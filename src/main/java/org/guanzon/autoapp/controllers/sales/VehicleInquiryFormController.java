@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +57,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.BankApplication;
+import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.models.sales.ModelInquiryFollowUp;
 import org.guanzon.autoapp.models.sales.ModelInquiryPromoOffered;
@@ -80,6 +80,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private GRider oApp;
     private Inquiry oTransInquiry;
     private BankApplication oTransBank;
+    private FollowUp oTransFollow;
     private String pxeModuleName = "Vehicle Inquiry";
     private int pnEditMode;//Modifying fields for Customer Entry
     private double xOffset, yOffset = 0;
@@ -180,7 +181,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     @FXML
     private TableView<ModelInquiryFollowUp> tblFollowHistory;
     @FXML
-    private TableColumn<ModelInquiryFollowUp, String> flwpIndex01, flwpIndex02, flwpIndex03, flwpIndex04, flwpIndex05, flwpIndex06;
+    private TableColumn<ModelInquiryFollowUp, String> flwpIndex01, flwpIndex02, flwpIndex03, flwpIndex04, flwpIndex05, flwpIndex06, flwpIndex07, flwpIndex08;
     @FXML
     private ComboBox<String> comboBox10, comboBox21, comboBox25, comboBox26;
     @FXML
@@ -214,6 +215,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     public void initialize(URL url, ResourceBundle rb) {
         oTransInquiry = new Inquiry(oApp, false, oApp.getBranchCode());
         oTransBank = new BankApplication(oApp, false, oApp.getBranchCode());
+        oTransFollow = new FollowUp(oApp, false, oApp.getBranchCode());
         initVehiclePriority();
         initPromoOffered();
         initInquiryRequirements();
@@ -797,6 +799,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 }
                 loJSON = oTransInquiry.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    clearCustomerFields();
+                    clearTables();
                     loadCustomerInquiryInformation();
 //                    loadInquiryProcess();
                     loadVehiclePriority();
@@ -1106,6 +1110,18 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 }
 
                 break;
+            case "btnFollowUp":
+                loJSON = oTransFollow.newTransaction();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    try {
+                        loadFollowUpWindow(pnRow, true, "");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, "Integrated Automotive System", (String) loJSON.get("message"));
+                }
+                break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
@@ -1202,52 +1218,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }
-    }
-
-    private void loadInquiryProcess(String fsTransNo) {
-        pnIinqPayMode = 0;
-        int lnPayMode = Integer.parseInt(oTransInquiry.getRequirement(oTransInquiry.getRequirementList().size(), "cPayModex").toString());
-        oTransInquiry.loadRequirements();
-        if (oTransInquiry.getRequirementList().size() > 0) {
-            comboBox25.getSelectionModel().select(lnPayMode); //Inquiry Payment mode
-            comboBox26.getSelectionModel().select(Integer.parseInt(oTransInquiry.getRequirement(oTransInquiry.getRequirementList().size(), "cCustGrpx").toString())); //Inquiry Customer Type
-            pnIinqPayMode = lnPayMode;
-        } else {
-            comboBox25.setValue("");
-            comboBox26.setValue("");
-        }
-        //Load Table Requirements
-        loadInquiryRequirements();
-        //Retrieve Reservation
-        String[] lsSourceNo = {fsTransNo};
-//        oTransProcess.loadReservation(lsSourceNo, true);
-//        //Load Table Reservation
-//        loadInquiryAdvances();
-//
-//        //Load Table Bank Application
-//        oTransBankApp.loadBankApplication(TransNo, true);
-//        loadBankApplication();
-//
-//        //Load Table Follow Up History
-//        oTransFollowUp.loadFollowUp(TransNo, true);
-//        loadFollowUp();
-//
-//        psClientID = (String) oTrans.getMaster(7);
-
-        if (!fsTransNo.isEmpty()) {
-            comboBox25.setValue("");
-        }
-        //        if (oTransInquiry.getModel().getModel().getPaymentMode() != null && !oTransInquiry.getModel().getModel().getPaymentMode().trim().isEmpty()) {
-//            comboBox25.getSelectionModel().select(Integer.parseInt(oTransInquiry.getModel().getModel().getPaymentMode()));
-//        }
-        comboBox26.setValue("");
-        //        if (oTransInquiry.getModel().getModel().getCustomerTyp() != null && !oTransInquiry.getModel().getModel().getCustomerTyp().trim().isEmpty()) {
-//            comboBox26.getSelectionModel().select(Integer.parseInt(oTransInquiry.getModel().getModel().getCustomerTyp()));
-//        }
-        txtField27.setText("");
-        textArea28.setText("");
-        txtField29.setText("");
-        txtField30.setText("");
     }
 
     private void loadCustomerInquiryInformation() {
@@ -1478,7 +1448,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                         btnLostSale.setVisible(true);
                         btnLostSale.setManaged(true);
                         btnFollowUp.setVisible(true);
-                        btnFollowUp.setVisible(true);
                         btnEdit.setVisible(false);
                         btnEdit.setManaged(false);
                         btnSave.setVisible(false);
@@ -1540,6 +1509,18 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             break;
                     }
                     initBtnProcess(pnEditMode);
+                    break;
+                case 2:
+                    btnEdit.setVisible(false);
+                    btnEdit.setManaged(false);
+                    btnAdd.setVisible(false);
+                    btnAdd.setManaged(false);
+                    break;
+                case 3:
+                    btnEdit.setVisible(false);
+                    btnEdit.setManaged(false);
+                    btnAdd.setVisible(false);
+                    btnAdd.setManaged(false);
                     break;
             }
         }
@@ -1622,8 +1603,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private void initCustomerInquiryFieldsTrue() {
         rqrmIndex01.setVisible(false);
-        btnFollowUp.setDisable(true);
-        btnBankAppNew.setDisable(true);
+        btnFollowUp.setVisible(true);
+        btnBankAppNew.setVisible(true);
         comboBox25.setDisable(true);
         comboBox26.setDisable(true);
         btnASadd.setDisable(true);
@@ -1642,8 +1623,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     private void initCustomerInquiryFieldsFalse() {
         rqrmIndex01.setVisible(true);
-        btnFollowUp.setDisable(false);
-        btnBankAppNew.setDisable(false);
+        btnFollowUp.setVisible(false);
+        btnBankAppNew.setVisible(false);
         comboBox25.setDisable(false);
         comboBox26.setDisable(false);
         btnASadd.setDisable(false);
@@ -2253,7 +2234,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             VehicleInquiryBankApplicationController loControl = new VehicleInquiryBankApplicationController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransBank);
-            loControl.setSource(oTransInquiry.getMasterModel().getMasterModel().getInqryID());
+            loControl.setSource(oTransInquiry.getMasterModel().getMasterModel().getTransNo());
             loControl.setState(isAdd);
             loControl.setEditMode(fnEditmode);
             loControl.setInqPaymentMode(fnPaymentMode);
@@ -2303,21 +2284,19 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             ShowMessageFX.Warning(getStage(), "Please select valid bank application information.", "Warning", null);
             return;
         }
-        if (event.getClickCount() == 2) {
-            try {
-                String lsTransNox = "";
-                for (ModelVehicleInquiryBankApplications item : tblBankApplication.getItems()) {
-                    lsTransNox = item.getTblindex02();
-
+        if (pnEditMode == EditMode.READY) {
+            if (event.getClickCount() == 2) {
+                try {
+                    ModelVehicleInquiryBankApplications selectedItem = tblBankApplication.getItems().get(pnRow);
+                    String lsTransNox = selectedItem.getTblindex02();
+                    loadBankApplicationWindow(pnRow, Integer.parseInt(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getPayMode())), pnEditMode, false, lsTransNox);
+                    loadBankApplications();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("transNox: " + lsTransNox);
-                loadBankApplicationWindow(pnRow, Integer.parseInt(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getPayMode())), pnEditMode, false, lsTransNox);
-                loadBankApplications();
-            } catch (SQLException ex) {
-                Logger.getLogger(VehicleInquiryFormController.class
-                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
+
     }
 
     private void loadBankApplications() {
@@ -2417,9 +2396,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         bankIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
         bankIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
         bankIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
-        bankIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
-        bankIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
-        bankIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
+        bankIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
+        bankIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
+        bankIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
         bankIndex07.setCellValueFactory(new PropertyValueFactory<>("tblindex11"));
         bankIndex08.setCellValueFactory(new PropertyValueFactory<>("tblindex10"));
         tblBankApplication.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
@@ -2431,18 +2410,138 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         tblBankApplication.setItems(bankappdata);
     }
 
-    private void loadFollowHistory() {
+    @FXML
+    private void tblFollowUp_Clicked(MouseEvent event) {
+        pnRow = tblFollowHistory.getSelectionModel().getSelectedIndex();
+        if (pnRow < 0 || pnRow >= tblBankApplication.getItems().size()) {
+            ShowMessageFX.Warning(getStage(), "Please select valid follow up information.", "Warning", null);
+            return;
+        }
+        if (pnEditMode == EditMode.READY) {
+            if (event.getClickCount() == 2) {
+                try {
+                    ModelInquiryFollowUp selectedItem = tblFollowHistory.getItems().get(pnRow);
+                    String lsTransNox = selectedItem.getTblindex01();
+                    loadFollowUpWindow(pnRow, false, lsTransNox);
+                    loadFollowHistory();
+                } catch (SQLException ex) {
+                    Logger.getLogger(VehicleInquiryFormController.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
 
+    /*INQUIRY FOR FOLLOW-UP*/
+    private void loadFollowUpWindow(Integer fnRow, boolean isAdd, String fsRefNox) throws SQLException {
+        try {
+            Stage stage = new Stage();
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VehicleInquiryFollowUp.fxml"));
+
+            VehicleInquiryFollowUpController loControl = new VehicleInquiryFollowUpController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransFollow);
+            loControl.setSource(oTransInquiry.getMasterModel().getMasterModel().getTransNo());
+            loControl.setRefNo(fsRefNox);
+            loControl.setTableRows(fnRow);
+            loControl.setState(isAdd);
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadFollowHistory();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
+    private void loadFollowHistory() {
+        followupdata.clear();
+        JSONObject loJSON = new JSONObject();
+        String lsFollowUpDate = "";
+        String lsFollowTime = "";
+        String lsMethod = "";
+        loJSON = oTransInquiry.loadFollowUpList();
+        if ("success".equals((String) loJSON.get("result"))) {
+            try {
+                for (int lnCtr = 1; lnCtr <= oTransInquiry.getFollowUpCount(); lnCtr++) {
+                    if (oTransInquiry.getFollowUpDetail(lnCtr, "dFollowUp") != null) {
+                        lsFollowUpDate = InputTextUtil.xsDateShort((Date) oTransInquiry.getFollowUpDetail(lnCtr, "dFollowUp"));
+                    }
+                    if (oTransInquiry.getFollowUpDetail(lnCtr, "sMethodCd") != null) {
+                        switch ((String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sMethodCd")))) {
+                            case "0":
+                                lsMethod = "TEXT";
+                                break;
+                            case "1":
+                                lsMethod = "CALL";
+                                break;
+                            case "2":
+                                lsMethod = "SOCIAL MEDIA";
+                                break;
+                            case "3":
+                                lsMethod = "EMAIL";
+                                break;
+                            case "4":
+                                lsMethod = "VIBER";
+                                break;
+                            default:
+                                break;
+
+                        }
+                    }
+                    followupdata.add(new ModelInquiryFollowUp(
+                            String.valueOf(lnCtr),
+                            String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRefNox")),
+                            String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "dTransact")),
+                            lsFollowUpDate,
+                            String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "tFollowUp")),
+                            lsMethod,
+                            String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sSclMedia")),
+                            String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx"))));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     private void initFollowHistory() {
-        flwpIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
-        flwpIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
-        flwpIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
-        flwpIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
-        flwpIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
-        flwpIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
-
+        flwpIndex01.setCellValueFactory(new PropertyValueFactory<>("tblrowxx01"));
+        flwpIndex02.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
+        flwpIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
+        flwpIndex04.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        flwpIndex05.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
+        flwpIndex06.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
+        flwpIndex07.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
+        flwpIndex08.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
         tblFollowHistory.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblFollowHistory.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
