@@ -95,7 +95,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransPrint = new Activity(oApp, false, oApp.getBranchCode());
         vbProgress.setVisible(true);
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
