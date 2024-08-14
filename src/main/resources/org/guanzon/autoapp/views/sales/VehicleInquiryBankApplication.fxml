@@ -9,7 +9,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,7 +19,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -84,34 +83,15 @@
                                                 <Insets />
                                             </GridPane.margin>
                                         </Label>
-                                        <TextField fx:id="txtField01" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Please choose Bank" />
-                                            </tooltip>
-                                        </TextField>
-                                        <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2">
-                                            <tooltip>
-                                                <Tooltip text="Please choose Bank" />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField01" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtField05" disable="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="5" />
-                                        <ComboBox fx:id="comboBox06" prefWidth="220.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
-                                            <tooltip>
-                                                <Tooltip text="Please select Payment Mode" />
-                                            </tooltip>
-                                        </ComboBox>
-                                        <ComboBox fx:id="comboBox07" prefWidth="220.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                                            <tooltip>
-                                                <Tooltip text="Please select Application Status" />
-                                            </tooltip>
-                                        </ComboBox>
+                                        <ComboBox fx:id="comboBox06" disable="true" prefWidth="220.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                        <ComboBox fx:id="comboBox07" prefWidth="220.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                         <DatePicker fx:id="datePicker08" GridPane.columnIndex="5" GridPane.rowIndex="6">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
-                                            <tooltip>
-                                                <Tooltip text="Please select Applied Date" />
-                                            </tooltip>
                                         </DatePicker>
                                         <DatePicker fx:id="datePicker09" GridPane.columnIndex="5" GridPane.rowIndex="7">
                                             <GridPane.margin>
@@ -145,21 +125,13 @@
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <ComboBox fx:id="comboBox03" disable="true" prefHeight="24.0" prefWidth="426.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3">
-                                            <tooltip>
-                                                <Tooltip text="Please select Payment Mode" />
-                                            </tooltip>
-                                        </ComboBox>
+                                        <ComboBox fx:id="comboBox03" disable="true" prefHeight="24.0" prefWidth="426.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                                         <Label id="LabelDesc" text="Branch Name" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField04" disable="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4">
-                                            <tooltip>
-                                                <Tooltip text="Please choose Bank" />
-                                            </tooltip>
-                                        </TextField>
+                                        <TextField fx:id="txtField04" disable="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />
@@ -184,7 +156,15 @@
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnBACancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
+                                        <Button fx:id="btnEdit" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Edit">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBACancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="123.0" text="Application Cancel">
                                             <effect>
                                                 <Blend />
                                             </effect>
