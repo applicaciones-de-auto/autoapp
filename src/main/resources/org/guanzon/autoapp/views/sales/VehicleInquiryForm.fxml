@@ -738,14 +738,16 @@
                                                                                                         <RowConstraints minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
-                                                                                                        <TableView fx:id="tblFollowHistory" GridPane.columnIndex="1">
+                                                                                                        <TableView fx:id="tblFollowHistory" onMouseClicked="#tblFollowUp_Clicked" GridPane.columnIndex="1">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="flwpIndex01" editable="false" minWidth="32.0" prefWidth="32.0" resizable="false" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="flwpIndex02" editable="false" minWidth="92.0" prefWidth="92.0" resizable="false" sortable="false" text="Followup Date" />
-                                                                                                                <TableColumn fx:id="flwpIndex03" editable="false" minWidth="126.0" prefWidth="126.0" resizable="false" sortable="false" text="Next Follow-up Date" />
-                                                                                                                <TableColumn fx:id="flwpIndex04" editable="false" minWidth="165.0" prefWidth="165.0" resizable="false" sortable="false" text="Medium" />
-                                                                                                                <TableColumn fx:id="flwpIndex05" editable="false" minWidth="80.0" resizable="false" sortable="false" text="Platform" />
-                                                                                                                <TableColumn fx:id="flwpIndex06" editable="false" minWidth="340.0" prefWidth="340.0" resizable="false" sortable="false" text="Remarks" />
+                                                                                                                <TableColumn fx:id="flwpIndex02" editable="false" minWidth="92.0" prefWidth="92.0" resizable="false" sortable="false" text="Referrence No." />
+                                                                                                                <TableColumn fx:id="flwpIndex03" editable="false" minWidth="92.0" prefWidth="92.0" resizable="false" sortable="false" text="Followup Date" />
+                                                                                                                <TableColumn fx:id="flwpIndex04" editable="false" minWidth="126.0" prefWidth="187.0" resizable="false" sortable="false" text="Next Follow-up Date" />
+                                                                                                                <TableColumn fx:id="flwpIndex05" editable="false" minWidth="126.0" prefWidth="187.0" resizable="false" sortable="false" text="Next Follow-up Time" />
+                                                                                                                <TableColumn fx:id="flwpIndex06" editable="false" minWidth="104.0" prefWidth="104.0" resizable="false" sortable="false" text="Medium" />
+                                                                                                                <TableColumn fx:id="flwpIndex07" editable="false" minWidth="80.0" resizable="false" sortable="false" text="Platform" />
+                                                                                                                <TableColumn fx:id="flwpIndex08" editable="false" minWidth="340.0" prefWidth="340.0" resizable="false" sortable="false" text="Remarks" />
                                                                                                             </columns>
                                                                                                         </TableView>
                                                                                                     </children>
