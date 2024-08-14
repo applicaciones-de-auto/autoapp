@@ -17,12 +17,13 @@ import javafx.beans.property.SimpleStringProperty;
 public class ModelInquiryFollowUp {
 
     private SimpleStringProperty tblrowxx01; //Row
-    private SimpleStringProperty tblindex01; //sTransNo
+    private SimpleStringProperty tblindex01; //sRefNox
     private SimpleStringProperty tblindex02; //Follow up date
     private SimpleStringProperty tblindex03; //Next Follow up date
-    private SimpleStringProperty tblindex04; //Medium
-    private SimpleStringProperty tblindex05; //Platform
-    private SimpleStringProperty tblindex06; //Remarks
+    private SimpleStringProperty tblindex04; //Next Follow up time
+    private SimpleStringProperty tblindex05; //Medium
+    private SimpleStringProperty tblindex06; //Platform
+    private SimpleStringProperty tblindex07; //Remarks
 
     public ModelInquiryFollowUp(String tblrowxx01,
             String tblindex01,
@@ -30,7 +31,8 @@ public class ModelInquiryFollowUp {
             String tblindex03,
             String tblindex04,
             String tblindex05,
-            String tblindex06
+            String tblindex06,
+            String tblindex07
     ) {
 
         this.tblrowxx01 = new SimpleStringProperty(tblrowxx01);
@@ -40,6 +42,7 @@ public class ModelInquiryFollowUp {
         this.tblindex04 = new SimpleStringProperty(tblindex04);
         this.tblindex05 = new SimpleStringProperty(tblindex05);
         this.tblindex06 = new SimpleStringProperty(tblindex06);
+        this.tblindex07 = new SimpleStringProperty(tblindex07);
     }
 
     //Row
@@ -103,6 +106,15 @@ public class ModelInquiryFollowUp {
 
     public void setTblindex06(String tblindex06) {
         this.tblindex06.set(tblindex06);
+    }
+
+    //Remarks
+    public String getTblindex07() {
+        return tblindex07.get();
+    }
+
+    public void setTblindex07(String tblindex07) {
+        this.tblindex07.set(tblindex07);
     }
 
 }
