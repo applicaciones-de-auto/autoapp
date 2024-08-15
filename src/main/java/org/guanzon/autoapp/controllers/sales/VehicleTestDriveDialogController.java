@@ -37,7 +37,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleTestDriveDialogController implements Initializable {
 

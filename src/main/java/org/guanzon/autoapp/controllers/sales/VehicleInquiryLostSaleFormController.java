@@ -5,12 +5,9 @@
 package org.guanzon.autoapp.controllers.sales;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -21,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -32,7 +30,8 @@ import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.sales.FollowUp;
+import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.json.simple.JSONObject;
@@ -40,25 +39,29 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleInquiryLostSaleFormController implements Initializable {
 
     private GRider oApp;
-    private boolean pbLoaded = false;
-//    private InquiryFollowUp oTransFollowUp;
-//    private VehicleSalesProposalMaster oTransVSP;
-
+    private FollowUp oTransLost;
+    private Inquiry oTransInquiry;
     private String psSourceNo;
     private String psVSPNox;
     private String psClient;
-    private int pnItag;
-    private int pnIGdsCt;
     private boolean pbState = false;
-
     private final String pxeModuleName = "Inquiry Lost Sale Remarks Form";
+    //if change unit is only VSP will remove
+    //if lost of sale both vsp and inquiry
     ObservableList<String> cTag = FXCollections.observableArrayList("CHANGE OF UNIT", "LOST SALE");
-    ObservableList<String> cReasons = FXCollections.observableArrayList("BOUGHT FROM COMPETITOR BRAND", "BOUGHT FROM OTHER DEALER", "BOUGHT SECOND HAND VEHICLE", "LACK OF REQUIREMENTS", "NO BUDGET");
+    ObservableList<String> cReasons = FXCollections.observableArrayList("BOUGHT FROM COMPETITOR VEHICLE",
+            "BOUGHT SECOND HAND VEHICLE",
+            "BOUGHT FROM OTHER DEALER",
+            "NO BUDGET ",
+            "LACK OF REQUIREMENTS",
+            "NO AVAILABLE UNIT",
+            "NOT PRIORITY YET ",
+            "NOT APPROVED BY BANK  ");
     ObservableList<String> cGdsCat = FXCollections.observableArrayList("BRAND NEW", "PRE-OWNED");
 
     @FXML
@@ -71,15 +74,21 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
     private TextField txtField04, txtField05;
     @FXML
     private TextArea textArea06;
+    @FXML
+    private Label lblClientName;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
 
-//    public void setFollowUpObject(InquiryFollowUp foValue) {
-//        oTransFollowUp = foValue;
-//    }
-//
+    public void setFollowUpObject(FollowUp foValue) {
+        oTransLost = foValue;
+    }
+
+    public void setInquiryObject(Inquiry foValue) {
+        oTransInquiry = foValue;
+    }
+
 //    public void setVSPObject(VehicleSalesProposalMaster foValue) {
 //        oTransVSP = foValue;
 //    }
@@ -87,7 +96,7 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
         pbState = fsValue;
     }
 
-    public void setsSourceNo(String fsValue) {
+    public void setTransNo(String fsValue) {
         psSourceNo = fsValue;
     }
 
@@ -109,18 +118,14 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Pattern pattern;
-        pattern = Pattern.compile("^[a-zA-Z0-9 ]*");
+        pattern = Pattern.compile("^[a-zA-Z0-9 .,]*");
         textArea06.setTextFormatter(new InputTextFormatterUtil(pattern));
 
-//        lblClientName.setText(psClient); //Client Name
+        lblClientName.setText(psClient);
         comboBox01.setItems(cTag);
         comboBox02.setItems(cReasons);
         comboBox03.setItems(cGdsCat);
         comboBox02.setDisable(true);
-        comboBox03.setDisable(true);
-        txtField04.setDisable(true);
-        txtField05.setDisable(true);
-
         if (pbState) {
             comboBox01.getSelectionModel().select(1); //Tag
             comboBox01.setDisable(pbState);
@@ -130,62 +135,54 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
         btnTlost.setOnAction(this::handleButtonAction);
         btnDlost.setOnAction(this::handleButtonAction);
 
-//        if (oTransFollowUp.NewRecord()) {
-//        } else {
-//            ShowMessageFX.Warning(null, pxeModuleName, oTransFollowUp.getMessage());
-//        }
         initCmboxFieldAction();
         initTextKeyPressed();
         initTextFieldFocus();
         initCapitalizationFields();
+        initFields();
     }
 
     private void initCmboxFieldAction() {
-        comboBox01.setOnAction(event -> {
-            comboBox02.setValue("");
-            comboBox03.setValue("");
-            txtField04.setText("");
-            txtField05.setText("");
-            System.out.println("comboBox01.getSelectionModel().getSelectedIndex() >>> " + comboBox01.getSelectionModel().getSelectedIndex());
-            switch (comboBox01.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                    comboBox02.setDisable(true);
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(true);
-                    txtField05.setDisable(true);
-                    break;
-                case 1:
-                    comboBox02.setDisable(false);
-                    break;
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
+                }
             }
-
-        });
+        }
+        );
+        txtField05.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                }
+            }
+        }
+        );
 
         comboBox02.setOnAction(event -> {
-            comboBox03.setValue("");
-            txtField04.setText("");
-            txtField05.setText("");
-            switch (comboBox02.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                case 1:
-                    comboBox03.setDisable(false);
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(false);
-                    break;
-                case 2:
+            int selectedIndex = comboBox02.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                String[] reasons = {"cmptr", "2ndhd", "odlr", "nobgt", "lackr", "noavl", "nonp", "nonap"};
+                String lsReason = reasons[selectedIndex];
+                oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
+                oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                if (selectedIndex != 1) {
+                    comboBox03.setValue("");
+                } else {
                     comboBox03.getSelectionModel().select(1);
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(false);
-                    break;
-                case 3:
-                case 4:
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(true);
-                    txtField05.setDisable(true);
-                    break;
+                }
+                if (selectedIndex == 0 || selectedIndex >= 3) {
+                    oTransLost.getMasterModel().getMasterModel().setGdsCmptr("");
+                }
+                oTransLost.getMasterModel().getMasterModel().setRspnseCd(lsReason);
+                initFields();
             }
-
+        });
+        comboBox03.setOnAction(event -> {
+            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
+                oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+            }
         });
     }
 
@@ -196,7 +193,7 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
         textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
     }
 
-//Search using F3
+    //Search using F3
     private void txtField_KeyPressed(KeyEvent event) {
         TextField loTxtField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -242,11 +239,11 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 4:/*No of Target Client*/
-//                    oTransLost.getModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
+                case 4:
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
-                case 5:/*Total Event Budget*/
-//                    oTransLost.getModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
+                case 5:
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
             }
         } else {
@@ -265,9 +262,8 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 6:
-//                    oTransLost.getModel().getModel().setActTitle(lsValue);
+                    oTransLost.getMasterModel().getMasterModel().setRemarks(lsValue);
                     break;
-
             }
         } else {
             loTextArea.selectAll();
@@ -284,22 +280,19 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
 
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
-        boolean lbisLostSale = true;
+        JSONObject loJSON = new JSONObject();
         String sLostSale = "";
         switch (lsButton) {
             case "btnTlost":
                 if (!setSelection()) {
                     return;
                 }
-
                 if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                    lbisLostSale = false;
                     sLostSale = " Cancel this Transaction";
                 } else {
-                    lbisLostSale = true;
-                    sLostSale = " tag this inquiry as " + comboBox01.getValue().toString();
+                    sLostSale = " tag this inquiry as " + comboBox01.getValue();
                     if (!pbState) {
-                        sLostSale = sLostSale + " and Cancel VSP";
+                        sLostSale += " and Cancel VSP";
                     }
                 }
 
@@ -307,17 +300,11 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
                 } else {
                     return;
                 }
-
                 if (textArea06.getText().length() < 20) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter at least 20 characters.");
                     textArea06.requestFocus();
                     return;
                 }
-
-//                oTransFollowUp.setTransNox(psSourceNo);
-//                oTransFollowUp.setVSPNox(psVSPNox);
-//                oTransFollowUp.setisFollowUp(false);
-//
 //                if (!pbState) {
 //                    if (!oTransVSP.cancelVSP()) {
 //                        ShowMessageFX.Warning(null, pxeModuleName, oTransVSP.getMessage());
@@ -325,24 +312,18 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
 //                    }
 //                }
 //
-//                if (oTransFollowUp.SaveRecord()) {
-//                    if (oTransFollowUp.LostSale(lbisLostSale, pbState)) {
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, oTransFollowUp.getMessage());
-//                        return;
-//                    }
-//                    ShowMessageFX.Information(null, pxeModuleName, oTransFollowUp.getMessage());
-//                } else {
-//                    //ShowMessageFX.Warning(null, pxeModuleName, "Failed to Save Inquiry Lost Sales Remarks Form.");
-//                    ShowMessageFX.Warning(null, pxeModuleName, oTransFollowUp.getMessage());
-//                    return;
-//                }
-                CommonUtils.closeStage(btnTlost);
+                loJSON = oTransInquiry.lostSale(psSourceNo);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                    CommonUtils.closeStage(btnDlost);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    return;
+                }
                 break;
             case "btnDlost":
                 CommonUtils.closeStage(btnDlost);
                 break;
-
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
@@ -358,29 +339,57 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
             comboBox01.requestFocus();
             return false;
         } else {
-            //oTransFollowUp.setFollowUp(4,comboBox01.getValue().toString());
             if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
                 if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
                     ShowMessageFX.Warning("No `Reason` selected.", pxeModuleName, "Please select `Reason` value.");
                     comboBox02.requestFocus();
                     return false;
                 } else {
-//                    oTransFollowUp.setFollowUp(13, comboBox02.getValue().toString());
+                    int selectedIndex = comboBox02.getSelectionModel().getSelectedIndex();
+                    if (selectedIndex >= 0) {
+                        String[] reasons = {"cmptr", "2ndhd", "odlr", "nobgt", "lackr", "noavl", "nonp", "nonap"};
+                        String lsReason = reasons[selectedIndex];
+                        oTransLost.getMasterModel().getMasterModel().setRspnseCd(lsReason);
+                    }
                 }
             }
-        }
-        if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
-            if ((comboBox02.getSelectionModel().getSelectedIndex() != 4) && (comboBox02.getSelectionModel().getSelectedIndex() != 3)) {
-                if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
-                    ShowMessageFX.Warning("No `Goods Category` selected.", pxeModuleName, "Please select `Goods Category` value.");
-                    comboBox03.requestFocus();
-                    return false;
-                } else {
-//                    oTransFollowUp.setFollowUp(10, comboBox03.getValue().toString());
+            if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
+                if ((comboBox02.getSelectionModel().getSelectedIndex() != 4) && (comboBox02.getSelectionModel().getSelectedIndex() != 3)) {
+                    if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning("No `Goods Category` selected.", pxeModuleName, "Please select `Goods Category` value.");
+                        comboBox03.requestFocus();
+                        return false;
+                    } else {
+                        oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+                    }
                 }
             }
         }
         return true;
+    }
+
+    private void initFields() {
+        comboBox03.setDisable(true);
+        txtField04.setDisable(true);
+        txtField05.setDisable(true);
+        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+            case 0:
+            case 2:
+                comboBox03.setDisable(false);
+                txtField04.setDisable(false);
+                txtField05.setDisable(false);
+                break;
+            case 1:
+                comboBox03.setDisable(true);
+                txtField04.setDisable(false);
+                txtField05.setDisable(false);
+                break;
+            default:
+                comboBox03.setDisable(true);
+                txtField04.setDisable(true);
+                txtField05.setDisable(true);
+                break;
+        }
     }
 
 }

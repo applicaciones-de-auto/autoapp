@@ -6,16 +6,11 @@ package org.guanzon.autoapp.controllers.sales;
 
 import java.awt.Component;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -39,13 +34,7 @@ import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.controllers.general.ActivityPrintController;
-import org.guanzon.autoapp.models.general.ModelActivityInformation;
-import org.guanzon.autoapp.models.general.ModelActivityLocation;
-import org.guanzon.autoapp.models.general.ModelActivityMember;
-import org.guanzon.autoapp.models.general.ModelActivityVehicle;
 import org.guanzon.autoapp.models.sales.ModelInquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -54,7 +43,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleInquiryReservationPrintController implements Initializable, ScreenInterface {
 

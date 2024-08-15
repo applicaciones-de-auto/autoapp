@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="327.0" prefWidth="724.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="370.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -44,17 +44,15 @@
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="-Infinity" prefWidth="33.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="172.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -67,30 +65,30 @@
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label id="LabelDesc" text="Follow-Up Date" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                        <Label id="LabelDesc" text="Follow-Up Date" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
                                         </Label>
-                                        <ComboBox fx:id="comboBox02" prefWidth="140.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <DatePicker fx:id="datePicker03" prefHeight="25.0" prefWidth="140.0" promptText="mm/dd/yyyy" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                        <ComboBox fx:id="comboBox02" prefHeight="24.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                        <DatePicker fx:id="datePicker03" prefHeight="25.0" prefWidth="140.0" promptText="mm/dd/yyyy" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
                                         </DatePicker>
-                                        <TextField fx:id="txtField07" maxWidth="100.0" promptText="00:00:00" GridPane.columnIndex="8" GridPane.rowIndex="1" />
-                                        <Label id="LabelDesc" text="Medium Used" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                        <TextField fx:id="txtField07" maxWidth="100.0" promptText="00:00:00" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                        <Label id="LabelDesc" text="Medium Used" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label id="LabelDesc" text="Response / Remarks" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                        <Label id="LabelDesc" text="Response / Remarks" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label id="LabelDesc" text="Platform" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                        <AnchorPane style="-fx-background-color: #FACEA1;" GridPane.columnSpan="10" GridPane.rowIndex="4">
+                                        <Label id="LabelDesc" text="Platform" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                        <AnchorPane style="-fx-background-color: #FACEA1;" GridPane.columnSpan="10" GridPane.rowIndex="5">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
@@ -102,17 +100,19 @@
                                                 </Label>
                                             </children>
                                         </AnchorPane>
-                                        <TextField fx:id="txtField04" promptText="Search: F3" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                                        <TextArea fx:id="textArea05" layoutX="135.0" layoutY="153.0" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="6" GridPane.rowSpan="2" />
-                                        <TextArea fx:id="textArea06" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="8" GridPane.rowSpan="2">
+                                        <TextField fx:id="txtField04" promptText="Search: F3" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                        <TextArea fx:id="textArea05" layoutX="135.0" layoutY="153.0" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="7" GridPane.rowSpan="2" />
+                                        <TextArea fx:id="textArea06" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="9" GridPane.rowSpan="2">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>
                                         </TextArea>
                                         <Label id="LabelDesc" text="Next Follow-Up Date" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                        <Label id="LabelDesc" layoutX="20.0" layoutY="159.0" text="Follow up About" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                        <TextField fx:id="txtField01" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="115.0" text="Time" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                        <Label id="LabelDesc" layoutX="20.0" layoutY="159.0" text="Follow up About" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <TextField fx:id="txtField01" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="115.0" text="Next Follow-Up Time" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                        <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Referrence No." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtFieldRef" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

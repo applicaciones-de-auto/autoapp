@@ -38,14 +38,13 @@ import org.guanzon.autoapp.utils.InputTextUtil;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleInquirySalesAdvancesController implements Initializable {
 
     private GRider oApp;
     private final String pxeModuleName = "Inquiry Vehicle Sales Advances";
     ObservableList<String> cSlipType = FXCollections.observableArrayList("RESERVATION", "DEPOSIT", "SAFEGUARD DUTY");
-    DecimalFormat poSetDecimalFormat = new DecimalFormat("###0.00");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow = 0;
     private Inquiry oTransAS;

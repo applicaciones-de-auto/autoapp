@@ -41,7 +41,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleInquiryBankApplicationController implements Initializable {
 
@@ -433,48 +433,63 @@ public class VehicleInquiryBankApplicationController implements Initializable {
 
     }
 
-    private Callback<DatePicker, DateCell> callApplied = new Callback<DatePicker, DateCell>() {
+    private Callback<DatePicker, DateCell> callApplied = (final DatePicker param) -> new DateCell() {
         @Override
-        public DateCell call(final DatePicker param) {
-            return new DateCell() {
-                @Override
-                public void updateItem(LocalDate foItem, boolean fbEmpty) {
-                    super.updateItem(foItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
-                    LocalDate loToday = LocalDate.now();
-                    if (pbState) {
-                        setDisable(fbEmpty || foItem.compareTo(loToday) > 0);
-                    } else {
-                        if (pnEditMode == EditMode.UPDATE) {
-                            LocalDate loMinDate = InputTextUtil.strToDate(psOApplieddate).minusDays(7);
-                            setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(InputTextUtil.strToDate(psOApplieddate)) > 0);
-                        }
-                    }
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+
+            LocalDate loToday = LocalDate.now();
+            LocalDate loMinDate;
+
+            if (pbState) {
+                loMinDate = loToday.minusDays(7);
+            } else {
+                if (pnEditMode == EditMode.UPDATE) {
+                    LocalDate loAppliedDate = InputTextUtil.strToDate(psOApplieddate);
+                    loMinDate = loAppliedDate.minusDays(7);
+                } else {
+                    loMinDate = loToday.minusDays(7); // Default case
                 }
-            };
+            }
+
+            setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.isAfter(loToday));
         }
     };
 
-    private Callback<DatePicker, DateCell> callApprove = new Callback<DatePicker, DateCell>() {
+    private Callback<DatePicker, DateCell> callApprove = (final DatePicker param) -> new DateCell() {
         @Override
-        public DateCell call(final DatePicker param) {
-            return new DateCell() {
-                @Override
-                public void updateItem(LocalDate foItem, boolean fbEmpty) {
-                    super.updateItem(foItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
-//                    LocalDate loToday = LocalDate.now();
-                    LocalDate loMinDate = datePicker08.getValue();
-                    setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.compareTo(loMinDate) > 0);
-                }
-            };
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+
+            LocalDate loToday = LocalDate.now();
+            LocalDate loMinDate = loToday.minusDays(7);
+
+            setDisable(fbEmpty || foItem.isBefore(loMinDate) || foItem.isAfter(loToday));
         }
     };
 
     private void initCmboxFieldAction() {
+        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransBankApp.getMasterModel().getMasterModel().setBankID("");
+                    oTransBankApp.getMasterModel().getMasterModel().setBankName("");
+                    comboBox03.setValue("");
+                    txtField04.setText("");
+                    txtField05.setText("");
+                }
+            }
+        }
+        );
         datePicker08.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 datePicker08.setDayCellFactory(callApplied);
                 datePicker09.setDayCellFactory(callApprove);
-                datePicker09.setValue(newValue);
+                if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                    datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((oApp.getServerDate()))));
+                } else {
+                    datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+                }
             }
         }
         );
@@ -494,14 +509,14 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             }
         }
         );
-        comboBox07.setOnAction(e
-                -> {
+        comboBox07.setOnAction(e -> {
             if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
                 if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
                     datePicker09.setDisable(false);
-
                     datePicker09.setDayCellFactory(callApprove);
+                    datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((oApp.getServerDate()))));
                 } else {
+                    datePicker09.setDisable(true);
                     datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
                 }
                 oTransBankApp.getMasterModel().getMasterModel().setTranStat(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));

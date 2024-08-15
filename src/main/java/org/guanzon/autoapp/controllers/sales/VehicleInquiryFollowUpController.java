@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -33,14 +32,14 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
+import org.guanzon.auto.model.sales.Model_Inquiry_FollowUp;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VehicleInquiryFollowUpController implements Initializable {
 
@@ -48,8 +47,6 @@ public class VehicleInquiryFollowUpController implements Initializable {
     private FollowUp oTransFollow;
     private Inquiry oTransInquiry;
     private int pnRow = 0;
-    private String psTransNo = "";
-    private int pnEditMode;
     private boolean pbState = false;
     private String psSourceNo = "";
     private String psRefNox = "";
@@ -62,7 +59,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
     @FXML
     private ComboBox<String> comboBox02;
     @FXML
-    private TextField txtField01, txtField04, txtField07;
+    private TextField txtField01, txtField04, txtField07, txtFieldRef;
     @FXML
     private TextArea textArea05, textArea06;
 
@@ -100,7 +97,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
         datePicker03.setDayCellFactory(callDate);
         comboBox02.setOnAction(event -> {
             if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getValue()));
+                oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
             }
             initFields();
         }
@@ -109,8 +106,15 @@ public class VehicleInquiryFollowUpController implements Initializable {
             oTransFollow.setMaster(8, SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
         }
         );
-//        Pattern time = Pattern.compile("([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]*");
-//        txtField07.setTextFormatter(new InputTextFormatterUtil(time));
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransFollow.getMasterModel().getMasterModel().setSclMedia("");
+                    oTransFollow.getMasterModel().getMasterModel().setPlatform("");
+                }
+            }
+        }
+        );
         initCapitalizationFields();
         initTextKeyPressed();
         initTextAreaFocus();
@@ -205,23 +209,97 @@ public class VehicleInquiryFollowUpController implements Initializable {
                 break;
             case "btnSave":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to save?")) {
-                } else {
-                    return;
-                }
-                if (setSelection()) {
-                    oTransFollow.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
-                    oTransFollow.getMasterModel().getMasterModel().setTransNo(psSourceNo);
-                    loJSON = oTransFollow.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-                        CommonUtils.closeStage(btnClose);
+                    if (datePicker03.getValue().toString().isEmpty()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in next follow-up date.");
+                        return;
+                    }
+                    if (datePicker03.getValue().equals(txtField01.getText())) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Follow Up date cannot be the same with next follow up date.");
+                        return;
+                    }
+                    if (txtField07.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in follow-up time.");
+                        return;
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        if (txtField07.getText().equals(Time.valueOf("00:00:00")) || txtField07.getText().length() < 8 || txtField07.getText().length() > 8) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid time in follow-up time.");
+                            return;
+                        }
+                    }
+                    int lnHr = Integer.parseInt(txtField07.getText().substring(0, 2));
+                    String lnCol1 = txtField07.getText().substring(2, 3);
+                    int lnMin = Integer.parseInt(txtField07.getText().substring(3, 5));
+                    String lnCol2 = txtField07.getText().substring(5, 6);
+                    int lnSs = Integer.parseInt(txtField07.getText().substring(6, 8));
+
+                    String timePattern = "^\\d{2}:\\d{2}:\\d{2}$";
+                    String timeInput = txtField07.getText();
+                    if (!lnCol1.equals(":") || !lnCol2.equals(":")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Next Follow Up Time.");
+                        return;
+                    }
+
+                    if (lnHr < 8 || lnHr > 17) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Next Follow Up Time working hours.");
+                        return;
+                    }
+
+                    if (lnMin < 0 || lnMin > 59) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Next Follow Up Time minutes.");
+                        return;
+                    }
+
+                    if (lnSs < 0 || lnSs > 59) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Next Follow Up Time seconds.");
+                        return;
+                    }
+
+                    if (lnHr == 17) {
+                        if (lnMin > 30) {
+
+                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid Next Follow Up Time working hours.");
+                            return;
+                        }
+                    }
+                    // Check if the input matches the time pattern
+                    if (!timeInput.matches(timePattern)) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid time format: hh:mm:ss (e.g., 00:00:00).");
+                        return;
+                    }
+                    if (textArea05.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in follow up about.");
+                        return;
+                    }
+                    if (textArea06.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in response/remarks.");
+                        return;
+                    }
+                    if (textArea05.getText().trim().equals((textArea06.getText()))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "cannot be the same with remarks.");
+                        return;
+                    }
+                    if (textArea06.getText().trim().equals((textArea05.getText()))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "cannot be the same with follow up about.");
+                        return;
+                    }
+                    if (setSelection()) {
+                        oTransFollow.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
+                        oTransFollow.getMasterModel().getMasterModel().setTransNo(psSourceNo);
+                        loJSON = oTransFollow.saveTransaction();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                            CommonUtils.closeStage(btnClose);
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            return;
+                        }
+                    } else {
                         return;
                     }
                 } else {
                     return;
                 }
+
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
@@ -238,7 +316,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
             comboBox02.requestFocus();
             return false;
         } else {
-            oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getValue()));
+            oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
         }
         return true;
     }
@@ -299,37 +377,27 @@ public class VehicleInquiryFollowUpController implements Initializable {
     };
 
     private void loadFollowUpField() {
-        JSONObject loJSON = new JSONObject();
-        if (pbState) {
-            txtField01.setText(InputTextUtil.xsDateShort(oTransFollow.getMasterModel().getMasterModel().getTransactDte()));
-            if (oTransFollow.getMasterModel().getMasterModel().getMethodCd() != null) {
-                comboBox02.getSelectionModel().select(Integer.parseInt(oTransFollow.getMasterModel().getMasterModel().getMethodCd()));
-            }
-            if (oTransFollow.getMasterModel().getMasterModel().getFollowUpDte() != null) {
-                datePicker03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransFollow.getMasterModel().getMasterModel().getFollowUpDte())));
-            }
-            txtField04.setText(oTransFollow.getMasterModel().getMasterModel().getPlatform());
-            txtField07.setText(String.valueOf(oTransFollow.getMasterModel().getMasterModel().getFollowUpTme()));
-            textArea05.setText(oTransFollow.getMasterModel().getMasterModel().getMessage());
-            textArea06.setText(oTransFollow.getMasterModel().getMasterModel().getRemarks());
-        } else {
-            loJSON = oTransFollow.openTransaction(psRefNox);
-            if ("success".equals((String) loJSON.get("result"))) {
-                txtField01.setText(InputTextUtil.xsDateShort(oTransFollow.getMasterModel().getMasterModel().getTransactDte())
-                );
-                if (oTransFollow.getMasterModel().getMasterModel().getMethodCd() != null) {
-                    comboBox02.getSelectionModel().select(Integer.parseInt(oTransFollow.getMasterModel().getMasterModel().getMethodCd()));
-                }
-                if (oTransFollow.getMasterModel().getMasterModel().getFollowUpDte() != null) {
-                    datePicker03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransFollow.getMasterModel().getMasterModel().getFollowUpDte())));
-                }
-                txtField04.setText(oTransFollow.getMasterModel().getMasterModel().getPlatform());
-                txtField07.setText(String.valueOf(oTransFollow.getMasterModel().getMasterModel().getFollowUpTme()));
-                textArea05.setText(oTransFollow.getMasterModel().getMasterModel().getMessage());
-                textArea06.setText(oTransFollow.getMasterModel().getMasterModel().getRemarks());
-            }
-        }
+        JSONObject loJSON = pbState ? null : oTransFollow.openTransaction(psRefNox);
 
+        if (pbState || "success".equals(loJSON.get("result"))) {
+            Model_Inquiry_FollowUp master = oTransFollow.getMasterModel().getMasterModel();
+
+            txtFieldRef.setText(master.getReferNo());
+            txtField01.setText(InputTextUtil.xsDateShort(master.getTransactDte()));
+
+            if (master.getMethodCd() != null) {
+                comboBox02.getSelectionModel().select(Integer.parseInt(master.getMethodCd()));
+            }
+
+            if (master.getFollowUpDte() != null) {
+                datePicker03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(master.getFollowUpDte())));
+            }
+
+            txtField04.setText(master.getPlatform());
+            txtField07.setText(String.valueOf(master.getFollowUpTme()));
+            textArea05.setText(master.getMessage());
+            textArea06.setText(master.getRemarks());
+        }
     }
 
     private void initFields() {
