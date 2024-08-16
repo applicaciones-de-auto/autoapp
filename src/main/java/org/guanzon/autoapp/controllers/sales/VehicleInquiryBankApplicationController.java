@@ -161,32 +161,44 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 }
                 break;
             case "btnBACancel":
-                loJSON = oTransBankApp.cancelTransaction(psTransNox);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-                    pnEditMode = oTransBankApp.getEditMode();
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to cancel this Bank Application?")) {
+                    loJSON = oTransBankApp.cancelTransaction(psTransNox);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        CommonUtils.closeStage(btnClose);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
                 break;
             case "btnSave":
+                LocalDate loApplied = datePicker08.getValue();
+                LocalDate loApprove = datePicker09.getValue();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to save?")) {
-                } else {
-                    return;
-                }
-                if (setSelection()) {
-                    oTransBankApp.getMasterModel().getMasterModel().setSourceNo(psSourceNo);
-                    loJSON = oTransBankApp.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        if (pbState) {
-                            ShowMessageFX.Information(null, pxeModuleName, "Bank Application added sucessfully.");
-                        } else {
-                            ShowMessageFX.Information(null, pxeModuleName, "Bank Application save sucessfully.");
+                    if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
+                        if (loApprove.isBefore(loApplied)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid Approve Date.");
+                            return;
                         }
-                        CommonUtils.closeStage(btnClose);
+                    }
+                    if (setSelection()) {
+                        oTransBankApp.getMasterModel().getMasterModel().setSourceNo(psSourceNo);
+                        loJSON = oTransBankApp.saveTransaction();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            if (pbState) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Bank Application added sucessfully.");
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, "Bank Application save sucessfully.");
+                            }
+                            CommonUtils.closeStage(btnClose);
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            return;
+                        }
                     } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;
                     }
                 } else {
@@ -622,7 +634,14 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             btnBACancel.setManaged(false);
             textArea10.setDisable(false);
         }
-
+        if (comboBox07.getValue().equals("DECLINE")) {
+            btnSave.setVisible(false);
+            btnSave.setManaged(false);
+            btnBACancel.setVisible(false);
+            btnBACancel.setManaged(false);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        }
         if (comboBox07.getValue().equals("CANCELLED")) {
             btnSave.setVisible(false);
             btnSave.setManaged(false);

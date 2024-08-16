@@ -714,6 +714,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             case "btnAdd":
                 clearCustomerFields();
                 clearTables();
+                switchToTab(tabCustomerInquiry, tabPaneMain);// Load fields, clear them, and set edit mode
                 oTransInquiry = new Inquiry(oApp, false, oApp.getBranchCode());
                 loJSON = oTransInquiry.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
@@ -2282,7 +2283,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             lsStatus,
                             String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "dApproved"))
                     ));
-
+                    lsCancelledDt = "";
                 }
             }
         } catch (SQLException ex) {
@@ -2383,6 +2384,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         String lsMethod = "";
         String lsPlatForm = "";
         loJSON = oTransInquiry.loadFollowUpList();
+        String lsRespoRemarks = "";
         if ("success".equals((String) loJSON.get("result"))) {
             try {
                 for (int lnCtr = 1; lnCtr <= oTransInquiry.getFollowUpCount(); lnCtr++) {
@@ -2417,6 +2419,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
                         }
                     }
+//                    if (oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx") != null && oTransInquiry.getFollowUpDetail(lnCtr, "sRspnseCd") != null) {
+//                        lsRespoRemarks = String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRspnseCd")) + " : " + String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx"));
+//                    } else if (oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx") != null) {
+//                        lsRespoRemarks = String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx"));
+//                    }
                     followupdata.add(new ModelInquiryFollowUp(
                             String.valueOf(lnCtr),
                             String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sReferNox")),

@@ -95,8 +95,11 @@ public class VehicleInquiryFollowUpController implements Initializable {
         // TODO
         comboBox02.setItems(cMedium);
         datePicker03.setDayCellFactory(callDate);
+
         comboBox02.setOnAction(event -> {
             if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
+                txtField04.setText("");
+                oTransFollow.getMasterModel().getMasterModel().setPlatform("");
                 oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
             }
             initFields();
@@ -208,12 +211,13 @@ public class VehicleInquiryFollowUpController implements Initializable {
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnSave":
+                LocalDate followUp = datePicker03.getValue();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to save?")) {
-                    if (datePicker03.getValue().toString().isEmpty()) {
+                    if (followUp == null) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in next follow-up date.");
                         return;
                     }
-                    if (datePicker03.getValue().equals(txtField01.getText())) {
+                    if (followUp.equals(txtField01.getText())) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Follow Up date cannot be the same with next follow up date.");
                         return;
                     }
@@ -299,7 +303,6 @@ public class VehicleInquiryFollowUpController implements Initializable {
                 } else {
                     return;
                 }
-
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
@@ -397,6 +400,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
             txtField07.setText(String.valueOf(master.getFollowUpTme()));
             textArea05.setText(master.getMessage());
             textArea06.setText(master.getRemarks());
+
         }
     }
 

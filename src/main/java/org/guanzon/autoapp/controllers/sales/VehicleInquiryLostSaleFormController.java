@@ -243,7 +243,15 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
                     oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
                 case 5:
-                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
+                    String lsTag = "";
+                    switch (comboBox01.getSelectionModel().getSelectedIndex()) {
+                        case 0:
+                            break;
+                        case 1:
+                            lsTag = "LOST SALE";
+                            break;
+                    }
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsTag + "" + lsValue);
                     break;
             }
         } else {
@@ -316,6 +324,9 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
                 if ("success".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                     CommonUtils.closeStage(btnDlost);
+                    loJSON = oTransLost.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                    }
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
