@@ -147,7 +147,7 @@ public class ActivitySourceTypeEntryController implements Initializable, ScreenI
 
     private void initTextFieldPattern() {
         Pattern actPat;
-        actPat = Pattern.compile("[A-Za-z ,/'.]*");
+        actPat = Pattern.compile("[A-Za-z0-9 ,/'.]*");
         txtField03.setTextFormatter(new InputTextFormatterUtil(actPat));
     }
 

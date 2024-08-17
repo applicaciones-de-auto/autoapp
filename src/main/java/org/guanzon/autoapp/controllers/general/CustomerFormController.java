@@ -274,7 +274,6 @@ public class CustomerFormController implements Initializable, ScreenInterface {
             }
             JSONObject loJSON = new JSONObject();
             if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-
                 switch (txtFieldID) {
                     case "txtField10":
                         loJSON = oTrans.searchCitizenShip(lsValue);
@@ -333,6 +332,9 @@ public class CustomerFormController implements Initializable, ScreenInterface {
         } else if (event.getCode() == KeyCode.UP) {
             event.consume();
             CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.DOWN) {
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
         }
     }
 

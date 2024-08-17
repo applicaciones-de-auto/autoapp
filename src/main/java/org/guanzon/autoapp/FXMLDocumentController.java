@@ -653,7 +653,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //                return new VehicleEntryFormController();
 //            case "UnitReceivingForm.fxml":
 //                return new UnitReceivingFormController();
-            case "VehicleInquiryForm.fxml":
+            case psSalesPath + "VehicleInquiryForm.fxml":
                 return new VehicleInquiryFormController();
 //            case "VehicleSalesApproval.fxml":
 //                return new VehicleSalesApprovalController();
@@ -747,8 +747,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //                return "Vehicle Information";
             case "UnitReceivingForm.fxml":
                 return "Unit Receiving";
-            case "InquiryForm.fxml":
-                return "Inquiry";
+            case psSalesPath + "VehicleInquiryForm.fxml":
+                return "Vehicle Inquiry";
             case "VehicleSalesApproval.fxml":
                 return "Vehicle Reservation Approval";
             case "UnitDeliveryReceiptForm.fxml":
@@ -915,7 +915,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuInquiryClick(ActionEvent event) {
-        String sformname = "InquiryForm.fxml";
+        String sformname = psSalesPath + "VehicleInquiryForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

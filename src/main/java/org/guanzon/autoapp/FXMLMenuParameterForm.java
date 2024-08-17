@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.guanzon.autoapp;
 
 import java.io.IOException;
@@ -23,7 +18,8 @@ import org.guanzon.autoapp.utils.ScreenInterface;
 
 /**
  * FXMLMenuParameterForm is a class that represents a form window for displaying
- * parameters using JavaFX.
+ * parameters using JavaFX. This form can be used to display modal dialogs with
+ * a drop shadow effect.
  *
  * @author Arsiela Date Created: 06-21-2023
  */
@@ -40,20 +36,18 @@ public class FXMLMenuParameterForm {
      * interface.
      * @param oApp The GRider object.
      * @param fsFxml The path to the FXML file for the parameter form.
+     * @param fxmlPathDirectory The directory where the FXML file is located.
      */
     public void FXMLMenuParameterForm(ScreenInterface fsiController, GRider oApp, String fsFxml, String fxmlPathDirectory) {
         try {
+            // Create a new stage for the dialog
             Stage stage = new Stage();
-            ScreenInterface fxObj = fsiController;
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource(fsFxml));
-            fxmlLoader.setController(fxObj);
+            // Initialize the ScreenInterface and set the GRider
+            ScreenInterface fxObj = fsiController;
             fxObj.setGRider(oApp);
 
-            // Get the class of any class in the desired package to retrieve the package information
-            Class<?> clazz = fxObj.getClass();
-            // Construct the correct path to the FXML file using the package information
+            // Construct the correct path to the FXML file
             String fxmlPath = fxmlPathDirectory + fsFxml;
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
@@ -61,24 +55,16 @@ public class FXMLMenuParameterForm {
                 throw new IOException("FXML resource not found: " + fxmlPath);
             }
 
-            // Set the location of the FXML file
+            // Load the FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(resource);
             fxmlLoader.setController(fxObj);
-            fxObj.setGRider(oApp);
-
-            //load the main interface
             Parent parent = fxmlLoader.load();
 
-            DropShadow dropShadow = new DropShadow();
-            dropShadow.setOffsetX(5.0);
-            dropShadow.setOffsetY(5.0);
-            dropShadow.setBlurType(BlurType.GAUSSIAN);
-            dropShadow.setRadius(10.0);
-            dropShadow.setSpread(0.2);
-            dropShadow.setColor(Color.DARKGRAY);
-
-            parent.setEffect(dropShadow);
-
+            // Apply the CSS file
+//            // Apply the DropShadow effect to the parent node
+//            parent.setEffect(dropShadow);
+            // Add mouse event handlers for dragging the dialog
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -95,16 +81,22 @@ public class FXMLMenuParameterForm {
                 }
             });
 
-            //set the main interface as the scene
+            // Set the parent as the scene
             Scene scene = new Scene(parent);
+
+            // Configure the stage for the dialog
             stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("");
+            stage.initStyle(StageStyle.TRANSPARENT);  // Make the stage transparent for custom styling
+            stage.initModality(Modality.APPLICATION_MODAL);  // Set the modality to block input events
+            stage.setTitle("");  // Set the title of the dialog (if any)
+            scene.getStylesheets().add(getClass().getResource("/org/guanzon/autoapp/css/FrameStyle.css").toExternalForm());
+            parent.getStyleClass().add("dialog-pane");  // Apply CSS class to the parent node
+            // Show the dialog and wait for it to be closed
             stage.showAndWait();
 
         } catch (IOException e) {
             e.printStackTrace();
+            // Show a warning message if an exception occurs
             ShowMessageFX.Warning(e.getMessage(), "Warning", null);
             System.exit(1);
         }

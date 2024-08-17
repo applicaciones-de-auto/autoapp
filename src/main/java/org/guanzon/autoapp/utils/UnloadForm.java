@@ -7,6 +7,7 @@ package org.guanzon.autoapp.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.collections.ObservableList;
@@ -42,28 +43,30 @@ public class UnloadForm {
             ObservableList<Tab> tabs = tabpane.getTabs();
             int tabsize = tabpane.getTabs().size();
             List<String> tabName = new ArrayList<>();
-//            tabName = TabsStateManager.loadCurrentTab();
+            // tabName = TabsStateManager.loadCurrentTab();
 
-            // Loop through the tabs and find the one you want to remove
-            for (Tab tab : tabs) {
+            // Use an iterator to loop through the tabs and find the one you want to remove
+            Iterator<Tab> iterator = tabs.iterator();
+            while (iterator.hasNext()) {
+                Tab tab = iterator.next();
                 if (tab.getText().equals(sTabTitle)) {
-                    // Remove the tab from the TabPane
-                    tabs.remove(tab);
+                    // Remove the tab using the iterator
+                    iterator.remove();
+
                     if (tabsize == 1) {
                         StackPane myBox = (StackPane) tabpane.getParent();
                         myBox.getChildren().clear();
-                        myBox.getChildren().add(getScene("FXMLMainScreen.fxml", oApp));
+                        myBox.getChildren().add(getScene("/org/guanzon/autoapp/FXMLMainScreen.fxml", oApp));
                     }
 
-//                    if (tabName.size() > 0) {
-//                        tabName.remove(sTabTitle);
-//                        TabsStateManager.saveCurrentTab(tabName);
-//                    }
-//                    TabsStateManager.closeTab(sTabTitle);
-//                    break;
+                    if (tabName.size() > 0) {
+                        tabName.remove(sTabTitle);
+                        // TabsStateManager.saveCurrentTab(tabName);
+                    }
+                    // TabsStateManager.closeTab(sTabTitle);
+                    break;
                 }
             }
-
         }
     }
 
@@ -92,4 +95,5 @@ public class UnloadForm {
         }
         return null;
     }
+
 }
