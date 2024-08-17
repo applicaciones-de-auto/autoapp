@@ -659,7 +659,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
-
     private boolean setSelection() {
         if (rdbtnHtA19.isSelected()) {
             oTransInquiry.getMasterModel().getMasterModel().setIntrstLv("a");
@@ -709,6 +708,32 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
         return true;
     }
+//
+//    private boolean checkExistingInquiryInformation() {
+//        JSONObject loJSON = new JSONObject();
+//        loJSON = oTransInquiry.validateExistingRecord();
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+//                loJSON = oTransActivity.openRecord((String) loJSON.get("sTransNox"));
+//                if ("success".equals((String) loJSON.get("result"))) {
+//                    loadCustomerInquiryInformation();
+//                    loadVehiclePriority();
+//                    loadPromoOffered();
+//                    loadInquiryRequirements();
+//                    loadAdvancesSlip();
+//                    loadBankApplications();
+//                    loadFollowHistory();
+//                    initFields(pnEditMode);
+//                    pnEditMode = oTransInquiry.getEditMode();
+//                }
+//            } else {
+//                return false;
+//            }
+//        } else {
+//            return false;
+//        }
+//        return true;
+//    }
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnConvertSales, btnLostSale, btnProcess, btnCancel,
@@ -787,6 +812,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     switch (iTabIndex) {
                         case 0:
                         case 1:
+//                            if (checkExistingInquiryInformation) {
+//                                return;
+//                            }
                             for (int lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
                                 if (oTransInquiry.getVehiclePriority(lnCtr, "nPriority").equals(1)) {
                                     oTransInquiry.getMasterModel().getMasterModel().setVhclID(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx").toString());
