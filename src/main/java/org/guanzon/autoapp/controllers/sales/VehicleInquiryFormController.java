@@ -760,6 +760,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadCustomerInquiryInformation();
                     pnEditMode = oTransInquiry.getEditMode();
+                    initFields(pnEditMode);
+                    initBtnProcess(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
