@@ -24,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.auto.main.parameter.Parts_Measure;
+import org.guanzon.auto.main.parameter.Parts_InventoryType;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -35,16 +35,16 @@ import org.json.simple.JSONObject;
  *
  * @author AutoGroup Programmers
  */
-public class MeasurementEntryParamController implements Initializable, ScreenInterface {
+public class InvTypeEntryParamController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-    private final String pxeModuleName = "Measurement Entry";
+    private final String pxeModuleName = "Inventory Type Entry";
     private int pnEditMode;//Modifying fields
-    private Parts_Measure oTransMeasure;
+    private Parts_InventoryType oTransInventoryType;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
-    private TextField txtField01, txtField02, txtField03;
+    private TextField txtField01, txtField02;
     @FXML
     private CheckBox cboxActivate;
 
@@ -62,24 +62,22 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
+        oTransInventoryType = new Parts_InventoryType(oApp, false, oApp.getBranchCode());
         initTextFieldPattern();
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 15);
-        InputTextUtil.addTextLimiter(txtField03, 5);
+        InputTextUtil.addTextLimiter(txtField02, 32);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadMeasurementFields() {
-        txtField01.setText(oTransMeasure.getModel().getModel().getMeasurID());
-        txtField02.setText(oTransMeasure.getModel().getModel().getMeasurNm());
-        txtField03.setText(oTransMeasure.getModel().getModel().getShortDsc());
-        if (oTransMeasure.getModel().getModel().getRecdStat().equals("1")) {
+    private void loadInventoryTypeFields() {
+        txtField01.setText(oTransInventoryType.getModel().getModel().getInvTypCd());
+        txtField02.setText(oTransInventoryType.getModel().getModel().getDescript());
+        if (oTransInventoryType.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
@@ -90,16 +88,16 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z ]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
+
     }
 
     private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
+        List<TextField> loTxtField = Arrays.asList(txtField02);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
@@ -123,7 +121,7 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
+        List<TextField> loTxtField = Arrays.asList(txtField02);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /*Set TextField Value to Master Class*/
@@ -138,10 +136,7 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransMeasure.getModel().getModel().setMeasurNm(lsValue);
-                    break;
-                case 3:
-                    oTransMeasure.getModel().getModel().setShortDsc(lsValue);
+                    oTransInventoryType.getModel().getModel().setDescript(lsValue);
                     break;
             }
         } else {
@@ -162,52 +157,42 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
-                loJSON = oTransMeasure.newRecord();
+                oTransInventoryType = new Parts_InventoryType(oApp, false, oApp.getBranchCode());
+                loJSON = oTransInventoryType.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMeasurementFields();
-                    pnEditMode = oTransMeasure.getEditMode();
+                    loadInventoryTypeFields();
+                    pnEditMode = oTransInventoryType.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransMeasure.updateRecord();
-                pnEditMode = oTransMeasure.getEditMode();
+                loJSON = oTransInventoryType.updateRecord();
+                pnEditMode = oTransInventoryType.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Measurement Information Saving....", "Are you sure, do you want to save?")) {
+                if (ShowMessageFX.YesNo(null, "Inventory Type Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter valid measurement information.");
+                        ShowMessageFX.Warning(null, "Inventory Type Information", "Please enter valid inventory type information.");
                         txtField02.setText("");
                         return;
                     }
                     if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter value measurement information.");
+                        ShowMessageFX.Warning(null, "Inventory Type Information", "Please enter value inventory type information.");
                         txtField02.setText("");
                         return;
                     }
-                    if (txtField03.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter valid measurement abbrev information.");
-                        txtField03.setText("");
-                        return;
-                    }
-                    if (txtField03.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter value measurement abbrev information.");
-                        txtField03.setText("");
-                        return;
-                    }
-                    loJSON = oTransMeasure.saveRecord();
+                    loJSON = oTransInventoryType.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
-                        loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                        ShowMessageFX.Information(null, "Inventory Type Information", (String) loJSON.get("message"));
+                        loJSON = oTransInventoryType.openRecord(oTransInventoryType.getModel().getModel().getInvTypCd());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadMeasurementFields();
+                            loadInventoryTypeFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransMeasure.getEditMode();
+                            pnEditMode = oTransInventoryType.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -218,24 +203,24 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
+                    oTransInventoryType = new Parts_InventoryType(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
             case "btnBrowse":
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                    if (ShowMessageFX.YesNo(null, "Search Measurement Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    if (ShowMessageFX.YesNo(null, "Search Inventory Type Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                loJSON = oTransMeasure.searchRecord("", false);
+                loJSON = oTransInventoryType.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMeasurementFields();
-                    pnEditMode = oTransMeasure.getEditMode();
+                    loadInventoryTypeFields();
+                    pnEditMode = oTransInventoryType.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Measurement Information", (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, "Search Inventory Type Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
@@ -243,36 +228,36 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMeasure.getModel().getModel().getMeasurID();
-                    loJSON = oTransMeasure.deactivateRecord(fsValue);
+                    String fsValue = oTransInventoryType.getModel().getModel().getInvTypCd();
+                    loJSON = oTransInventoryType.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "Inventory Type Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Measurement Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "Inventory Type Information", (String) loJSON.get("message"));
                         return;
                     }
-                    loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                    loJSON = oTransInventoryType.openRecord(oTransInventoryType.getModel().getModel().getInvTypCd());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMeasurementFields();
+                        loadInventoryTypeFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMeasure.getEditMode();
+                        pnEditMode = oTransInventoryType.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMeasure.getModel().getModel().getMeasurID();
-                    loJSON = oTransMeasure.activateRecord(fsValue);
+                    String fsValue = oTransInventoryType.getModel().getModel().getInvTypCd();
+                    loJSON = oTransInventoryType.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "Inventory Type Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Measurement Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "Inventory Type Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                    loJSON = oTransInventoryType.openRecord(oTransInventoryType.getModel().getModel().getInvTypCd());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMeasurementFields();
+                        loadInventoryTypeFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMeasure.getEditMode();
+                        pnEditMode = oTransInventoryType.getEditMode();
                     }
                 }
                 break;
@@ -287,14 +272,12 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
         cboxActivate.setSelected(false);
         txtField01.clear();
         txtField02.clear();
-        txtField03.clear();
     }
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         txtField01.setDisable(true);
         txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
         cboxActivate.setDisable(true);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
@@ -310,7 +293,7 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
         btnActive.setManaged(false);
         if (fnValue == EditMode.READY) {
             //show edit if user clicked save / browse
-            if (oTransMeasure.getModel().getModel().getRecdStat().equals("1")) {
+            if (oTransInventoryType.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
                 btnDeactivate.setVisible(true);

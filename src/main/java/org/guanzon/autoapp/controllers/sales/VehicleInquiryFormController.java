@@ -760,6 +760,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadCustomerInquiryInformation();
                     pnEditMode = oTransInquiry.getEditMode();
+                    initFields(pnEditMode);
+                    initBtnProcess(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -1285,9 +1287,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     inqStats = "SOLD";
                     break;
                 case "5":
-                    inqStats = "RETIRED";
-                    break;
-                case "6":
                     inqStats = "CANCELLED";
                     break;
             }
@@ -1360,6 +1359,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             txtField05.setDisable(true);
 
         }
+        if (fnValue == EditMode.ADDNEW) {
+            trgvIndex03.setVisible(true);
+            trgvIndex04.setVisible(true);
+        }
+
         txtField09.setDisable(!lbShow);
         comboBox10.setDisable(!lbShow);
         txtField11.setDisable(!lbShow);
@@ -1546,6 +1550,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             }
         }
         if (fnValue == EditMode.UPDATE) {
+            txtField09.setDisable(true);
             if (tabPinEditMode == 1) {
                 initCustomerInquiryFieldsFalse();
                 initInquiryProcessFieldsTrue();
@@ -1574,7 +1579,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         trgvIndex04.setVisible(true);
 
         // Disable common fields
-        setDisable(false, txtField09, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
+        setDisable(false, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnPromoRemove, btnTestDriveModel);
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (oTransInquiry.getMasterModel().getMasterModel().getClientTp().equals(1)) {
