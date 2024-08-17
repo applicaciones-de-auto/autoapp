@@ -100,7 +100,25 @@ public class VehicleInquiryFollowUpController implements Initializable {
             if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
                 txtField04.setText("");
                 oTransFollow.getMasterModel().getMasterModel().setPlatform("");
-                oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+                String lsMethod = "";
+                switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        lsMethod = "TEXT";
+                        break;
+                    case 1:
+                        lsMethod = "CALL";
+                        break;
+                    case 2:
+                        lsMethod = "SOCIAL MEDIA";
+                        break;
+                    case 3:
+                        lsMethod = "EMAIL";
+                        break;
+                    case 4:
+                        lsMethod = "VIBER";
+                        break;
+                }
+                oTransFollow.getMasterModel().getMasterModel().setMethodCd(lsMethod);
             }
             initFields();
         }
@@ -315,11 +333,29 @@ public class VehicleInquiryFollowUpController implements Initializable {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean setSelection() {
         if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
-            ShowMessageFX.Warning("No `Payment Mode` selected.", pxeModuleName, "Please select `Payment Mode` value.");
+            ShowMessageFX.Warning("No `Method Code` selected.", pxeModuleName, "Please select `Method Code` value.");
             comboBox02.requestFocus();
             return false;
         } else {
-            oTransFollow.getMasterModel().getMasterModel().setMethodCd(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+            String lsMethod = "";
+            switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    lsMethod = "TEXT";
+                    break;
+                case 1:
+                    lsMethod = "CALL";
+                    break;
+                case 2:
+                    lsMethod = "SOCIAL MEDIA";
+                    break;
+                case 3:
+                    lsMethod = "EMAIL";
+                    break;
+                case 4:
+                    lsMethod = "VIBER";
+                    break;
+            }
+            oTransFollow.getMasterModel().getMasterModel().setMethodCd(lsMethod);
         }
         return true;
     }
@@ -389,7 +425,28 @@ public class VehicleInquiryFollowUpController implements Initializable {
             txtField01.setText(InputTextUtil.xsDateShort(master.getTransactDte()));
 
             if (master.getMethodCd() != null) {
-                comboBox02.getSelectionModel().select(Integer.parseInt(master.getMethodCd()));
+                String lnMethod = "";
+                switch (master.getMethodCd()) {
+                    case "TEXT":
+                        lnMethod = "0";
+                        break;
+                    case "CALL":
+                        lnMethod = "1";
+                        break;
+                    case "SOCIAL MEDIA":
+                        lnMethod = "2";
+                        break;
+                    case "EMAIL":
+                        lnMethod = "3";
+                        break;
+                    case "VIBER":
+                        lnMethod = "4";
+                        break;
+                    default:
+                        lnMethod = "-1";
+                        break;
+                }
+                comboBox02.getSelectionModel().select(Integer.parseInt(lnMethod));
             }
 
             if (master.getFollowUpDte() != null) {

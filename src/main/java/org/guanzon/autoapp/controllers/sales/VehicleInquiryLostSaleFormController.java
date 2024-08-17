@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -243,15 +244,8 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
                     oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
                 case 5:
-                    String lsTag = "";
-                    switch (comboBox01.getSelectionModel().getSelectedIndex()) {
-                        case 0:
-                            break;
-                        case 1:
-                            lsTag = "LOST SALE";
-                            break;
-                    }
-                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsTag + "" + lsValue);
+
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
             }
         } else {
@@ -270,7 +264,15 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 6:
-                    oTransLost.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    String lsTag = "";
+                    switch (comboBox01.getSelectionModel().getSelectedIndex()) {
+                        case 0:
+                            break;
+                        case 1:
+                            lsTag = "LOST SALE";
+                            break;
+                    }
+                    oTransLost.getMasterModel().getMasterModel().setRemarks(lsTag + " " + lsValue);
                     break;
             }
         } else {
@@ -320,12 +322,21 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
 //                    }
 //                }
 //
+
                 loJSON = oTransInquiry.lostSale(psSourceNo);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-                    CommonUtils.closeStage(btnDlost);
+                    oTransLost.getMasterModel().getMasterModel().setTransNo(psSourceNo);
+                    oTransLost.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
+                    oTransLost.getMasterModel().getMasterModel().setMethodCd("UPDATE");
+                    oTransLost.getMasterModel().getMasterModel().setSclMedia("");
+                    oTransLost.getMasterModel().getMasterModel().setPlatform("");
                     loJSON = oTransLost.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        CommonUtils.closeStage(btnDlost);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
                     }
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
