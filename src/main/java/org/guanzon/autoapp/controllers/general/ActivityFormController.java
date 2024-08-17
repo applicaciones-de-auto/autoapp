@@ -194,7 +194,7 @@ public class ActivityFormController implements Initializable, ScreenInterface {
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())).minusDays(7);
+            LocalDate minDate = InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate()));
             setDisable(fbEmpty || foItem.isBefore(minDate));
         }
     };
