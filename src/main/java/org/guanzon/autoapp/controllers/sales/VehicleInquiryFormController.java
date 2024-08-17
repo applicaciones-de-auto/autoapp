@@ -1287,9 +1287,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     inqStats = "SOLD";
                     break;
                 case "5":
-                    inqStats = "RETIRED";
-                    break;
-                case "6":
                     inqStats = "CANCELLED";
                     break;
             }
@@ -1548,6 +1545,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             }
         }
         if (fnValue == EditMode.UPDATE) {
+            txtField09.setDisable(true);
             if (tabPinEditMode == 1) {
                 initCustomerInquiryFieldsFalse();
                 initInquiryProcessFieldsTrue();
@@ -1576,7 +1574,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         trgvIndex04.setVisible(true);
 
         // Disable common fields
-        setDisable(false, txtField09, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
+        setDisable(false, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnPromoRemove, btnTestDriveModel);
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (oTransInquiry.getMasterModel().getMasterModel().getClientTp().equals(1)) {
