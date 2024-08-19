@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -69,6 +70,14 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private VBox vbProgress;
     @FXML
     private AnchorPane reportPane;
+    @FXML
+    private Button btnChangeAmt;
+    @FXML
+    private TextField txtField01;
+    @FXML
+    private Button btnUpdateAmt;
+    @FXML
+    private Button btnCancel;
 
     @Override
     public void setGRider(GRider foValue) {

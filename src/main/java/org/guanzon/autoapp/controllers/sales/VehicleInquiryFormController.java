@@ -298,6 +298,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             oTransInquiry.getMasterModel().getMasterModel().setContctNm("");
                             txtField05.setText("");
                         }
+                        checkExistingInquiryInformation();
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField03.setText("");
@@ -321,6 +322,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     loJSON = oTransInquiry.searchSalesExecutive(lsValue);
                     if (!"error".equals(loJSON.get("result"))) {
                         txtField09.setText(oTransInquiry.getMasterModel().getMasterModel().getSalesExe());
+                        checkExistingInquiryInformation();
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField09.setText("");
@@ -708,32 +710,32 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
         return true;
     }
-//
-//    private boolean checkExistingInquiryInformation() {
-//        JSONObject loJSON = new JSONObject();
-//        loJSON = oTransInquiry.validateExistingRecord();
-//        if ("error".equals((String) loJSON.get("result"))) {
-//            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-//                loJSON = oTransActivity.openRecord((String) loJSON.get("sTransNox"));
-//                if ("success".equals((String) loJSON.get("result"))) {
-//                    loadCustomerInquiryInformation();
-//                    loadVehiclePriority();
-//                    loadPromoOffered();
-//                    loadInquiryRequirements();
-//                    loadAdvancesSlip();
-//                    loadBankApplications();
-//                    loadFollowHistory();
-//                    initFields(pnEditMode);
-//                    pnEditMode = oTransInquiry.getEditMode();
-//                }
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return false;
-//        }
-//        return true;
-//    }
+
+    private boolean checkExistingInquiryInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransInquiry.checkExistingTransaction();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransInquiry.openTransaction((String) loJSON.get("sTransNox"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadCustomerInquiryInformation();
+                    loadVehiclePriority();
+                    loadPromoOffered();
+                    loadInquiryRequirements();
+                    loadAdvancesSlip();
+                    loadBankApplications();
+                    loadFollowHistory();
+                    initFields(pnEditMode);
+                    pnEditMode = oTransInquiry.getEditMode();
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 
     private void initButtons() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnConvertSales, btnLostSale, btnProcess, btnCancel,
@@ -814,9 +816,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     switch (iTabIndex) {
                         case 0:
                         case 1:
-//                            if (checkExistingInquiryInformation) {
-//                                return;
-//                            }
+                            if (checkExistingInquiryInformation()) {
+                                return;
+                            }
                             for (int lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
                                 if (oTransInquiry.getVehiclePriority(lnCtr, "nPriority").equals(1)) {
                                     oTransInquiry.getMasterModel().getMasterModel().setVhclID(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx").toString());
@@ -1498,6 +1500,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     btnBankAppNew.setVisible(true);
                     //For Follow up
                     btnFollowUp.setVisible(true);
+                    btnLostSale.setVisible(false);
+                    btnLostSale.setManaged(false);
                     break;
                 case "2": //Lost Sale
                 case "4": //Sold
@@ -2503,6 +2507,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             lsMethod,
                             lsPlatForm,
                             String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx"))));
+
+                    lsPlatForm = "";
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
