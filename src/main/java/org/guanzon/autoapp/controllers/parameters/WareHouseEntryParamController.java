@@ -5,12 +5,10 @@
 package org.guanzon.autoapp.controllers.parameters;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -19,32 +17,36 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.parameter.Parts_Warehouse;
+import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class WareHouseEntryParamController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-    private final String pxeModuleName = "WareHouse Entry Form";
+    private final String pxeModuleName = "Warehouse Entry";
     private int pnEditMode;//Modifying fields
-//    private PartsWareHouse oTrans;
+    private Parts_Warehouse oTransWarehouse;
     @FXML
-    private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
     private TextField txtField01, txtField02;
     @FXML
     private CheckBox cboxActivate;
-    private final List<TextField> poTxtField = Arrays.asList(txtField01, txtField02);
 
     /**
      * Initializes the controller class.
@@ -60,136 +62,215 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-//        oTrans = new PartsWareHouse(oApp, oApp.getBranchCode(), true);
-//        oTrans.setWithUI(true);
+        oTransWarehouse = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
+        initTextFieldPattern();
         initCapitalizationFields();
-
+        initTextKeyPressed();
         initTextFieldFocus();
-
         initButtons();
+        clearFields();
+        InputTextUtil.addTextLimiter(txtField02, 15);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
+    private void loadWarehouseFields() {
+        txtField01.setText(oTransWarehouse.getModel().getModel().getWHouseID());
+        txtField02.setText(oTransWarehouse.getModel().getModel().getWHouseNm());
+        if (oTransWarehouse.getModel().getModel().getRecdStat().equals("1")) {
+            cboxActivate.setSelected(true);
+        } else {
+            cboxActivate.setSelected(false);
+        }
+    }
+
+    private void initTextFieldPattern() {
+        Pattern textOnly;
+        textOnly = Pattern.compile("[A-Za-z ]*");
+        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
+    }
+
     private void initCapitalizationFields() {
-        poTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+    }
+
+    private void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField02);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+
+    }
+
+    private void txtField_KeyPressed(KeyEvent event) {
+        String textFieldID = ((TextField) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (textFieldID) {
+            }
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.DOWN) {
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        }
     }
 
     private void initTextFieldFocus() {
-        poTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+        List<TextField> loTxtField = Arrays.asList(txtField02);
+        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
+    /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
-        String lsValue = loTxtField.getText().toUpperCase();
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
         if (lsValue == null) {
             return;
         }
         if (!nv) {
-            /* Lost Focus */
+            /*Lost Focus*/
             switch (lnIndex) {
-                case 1:
                 case 2:
-//                    oTrans.setMaster(lnIndex, lsValue);
+                    oTransWarehouse.getModel().getModel().setWHouseNm(lsValue);
                     break;
             }
         } else {
-            loTxtField.selectAll();
-
+            txtField.selectAll();
         }
     };
 
     private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose);
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
+                btnClose, btnDeactivate, btnActive);
+
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     private void handleButtonAction(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
-//                if (oTrans.NewRecord()) {
-//                    clearFields();
-//                    loadWareHouseField();
-//                    pnEditMode = oTrans.getEditMode();
-//                } else {
-//                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-//                }
-                break;
-            case "btnSave":
-//                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to save?") == true) {
-//                    if (txtField02.getText().trim().equals("")) {
-//                        ShowMessageFX.Warning(getStage(), "Please enter a value for bin description", "Warning", null);
-//                        txtField02.requestFocus();
-//                        return;
-//                    }
-//                    if (oTrans.SaveRecord()) {
-//                        if (pnEditMode == EditMode.ADDNEW) {
-//                            ShowMessageFX.Information(null, pxeModuleName, "New WareHouse added sucessfully.");
-//                        } else {
-//                            ShowMessageFX.Information(null, pxeModuleName, "WareHouse updated sucessfully.");
-//                        }
-//                        if (oTrans.OpenRecord(oTrans.getMaster(1).toString())) {
-//                            loadWareHouseField();
-//                            pnEditMode = oTrans.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, oTrans.getMessage());
-//                        return;
-//                    }
-//                }
+                clearFields();
+                oTransWarehouse = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
+                loJSON = oTransWarehouse.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadWarehouseFields();
+                    pnEditMode = oTransWarehouse.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
                 break;
             case "btnEdit":
-//                if (oTrans.UpdateRecord()) {
-//                    pnEditMode = oTrans.getEditMode();
-//                } else {
-//                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-//                }
+                loJSON = oTransWarehouse.updateRecord();
+                pnEditMode = oTransWarehouse.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                }
                 break;
-
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, "Warehouse Information Saving....", "Are you sure, do you want to save?")) {
+                    if (txtField02.getText().matches("[^a-zA-Z].*")) {
+                        ShowMessageFX.Warning(null, "Warehouse Information", "Please enter valid warehouse information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    if (txtField02.getText().trim().equals("")) {
+                        ShowMessageFX.Warning(null, "Warehouse Information", "Please enter value warehouse information.");
+                        txtField02.setText("");
+                        return;
+                    }
+                    loJSON = oTransWarehouse.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Warehouse Information", (String) loJSON.get("message"));
+                        loJSON = oTransWarehouse.openRecord(oTransWarehouse.getModel().getModel().getWHouseID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadWarehouseFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTransWarehouse.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
+                }
+                break;
             case "btnCancel":
-                if (ShowMessageFX.OkayCancel(getStage(), "Are you sure you want to cancel?", pxeModuleName, null) == true) {
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
+                    oTransWarehouse = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
-            case "btnDeactivate":
-//                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-//                    String lsValue = oTrans.getMaster(1).toString();
-//                    boolean lbStatus = false;
-//                    if (btnDeactivate.getText().equals("Activate")) {
-//                        lbStatus = true;
-//                    } else {
-//                        lbStatus = false;
-//                    }
-//                    if (oTrans.UpdateRecordStatus(lsValue, lbStatus)) {
-//                        ShowMessageFX.Information(getStage(), oTrans.getMessage(), pxeModuleName, null);
-//                        if (oTrans.OpenRecord(oTrans.getMaster(1).toString())) {
-//                            loadWareHouseField();
-//                            pnEditMode = oTrans.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Information(getStage(), oTrans.getMessage(), pxeModuleName, null);
-//                        return;
-//                    }
-//                }
-                break;
-
             case "btnBrowse":
-//                    if (oTrans.searchRecord()) {
-//                        loadWareHouseField();
-//                        pnEditMode = EditMode.READY;
-//                    }
+                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                    if (ShowMessageFX.YesNo(null, "Search Warehouse Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    } else {
+                        return;
+                    }
+                }
+                loJSON = oTransWarehouse.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadWarehouseFields();
+                    pnEditMode = oTransWarehouse.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Warehouse Information", (String) loJSON.get("message"));
+                }
                 break;
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
+            case "btnDeactivate":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransWarehouse.getModel().getModel().getWHouseID();
+                    loJSON = oTransWarehouse.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Warehouse Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Warehouse Information", (String) loJSON.get("message"));
+                        return;
+                    }
+                    loJSON = oTransWarehouse.openRecord(oTransWarehouse.getModel().getModel().getWHouseID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadWarehouseFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransWarehouse.getEditMode();
+                    }
+                }
+                break;
+            case "btnActive":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTransWarehouse.getModel().getModel().getWHouseID();
+                    loJSON = oTransWarehouse.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Warehouse Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Warehouse Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransWarehouse.openRecord(oTransWarehouse.getModel().getModel().getWHouseID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadWarehouseFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTransWarehouse.getEditMode();
+                    }
+                }
+                break;
             default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                ShowMessageFX.Warning("Please contact admin to assist about no button available", "Integrated Automotive System", pxeModuleName);
                 break;
         }
         initFields(pnEditMode);
+    }
+
+    private void clearFields() {
+        cboxActivate.setSelected(false);
+        txtField01.clear();
+        txtField02.clear();
     }
 
     private void initFields(int fnValue) {
@@ -207,35 +288,23 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
         btnEdit.setManaged(false);
         btnDeactivate.setVisible(false);
         btnDeactivate.setManaged(false);
+        btnActive.setVisible(false);
+        btnActive.setManaged(false);
         if (fnValue == EditMode.READY) {
             //show edit if user clicked save / browse
-//            if (oTrans.getMaster(4).toString().equals("1")) {
-//                btnDeactivate.setText("Deactivate");
-//                btnDeactivate.setVisible(true);
-//                btnDeactivate.setManaged(true);
-//                btnEdit.setVisible(true);
-//                btnEdit.setManaged(true);
-//            } else {
-//                btnDeactivate.setText("Activate");
-//                btnDeactivate.setVisible(true);
-//                btnDeactivate.setManaged(true);
-//            }
+            if (oTransWarehouse.getModel().getModel().getRecdStat().equals("1")) {
+                btnEdit.setVisible(true);
+                btnEdit.setManaged(true);
+                btnDeactivate.setVisible(true);
+                btnDeactivate.setManaged(true);
+                btnActive.setVisible(false);
+                btnActive.setManaged(false);
+            } else {
+                btnDeactivate.setVisible(false);
+                btnDeactivate.setManaged(false);
+                btnActive.setVisible(true);
+                btnActive.setManaged(true);
+            }
         }
-    }
-
-    private void loadWareHouseField() {
-//        txtField01.setText((String) oTrans.getMaster(1));
-//        txtField02.setText((String) oTrans.getMaster(2));
-//        if (oTrans.getMaster(3).toString().equals("1")) {
-//            cboxActivate.setSelected(true);
-//        } else {
-//            cboxActivate.setSelected(false);
-//        }
-    }
-
-    private void clearFields() {
-        txtField01.clear();
-        txtField02.clear();
-        cboxActivate.setSelected(false);
     }
 }
