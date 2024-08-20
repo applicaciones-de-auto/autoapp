@@ -68,13 +68,6 @@
                                                             <rowConstraints>
                                                                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                             </rowConstraints>
-                                                            <children>
-                                                                <TextField fx:id="txtSeeks02" promptText="Search Description" visible="false" GridPane.columnIndex="2">
-                                                                    <tooltip>
-                                                                        <Tooltip text="Enter your search description here." />
-                                                                    </tooltip>
-                                                                </TextField>
-                                                            </children>
                                                         </GridPane>
                                                     </children>
                                                     <BorderPane.margin>
@@ -174,7 +167,7 @@
                                                                                 <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="5.0">
                                                                                     <columnConstraints>
                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
                                                                                     </columnConstraints>
                                                                                     <rowConstraints>
                                                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

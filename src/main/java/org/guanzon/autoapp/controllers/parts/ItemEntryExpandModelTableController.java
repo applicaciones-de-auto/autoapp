@@ -4,13 +4,12 @@
  */
 package org.guanzon.autoapp.controllers.parts;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,7 +25,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.parts.InventoryInformation;
-import org.guanzon.autoapp.models.general.ModelActivityMember;
 import org.guanzon.autoapp.models.parts.ModelItemEntryModelYear;
 import org.json.simple.JSONObject;
 
@@ -108,7 +106,7 @@ public class ItemEntryExpandModelTableController implements Initializable {
                     //Inv Model Year
                     for (ModelItemEntryModelYear item : selectedModelItemsYear) {
                         String lsRow = item.getTblindexModel01();
-                        oTransInventoryModel.removeInventoryModel(Integer.parseInt(lsRow));
+//                        oTransInventoryModel.removeInvModel_Year(Integer.parseInt(lsRow));
                         removeCount++;
                     }
                     if (removeCount >= 1) {
@@ -131,29 +129,23 @@ public class ItemEntryExpandModelTableController implements Initializable {
     }
 
     private void loadModelYearTable() {
-        try {
-            JSONObject loJSON = new JSONObject();
-            modelData.clear();
-            loJSON = oTransInventoryModel.loadModel();
-            if ("success".equals((String) loJSON.get("result"))) {
-                for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getModelCount(); lnCtr++) {
-                    modelData.add(new ModelItemEntryModelYear(
-                            String.valueOf(lnCtr), // ROW
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeIDxx")),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc")),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelIDx")),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc")),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "nYearModl")),
-                            String.valueOf(lnCtr),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelCde"))
-                    ));
-
-                }
+        JSONObject loJSON = new JSONObject();
+        modelData.clear();
+        loJSON = oTransInventoryModel.loadModel();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
+                modelData.add(new ModelItemEntryModelYear(
+                        String.valueOf(lnCtr), // ROW
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeIDxx")),
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeDesc")),
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelIDx")),
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelDsc")),
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl")),
+                        String.valueOf(lnCtr),
+                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelCde"))
+                ));
 
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(ItemEntryExpandModelTableController.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
         tblVModelList.setItems(modelData);
     }
@@ -180,5 +172,12 @@ public class ItemEntryExpandModelTableController implements Initializable {
         tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
         tblindexModel04.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
         tblindexModel05.setCellValueFactory(new PropertyValueFactory<>("tblindexModel06"));
+        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
     }
 }

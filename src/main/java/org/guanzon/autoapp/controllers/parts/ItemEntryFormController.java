@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.parts;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -52,6 +54,7 @@ import org.guanzon.autoapp.controllers.parameters.CategoryEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementEntryParamController;
 import org.guanzon.autoapp.models.parts.ModelItemEntryModelYear;
+import org.guanzon.autoapp.models.sales.ModelInquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -117,8 +120,6 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
     private CheckBox selectAllModelCheckBox;
     @FXML
     private ImageView imgPartsPic;
-    @FXML
-    private TextField txtSeeks02;
     @FXML
     private Label lblStatus;
 
@@ -255,15 +256,6 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                     }
                     oTransInventory.getModel().getModel().setUnitPrce(Double.valueOf(lsValue.replace(",", "")));
                     txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInventory.getModel().getModel().getUnitPrce()))));
-                    break;
-                case 9:
-//                    oTransInventory.getModel().getModel().;
-                    break;
-                case 11:
-                    break;
-                case 12:
-                    break;
-                case 14:
                     break;
 
             }
@@ -416,38 +408,41 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 break;
             case "btnModelAdd":
                 loadModelWindow();
-                break;
-            case "btnModelDel":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
-                    ObservableList<ModelItemEntryModelYear> selectedModelItemsYear = FXCollections.observableArrayList();
-                    for (ModelItemEntryModelYear item : tblModelView.getItems()) {
-                        if (item.getSelect().isSelected()) {
-                            selectedModelItemsYear.add(item);
-                        }
-                    }
-
-                    if (selectedModelItemsYear.isEmpty()) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "No item selected");
-                        return;
-                    }
-
-                    int removeCount = 0;
-                    //Inv Model Year
-                    for (ModelItemEntryModelYear item : selectedModelItemsYear) {
-                        String lsRow = item.getTblindexModel01();
-                        oTransInventory.removeInventoryModel(Integer.parseInt(lsRow) - 1);
-                        removeCount++;
-                    }
-                    if (removeCount >= 1) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Removed Vehicle Model successfully.");
-                    } else {
-                        ShowMessageFX.Error(null, pxeModuleName, "Failed to removed vehicle model");
-                    }
-                } else {
-                    return;
-                }
                 loadModelTable();
                 break;
+            case "btnModelDel":
+                ObservableList<ModelItemEntryModelYear> selectedItems = FXCollections.observableArrayList();
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
+                    boolean lbIsNoYear = false;
+                    for (ModelItemEntryModelYear item : tblModelView.getItems()) {
+                        if (item.getSelect().isSelected()) {
+                            if (item.getTblindexModel06().equals("")) {
+                                lbIsNoYear = true;
+                            }
+                            selectedItems.add(item);
+                        }
+                    }
+                    int numbersOfItems = selectedItems.size();
+                    int lnRow = 0;
+                    int removeCount = 0;
+                    Integer[] lnValueModelYear = new Integer[numbersOfItems];
+                    for (ModelItemEntryModelYear item : tblModelView.getItems()) {
+                        String lsModelCode = item.getTblindexModel05();
+                        int lnYear = Integer.parseInt(item.getTblindexModel06());
+                        if (item.getSelect().isSelected()) {
+                            if (item.getTblindexModel06().equals("")) {
+                                lnValueModelYear[numbersOfItems] = lnYear;
+                            } else {
+
+                            }
+                            removeCount++;
+                        }
+                    }
+                }
+//                oTransInventory.removeInvModel_Year(lnValueModel, lnValueModelYear);
+                loadModelTable();
+                break;
+
             case "btnModelExpand":
                 loadModelExpandWindow();
                 break;
@@ -562,6 +557,11 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 Image image = new Image(imageFilePath);
                 imgPartsPic.setImage(image);
             }
+        }
+        if (String.valueOf(oTransInventory.getModel().getModel().getRecdStat()).equals("1")) {
+            lblStatus.setText("Active");
+        } else {
+            lblStatus.setText("Deactivated");
         }
     }
 
@@ -740,7 +740,6 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-
             loadModelTable();
         } catch (IOException e) {
             ShowMessageFX.Warning(null, e.getMessage(), "Warning");
@@ -787,30 +786,23 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
     }
 
     private void loadModelTable() {
-        try {
-            JSONObject loJSON = new JSONObject();
-            modelData.clear();
-            loJSON = oTransInventory.loadModel();
-            if ("success".equals((String) loJSON.get("result"))) {
-                for (int lnCtr = 1; lnCtr <= oTransInventory.getModelCount(); lnCtr++) {
-                    modelData.add(new ModelItemEntryModelYear(
-                            String.valueOf(lnCtr), // ROW
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "sMakeIDxx")),
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "sMakeDesc")),
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "sModelIDx")),
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "sModelDsc")),
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "nYearModl")),
-                            String.valueOf(lnCtr),
-                            String.valueOf(oTransInventory.getModelDetail(lnCtr, "sModelCde"))
-                    ));
-
-                }
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ItemEntryExpandModelTableController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+        JSONObject loJSON = new JSONObject();
+        modelData.clear();
+//        loJSON = oTransInventory.loadModel();
+//        if ("success".equals((String) loJSON.get("result"))) {
+        for (int lnCtr = 0; lnCtr <= oTransInventory.getInventoryModelYearList().size() - 1; lnCtr++) {
+            modelData.add(new ModelItemEntryModelYear(
+                    String.valueOf(lnCtr + 1), // ROW
+                    "",
+                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc")),
+                    "",
+                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc")),
+                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "nYearModl")),
+                    String.valueOf(lnCtr),
+                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelCde"))
+            ));
         }
+//        }
         tblModelView.setItems(modelData);
     }
 
@@ -836,6 +828,12 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
         tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
         tblindexModel04.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
         tblindexModel05.setCellValueFactory(new PropertyValueFactory<>("tblindexModel06"));
+        tblModelView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblModelView.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     private void clearFields() {
@@ -864,6 +862,9 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 //        txtField01.setDisable(true);
+        tblindexModel02.setVisible(lbShow);
+        btnSupsAdd.setDisable(true);
+        btnSupsDel.setDisable(true);
         txtField02.setDisable(!lbShow);
         txtField03.setDisable(!lbShow);
         txtField04.setDisable(!lbShow);

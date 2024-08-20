@@ -100,17 +100,7 @@
                                         </Label>
                                         <TextField fx:id="txtSeeks01" promptText="Search Make" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtSeeks02" prefHeight="22.0" prefWidth="197.0" promptText="Search Model" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                        <Button fx:id="btnFilterMake" mnemonicParsing="false" text="Filter" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Click to filter make." />
-                                            </tooltip>
-                                        </Button>
                                         <ComboBox fx:id="comboFilter" prefHeight="24.0" prefWidth="98.0" promptText="MAKE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <Button fx:id="btnFilterModel" mnemonicParsing="false" text="Filter" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Filter Model Button." />
-                                            </tooltip>
-                                        </Button>
                                         <CheckBox id="LabelDesc" fx:id="chckNoYear" mnemonicParsing="false" prefHeight="18.0" prefWidth="204.0" text="No Year Model" textAlignment="CENTER" GridPane.columnIndex="8" GridPane.rowIndex="2">
                                             <padding>
                                                 <Insets bottom="2.0" />

@@ -4,20 +4,21 @@
  */
 package org.guanzon.autoapp.controllers.parts;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -104,21 +105,29 @@ public class ItemEntryModelController implements Initializable {
         initComboFields();
         loadItemModelTable();
         loadItemModelYearTable();
+
     }
 
     private void loadItemModelYearTable() {
         itemModelYear.clear();
-        for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelList().size() - 1; lnCtr++) {
-            itemModelYear.add(new ModelItemEntryModelYear(
-                    String.valueOf(lnCtr + 1), // ROW
-                    "",
-                    "",
-                    "",
-                    "",
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "nYearModl")),
-                    "",
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sModelCde"))
-            ));
+        try {
+            int currentYear = LocalDate.now().getYear() + 1; // Starting year
+            int endYear = 1900;    // Ending year
+
+            for (int year = currentYear; year >= endYear; year--) {
+                itemModelYear.add(new ModelItemEntryModelYear(
+                        String.valueOf(year), // ROW
+                        "",
+                        "",
+                        "",
+                        "",
+                        String.valueOf(year),
+                        String.valueOf(year),
+                        String.valueOf(oTransInventoryModel.getModelDetail(year, "sModelCde"))
+                ));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemEntryModelController.class.getName()).log(Level.SEVERE, null, ex);
         }
         tblVYear.setItems(itemModelYear);
     }
@@ -143,13 +152,21 @@ public class ItemEntryModelController implements Initializable {
         });
 
         tblVYear.disabledProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
+            if (newValue) { // If tblVYear is disabled
+                // Unselect all checkboxes
                 tblVYear.getItems().forEach(item -> item.getSelect().setSelected(false));
+                // Unselect the "Select All" checkbox
                 selectYearAll.setSelected(false);
             }
         });
 
         tblindexModelYr02.setCellValueFactory(new PropertyValueFactory<>("tblindexModel06"));
+        tblVYear.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVYear.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     private void CheckNoYear() {
@@ -178,13 +195,13 @@ public class ItemEntryModelController implements Initializable {
             case ENTER:
                 switch (txtFieldID) {
                     case "txtSeeks01":
-                        String lsFilterMake = txtSeeks01.getText();
+                        String lsFilterMake = txtSeeks01.getText().trim().toLowerCase();
                         FilteredList<ModelItemEntryModelYear> filteredTxtFieldMake = new FilteredList<>(itemModeldata);
                         filteredTxtFieldMake.setPredicate(clients -> {
                             if (lsFilterMake.isEmpty()) {
                                 return true;
                             } else {
-                                String make = clients.getTblindexModel03();
+                                String make = clients.getTblindexModel03().toLowerCase();
                                 return make.contains(lsFilterMake);
                             }
                         });
@@ -194,13 +211,13 @@ public class ItemEntryModelController implements Initializable {
                         }
                         break;
                     case "txtSeeks02":
-                        String lsFilterModel = txtSeeks02.getText();
+                        String lsFilterModel = txtSeeks02.getText().trim().toLowerCase();
                         FilteredList<ModelItemEntryModelYear> filteredTxtFieldModel = new FilteredList<>(itemModeldata);
                         filteredTxtFieldModel.setPredicate(clients -> {
                             if (lsFilterModel.isEmpty()) {
                                 return true;
                             } else {
-                                String make = clients.getTblindexModel05();
+                                String make = clients.getTblindexModel05().toLowerCase();
                                 return make.contains(lsFilterModel);
                             }
                         });
@@ -209,8 +226,8 @@ public class ItemEntryModelController implements Initializable {
                             ShowMessageFX.Information(null, pxeModuleName, "No record found!");
                         }
                         break;
-
                 }
+                break;
         }
     }
 
@@ -253,76 +270,73 @@ public class ItemEntryModelController implements Initializable {
                     ShowMessageFX.Information(null, pxeModuleName, "Please either check the \"No Year Model\" checkbox or select items in the table for model years.");
                 } else {
                     int addCount = 0;
-                    boolean lbIsExist = false;
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                         if (chckNoYear.isSelected()) {
                             for (ModelItemEntryModelYear item : selectedItemsModel) {
+                                String lsMakeIDx = item.getTblindexModel02();
                                 String lsMakeDesc = item.getTblindexModel03();
+                                String lsModelIDx = item.getTblindexModel04();
                                 String lsModelDesc = item.getTblindexModel05();
-                                String lsModelCode = item.getTblindexModel08();
-                                for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelList().size() - 1; lnCtr++) {
-                                    if (oTransInventoryModel.getInventoryModel(lnCtr, "sModelCde").toString().equals(lsModelCode)) {
-                                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Model, " + lsModelDesc + " already exist.");
-                                    }
-                                    lbIsExist = true;
-                                    break;
-                                }
-                            }
-                            if (!lbIsExist) {
-                                oTransInventoryModel.addInventoryModel();
+                                oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, 0, true);
                                 addCount++;
                             }
-                        }
-
-                    } else {
-                        //Inv Model Year
-                        for (ModelItemEntryModelYear item : selectedItemsModel) {
-                            String lsMakeDesc = item.getTblindexModel03();
-                            String lsModelDesc = item.getTblindexModel05();
-                            String lsModelCode = item.getTblindexModel08();
-                            for (ModelItemEntryModelYear items : selectedItemsYear) {
-                                String Year = items.getTblindexModel06();
-                                for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
-                                    if (oTransInventoryModel.getInventoryModel(lnCtr, "sModelCde").toString().equals(lsModelCode)) {
-                                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add Model, " + lsModelDesc + " " + Year + "already exist.");
-                                    }
-                                    lbIsExist = true;
-                                    break;
-                                }
-                                if (!lbIsExist) {
-                                    oTransInventoryModel.addInventoryModelYear();
+                        } else {
+                            //Inv Model Year
+                            for (ModelItemEntryModelYear item : selectedItemsModel) {
+                                String lsMakeIDx = item.getTblindexModel03();
+                                String lsMakeDesc = item.getTblindexModel03();
+                                String lsModelIDx = item.getTblindexModel02();
+                                String lsModelDesc = item.getTblindexModel05();
+                                for (ModelItemEntryModelYear items : selectedItemsYear) {
+                                    String lsYear = items.getTblindexModel06();
+                                    int lnYears = Integer.parseInt(lsYear);
+                                    oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, lnYears, false);
                                     addCount++;
                                 }
-
                             }
-
+                        }
+                        if (addCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Added Vehicle Model successfully.");
+                            CommonUtils.closeStage(btnClose);
+                        } else {
+                            ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle model");
                         }
                     }
-                    if (addCount >= 1) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Added Vehicle Model successfully.");
-                    } else {
-                        ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle model");
-                    }
+                    break;
                 }
-                CommonUtils.closeStage(btnAdd);
-                break;
         }
+
     }
 
     private void loadItemModelTable() {
         itemModeldata.clear(); // Clear the previous data in the list
-        for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelList().size() - 1; lnCtr++) {
-            itemModeldata.add(new ModelItemEntryModelYear(
-                    String.valueOf(lnCtr + 1), // ROW
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sMakeIDxx")),
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sMakeDesc")),
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sModelIDx")),
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sModelDsc")),
-                    "",
-                    "",
-                    String.valueOf(oTransInventoryModel.getInventoryModel(lnCtr, "sModelCde"))
-            )
-            );
+        JSONObject loJSON = oTransInventoryModel.loadModel();
+        if ("success".equals((String) loJSON.get("result"))) {
+            try {
+                String lsMakeName = "";
+                for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getModelCount(); lnCtr++) {
+                    if (!oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc").equals("COMMON")) {
+                        if (oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc") != null) {
+                            lsMakeName = String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc"));
+                        }
+                    }
+                    itemModeldata.add(new ModelItemEntryModelYear(
+                            String.valueOf(lnCtr), // ROW
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeIDxx")),
+                            lsMakeName,
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelIDx")),
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc")),
+                            "",
+                            "",
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelCde"))
+                    )
+                    );
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ItemEntryModelController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
         }
         tblVModelList.setItems(itemModeldata);
     }
@@ -333,89 +347,27 @@ public class ItemEntryModelController implements Initializable {
         tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
         // Set up listener for "Select All" checkbox
         tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
-        tblVModelList.getItems().forEach(new Consumer<ModelItemEntryModelYear>() {
-            @Override
-            public void accept(ModelItemEntryModelYear item) {
-                CheckBox loSelectCheckBoxModel = item.getSelect();
-                loSelectCheckBoxModel.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        // Check if any checkbox is selected
-                        boolean lbAnySelected = false;
-                        for (ModelItemEntryModelYear itemModel : tblVModelList.getItems()) {
-                            if (itemModel.getSelect().isSelected()) {
-                                if (itemModel.getTblindexModel05().equals("COMMON")) {
-                                    tblVYear.setDisable(true);
-                                    chckNoYear.setSelected(true);
-                                    chckNoYear.setVisible(false);
-
-                                    for (ModelItemEntryModelYear itemModel2 : tblVModelList.getItems()) {
-                                        if (itemModel2.getSelect().isSelected()) {
-                                            if (!itemModel2.getTblindexModel05().equals("COMMON")) {
-                                                itemModel2.getSelect().setSelected(false);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    tblVYear.setDisable(false);
-                                    chckNoYear.setSelected(false);
-                                    chckNoYear.setVisible(true);
-                                    lbAnySelected = true;
-                                }
-                            }
-                        }
-
-                        if (!chckNoYear.isSelected()) {
-                            tblVYear.setDisable(false);
-                            chckNoYear.setVisible(true);
-                            chckNoYear.setSelected(false);
-                        }
-
-                        // Check if all checkboxes are selected and update selectModelAll accordingly
-                        boolean allSelected = tblVModelList.getItems().stream()
-                                .allMatch(new Predicate<ModelItemEntryModelYear>() {
-                                    @Override
-                                    public boolean test(ModelItemEntryModelYear tableItem) {
-                                        return tableItem.getSelect().isSelected();
-                                    }
-                                });
-                        selectModelAll.setSelected(allSelected);
-                        tblVYear.setDisable(!lbAnySelected);
-                        chckNoYear.setVisible(lbAnySelected);
-                        chckNoYear.setSelected(!lbAnySelected);
-
-                    }
-                });
-            }
-        });
 
         selectModelAll.setOnAction(event -> {
             boolean selectAll = selectModelAll.isSelected();
 
-            // Check/uncheck all items' checkboxes
-            tblVModelList.getItems().forEach(new Consumer<ModelItemEntryModelYear>() {
-                @Override
-                public void accept(ModelItemEntryModelYear item) {
-                    if (item.getTblindexModel05().equals("COMMON")) {
-                        item.getSelect().setSelected(false);
-                        chckNoYear.setVisible(true);
-                    } else {
-                        item.getSelect().setSelected(selectAll);
-                    }
-
+            tblVModelList.getItems().forEach(item -> {
+                if (item.getTblindexModel05().equals("COMMON")) {
+                    item.getSelect().setSelected(false);
+                } else {
+                    item.getSelect().setSelected(selectAll);
                 }
             });
-
-            // Enable/disable tableViewYear and unselect checkboxNoYear accordingly
-            if (selectAll) {
-                tblVYear.setDisable(false);
-                chckNoYear.setVisible(true);
-                chckNoYear.setSelected(false);
-            } else {
-                tblVYear.setDisable(true);
-                chckNoYear.setVisible(false);
-                chckNoYear.setSelected(true);
-            }
+            boolean isAnySelected = selectAll;
+            tblVYear.setDisable(!isAnySelected);
+            chckNoYear.setVisible(isAnySelected);
+            chckNoYear.setSelected(!isAnySelected);
+        });
+        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
         });
     }
 

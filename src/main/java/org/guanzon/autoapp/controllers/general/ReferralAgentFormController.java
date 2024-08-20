@@ -1013,7 +1013,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
 //            comboBox11.getSelectionModel().select(Integer.parseInt(oTransRefferal.getModel().getModel().getgetEducAttain()));
 //        }
 
-//        txtField12.setText(oTransRef.getModel().getModel().getProfession());
+//        txtField12.setText(oTransClient.getModel().getModel().getProfession());
     }
 
     @FXML
@@ -1071,7 +1071,6 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
             stage.showAndWait();
 
         } catch (IOException e) {
-            e.printStackTrace();
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }

@@ -298,7 +298,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             oTransInquiry.getMasterModel().getMasterModel().setContctNm("");
                             txtField05.setText("");
                         }
-                        checkExistingInquiryInformation();
+                        checkExistingInquiryInformation(true);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField03.setText("");
@@ -322,7 +322,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     loJSON = oTransInquiry.searchSalesExecutive(lsValue);
                     if (!"error".equals(loJSON.get("result"))) {
                         txtField09.setText(oTransInquiry.getMasterModel().getMasterModel().getSalesExe());
-                        checkExistingInquiryInformation();
+                        checkExistingInquiryInformation(false);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField09.setText("");
@@ -711,9 +711,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         return true;
     }
 
-    private boolean checkExistingInquiryInformation() {
+    private boolean checkExistingInquiryInformation(boolean fbIsClient) {
         JSONObject loJSON = new JSONObject();
-        loJSON = oTransInquiry.checkExistingTransaction();
+        loJSON = oTransInquiry.checkExistingTransaction(fbIsClient);
         if ("error".equals((String) loJSON.get("result"))) {
             if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
                 loJSON = oTransInquiry.openTransaction((String) loJSON.get("sTransNox"));
@@ -809,6 +809,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     initBtnProcess(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Inquiry Information Confirmation", (String) loJSON.get("message"));
+                    pnEditMode = oTransInquiry.getEditMode();
+                    initFields(pnEditMode);
+                    initBtnProcess(pnEditMode);
                 }
                 break;
             case "btnSave":
@@ -816,9 +819,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     switch (iTabIndex) {
                         case 0:
                         case 1:
-                            if (checkExistingInquiryInformation()) {
-                                return;
-                            }
                             for (int lnCtr = 0; lnCtr <= oTransInquiry.getVehiclePriorityList().size() - 1; lnCtr++) {
                                 if (oTransInquiry.getVehiclePriority(lnCtr, "nPriority").equals(1)) {
                                     oTransInquiry.getMasterModel().getMasterModel().setVhclID(oTransInquiry.getVehiclePriority(lnCtr, "sVhclIDxx").toString());
@@ -1419,7 +1419,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         btnPromoRemove.setDisable(true);
         btnTargetVhclRemove.setDisable(true);
         btnTargetVhclRemove.setVisible(lbShow);
-        btnPromoRemove.setVisible(lbShow);
         //Inquiry General Button
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
@@ -1562,6 +1561,9 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 initCustomerInquiryFieldsTrue();
                 initInquiryProcessFieldsFalse();
             }
+            if (String.valueOf(oTransInquiry.getMaster("cTranStat")).equals("3")) {
+                comboBox21.setDisable(true);
+            }
         }
         //disable fields according to the tab index
         if (fnValue == EditMode.UPDATE) {
@@ -1583,8 +1585,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         trgvIndex04.setVisible(true);
 
         // Disable common fields
-        setDisable(false, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
-                rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnPromoRemove, btnTestDriveModel);
+        setDisable(false, comboBox10, txtField14, comboBox21, datePicker22,
+                rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnTestDriveModel, textArea23);
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (oTransInquiry.getMasterModel().getMasterModel().getClientTp().equals(1)) {
                 txtField05.setDisable(false);
@@ -1601,12 +1603,13 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     }
 
     private void initInquiryProcessFieldsTrue() {
-        trgvIndex03.setVisible(true);
-        trgvIndex04.setVisible(true);
+        trgvIndex03.setVisible(false);
+        trgvIndex04.setVisible(false);
 
         setDisable(true, txtField05, txtField09, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
-                rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnPromoRemove, btnTestDriveModel);
+                rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnTargetVhclRemove, btnPromoAdd, btnPromoRemove, btnTestDriveModel, textArea23);
         txtField14.setEditable(false); // Branch Name
+
     }
 
     private void initCustomerInquiryFieldsTrue() {
@@ -1924,6 +1927,12 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
             }
         });
 
+        tblPriorityUnit.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblPriorityUnit.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
         tblPriorityUnit.setItems(priorityunitdata);
     }
 
@@ -1960,7 +1969,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                 return;
             }
             if (event.getClickCount() == 1) {
-                btnPromoRemove.setDisable(false);
+                if (tblPromosOffered.getItems().size() > 0) {
+                    if (tabPinEditMode == 0) {
+                        btnPromoRemove.setDisable(false);
+                    }
+                }
             }
         }
     }
