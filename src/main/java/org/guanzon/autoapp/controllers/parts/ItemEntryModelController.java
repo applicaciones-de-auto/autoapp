@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -68,7 +69,7 @@ public class ItemEntryModelController implements Initializable {
     @FXML
     private CheckBox chckNoYear;
     @FXML
-    private TableColumn<ModelItemEntryModelYear, Boolean> tblindexModel01Select;
+    private TableColumn<ModelItemEntryModelYear, CheckBox> tblindexModel01Select;
     @FXML
     private TableColumn<ModelItemEntryModelYear, String> tblindexModel02;
     @FXML
@@ -266,9 +267,12 @@ public class ItemEntryModelController implements Initializable {
 
                 if (!lbIsAnyModelItemSelected && !lbIsAnyYearItemSelected) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
+                    return;
                 } else if (!chckNoYear.isSelected() && !lbIsAnyYearItemSelected) {
                     ShowMessageFX.Information(null, pxeModuleName, "Please either check the \"No Year Model\" checkbox or select items in the table for model years.");
+                    return;
                 } else {
+                    String lsMessage = "";
                     int addCount = 0;
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                         if (chckNoYear.isSelected()) {
@@ -277,29 +281,39 @@ public class ItemEntryModelController implements Initializable {
                                 String lsMakeDesc = item.getTblindexModel03();
                                 String lsModelIDx = item.getTblindexModel04();
                                 String lsModelDesc = item.getTblindexModel05();
-                                oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, 0, true);
-                                addCount++;
+                                loJSON = oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, 0, true);
+                                if (!"error".equals((String) loJSON.get("result"))) {
+                                    lsMessage = (String) loJSON.get("message");
+                                    addCount++;
+                                } else {
+                                    lsMessage = (String) loJSON.get("message");
+                                }
                             }
                         } else {
                             //Inv Model Year
                             for (ModelItemEntryModelYear item : selectedItemsModel) {
-                                String lsMakeIDx = item.getTblindexModel03();
+                                String lsMakeIDx = item.getTblindexModel02();
                                 String lsMakeDesc = item.getTblindexModel03();
-                                String lsModelIDx = item.getTblindexModel02();
+                                String lsModelIDx = item.getTblindexModel04();
                                 String lsModelDesc = item.getTblindexModel05();
                                 for (ModelItemEntryModelYear items : selectedItemsYear) {
                                     String lsYear = items.getTblindexModel06();
                                     int lnYears = Integer.parseInt(lsYear);
-                                    oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, lnYears, false);
-                                    addCount++;
+                                    loJSON = oTransInventoryModel.addInvModel_Year(lsModelIDx, lsModelDesc, lsMakeIDx, lsMakeDesc, lnYears, false);
+                                    if (!"error".equals((String) loJSON.get("result"))) {
+                                        lsMessage = (String) loJSON.get("message");
+                                        addCount++;
+                                    } else {
+                                        lsMessage = (String) loJSON.get("message");
+                                    }
                                 }
                             }
                         }
                         if (addCount >= 1) {
-                            ShowMessageFX.Information(null, pxeModuleName, "Added Vehicle Model successfully.");
+                            ShowMessageFX.Information(null, pxeModuleName, "Added model successfully.");
                             CommonUtils.closeStage(btnClose);
                         } else {
-                            ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle model");
+                            ShowMessageFX.Error(null, pxeModuleName, lsMessage);
                         }
                     }
                     break;
@@ -341,34 +355,84 @@ public class ItemEntryModelController implements Initializable {
         tblVModelList.setItems(itemModeldata);
     }
 
-    @SuppressWarnings("unchecked")
     private void initItemModelTable() {
-        tblindexModel01Select.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblindexModel01Select.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSelect()));
+        tblindexModel01Select.setCellFactory(column -> new TableCell<ModelItemEntryModelYear, CheckBox>() {
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(item);
+
+                    // Add action listener to checkbox
+                    item.setOnAction(event -> {
+                        ModelItemEntryModelYear modelItem = getTableView().getItems().get(getIndex());
+
+                        if (modelItem.getTblindexModel05().equals("COMMON")) {
+                            // If "COMMON" is selected, unselect all other checkboxes and deselect "Select All"
+                            tblVModelList.getItems().forEach(otherItem -> {
+                                if (!otherItem.getTblindexModel05().equals("COMMON")) {
+                                    otherItem.getSelect().setSelected(false);
+                                }
+                            });
+                            selectModelAll.setSelected(false);
+                        } else {
+                            // If a non-COMMON item is selected, unselect the "COMMON" checkbox
+                            tblVModelList.getItems().stream()
+                                    .filter(otherItem -> otherItem.getTblindexModel05().equals("COMMON"))
+                                    .forEach(commonItem -> commonItem.getSelect().setSelected(false));
+                        }
+
+                        updateYearAndCheckNoYearVisibility();
+                    });
+                }
+            }
+        });
+
         tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
-        // Set up listener for "Select All" checkbox
         tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
 
+        // Listener for "Select All" checkbox
         selectModelAll.setOnAction(event -> {
             boolean selectAll = selectModelAll.isSelected();
 
             tblVModelList.getItems().forEach(item -> {
-                if (item.getTblindexModel05().equals("COMMON")) {
-                    item.getSelect().setSelected(false);
-                } else {
+                if (!item.getTblindexModel05().equals("COMMON")) {
                     item.getSelect().setSelected(selectAll);
                 }
             });
-            boolean isAnySelected = selectAll;
-            tblVYear.setDisable(!isAnySelected);
-            chckNoYear.setVisible(isAnySelected);
-            chckNoYear.setSelected(!isAnySelected);
+
+            updateYearAndCheckNoYearVisibility();
         });
+
+        // Add listener to each CheckBox in the table
+        tblVModelList.getItems().forEach(item -> {
+            item.getSelect().setOnAction(event -> {
+                if (!item.getTblindexModel05().equals("COMMON")) {
+                    updateYearAndCheckNoYearVisibility();
+                }
+            });
+        });
+
+        // Prevent column reordering
         tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
         });
+    }
+
+// Method to update tblVYear and chckNoYear visibility
+    private void updateYearAndCheckNoYearVisibility() {
+        boolean isAnySelected = tblVModelList.getItems().stream()
+                .anyMatch(item -> item.getSelect().isSelected() && !item.getTblindexModel05().equals("COMMON"));
+
+        tblVYear.setDisable(!isAnySelected);
+        chckNoYear.setVisible(isAnySelected);
+        chckNoYear.setSelected(!isAnySelected);
     }
 
     public void initComboFields() {

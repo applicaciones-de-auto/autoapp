@@ -6,8 +6,11 @@ package org.guanzon.autoapp.controllers.parts;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -89,33 +92,57 @@ public class ItemEntryExpandModelTableController implements Initializable {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnRemove":
+                ObservableList<ModelItemEntryModelYear> selectedItems = FXCollections.observableArrayList();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
-                    ObservableList<ModelItemEntryModelYear> selectedModelItemsYear = FXCollections.observableArrayList();
                     for (ModelItemEntryModelYear item : tblVModelList.getItems()) {
                         if (item.getSelect().isSelected()) {
-                            selectedModelItemsYear.add(item);
+                            selectedItems.add(item);
                         }
                     }
 
-                    if (selectedModelItemsYear.isEmpty()) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "No item selected");
-                        return;
+                    // Maps to hold the model codes and their corresponding years
+                    Map<String, List<Integer>> modelYearMap = new HashMap<>();
+
+                    // Loop through selected items and populate the map
+                    for (ModelItemEntryModelYear item : selectedItems) {
+                        String lsModelCode = item.getTblindexModel08();
+                        int lnYear = item.getTblindexModel06().isEmpty() ? 0 : Integer.parseInt(item.getTblindexModel06());
+
+                        // Add the year to the corresponding model code in the map
+                        modelYearMap.computeIfAbsent(lsModelCode, k -> new ArrayList<>()).add(lnYear);
                     }
 
+                    // Debug: Print out the modelYearMap to ensure it contains the correct data
+                    for (Map.Entry<String, List<Integer>> entry : modelYearMap.entrySet()) {
+                        System.out.println("Model Code: " + entry.getKey() + ", Years: " + entry.getValue());
+                    }
+
+                    // Now loop through the map and remove the models
                     int removeCount = 0;
-                    //Inv Model Year
-                    for (ModelItemEntryModelYear item : selectedModelItemsYear) {
-                        String lsRow = item.getTblindexModel01();
-//                        oTransInventoryModel.removeInvModel_Year(Integer.parseInt(lsRow));
-                        removeCount++;
+                    for (Map.Entry<String, List<Integer>> entry : modelYearMap.entrySet()) {
+                        String modelCode = entry.getKey();
+                        Integer[] lnModelYears = entry.getValue().toArray(new Integer[0]);
+
+                        // Debug: Check the content of lnModelYears before passing it to removeInvModel_Year
+                        System.out.println("Removing Model Code: " + modelCode + " with Years: " + Arrays.toString(lnModelYears));
+
+                        try {
+                            // Call the removeModel method
+                            oTransInventoryModel.removeInvModel_Year(modelCode, lnModelYears);
+                            removeCount++;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            System.err.println("Error removing model: " + modelCode + ", Years: " + Arrays.toString(lnModelYears));
+                            e.printStackTrace();
+                        }
                     }
                     if (removeCount >= 1) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Removed Vehicle Model successfully.");
+                        ShowMessageFX.Information(null, pxeModuleName, "Removed Model Successfully");
+                        selectModelAll.setSelected(false);
                     } else {
-                        ShowMessageFX.Error(null, pxeModuleName, "Failed to removed vehicle model");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Failed to remove model.");
+                        return;
                     }
-                } else {
-                    return;
+                    // Reload the table after removal
                 }
                 loadModelYearTable();
                 break;
@@ -129,23 +156,23 @@ public class ItemEntryExpandModelTableController implements Initializable {
     }
 
     private void loadModelYearTable() {
-        JSONObject loJSON = new JSONObject();
         modelData.clear();
-        loJSON = oTransInventoryModel.loadModel();
-        if ("success".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
-                modelData.add(new ModelItemEntryModelYear(
-                        String.valueOf(lnCtr), // ROW
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeIDxx")),
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeDesc")),
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelIDx")),
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelDsc")),
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl")),
-                        String.valueOf(lnCtr),
-                        String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelCde"))
-                ));
-
+        String lsYearModl = "";
+        for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
+            if (!oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
+                lsYearModl = String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl"));
             }
+            modelData.add(new ModelItemEntryModelYear(
+                    String.valueOf(lnCtr + 1), // ROW
+                    "",
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeDesc")),
+                    "",
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelDsc")),
+                    lsYearModl,
+                    String.valueOf(lnCtr),
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelCde"))
+            ));
+            lsYearModl = "";
         }
         tblVModelList.setItems(modelData);
     }

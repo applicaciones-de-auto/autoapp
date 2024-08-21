@@ -8,13 +8,13 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -54,7 +54,6 @@ import org.guanzon.autoapp.controllers.parameters.CategoryEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeEntryParamController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementEntryParamController;
 import org.guanzon.autoapp.models.parts.ModelItemEntryModelYear;
-import org.guanzon.autoapp.models.sales.ModelInquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -193,7 +192,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 case "txtField08":
                     loJSON = oTransInventory.searchInvCategory(lsValue, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField08.setText(oTransInventory.getModel().getModel().getCategCd1());
+                        txtField08.setText(oTransInventory.getModel().getModel().getCatgeDs1());
                     } else {
                         txtField08.clear();
                         txtField08.requestFocus();
@@ -243,12 +242,13 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             switch (lnIndex) {
                 case 2:
                     oTransInventory.getModel().getModel().setBarCode(lsValue);
+                    oTransInventory.getModel().getModel().setTrimBCde(lsValue);
                     break;
                 case 4:
                     oTransInventory.getModel().getModel().setDescript(lsValue);
                     break;
                 case 5:
-                    oTransInventory.getModel().getModel().setCategCd1(lsValue);
+                    oTransInventory.getModel().getModel().setBriefDsc(lsValue);
                     break;
                 case 6:
                     if (lsValue.isEmpty()) {
@@ -308,6 +308,8 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                         txtField02.setText("");
                         return;
                     }
+                    oTransInventory.getModel().getModel().setInvStat("0");
+                    oTransInventory.getModel().getModel().setGenuine("0");
                     loJSON = oTransInventory.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Inventory Information", (String) loJSON.get("message"));
@@ -327,6 +329,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
+                    clearTables();
                     oTransInventory = new InventoryInformation(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
@@ -413,36 +416,63 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             case "btnModelDel":
                 ObservableList<ModelItemEntryModelYear> selectedItems = FXCollections.observableArrayList();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
-                    boolean lbIsNoYear = false;
                     for (ModelItemEntryModelYear item : tblModelView.getItems()) {
                         if (item.getSelect().isSelected()) {
-                            if (item.getTblindexModel06().equals("")) {
-                                lbIsNoYear = true;
-                            }
                             selectedItems.add(item);
                         }
                     }
-                    int numbersOfItems = selectedItems.size();
-                    int lnRow = 0;
-                    int removeCount = 0;
-                    Integer[] lnValueModelYear = new Integer[numbersOfItems];
-                    for (ModelItemEntryModelYear item : tblModelView.getItems()) {
-                        String lsModelCode = item.getTblindexModel05();
-                        int lnYear = Integer.parseInt(item.getTblindexModel06());
-                        if (item.getSelect().isSelected()) {
-                            if (item.getTblindexModel06().equals("")) {
-                                lnValueModelYear[numbersOfItems] = lnYear;
-                            } else {
 
+                    // Maps to hold the model codes and their corresponding years
+                    Map<String, List<Integer>> modelYearMap = new HashMap<>();
+
+                    // Loop through selected items and populate the map
+                    for (ModelItemEntryModelYear item : selectedItems) {
+                        String lsModelCode = item.getTblindexModel08();
+                        int lnYear = item.getTblindexModel06().isEmpty() ? 0 : Integer.parseInt(item.getTblindexModel06());
+
+                        // Add the year to the corresponding model code in the map
+                        modelYearMap.computeIfAbsent(lsModelCode, k -> new ArrayList<>()).add(lnYear);
+                    }
+
+                    // Debug: Print out the modelYearMap to ensure it contains the correct data
+                    for (Map.Entry<String, List<Integer>> entry : modelYearMap.entrySet()) {
+                        System.out.println("Model Code: " + entry.getKey() + ", Years: " + entry.getValue());
+                    }
+
+                    // Now loop through the map and remove the models
+                    String lsMessage = "";
+                    int removeCount = 0;
+                    for (Map.Entry<String, List<Integer>> entry : modelYearMap.entrySet()) {
+                        String modelCode = entry.getKey();
+                        Integer[] lnModelYears = entry.getValue().toArray(new Integer[0]);
+
+                        // Debug: Check the content of lnModelYears before passing it to removeInvModel_Year
+                        System.out.println("Removing Model Code: " + modelCode + " with Years: " + Arrays.toString(lnModelYears));
+
+                        try {
+                            // Call the removeModel method
+                            loJSON = oTransInventory.removeInvModel_Year(modelCode, lnModelYears);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                lsMessage = (String) loJSON.get("message");
+                                removeCount++;
+                            } else {
+                                lsMessage = (String) loJSON.get("message");
                             }
-                            removeCount++;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Error removing model: " + modelCode + ", Years: " + Arrays.toString(lnModelYears));
+                            e.printStackTrace();
                         }
                     }
+                    if (removeCount >= 1) {
+                        ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                        selectAllModelCheckBox.setSelected(false);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, lsMessage);
+                    }
+                    // Reload the table after removal
                 }
-//                oTransInventory.removeInvModel_Year(lnValueModel, lnValueModelYear);
                 loadModelTable();
                 break;
-
             case "btnModelExpand":
                 loadModelExpandWindow();
                 break;
@@ -536,7 +566,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
         txtField05.setText(oTransInventory.getModel().getModel().getBriefDsc());
         txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInventory.getModel().getModel().getUnitPrce()))));
         txtField07.setText(oTransInventory.getModel().getModel().getInvTypDs());
-        txtField08.setText(oTransInventory.getModel().getModel().getCategCd1());
+        txtField08.setText(oTransInventory.getModel().getModel().getCatgeDs1());
         txtField09.setText(""); //oTransInventory.getModel().getModel().getLocation()
         txtField10.setText(oTransInventory.getModel().getModel().getMeasurNm());
         txtField11.setText(""); //quantity applied of inventory // unit
@@ -786,23 +816,24 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
     }
 
     private void loadModelTable() {
-        JSONObject loJSON = new JSONObject();
         modelData.clear();
-//        loJSON = oTransInventory.loadModel();
-//        if ("success".equals((String) loJSON.get("result"))) {
+        String lsYearModl = "";
         for (int lnCtr = 0; lnCtr <= oTransInventory.getInventoryModelYearList().size() - 1; lnCtr++) {
+            if (!oTransInventory.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
+                lsYearModl = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "nYearModl"));
+            }
             modelData.add(new ModelItemEntryModelYear(
                     String.valueOf(lnCtr + 1), // ROW
                     "",
                     String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc")),
                     "",
                     String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc")),
-                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "nYearModl")),
+                    lsYearModl,
                     String.valueOf(lnCtr),
                     String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelCde"))
             ));
+            lsYearModl = "";
         }
-//        }
         tblModelView.setItems(modelData);
     }
 
@@ -853,6 +884,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
         txtField14.setText("");
         Image loImageError = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
         imgPartsPic.setImage(loImageError);
+        selectAllModelCheckBox.setSelected(false);
     }
 
     private void clearTables() {
@@ -861,15 +893,15 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        txtField01.setDisable(true);
         tblindexModel02.setVisible(lbShow);
         btnSupsAdd.setDisable(true);
         btnSupsDel.setDisable(true);
+        btnLoadPhoto.setDisable(false);
         txtField02.setDisable(!lbShow);
         txtField03.setDisable(!lbShow);
         txtField04.setDisable(!lbShow);
         txtField05.setDisable(!lbShow);
-        txtField06.setDisable(true);
+        txtField06.setDisable(!lbShow);
         txtField07.setDisable(!lbShow);
         txtField08.setDisable(!lbShow);
         txtField09.setDisable(true);
@@ -893,8 +925,10 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
         btnDeactivate.setManaged(false);
         btnActive.setVisible(false);
         btnActive.setManaged(false);
+        if (fnValue == EditMode.UNKNOWN) {
+            btnLoadPhoto.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
             if (oTransInventory.getModel().getModel().getRecdStat().equals("1")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);

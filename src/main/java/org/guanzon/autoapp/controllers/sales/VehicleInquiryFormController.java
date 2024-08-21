@@ -1027,19 +1027,24 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     switch (lsButton) {
                         case "btnASCancel":
                             if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to cancel?")) {
+                                boolean lbIsCancelled = false;
                                 for (ModelInquiryVehicleSalesAdvances item : selectedItems) {
                                     lnRow = Integer.valueOf(item.getTblindex01()) - 1; // Assuming there is a method to retrieve the transaction number
                                     if (lnRow >= 0) {
                                         loJSON = oTransInquiry.cancelReservation(lnRow);
                                         if ("success".equals((String) loJSON.get("result"))) {
+                                            lbIsCancelled = true;
                                             oTransInquiry.loadReservationList();
                                             loadAdvancesSlip();
                                         } else {
+                                            lbIsCancelled = false;
                                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                         }
                                     }
                                 }
-                                ShowMessageFX.Information(getStage(), "Reservation cancelled successfully.", pxeModuleName, null);
+                                if (lbIsCancelled) {
+                                    ShowMessageFX.Information(getStage(), "Reservation cancelled successfully.", pxeModuleName, null);
+                                }
                             }
                             break;
                         case "btnASremove":
@@ -1050,7 +1055,8 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                                         if (String.valueOf(oTransInquiry.getReservation(lnRow, 15)).trim().isEmpty()) {
                                             oTransInquiry.removeReservation(lnRow);
                                         } else {
-                                            ShowMessageFX.Information(getStage(), "Reservation No. " + String.valueOf(oTransInquiry.getReservation(lnRow, 3)) + " is already saved cannot be removed.\nReservation needs to be cancelled.", pxeModuleName, null);
+                                            ShowMessageFX.Information(null, pxeModuleName, "Reservation No. " + String.valueOf(oTransInquiry.getReservation(lnRow, 3)) + " is already saved.\n\nCancel reservation instead."
+                                            );
                                         }
                                     }
                                 }
@@ -1432,6 +1438,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         btnLostSale.setManaged(false);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
+        btnASprint.setDisable(false);
         //Bank Application
         btnBankAppNew.setVisible(false);
         //For Follow up
@@ -1615,15 +1622,17 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
     private void initCustomerInquiryFieldsTrue() {
         rqrmIndex01.setVisible(false);
         vsasCheck01.setVisible(false);
+        btnASremove.setDisable(true);
+        btnASCancel.setDisable(true);
+        btnASprint.setDisable(true);
         setVisible(true, btnFollowUp, btnBankAppNew);
         setDisable(true, comboBox25, comboBox26, btnASadd,
-                btnASremove, btnASprint, btnASCancel,
                 txtField27, btnSndMngerApprov);
-        setVisible(false, btnASadd, btnASremove, btnASCancel);
 
-        // Special condition
         if (pnEditMode == EditMode.READY) {
-            btnASprint.setDisable(false);
+            if (tblAdvanceSlip.getItems().size() > 0) {
+                btnASprint.setDisable(false);
+            }
         }
     }
 
@@ -1631,15 +1640,19 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         // Set visibility and disable properties for fields
         rqrmIndex01.setVisible(true);
         vsasCheck01.setVisible(true);
+        btnASCancel.setDisable(false);
+        btnASremove.setDisable(false);
+        btnASprint.setDisable(false);
         setVisible(false, btnFollowUp, btnBankAppNew);
-        setDisable(false, comboBox25, comboBox26, btnASadd, btnASremove, btnASprint, btnASCancel, txtField27, btnSndMngerApprov);
-        setVisible(true, btnASadd, btnASCancel);
-
-        btnASremove.setVisible(oTransInquiry.getReservationList().size() > 0);
-
-        if (pnEditMode == EditMode.READY) {
-            btnASprint.setDisable(true);
+        setDisable(false, comboBox25, comboBox26, btnASadd, txtField27, btnSndMngerApprov, btnASadd);
+        if (tblAdvanceSlip.getItems().size() <= 0) {
+            btnASCancel.setDisable(true);
+            btnASremove.setDisable(true);
+            if (pnEditMode == EditMode.READY) {
+                btnASprint.setDisable(true);
+            }
         }
+
     }
 
     private void setDisable(boolean disable, Node... nodes) {
@@ -1677,7 +1690,6 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         //Requirements
         comboBox25.setDisable(!lbShow);
         txtField27.setDisable(!lbShow);
-        btnASCancel.setVisible(lbShow);
         btnSndMngerApprov.setDisable(!lbShow);
         switch (comboBox25.getSelectionModel().getSelectedIndex()) {
             case 0: //CASH
@@ -1695,9 +1707,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         //            cmbInqpr02.setDisable(!lbShow);
         //        }
         //Reservation
-        btnASadd.setVisible(lbShow);
-        btnASremove.setVisible(lbShow);
-        btnASprint.setVisible(lbShow);
+        btnASCancel.setDisable(!lbShow);
+        btnASadd.setDisable(!lbShow);
+        btnASremove.setDisable(!lbShow);
+        btnASprint.setDisable(false);
         btnProcess.setVisible(false);
         btnProcess.setManaged(false);
 
@@ -1724,10 +1737,17 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             break;
                     }
                     //Reservation
-                    btnASadd.setVisible(true);
-                    btnASremove.setVisible(true);
-                    btnASCancel.setVisible(true);
-                    btnASprint.setVisible(true);
+                    btnASadd.setDisable(false);
+                    if (tblAdvanceSlip.getItems().size() > 0) {
+                        btnASprint.setDisable(false);
+                        btnASremove.setDisable(false);
+                        btnASCancel.setDisable(false);
+                    } else {
+                        btnASremove.setDisable(true);
+                        btnASCancel.setDisable(true);
+                        btnASprint.setDisable(true);
+                    }
+
                     if (tabPaneMain.getSelectionModel().getSelectedIndex() == 1) {
                         btnProcess.setVisible(true);
                         btnProcess.setManaged(true);
@@ -1760,10 +1780,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     comboBox25.setDisable(true);
                     comboBox26.setDisable(true);
                     //Reservation
-                    btnASadd.setVisible(false);
-                    btnASremove.setVisible(false);
-                    btnASCancel.setVisible(false);
-                    btnASprint.setVisible(false);
+                    btnASadd.setDisable(true);
+                    btnASremove.setDisable(true);
+                    btnASCancel.setDisable(true);
+                    btnASprint.setDisable(true);
                     //General button
                     btnProcess.setVisible(false);
                     btnProcess.setManaged(false);
@@ -2292,8 +2312,10 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     String lsTransNox = selectedItem.getTblindex02();
                     loadBankApplicationWindow(pnRow, Integer.parseInt(String.valueOf(oTransInquiry.getMasterModel().getMasterModel().getPayMode())), pnEditMode, false, lsTransNox);
                     loadBankApplications();
+
                 } catch (SQLException ex) {
-                    Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(VehicleInquiryFormController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -2384,6 +2406,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "dApproved"))
                     ));
                     lsCancelledDt = "";
+
                 }
             }
         } catch (SQLException ex) {
@@ -2425,6 +2448,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                     String lsTransNox = selectedItem.getTblindex01();
                     loadFollowUpWindow(pnRow, false, lsTransNox);
                     loadFollowHistory();
+
                 } catch (SQLException ex) {
                     Logger.getLogger(VehicleInquiryFormController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -2522,9 +2546,11 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
                             String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sRemarksx"))));
 
                     lsPlatForm = "";
+
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(VehicleInquiryFormController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VehicleInquiryFormController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

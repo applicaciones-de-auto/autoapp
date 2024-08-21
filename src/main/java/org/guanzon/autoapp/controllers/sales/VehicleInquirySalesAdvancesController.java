@@ -201,7 +201,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     }
 
     private boolean setToClass() {
-        if (txtField04.getText().trim().equals("0.00")) {
+        if (txtField04.getText().equals("0.00") || txtField04.getText().isEmpty()) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter value amount.");
             return false;
         }
