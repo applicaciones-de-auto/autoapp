@@ -1645,6 +1645,7 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
         btnASprint.setDisable(false);
         setVisible(false, btnFollowUp, btnBankAppNew);
         setDisable(false, comboBox25, comboBox26, btnASadd, txtField27, btnSndMngerApprov, btnASadd);
+        tblAdvanceSlip.setDisable(false);
         if (tblAdvanceSlip.getItems().size() <= 0) {
             btnASCancel.setDisable(true);
             btnASremove.setDisable(true);
@@ -2096,24 +2097,42 @@ public class VehicleInquiryFormController implements Initializable, ScreenInterf
 
     @FXML
     private void tblAdvanceSlip_Clicked(MouseEvent event) {
+        pnRow = tblAdvanceSlip.getSelectionModel().getSelectedIndex();
+        if (pnRow < 0 || pnRow >= tblAdvanceSlip.getItems().size()) {
+            ShowMessageFX.Warning(getStage(), "Please select valid reservation information.", "Warning", null);
+            return;
+        }
         if (pnEditMode == EditMode.UPDATE) {
-            pnRow = tblAdvanceSlip.getSelectionModel().getSelectedIndex();
-            if (pnRow < 0 || pnRow >= tblAdvanceSlip.getItems().size()) {
-                ShowMessageFX.Warning(getStage(), "Please select valid reservation information.", "Warning", null);
-                return;
-            }
-            if (event.getClickCount() == 2) {
-                try {
-                    loadVehicleSalesAdvancesWindow(pnRow, false, pnEditMode);
-                    loadAdvancesSlip();
+            if (tabPinEditMode == 1) {
+                if (event.getClickCount() == 2) {
+                    try {
+                        loadVehicleSalesAdvancesWindow(pnRow, false, pnEditMode);
+                        loadAdvancesSlip();
 
-                } catch (SQLException ex) {
-                    Logger.getLogger(VehicleInquiryFormController.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(VehicleInquiryFormController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+
                 }
+            }
+        } else {
+            if (oTransInquiry.getMasterModel().getMasterModel().getTranStat().equals("0")) {
+                if (tabPaneMain.getSelectionModel().getSelectedIndex() == 1) {
+                    if (event.getClickCount() == 2) {
+                        try {
+                            loadVehicleSalesAdvancesWindow(pnRow, false, pnEditMode);
+                            loadAdvancesSlip();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(VehicleInquiryFormController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
 
+                }
             }
         }
+
     }
 
     private void loadAdvancesSlip() {
