@@ -335,6 +335,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnBrowse":
+                oTransInventory.getModel().getModel().setFileName("");
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Inventory Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
@@ -349,6 +350,8 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Inventory Information", (String) loJSON.get("message"));
+                    clearFields();
+                    clearTables();
                 }
                 break;
             case "btnClose":
@@ -400,7 +403,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             case "btnBrandName":
                 loadBrandNameWindow();
                 break;
-            case "btInvType":
+            case "btnInvType":
                 loadInventoryTypeWindow();
                 break;
             case "btnCategory":
@@ -500,13 +503,8 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnLoadPhoto":
-                if (oTransInventory.getModel().getModel().setFileName(psFileUrl) != null) {
-                    loadPhotoWindow();
-                } else {
-                    psFileUrl = "";
-                }
+                loadPhotoWindow();
                 break;
-
             case "btnRemoveImage":
                 break;
             default:
@@ -526,8 +524,13 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
 
             ViewPhotoDialogController loControl = new ViewPhotoDialogController();
             loControl.setGRider(oApp);
-            loControl.setPicName(psFileName);
-            loControl.setPicUrl(psFileUrl);
+            if (!oTransInventory.getModel().getModel().getFileName().isEmpty()) {
+                loControl.setPicName(psFileName);
+                loControl.setPicUrl(psFileUrl);
+            } else {
+                loControl.setPicName("");
+                loControl.setPicUrl("");
+            }
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -818,23 +821,31 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
     private void loadModelTable() {
         modelData.clear();
         String lsYearModl = "";
+        String lsMakex = "";
+        String lsModel = "";
         for (int lnCtr = 0; lnCtr <= oTransInventory.getInventoryModelYearList().size() - 1; lnCtr++) {
             if (!oTransInventory.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
                 lsYearModl = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "nYearModl"));
             }
+            if (oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc") != null) {
+                lsMakex = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc"));
+            }
+            if (oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc") != null) {
+                lsModel = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc"));
+            }
             modelData.add(new ModelItemEntryModelYear(
                     String.valueOf(lnCtr + 1), // ROW
                     "",
-                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc")),
+                    lsMakex,
                     "",
-                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc")),
+                    lsModel,
                     lsYearModl,
                     String.valueOf(lnCtr),
                     String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelCde"))
             ));
             lsYearModl = "";
         }
-        tblModelView.setItems(modelData);
+
     }
 
     private void initModelTable() {
@@ -865,6 +876,8 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 header.setReordering(false);
             });
         });
+        modelData.clear();
+        tblModelView.setItems(modelData);
     }
 
     private void clearFields() {
