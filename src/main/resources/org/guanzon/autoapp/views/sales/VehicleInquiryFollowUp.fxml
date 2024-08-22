@@ -49,6 +49,9 @@
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -101,8 +104,8 @@
                                             </children>
                                         </AnchorPane>
                                         <TextField fx:id="txtField04" promptText="Search: F3" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                        <TextArea fx:id="textArea05" layoutX="135.0" layoutY="153.0" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="7" GridPane.rowSpan="2" />
-                                        <TextArea fx:id="textArea06" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.rowIndex="9" GridPane.rowSpan="2">
+                                        <TextArea fx:id="textArea05" layoutX="135.0" layoutY="153.0" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="7" GridPane.rowSpan="2" />
+                                        <TextArea fx:id="textArea06" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="9" GridPane.rowSpan="2">
                                             <GridPane.margin>
                                                 <Insets />
                                             </GridPane.margin>

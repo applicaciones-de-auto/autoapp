@@ -146,7 +146,7 @@
                     <bottom>
                         <AnchorPane prefHeight="52.0" prefWidth="612.0" style="-fx-background-color: #515151;">
                             <children>
-                                <HBox prefHeight="100.0" prefWidth="276.0" spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <HBox prefHeight="100.0" prefWidth="276.0" spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
                                     <children>
                                         <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
                                             <effect>

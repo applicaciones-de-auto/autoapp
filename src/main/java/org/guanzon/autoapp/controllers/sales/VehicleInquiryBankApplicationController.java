@@ -616,6 +616,14 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 btnBACancel.setVisible(false);
                 btnBACancel.setManaged(false);
             }
+            if (comboBox07.getValue().equals("DECLINE")) {
+                btnSave.setVisible(false);
+                btnSave.setManaged(false);
+                btnBACancel.setVisible(false);
+                btnBACancel.setManaged(false);
+                btnEdit.setVisible(false);
+                btnEdit.setManaged(false);
+            }
         }
         if (fnValue == EditMode.UPDATE) {
             comboBox07.setDisable(false);
@@ -633,14 +641,6 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             btnBACancel.setVisible(false);
             btnBACancel.setManaged(false);
             textArea10.setDisable(false);
-        }
-        if (comboBox07.getValue().equals("DECLINE")) {
-            btnSave.setVisible(false);
-            btnSave.setManaged(false);
-            btnBACancel.setVisible(false);
-            btnBACancel.setManaged(false);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
         }
         if (comboBox07.getValue().equals("CANCELLED")) {
             btnSave.setVisible(false);

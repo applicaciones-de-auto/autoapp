@@ -79,6 +79,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
+import org.guanzon.autoapp.controllers.parts.ItemEntryFormController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -673,9 +674,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //                return new VSPAddOnsApprovalController();
 //
 //            /*PARTS*/
-//            case "ItemEntryForm.fxml":
-//                return new ItemEntryFormController();
-////            case "PartsRequisitionForm.fxml":
+            case psPartsPath + "ItemEntryForm.fxml":
+                return new ItemEntryFormController();
+//            case "PartsRequisitionForm.fxml":
 ////                return new PartsRequisitionFormController();
 //            case "VSPPendingPartsRequest.fxml":
 //                return new VSPPendingPartsRequestController();
@@ -767,7 +768,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "VehicleSalesInvoiceForm.fxml":
                 return "Vehicle Sales Invoice";
             /*PARTS*/
-            case "ItemEntryForm.fxml":
+            case psPartsPath + "ItemEntryForm.fxml":
                 return "Item Information";
             case "PartsRequisitionForm.fxml":
                 return "Parts Requisition";
@@ -1124,7 +1125,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*PARTS*/
     @FXML
     private void mnuItemEntryClicked(ActionEvent event) {
-        String sformname = "ItemEntryForm.fxml";
+        String sformname = psPartsPath + "ItemEntryForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

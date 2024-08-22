@@ -68,7 +68,13 @@ public class ViewPhotoDialogController implements Initializable {
     private void loadPhoto() {
         lbFormTitle.setText(psFormTitle);
         lblReference.setText(psValidPhoto);
-        imgPhoto.setImage(new Image(psValidPhotoURL));
+        if (!psValidPhotoURL.isEmpty()) {
+            imgPhoto.setImage(new Image(psValidPhotoURL));
+        } else {
+            Image loImage = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
+            imgPhoto.setImage(loImage);
+        }
+
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -76,8 +82,6 @@ public class ViewPhotoDialogController implements Initializable {
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
-                break;
-            default:
                 break;
         }
     }
