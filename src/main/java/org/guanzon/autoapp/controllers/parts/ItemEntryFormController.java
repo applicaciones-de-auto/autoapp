@@ -243,6 +243,7 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
                 case 2:
                     oTransInventory.getModel().getModel().setBarCode(lsValue);
                     oTransInventory.getModel().getModel().setTrimBCde(lsValue);
+                    checkExistingItemInformation();
                     break;
                 case 4:
                     oTransInventory.getModel().getModel().setDescript(lsValue);
@@ -263,6 +264,27 @@ public class ItemEntryFormController implements Initializable, ScreenInterface {
             loTxtField.selectAll();
         }
     };
+
+    private boolean checkExistingItemInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransInventory.checkExistingRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransInventory.openRecord((String) loJSON.get("sStockIDx"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadInventoryFields();
+                    loadModelTable();
+                    pnEditMode = oTransInventory.getEditMode();
+                    initFields(pnEditMode);
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 
     private void initButtonClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnClose, btnSave, btnEdit, btnCancel, btnBrowse,
