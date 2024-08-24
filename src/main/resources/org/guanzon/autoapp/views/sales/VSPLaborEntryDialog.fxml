@@ -47,15 +47,15 @@
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="10.0" />
                                     </columnConstraints>
                                     <rowConstraints>
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
@@ -98,36 +98,36 @@
                                             </font>
                                         </Label>
                                         <CheckBox fx:id="checkBoxIsAdd" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="15.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                              <Label id="LabelDesc" text="Discount" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font name="Arial Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtField05" alignment="CENTER_RIGHT" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                 <tooltip>
-                                    <Tooltip text="Please fill in the VSP Labor Amount." />
-                                 </tooltip>
-                              </TextField>
-                              <Label text="Labor ID" GridPane.columnIndex="1">
-                                 <font>
-                                    <Font name="Arial Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtField01" maxWidth="200.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2">
-                                 <tooltip>
-                                    <Tooltip text="Please fill in the VSP Labor Description." />
-                                 </tooltip>
-                              </TextField>
-                              <Label id="LabelDesc" text="Net Price" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font name="Arial Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtField06" alignment="CENTER_RIGHT" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                                 <tooltip>
-                                    <Tooltip text="Please fill in the VSP Labor Amount." />
-                                 </tooltip>
-                              </TextField>
+                                        <Label id="LabelDesc" text="Discount" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtField05" alignment="CENTER_RIGHT" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                            <tooltip>
+                                                <Tooltip text="Please fill in the VSP Labor Amount." />
+                                            </tooltip>
+                                        </TextField>
+                                        <Label text="Labor ID" GridPane.columnIndex="1">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtField01" maxWidth="200.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                                            <tooltip>
+                                                <Tooltip text="Please fill in the VSP Labor Description." />
+                                            </tooltip>
+                                        </TextField>
+                                        <Label id="LabelDesc" text="Net Price" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                            <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="txtField06" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                            <tooltip>
+                                                <Tooltip text="Please fill in the VSP Labor Amount." />
+                                            </tooltip>
+                                        </TextField>
                                     </children>
                                     <opaqueInsets>
                                         <Insets />
@@ -183,8 +183,8 @@
             </children>
         </StackPane>
     </children>
-   <stylesheets>
-      <URL value="@../../css/FrameStyle.css" />
-      <URL value="@../../css/MainPanelStyle.css" />
-   </stylesheets>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
 </AnchorPane>

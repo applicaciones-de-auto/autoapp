@@ -17,7 +17,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -130,11 +129,7 @@
                                                                                                                                         <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                                                                                                                         <TextField fx:id="txtField06" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                                                                                         <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                                                                                                                        <DatePicker fx:id="datePicker09" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="24.0" prefWidth="110.0" GridPane.columnIndex="2" GridPane.rowIndex="9">
-                                                                                                                                            <tooltip>
-                                                                                                                                                <Tooltip text="Please pick a Target Delivery Date." />
-                                                                                                                                            </tooltip>
-                                                                                                                                        </DatePicker>
+                                                                                                                                        <DatePicker fx:id="datePicker09" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="24.0" prefWidth="110.0" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                                                                                                                                         <ComboBox fx:id="comboBox05" disable="true" prefHeight="24.0" prefWidth="227.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                                                                                         <Label id="LabelDesc" text="Gross Amount" GridPane.columnIndex="1" GridPane.rowIndex="11">
                                                                                                                                             <font>
@@ -276,22 +271,10 @@
                                                                                                                                                         <Insets bottom="15.0" />
                                                                                                                                                     </GridPane.margin>
                                                                                                                                                 </Label>
-                                                                                                                                                <TextField fx:id="txtField15" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Inquiring Customer." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
-                                                                                                                                                <TextField fx:id="txtField16" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Buying Customer." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
-                                                                                                                                                <TextArea fx:id="textArea17" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="3" />
-                                                                                                                                                <TextField fx:id="txtField18" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="4">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Buying Customer." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
+                                                                                                                                                <TextField fx:id="txtField15" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                                                                                                                                <TextField fx:id="txtField16" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
+                                                                                                                                                <TextArea fx:id="textArea17" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="3" />
+                                                                                                                                                <TextField fx:id="txtField18" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="4" />
                                                                                                                                                 <Label id="LabelDesc" text="Co-Buyer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                                                                                                     <font>
                                                                                                                                                         <Font name="Arial" size="12.0" />
@@ -302,17 +285,13 @@
                                                                                                                                                         <Font name="Arial" size="12.0" />
                                                                                                                                                     </font>
                                                                                                                                                 </Label>
-                                                                                                                                                <TextField fx:id="txtField19" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="5">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Buying Customer." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
+                                                                                                                                                <TextField fx:id="txtField19" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="5" />
                                                                                                                                                 <Label id="LabelDesc" text="Category" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                                                                                                                                     <font>
                                                                                                                                                         <Font name="Arial Bold" size="11.5" />
                                                                                                                                                     </font>
                                                                                                                                                 </Label>
-                                                                                                                                                <RadioButton fx:id="brandNewCat" mnemonicParsing="false" text="Brand New" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                                                                                                                                                <RadioButton fx:id="brandNewCat" disable="true" mnemonicParsing="false" text="Brand New" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                                                                                                                                     <toggleGroup>
                                                                                                                                                         <ToggleGroup fx:id="tgUnitCategory" />
                                                                                                                                                     </toggleGroup>
@@ -340,19 +319,11 @@
                                                                                                                                                         <Font name="Arial Bold" size="11.5" />
                                                                                                                                                     </font>
                                                                                                                                                 </Label>
-                                                                                                                                                <TextField fx:id="txtField20" prefHeight="22.0" prefWidth="96.0" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the CS No." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
-                                                                                                                                                <TextField fx:id="txtField21" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="8">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Plate No." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
+                                                                                                                                                <TextField fx:id="txtField20" prefHeight="22.0" prefWidth="96.0" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                                                                                                                <TextField fx:id="txtField21" promptText="Search F3" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                                                                                                                                 <TextField fx:id="txtField23" disable="true" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="10" />
                                                                                                                                                 <TextField fx:id="txtField22" disable="true" editable="false" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                                                                                                                                                <RadioButton fx:id="preOwnedCat" mnemonicParsing="false" text="Pre-Owned" toggleGroup="$tgUnitCategory" wrapText="true" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                                                                                                                                                <RadioButton fx:id="preOwnedCat" disable="true" mnemonicParsing="false" text="Pre-Owned" toggleGroup="$tgUnitCategory" wrapText="true" GridPane.columnIndex="3" GridPane.rowIndex="6" />
                                                                                                                                                 <Label id="LabelDesc" text="Ending Plate No." wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="6">
                                                                                                                                                     <font>
                                                                                                                                                         <Font name="Arial Bold" size="11.5" />
@@ -377,13 +348,9 @@
                                                                                                                                                         <Insets />
                                                                                                                                                     </GridPane.margin>
                                                                                                                                                 </Label>
-                                                                                                                                                <TextField fx:id="txtField24" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="6">
-                                                                                                                                                    <tooltip>
-                                                                                                                                                        <Tooltip text="Please fill in the Ending Plate No." />
-                                                                                                                                                    </tooltip>
-                                                                                                                                                </TextField>
+                                                                                                                                                <TextField fx:id="txtField24" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="6" />
                                                                                                                                                 <TextField fx:id="txtField25" disable="true" editable="false" maxWidth="1.7976931348623157E308" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-                                                                                                                                                <TextArea fx:id="textArea26" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="8" GridPane.rowSpan="3">
+                                                                                                                                                <TextArea fx:id="textArea26" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="8" GridPane.rowSpan="3">
                                                                                                                                                     <GridPane.margin>
                                                                                                                                                         <Insets top="5.0" />
                                                                                                                                                     </GridPane.margin>
@@ -412,7 +379,7 @@
                                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                                                                                             </rowConstraints>
                                                                                                                                             <children>
-                                                                                                                                                <TextArea fx:id="textArea27" disable="true" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+                                                                                                                                                <TextArea fx:id="textArea27" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                                                                                                                             </children>
                                                                                                                                         </GridPane>
                                                                                                                                     </children>
@@ -539,55 +506,18 @@
                                                                                                                                 <Label id="LabelDesc" text="Gross Monthly Inst." GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                                                                                                                                 <Label id="LabelDesc" text="Promissory Note Amt" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                                                                                                                                 <ComboBox fx:id="comboBox29" prefWidth="250.0" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
-                                                                                                                                <TextField fx:id="txtField30" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Unit SRP." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField31" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="3">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Downpayment." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField32" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="4">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Bank." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="5">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Bank Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField34" GridPane.columnIndex="3" GridPane.rowIndex="6">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Terms." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField35" GridPane.columnIndex="5" GridPane.rowIndex="6">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Rate." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField30" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                                                                                                                                <TextField fx:id="txtField31" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                                                                                                <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="5" />
+                                                                                                                                <TextField fx:id="txtField34" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                                                                                                                                <TextField fx:id="txtField35" GridPane.columnIndex="5" GridPane.rowIndex="6" />
                                                                                                                                 <TextField fx:id="txtField36" disable="true" promptText="Search F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="7" />
-                                                                                                                                <ComboBox fx:id="comboBox37" prefWidth="250.0" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="8">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select Finance Promo." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </ComboBox>
+                                                                                                                                <ComboBox fx:id="comboBox37" prefWidth="250.0" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="8" />
                                                                                                                                 <TextField fx:id="txtField38" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="1" />
-                                                                                                                                <TextField fx:id="txtField39" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Net Downpayment." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField39" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="2" />
                                                                                                                                 <TextField fx:id="txtField40" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                                                                                 <TextField fx:id="txtField41" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="4" />
-                                                                                                                                <TextField fx:id="txtField42" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="5">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Prompt Payment Disc." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField42" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="5" />
                                                                                                                                 <TextField fx:id="txtField43" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="6" />
                                                                                                                                 <TextField fx:id="txtField44" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="7" />
                                                                                                                                 <Label alignment="CENTER" prefHeight="17.0" prefWidth="29.0" text="/" GridPane.columnIndex="4" GridPane.rowIndex="6">
@@ -595,11 +525,8 @@
                                                                                                                                         <Font name="Arial Bold" size="14.0" />
                                                                                                                                     </font>
                                                                                                                                 </Label>
-                                                                                                                                <CheckBox id="LabelDesc" fx:id="chckBoxSpecialAccount" mnemonicParsing="false" text="Special Account (Fleet/Directors)" GridPane.columnIndex="7" GridPane.columnSpan="4" GridPane.rowIndex="8">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="check to in-able STD Fleet and SPL Fleet Discount" />
-                                                                                                                                    </tooltip>
-                                                                                                                                </CheckBox>
+                                                                                                                                <CheckBox id="LabelDesc" fx:id="chckBoxSpecialAccount" mnemonicParsing="false" text="Special Account (Fleet/Directors)" GridPane.columnIndex="7" GridPane.columnSpan="4" GridPane.rowIndex="8" />
+                                                                                                                                <TextField fx:id="txtField32" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="4" />
                                                                                                                             </children>
                                                                                                                         </GridPane>
                                                                                                                     </children>
@@ -641,79 +568,23 @@
                                                                                                                                 <Label id="LabelDesc" text="Plant / Dealer (%)" GridPane.columnIndex="4" />
                                                                                                                                 <Label id="LabelDesc" text="Plant / Dealer (%)" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                                 <Label id="LabelDesc" text="Plant / Dealer (%)" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                                                                                <TextField fx:id="txtField45" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the STD Fleet Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField46" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the STD Fleet Plant." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField47" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the STD Fleet Dealer" />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField48" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the SPL Fleet Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField49" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the SPL Fleet Plant." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField50" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="1">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the SPL Fleet Dealer." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField51" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Promo Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField52" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Promo Plant." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField53" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Promo Dealer." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField54" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Cash Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField56" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Bundle Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField45" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" />
+                                                                                                                                <TextField fx:id="txtField46" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" />
+                                                                                                                                <TextField fx:id="txtField47" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" />
+                                                                                                                                <TextField fx:id="txtField48" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                                <TextField fx:id="txtField49" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                                                                                <TextField fx:id="txtField50" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                                                                                <TextField fx:id="txtField51" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                                                                                <TextField fx:id="txtField52" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                                                                                <TextField fx:id="txtField53" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                                                                                <TextField fx:id="txtField54" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                                                <TextField fx:id="txtField56" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                                                                                 <Label id="LabelDesc" text="Labor Discount" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                                                                                                                                 <Label id="LabelDesc" text="Accessories Discount" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                                                                                <TextField fx:id="txtField55" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="3">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Promo Plant." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField57" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="4">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Promo Plant." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField55" alignment="CENTER_RIGHT" disable="true" promptText="0.00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                                                                                                <TextField fx:id="txtField57" alignment="CENTER_RIGHT" disable="true" promptText="0.00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                                                                 <Label id="LabelDesc" text="Insurance Discount" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                                                                                <TextField fx:id="txtField58" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Bundle Discount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField58" alignment="CENTER_RIGHT" maxWidth="100.0" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                                                                             </children>
                                                                                                                         </GridPane>
                                                                                                                     </children>
@@ -761,97 +632,42 @@
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="25.0" prefHeight="35.0" vgrow="SOMETIMES" />
                                                                                                                             </rowConstraints>
                                                                                                                             <children>
-                                                                                                                                <TextField fx:id="txtField59" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the OMA &amp; CMF." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField60" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the TPL Insurance Amount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField59" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" />
+                                                                                                                                <TextField fx:id="txtField60" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                                                 <ComboBox fx:id="comboBox61" maxWidth="-Infinity" prefHeight="24.0" prefWidth="161.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets left="10.0" />
                                                                                                                                     </GridPane.margin>
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select TPL Insurance Type." />
-                                                                                                                                    </tooltip>
                                                                                                                                 </ComboBox>
-                                                                                                                                <TextField fx:id="txtField62" promptText="Search F3" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the TPL Insurance Bank." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <TextField fx:id="txtField63" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Compre Insurance Amount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField62" promptText="Search F3" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                                                                <TextField fx:id="txtField63" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                                                                                 <ComboBox fx:id="comboBox64" maxWidth="-Infinity" prefHeight="24.0" prefWidth="161.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets left="10.0" />
                                                                                                                                     </GridPane.margin>
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select Compre Insurance Type." />
-                                                                                                                                    </tooltip>
                                                                                                                                 </ComboBox>
-                                                                                                                                <TextField fx:id="txtField65" promptText="Search F3" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Compre Insurance Bank." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
-                                                                                                                                <ComboBox fx:id="comboBox66" prefHeight="24.0" prefWidth="169.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select Compre Ins Type." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </ComboBox>
-                                                                                                                                <ComboBox fx:id="comboBox67" prefHeight="24.0" prefWidth="112.0" GridPane.columnIndex="5" GridPane.rowIndex="3">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select Compre Ins Year." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </ComboBox>
-                                                                                                                                <TextField fx:id="txtField68" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the LTO Amount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField65" promptText="Search F3" GridPane.columnIndex="7" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                                                                                <ComboBox fx:id="comboBox66" prefHeight="24.0" prefWidth="169.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                                                                                                <ComboBox fx:id="comboBox67" prefHeight="24.0" prefWidth="112.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                                                                                <TextField fx:id="txtField68" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                                                                                 <ComboBox fx:id="comboBox69" prefHeight="24.0" prefWidth="161.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="4">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets left="10.0" />
                                                                                                                                     </GridPane.margin>
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select LTO Type." />
-                                                                                                                                    </tooltip>
                                                                                                                                 </ComboBox>
-                                                                                                                                <TextField fx:id="txtField70" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the CHMO/Doc Stamps Amount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField70" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                                                                                 <ComboBox fx:id="comboBox71" prefHeight="24.0" prefWidth="162.0" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="5">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets left="10.0" />
                                                                                                                                     </GridPane.margin>
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please select CHMO/Doc Stamps Type." />
-                                                                                                                                    </tooltip>
                                                                                                                                 </ComboBox>
                                                                                                                                 <TextField fx:id="txtField72" alignment="CENTER_RIGHT" disable="true" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                                                                                 <TextField fx:id="txtField73" alignment="CENTER_RIGHT" disable="true" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                                                                                                                <TextField fx:id="txtField74" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="8">
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Misc Charges Amount." />
-                                                                                                                                    </tooltip>
-                                                                                                                                </TextField>
+                                                                                                                                <TextField fx:id="txtField74" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                                                                                                                 <TextField fx:id="txtField75" prefHeight="22.0" prefWidth="280.0" GridPane.columnIndex="3" GridPane.columnSpan="6" GridPane.rowIndex="8">
                                                                                                                                     <GridPane.margin>
                                                                                                                                         <Insets left="10.0" />
                                                                                                                                     </GridPane.margin>
-                                                                                                                                    <tooltip>
-                                                                                                                                        <Tooltip text="Please fill in the Misc Charges Remarks." />
-                                                                                                                                    </tooltip>
                                                                                                                                 </TextField>
                                                                                                                                 <Label id="LabelDesc" text="OMA &amp; CMF" GridPane.columnIndex="1" />
                                                                                                                                 <Label id="LabelDesc" text="TPL Insurance" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -1165,7 +981,7 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnApprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="94.0" text="Approve">
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="76.0" text="Approve">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -1173,7 +989,7 @@
                                                 <FontAwesomeIconView glyphName="THUMBS_UP" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnGatePass" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="94.0" text="Gate Pass">
+                                        <Button fx:id="btnGatePass" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="77.0" text="Gate Pass">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -1197,7 +1013,7 @@
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     </columnConstraints>
                                     <rowConstraints>
