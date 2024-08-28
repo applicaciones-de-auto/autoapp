@@ -109,7 +109,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
 
     private void initTextFieldPattern() {
         Pattern patt;
-        patt = Pattern.compile("[A-Za-z0-9-]*");
+        patt = Pattern.compile("[0-9-,]*");
         txtField12_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sTelNoxxx
         txtField13_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sFaxNoxxx
     }
@@ -185,7 +185,6 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                         if (!"error".equals(loJSON.get("result"))) {
                             txtField01_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurID());
                             txtField02_Branch.setText(oTransInsuranceBranch.getModel().getModel().getInsurNme());
-                            comboBox03_Branch.getSelectionModel().select(Integer.parseInt(oTransInsuranceBranch.getModel().getModel().getCompnyTp()));
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField02_Branch.setText("");

@@ -165,7 +165,7 @@ public class CustomerVehicleInfoFormController implements Initializable, ScreenI
         clearTables();
         InputTextUtil.addTextLimiter(txtField15, 12);
         InputTextUtil.addTextLimiter(txtField11, 10);
-        InputTextUtil.addTextLimiter(txtField13, 19);
+        InputTextUtil.addTextLimiter(txtField12, 12);
         Platform.runLater(() -> {
             if (getParentTabTitle().contains("SALES")) {
                 pbisVhclSales = true;

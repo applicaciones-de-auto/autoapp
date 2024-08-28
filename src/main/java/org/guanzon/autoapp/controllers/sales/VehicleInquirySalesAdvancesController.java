@@ -144,8 +144,12 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransAS.setReservation(pnRow, 5, Double.valueOf(txtField04.getText().replace(",", "")));
-                    txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAS.getReservation(pnRow, "nAmountxx")))));
+                    try {
+                        oTransAS.setReservation(pnRow, 5, Double.valueOf(txtField04.getText().replace(",", "")));
+                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAS.getReservation(pnRow, "nAmountxx")))));
+                    } catch (NumberFormatException e) {
+                        System.out.print(e);
+                    }
                     break;
             }
         } else {
@@ -201,10 +205,15 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     }
 
     private boolean setToClass() {
+        if (txtField04.getText().matches("[^0-9].*") || txtField04.getText().matches(".*\\.$")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid amount.");
+            return false;
+        }
         if (txtField04.getText().equals("0.00") || txtField04.getText().isEmpty()) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter value amount.");
             return false;
         }
+
         switch (txtField06.getText()) {
             case "CANCELLED":
                 oTransAS.setReservation(pnRow, 12, "0");

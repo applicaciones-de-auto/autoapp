@@ -78,8 +78,8 @@ public class ModelVSPPart {
         this.FreeOrNot = FreeOrNot;
     }
 
-    public SimpleStringProperty getTblindex01_part() {
-        return tblindex01_part;
+    public String getTblindex01_part() {
+        return tblindex01_part.get();
     }
 
     public void setTblindex01_part(String tblindex01_part) {

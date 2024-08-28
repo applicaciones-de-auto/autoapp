@@ -80,6 +80,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
 import org.guanzon.autoapp.controllers.parts.ItemEntryFormController;
+import org.guanzon.autoapp.controllers.sales.VSPFormController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -668,8 +669,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new InsuranceBranchInformationController();
 //            case "UnitDeliveryReceiptForm.fxml":
 //                return new UnitDeliveryReceiptFormController();
-//            case "VSPForm.fxml":
-//                return new VSPFormController();
+            case psSalesPath + "VSPForm.fxml":
+                return new VSPFormController();
 //            case "VSPAddOnsApproval.fxml":
 //                return new VSPAddOnsApprovalController();
 //
@@ -754,7 +755,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Vehicle Reservation Approval";
             case "UnitDeliveryReceiptForm.fxml":
                 return "Unit Delivery Receipt";
-            case "VSPForm.fxml":
+            case psSalesPath + "VSPForm.fxml":
                 return "Vehicle Sales Proposal";
             case "VSPAddOnsApproval.fxml":
                 return "VSP Add Ons Approval";
@@ -934,7 +935,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuVSPEntryClick(ActionEvent event) {
-        String sformname = "VSPForm.fxml";
+        String sformname = psSalesPath + "VSPForm.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

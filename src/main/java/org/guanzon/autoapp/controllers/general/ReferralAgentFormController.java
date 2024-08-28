@@ -430,7 +430,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                     oTransClient.getModel().getModel().setSuffixName(lsValue);
                     break;
                 case 12:/*Profession */
-//                    oTransClient.getModel().getModel().setProfession(lsValue);
+                    oTransRef.getModel().getModel().setProfessn(lsValue);
                     break;
             }
         } else {
@@ -670,9 +670,9 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
                     LocalDate selectedDate = datePicker09.getValue();
                     LocalDate currentDate = LocalDate.now();
                     Period age = Period.between(selectedDate, currentDate);
-                    if (checkExistingReferralAgentInformation()) {
-                        return;
-                    }
+//                    if (checkExistingReferralAgentInformation()) {
+//                        return;
+//                    }
                     if (txtField01.getText().matches("[^a-zA-Z0-9].*")) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid agent id information.");
                         txtField01.setText("");
@@ -1013,7 +1013,7 @@ public class ReferralAgentFormController implements Initializable, ScreenInterfa
 //            comboBox11.getSelectionModel().select(Integer.parseInt(oTransRefferal.getModel().getModel().getgetEducAttain()));
 //        }
 
-//        txtField12.setText(oTransClient.getModel().getModel().getProfession());
+        txtField12.setText(oTransRef.getModel().getModel().getProfessn());
     }
 
     @FXML

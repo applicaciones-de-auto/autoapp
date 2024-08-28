@@ -110,7 +110,6 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         Pattern patt;
         patt = Pattern.compile("[0-9-,]*");
         txtField12_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sTelNoxxx
-
         txtField13_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sFaxNoxxx
     }
 

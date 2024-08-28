@@ -313,7 +313,7 @@ public class VehicleModelEntryController implements Initializable, ScreenInterfa
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Model Information Saving....", "Are you sure, do you want to save?")) {
-                    if (txtField02.getText().trim().equals("")) {
+                    if (txtField02.getText().trim().equals("") || txtField02.getText() == null) {
                         ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please enter value for make.");
                         txtField02.requestFocus();
                         return;

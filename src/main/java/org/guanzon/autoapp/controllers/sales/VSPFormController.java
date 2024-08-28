@@ -6,6 +6,7 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -68,7 +69,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VSPFormController implements Initializable, ScreenInterface {
 
@@ -184,7 +185,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
         //Main Interface
         JSONObject loJSON = new JSONObject();
         loJSON = oTransVSP.computeAmount();
-        if ("success".equals((String) loJSON.get("result"))) {
+        if (!"error".equals((String) loJSON.get("result"))) {
             txtField01.setText(oTransVSP.getMasterModel().getMasterModel().getVSPNO());
             if (oTransVSP.getMasterModel().getMasterModel().getTransactDte() != null && !oTransVSP.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
                 txtField02.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getTransactDte()));
@@ -204,7 +205,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
             }
             txtField10.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
             txtField11.setText("0.00");
-            txtField12.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getRsvAmtTl()))));
+            txtField12.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
             txtField13.setText("0.00");
             txtField14.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
             txtField15.setText(oTransVSP.getMasterModel().getMasterModel().getInqCltNm());
@@ -240,7 +241,8 @@ public class VSPFormController implements Initializable, ScreenInterface {
             }
             txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce()))));
             txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
-            txtField32.setText(oTransVSP.getMasterModel().getMasterModel().getBankName());
+            String lsBranchBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + "" + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
+            txtField32.setText(lsBranchBank);
             // Payment Information and Vehicle Charges
             if (!oTransVSP.getVSPFinanceList().isEmpty()) {
                 switch (comboBox29.getSelectionModel().getSelectedIndex()) {
@@ -249,21 +251,21 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     case 3:
                     case 4:
 //                    if (oTransVSP.getVSPFinanceList().size() > 0) {
-                        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nDiscount")))));
-                        txtField34.setText(String.valueOf(oTransVSP.getVSPFinance("nAcctTerm")));
-                        txtField35.setText(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")));
+                        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()))));
+                        txtField34.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm()));
+                        txtField35.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctRate()));
                         txtField36.setText("");
-                        if (oTransVSP.getVSPFinance("cFinPromo") != null && !oTransVSP.getVSPFinance("cFinPromo").equals("")) {
-                            comboBox37.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSP.getVSPFinance("cFinPromo"))));
+                        if (oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo() != null && !oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo().isEmpty()) {
+                            comboBox37.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo())));
                         }
-                        double ldAprvdNetSrp = Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce())) - Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nDiscount")));
+                        double ldAprvdNetSrp = Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce())) - Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()));
                         txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(ldAprvdNetSrp))));
-                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nNtDwnPmt")))));
-                        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nFinAmtxx")))));
-                        txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")))));
-                        txtField42.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")))));
-                        txtField43.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")))));
-                        txtField44.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")))));
+                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getNtDwnPmt()))));
+                        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinAmt()))));
+                        txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getMonAmort()))));
+                        txtField42.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getRebates()))));
+                        txtField43.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth()))));
+                        txtField44.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getPNValue()))));
 //                    }
                         break;
                     default:
@@ -296,12 +298,14 @@ public class VSPFormController implements Initializable, ScreenInterface {
             if (oTransVSP.getMasterModel().getMasterModel().getTPLStat() != null && !oTransVSP.getMasterModel().getMasterModel().getTPLStat().trim().isEmpty()) {
                 comboBox61.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getTPLStat()));
             }
-            txtField62.setText(oTransVSP.getMasterModel().getMasterModel().getTPLInsNm());
+            String lsBrTPL = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
+            txtField62.setText(lsBrTPL);
             txtField63.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getCompAmt()))));
             if (oTransVSP.getMasterModel().getMasterModel().getCompStat() != null && !oTransVSP.getMasterModel().getMasterModel().getCompStat().trim().isEmpty()) {
                 comboBox64.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getCompStat()));
             }
-            txtField65.setText(oTransVSP.getMasterModel().getMasterModel().getCOMInsNm());
+            String lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
+            txtField65.setText(lsBrCom);
             if (oTransVSP.getMasterModel().getMasterModel().getInsurTyp() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurTyp().trim().isEmpty()) {
                 comboBox66.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getInsurTyp()));
             }
@@ -323,7 +327,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
 
             txtField76.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
 //        txtField77.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().get()))));
-            txtField78.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getRsvAmtTl()))));
+            txtField78.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
             txtField79.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
             txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
@@ -332,10 +336,14 @@ public class VSPFormController implements Initializable, ScreenInterface {
 //        lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
 //        lblSINo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
             lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
-            lblVSPStatus.setText(oTransVSP.getMasterModel().getMasterModel().getTranStat());
-            if (oTransVSP.getMasterModel().getMasterModel().getTransactDte() != null && !oTransVSP.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
-                lblApproveDate.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
+            if (oTransVSP.getMasterModel().getMasterModel().getTranStat().equals("1")) {
+                lblVSPStatus.setText("Active");
+            } else {
+                lblVSPStatus.setText("Cancelled");
             }
+//            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
+//                lblApproveDate.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
+//            }
         } else {
             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
             return false;
@@ -376,6 +384,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
     }
 
     private void addRowVSPLabor() {
+
         chckBoxRustProof.setOnAction(event -> {
             if (chckBoxRustProof.isSelected()) {
                 initLaborDescript("RUSTPROOF", true);
@@ -510,14 +519,14 @@ public class VSPFormController implements Initializable, ScreenInterface {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPPartsDialog.fxml"));
-//            VSPPartsDialogController loControl = new VSPPartsDialogController();
-//            loControl.setGRider(oApp);
-//            loControl.setObject(oTransVSP);
-//            loControl.setState(fbIsAdd);
-//            fxmlLoader.setController(loControl);
-//            loControl.setRequest(false);
-//            loControl.setRow(fnRow);
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPAccessoriesDialog.fxml"));
+            VSPAccessoriesDialogController loControl = new VSPAccessoriesDialogController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransVSP);
+            loControl.setState(fbIsAdd);
+            fxmlLoader.setController(loControl);
+            loControl.setRequest(false);
+            loControl.setRow(fnRow);
 //            loControl.setOrigDsc((String) oTrans.getVSPPartsDetail(fnRow, 9));
 //            loControl.setStockID((String) oTrans.getVSPPartsDetail(fnRow, 3));
 //            loControl.setJO((String) oTrans.getVSPPartsDetail(fnRow, 11));
@@ -675,21 +684,68 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "txtField20":
-//                    loJSON = oTransVSP.searchClient(lsValue, true);
-//                    if (!"error".equals(loJSON.get("result"))) {
-//                    txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
-//                    txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
-//                    txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
-//                    txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
-//                    txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
-//                    textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                        txtField20.setText("");
-//                        txtField20.requestFocus();
-//                        return;
-//                    }
-//                    break;
+                    loJSON = oTransVSP.searchAvlVhcl(lsValue, "CS");
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
+                        txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
+                        txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
+                        txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
+                        txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
+                        textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField20.setText("");
+                        txtField20.requestFocus();
+                        return;
+                    }
+                    break;
+                case "txtField21":
+                    loJSON = oTransVSP.searchAvlVhcl(lsValue, "PLT");
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
+                        txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
+                        txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
+                        txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
+                        txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
+                        textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField21.setText("");
+                        txtField21.requestFocus();
+                        return;
+                    }
+                    break;
+                case "txtField22":
+                    loJSON = oTransVSP.searchAvlVhcl(lsValue, "ENG");
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
+                        txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
+                        txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
+                        txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
+                        txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
+                        textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField22.setText("");
+                        txtField22.requestFocus();
+                        return;
+                    }
+                    break;
+                case "txtField23":
+                    loJSON = oTransVSP.searchAvlVhcl(lsValue, "FRM");
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
+                        txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
+                        txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
+                        txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
+                        txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
+                        textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField23.setText("");
+                        txtField23.requestFocus();
+                        return;
+                    }
                     break;
                 case "txtField32":
                     loJSON = oTransVSP.searchBankApp(lsValue);
@@ -717,7 +773,8 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 case "txtField62":
                     loJSON = oTransVSP.searchInsurance(lsValue, true);
                     if (!"error".equals(loJSON.get("result"))) {
-                        txtField62.setText(oTransVSP.getMasterModel().getMasterModel().getTPLInsNm());
+                        String lsBrTpl = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
+                        txtField62.setText(lsBrTpl);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField62.setText("");
@@ -728,7 +785,8 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 case "txtField65":
                     loJSON = oTransVSP.searchInsurance(lsValue, false);
                     if (!"error".equals(loJSON.get("result"))) {
-                        txtField65.setText(oTransVSP.getMasterModel().getMasterModel().getCOMInsNm());
+                        String lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
+                        txtField65.setText(lsBrCom);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField65.setText("");
@@ -765,13 +823,13 @@ public class VSPFormController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField30, txtField45, txtField46, txtField47, txtField48,
+        List<TextField> loTxtField = Arrays.asList(txtField30, txtField31, txtField45, txtField46, txtField47, txtField48,
                 txtField49, txtField50, txtField51, txtField52, txtField53, txtField54,
                 txtField56, txtField58, txtField59, txtField60, txtField63, txtField68, txtField70,
                 txtField74, txtField75
         );
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
-        List<TextField> loTxtFieldFinacne = Arrays.asList(txtField31, txtField33, txtField34, txtField35, txtField39, txtField42);
+        List<TextField> loTxtFieldFinacne = Arrays.asList(txtField33, txtField34, txtField35, txtField39, txtField42);
         loTxtFieldFinacne.forEach(tf -> tf.focusedProperty().addListener(txtFieldFinance_Focus));
         List<TextArea> loTxtArea = Arrays.asList(textArea27, textArea28);
         loTxtArea.forEach(tf -> tf.focusedProperty().addListener(txtArea_Focus));
@@ -788,47 +846,40 @@ public class VSPFormController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             if (!oTransVSP.getVSPFinanceList().isEmpty()) {
                 switch (lnIndex) {
-                    case 31: // DownPayment
-                        if (lsValue.isEmpty()) {
-                            lsValue = "0.00";
-                        }
-                        oTransVSP.getMasterModel().getMasterModel().setDownPaym(Double.valueOf(lsValue.replace(",", "")));
-                        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
-                        break;
                     case 33: // Bank Discount
                         if (lsValue.isEmpty()) {
                             lsValue = "0.00";
                         }
-                        oTransVSP.setVSPFinance("nDiscount", Double.valueOf(lsValue.replace(",", "")));
-                        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nDiscount")))));
+                        oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setDiscount(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
+                        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()))));
                         break;
                     case 34: // Terms
                         if (lsValue.isEmpty()) {
                             lsValue = "0";
                         }
-                        oTransVSP.setVSPFinance("nAcctTerm", lsValue);
-                        txtField34.setText(String.valueOf(oTransVSP.getVSPFinance("nAcctTerm")));
+                        oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setAcctTerm(Integer.parseInt(lsValue));
+                        txtField34.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm()))));
                         break;
                     case 35: // Rate
                         if (lsValue.isEmpty()) {
                             lsValue = "0";
                         }
-                        oTransVSP.setVSPFinance("nAcctRate", lsValue);
-                        txtField35.setText(String.valueOf(oTransVSP.getVSPFinance("nAcctRate")));
+                        oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setAcctRate(Double.valueOf(lsValue.replace(",", "")));
+                        txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctRate()))));
                         break;
                     case 39: //Net DownPayment
                         if (lsValue.isEmpty()) {
                             lsValue = "0.00";
                         }
-                        oTransVSP.setVSPFinance("nNtDwnPmt", Double.valueOf(lsValue.replace(",", "")));
-                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nNtDwnPmt")))));
+                        oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setNtDwnPmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
+                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getNtDwnPmt()))));
                         break;
                     case 42: // Prompt Payment Disc.
                         if (lsValue.isEmpty()) {
                             lsValue = "0.00";
                         }
-                        oTransVSP.setVSPFinance("nRebatesx", Double.valueOf(lsValue.replace(",", "")));
-                        txtField42.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinance("nRebatesx")))));
+                        oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setRebates(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
+                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getRebates()))));
                         break;
                 }
             }
@@ -850,14 +901,23 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setUnitPrce(Double.valueOf(lsValue.replace(",", "")));
+//                    oTransVSP.getMasterModel().getMasterModel().setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
+                    System.out.println("30: " + txtField30.getText());
                     txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce()))));
+                    System.out.println("unitprice: " + poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce()))));
+                    break;
+                case 31: // DownPayment
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    oTransVSP.getMasterModel().getMasterModel().setDownPaym(new BigDecimal(lsValue.replace(",", "")));
+                    txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
                     break;
                 case 45: //STD Fleet Discount
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setFleetDsc(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setFleetDsc(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField45.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getFleetDsc()))));
                     break;
                 case 46: // STD Fleet Discount Plant
@@ -873,12 +933,12 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
                     oTransVSP.getMasterModel().getMasterModel().setDue2Dlr(Double.valueOf(lsValue.replace(",", "")));
                     txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
-//                    break;
+                    break;
                 case 48: //SPL Fleet Discount
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setSPFltDsc(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setSPFltDsc(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField48.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFltDsc()))));
                     break;
                 case 49://SPL Fleet Discount Plant
@@ -899,7 +959,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setPromoDsc(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setPromoDsc(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField51.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPromoDsc()))));
                     break;
                 case 52://Promo Discount Plant
@@ -921,63 +981,67 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setAddlDsc(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setAddlDsc(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField54.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAddlDsc()))));
                     break;
                 case 56: //Bundle Discount
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setBndleDsc(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setBndleDsc(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField56.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getBndleDsc()))));
                     break;
                 case 58: //Insurance Discount
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-//                    oTransVSP.getMasterModel().getMasterModel().set(Double.valueOf(lsValue.replace(",", "")));
-//                    txtField58.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
+                    oTransVSP.getMasterModel().getMasterModel().setInsurAmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", "")))
+                    );
+                    txtField58.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getInsurAmt()))));
                     break;
                 case 59: //OMA & CMF
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setAdvDwPmt(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setAdvDwPmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", "")))
+                    );
                     txtField59.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAdvDwPmt()))));
                     break;
                 case 60: //TPL Insurance
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setTPLAmt(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setTPLAmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", "")))
+                    );
                     txtField60.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTPLAmt()))));
                     break;
                 case 63: //Compre Insurance
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setCompAmt(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setCompAmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", "")))
+                    );
                     txtField63.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getCompAmt()))));
                     break;
                 case 68: //LTO
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setLTOAmt(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setLTOAmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField68.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getLTOAmt()))));
                     break;
                 case 70: // CHMO/Doc Stamps
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setChmoAmt(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setChmoAmt(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField70.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getChmoAmt()))));
                     break;
                 case 74: //Misc Charges
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setOthrChrg(Double.valueOf(lsValue.replace(",", "")));
+                    oTransVSP.getMasterModel().getMasterModel().setOthrChrg(BigDecimal.valueOf(Double.valueOf(lsValue.replace(",", ""))));
                     txtField74.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getOthrChrg()))));
                     break;
                 case 75://Description
@@ -1076,11 +1140,16 @@ public class VSPFormController implements Initializable, ScreenInterface {
     }
 
     private void initCmboxFieldAction() {
-        if (!comboBox66.getSelectionModel().isSelected(0)) {
-            comboBox67.getItems().remove("0");
-        } else {
-            comboBox67.getItems().add("0");
-        }
+        chckBoxSpecialAccount.setOnAction(event -> {
+            if (chckBoxSpecialAccount.isSelected()) {
+                oTransVSP.getMasterModel().getMasterModel().setIsVIP("1");
+                chckBoxSpecialAccount.setSelected(true);
+            } else {
+                chckBoxSpecialAccount.setSelected(false);
+                oTransVSP.getMasterModel().getMasterModel().setIsVIP("0");
+            }
+            initFields(pnEditMode);
+        });
         comboBox29.setOnAction(event -> {
             if (comboBox29.getSelectionModel().getSelectedIndex() >= 0) {
                 oTransVSP.getMasterModel().getMasterModel().setPayMode(String.valueOf(comboBox29.getSelectionModel().getSelectedIndex()));
@@ -1164,19 +1233,19 @@ public class VSPFormController implements Initializable, ScreenInterface {
                         oTransVSP.getMasterModel().getMasterModel().setPlateNo("");
                         oTransVSP.getMasterModel().getMasterModel().setEngineNo("");
                         oTransVSP.getMasterModel().getMasterModel().setFrameNo("");
-//                        txtField16.setText("");
-//                        textArea17.setText("");
-//                        txtField18.setText("");
-//                        txtField19.setText("");
-//                        brandNewCat.setSelected(false);
-//                        preOwnedCat.setSelected(false);
-//                        txtField20.setText("");
-//                        txtField21.setText("");
-//                        txtField22.setText("");
-//                        txtField23.setText("");
-//                        txtField24.setText("");
-//                        txtField25.setText("");
-//                        textArea26.setText("");
+                        txtField16.setText("");
+                        textArea17.setText("");
+                        txtField18.setText("");
+                        txtField19.setText("");
+                        brandNewCat.setSelected(false);
+                        preOwnedCat.setSelected(false);
+                        txtField20.setText("");
+                        txtField21.setText("");
+                        txtField22.setText("");
+                        txtField23.setText("");
+                        txtField24.setText("");
+                        txtField25.setText("");
+                        textArea26.setText("");
                         clearVSPFields(true);
                     }
                 }
@@ -1279,11 +1348,13 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
                 }
             }
+            initFields(pnEditMode);
         });
         txtField62.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
+                        oTransVSP.getMasterModel().getMasterModel().setCOMBrIns("");
                         oTransVSP.getMasterModel().getMasterModel().setTPLInsNm("");
                     }
                 }
@@ -1294,6 +1365,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         oTransVSP.getMasterModel().getMasterModel().setCOMInsNm("");
+                        oTransVSP.getMasterModel().getMasterModel().setCOMBrIns("");
                     }
                 }
             }
@@ -1393,7 +1465,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
             case "btnAddParts":
                     try {
                 oTransVSP.addVSPParts();
-                loadPartsWindowDialog(oTransVSP.getVSPLaborList().size() - 1, true);
+                loadPartsWindowDialog(oTransVSP.getVSPPartsList().size() - 1, true);
                 loadPartsTable();
             } catch (IOException ex) {
                 Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1539,14 +1611,13 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     txtField62, txtField65, txtField75, txtField81);
             loTxtFieldString.forEach(tf -> tf.setText(""));
 
-            List<TextField> loTxtFieldDouble = Arrays.asList(txtField30, txtField31, txtField33, txtField34, txtField35, txtField38,
-                    txtField39, txtField40, txtField41, txtField42, txtField43, txtField44, txtField45,
-                    txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
-                    txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
-                    txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
-                    txtField77, txtField78, txtField79, txtField80);
-            loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
-
+//            List<TextField> loTxtFieldDouble = Arrays.asList(txtField30, txtField31, txtField33, txtField34, txtField35, txtField38,
+//                    txtField39, txtField40, txtField41, txtField42, txtField43, txtField44, txtField45,
+//                    txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
+//                    txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
+//                    txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
+//                    txtField77, txtField78, txtField79, txtField80);
+//            loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
             List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
                     comboBox64, comboBox66, comboBox67, comboBox69, comboBox71);
             loComboBox.forEach(tf -> tf.setValue(null));
@@ -1571,14 +1642,13 @@ public class VSPFormController implements Initializable, ScreenInterface {
 
             loTxtAreaString.forEach(ta -> ta.setText(""));
 
-            List<TextField> loTxtFieldDouble = Arrays.asList(txtField30, txtField31, txtField33, txtField34, txtField35, txtField38,
-                    txtField39, txtField40, txtField41, txtField42, txtField43, txtField44, txtField45,
-                    txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
-                    txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
-                    txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
-                    txtField77, txtField78, txtField79, txtField80);
-            loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
-
+//            List<TextField> loTxtFieldDouble = Arrays.asList(txtField30, txtField31, txtField33, txtField34, txtField35, txtField38,
+//                    txtField39, txtField40, txtField41, txtField42, txtField43, txtField44, txtField45,
+//                    txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
+//                    txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
+//                    txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
+//                    txtField77, txtField78, txtField79, txtField80);
+//            loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
             List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
                     comboBox64, comboBox66, comboBox67, comboBox69, comboBox71);
             loComboBox.forEach(tf -> tf.setValue(null));
@@ -1767,10 +1837,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
 
             switch (comboBox69.getSelectionModel().getSelectedIndex()) {
                 case 2: //
-                    txtField18.setDisable(!lbShow);
+                    txtField68.setDisable(!lbShow);
                     break;
                 default:
-                    txtField18.setDisable(true);
+                    txtField68.setDisable(true);
                     loadVSPFields();
                     break;
             }
