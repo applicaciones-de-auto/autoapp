@@ -107,8 +107,9 @@ public class VSPAccessoriesDialogController implements Initializable {
     }
 
     private void loadPartsFields() {
-        txtField01.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")));
-        txtField02.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")));
+        txtField01.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "sStockIDx")));
+        txtField02.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "sDescript")));
+        txtField03.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "nQuantity")));
         if (oTransVSPAccessories.getVSPParts(pnRow, "") != null && !oTransVSPAccessories.getVSPParts(pnRow, "").equals("")) {
             comboBox04.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, ""))));
             if (oTransVSPAccessories.getVSPParts(pnRow, "").equals(0)) {

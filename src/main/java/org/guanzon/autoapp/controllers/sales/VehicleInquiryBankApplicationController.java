@@ -55,6 +55,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
     private boolean pbState = false;
     private String psSourceNo = "";
     private String psTransNox = "";
+    private String psBranchCd = "";
     private final String pxeModuleName = "Inquiry Bank Application";
 
     ObservableList<String> cBankPaymode = FXCollections.observableArrayList("BANK PURCHASE ORDER", "BANK FINANCING", "COMPANY PURCHASE ORDER", "COMPANY FINANCING"); //Mode of Payment Values
@@ -103,6 +104,10 @@ public class VehicleInquiryBankApplicationController implements Initializable {
 
     public void setTransNox(String fsValue) {
         psTransNox = fsValue;
+    }
+
+    public void setBranCD(String fsValue) {
+        psBranchCd = fsValue;
     }
 
     private Stage getStage() {
@@ -185,6 +190,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                         }
                     }
                     if (setSelection()) {
+                        oTransBankApp.getMasterModel().setTargetBranchCd(psBranchCd);
                         oTransBankApp.getMasterModel().getMasterModel().setSourceNo(psSourceNo);
                         loJSON = oTransBankApp.saveTransaction();
                         if ("success".equals((String) loJSON.get("result"))) {
@@ -506,11 +512,11 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         }
         );
         datePicker08.setOnAction(e -> {
-            oTransBankApp.setMaster(3, SQLUtil.toDate(datePicker08.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            oTransBankApp.setMaster("dAppliedx", SQLUtil.toDate(datePicker08.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
         }
         );
         datePicker09.setOnAction(e -> {
-            oTransBankApp.setMaster(4, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            oTransBankApp.setMaster("dApproved", SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
 
         }
         );

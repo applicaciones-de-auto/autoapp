@@ -69,8 +69,6 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 15);
-        InputTextUtil.addTextLimiter(txtField03, 5);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -128,6 +126,7 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -138,10 +137,16 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransMeasure.getModel().getModel().setMeasurNm(lsValue);
+                    loJSON = oTransMeasure.getModel().getModel().setMeasurNm(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
                 case 3:
-                    oTransMeasure.getModel().getModel().setShortDsc(lsValue);
+                    loJSON = oTransMeasure.getModel().getModel().setShortDsc(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
             }
         } else {
@@ -185,18 +190,8 @@ public class MeasurementEntryParamController implements Initializable, ScreenInt
                         txtField02.setText("");
                         return;
                     }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter value measurement information.");
-                        txtField02.setText("");
-                        return;
-                    }
                     if (txtField03.getText().matches("[^a-zA-Z].*")) {
                         ShowMessageFX.Warning(null, "Measurement Information", "Please enter valid measurement abbrev information.");
-                        txtField03.setText("");
-                        return;
-                    }
-                    if (txtField03.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Measurement Information", "Please enter value measurement abbrev information.");
                         txtField03.setText("");
                         return;
                     }

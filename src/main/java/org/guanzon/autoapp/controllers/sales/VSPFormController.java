@@ -200,187 +200,189 @@ public class VSPFormController implements Initializable, ScreenInterface {
         //Main Interface
         JSONObject loJSON = new JSONObject();
         loJSON = oTransVSP.computeAmount();
-        if (!"error".equals((String) loJSON.get("result"))) {
-            txtField01.setText(oTransVSP.getMasterModel().getMasterModel().getVSPNO());
-            if (oTransVSP.getMasterModel().getMasterModel().getTransactDte() != null && !oTransVSP.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
-                txtField02.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getTransactDte()));
-            }
-            txtField03.setText(oTransVSP.getMasterModel().getMasterModel().getInqryID());
-            if (oTransVSP.getMasterModel().getMasterModel().getInqryDte() != null && !oTransVSP.getMasterModel().getMasterModel().getInqryDte().toString().isEmpty()) {
-                txtField04.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getInqryDte()));
-            }
-            if (oTransVSP.getMasterModel().getMasterModel().getSourceCD() != null && !oTransVSP.getMasterModel().getMasterModel().getSourceCD().trim().isEmpty()) {
-                comboBox05.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getSourceCD()));
-            }
-            txtField06.setText(oTransVSP.getMasterModel().getMasterModel().getSEName());
-            txtField07.setText(oTransVSP.getMasterModel().getMasterModel().getAgentNm());
-            txtField08.setText(oTransVSP.getMasterModel().getMasterModel().getBranchNm());
-            if (oTransVSP.getMasterModel().getMasterModel().getDelvryDt() != null && !oTransVSP.getMasterModel().getMasterModel().getDelvryDt().toString().isEmpty()) {
-                datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getDelvryDt())));
-            }
-            txtField10.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
-            txtField11.setText("0.00");
-            txtField12.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
-            txtField13.setText("0.00");
-            txtField14.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
-            txtField15.setText(oTransVSP.getMasterModel().getMasterModel().getInqCltNm());
-            txtField16.setText(oTransVSP.getMasterModel().getMasterModel().getBuyCltNm());
-            textArea17.setText(oTransVSP.getMasterModel().getMasterModel().getAddress());
-            txtField18.setText(oTransVSP.getMasterModel().getMasterModel().getCoCltNm());
-            txtField19.setText(oTransVSP.getMasterModel().getMasterModel().getContctNm());
-            if (oTransVSP.getMasterModel().getMasterModel().getIsVhclNw().equals("0")) {
-                brandNewCat.setSelected(true);
-            } else if (oTransVSP.getMasterModel().getMasterModel().getIsVhclNw().equals("1")) {
-                preOwnedCat.setSelected(true);
-            } else {
-                preOwnedCat.setSelected(false);
-                brandNewCat.setSelected(false);
-            }
-            if (oTransVSP.getMasterModel().getMasterModel().getIsVIP().equals("1")) {
-                chckBoxSpecialAccount.setSelected(true);
-            } else {
-                chckBoxSpecialAccount.setSelected(false);
-            }
-            txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
-            txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
-            txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
-            txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
-            txtField24.setText(oTransVSP.getMasterModel().getMasterModel().getEndPlate());
-            txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
-            textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
-            textArea28.setText(oTransVSP.getMasterModel().getMasterModel().getRemarks());
+//        if (!"error".equals((String) loJSON.get("result"))) {
+        txtField01.setText(oTransVSP.getMasterModel().getMasterModel().getVSPNO());
+        if (oTransVSP.getMasterModel().getMasterModel().getTransactDte() != null && !oTransVSP.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
+            txtField02.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getTransactDte()));
+        }
+        txtField03.setText(oTransVSP.getMasterModel().getMasterModel().getInqryID());
+        if (oTransVSP.getMasterModel().getMasterModel().getInqryDte() != null && !oTransVSP.getMasterModel().getMasterModel().getInqryDte().toString().isEmpty()) {
+            txtField04.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getInqryDte()));
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getSourceCD() != null && !oTransVSP.getMasterModel().getMasterModel().getSourceCD().trim().isEmpty()) {
+            comboBox05.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getSourceCD()));
+        }
+        txtField06.setText(oTransVSP.getMasterModel().getMasterModel().getSEName());
+        txtField07.setText(oTransVSP.getMasterModel().getMasterModel().getAgentNm());
+        txtField08.setText(oTransVSP.getMasterModel().getMasterModel().getBranchNm());
+        if (oTransVSP.getMasterModel().getMasterModel().getDelvryDt() != null && !oTransVSP.getMasterModel().getMasterModel().getDelvryDt().toString().isEmpty()) {
+            datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getDelvryDt())));
+        }
+        txtField10.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
+        txtField11.setText("0.00");
+        txtField12.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
+        txtField13.setText("0.00");
+        txtField14.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
+        txtField15.setText(oTransVSP.getMasterModel().getMasterModel().getInqCltNm());
+        txtField16.setText(oTransVSP.getMasterModel().getMasterModel().getBuyCltNm());
+        textArea17.setText(oTransVSP.getMasterModel().getMasterModel().getAddress());
+        txtField18.setText(oTransVSP.getMasterModel().getMasterModel().getCoCltNm());
+        txtField19.setText(oTransVSP.getMasterModel().getMasterModel().getContctNm());
+        if (oTransVSP.getMasterModel().getMasterModel().getIsVhclNw().equals("0")) {
+            brandNewCat.setSelected(true);
+        } else if (oTransVSP.getMasterModel().getMasterModel().getIsVhclNw().equals("1")) {
+            preOwnedCat.setSelected(true);
+        } else {
+            preOwnedCat.setSelected(false);
+            brandNewCat.setSelected(false);
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getIsVIP().equals("1")) {
+            chckBoxSpecialAccount.setSelected(true);
+        } else {
+            chckBoxSpecialAccount.setSelected(false);
+        }
+        txtField20.setText(oTransVSP.getMasterModel().getMasterModel().getCSNo());
+        txtField21.setText(oTransVSP.getMasterModel().getMasterModel().getPlateNo());
+        txtField22.setText(oTransVSP.getMasterModel().getMasterModel().getEngineNo());
+        txtField23.setText(oTransVSP.getMasterModel().getMasterModel().getFrameNo());
+        txtField24.setText(oTransVSP.getMasterModel().getMasterModel().getEndPlate());
+        txtField25.setText(oTransVSP.getMasterModel().getMasterModel().getKeyNo());
+        textArea26.setText(oTransVSP.getMasterModel().getMasterModel().getVhclDesc());
+        textArea28.setText(oTransVSP.getMasterModel().getMasterModel().getRemarks());
 
-            //Details Tab Interface
-            if (oTransVSP.getMasterModel().getMasterModel().getPayMode() != null && !oTransVSP.getMasterModel().getMasterModel().getPayMode().trim().isEmpty()) {
-                comboBox29.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getPayMode()));
-            }
-            txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce()))));
-            txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
-            String lsBranchBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + "" + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
-            txtField32.setText(lsBranchBank);
-            // Payment Information and Vehicle Charges
-            if (!oTransVSP.getVSPFinanceList().isEmpty()) {
-                switch (comboBox29.getSelectionModel().getSelectedIndex()) {
-                    case 1://FINANCING
-                    case 2:
-                    case 3:
-                    case 4:
+        //Details Tab Interface
+        if (oTransVSP.getMasterModel().getMasterModel().getPayMode() != null && !oTransVSP.getMasterModel().getMasterModel().getPayMode().trim().isEmpty()) {
+            comboBox29.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getPayMode()));
+        }
+        txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce()))));
+        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
+        String lsBranchBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + "" + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
+        txtField32.setText(lsBranchBank);
+        // Payment Information and Vehicle Charges
+        if (!oTransVSP.getVSPFinanceList().isEmpty()) {
+            switch (comboBox29.getSelectionModel().getSelectedIndex()) {
+                case 1://FINANCING
+                case 2:
+                case 3:
+                case 4:
 //                    if (oTransVSP.getVSPFinanceList().size() > 0) {
-                        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()))));
-                        txtField34.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm()));
-                        txtField35.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctRate()));
-                        txtField36.setText("");
-                        if (oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo() != null && !oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo().isEmpty()) {
-                            comboBox37.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo())));
-                        }
-                        double ldAprvdNetSrp = Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce())) - Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()));
-                        txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(ldAprvdNetSrp))));
-                        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getNtDwnPmt()))));
-                        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinAmt()))));
-                        txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getMonAmort()))));
-                        txtField42.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getRebates()))));
-                        txtField43.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth()))));
-                        txtField44.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getPNValue()))));
+                    txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()))));
+                    txtField34.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm()));
+                    txtField35.setText(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getAcctRate()));
+                    txtField36.setText("");
+                    if (oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo() != null && !oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo().isEmpty()) {
+                        comboBox37.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinPromo())));
+                    }
+                    double ldAprvdNetSrp = Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getUnitPrce())) - Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getDiscount()));
+                    txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(ldAprvdNetSrp))));
+                    txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getNtDwnPmt()))));
+                    txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getFinAmt()))));
+                    txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getMonAmort()))));
+                    txtField42.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getRebates()))));
+                    txtField43.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth()))));
+                    txtField44.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPFinanceModel().getVSPFinanceModel().getPNValue()))));
 //                    }
-                        break;
-                    default:
-                        List<TextField> loTextField = Arrays.asList(
-                                txtField33, txtField34, txtField35, txtField36, txtField38, txtField39, txtField40, txtField41, txtField42,
-                                txtField43, txtField44);
-                        loTextField.forEach(tf -> tf.setText("0.00"));
-                        comboBox37.setValue(null);
-                        break;
-                }
+                    break;
+                default:
+                    List<TextField> loTextField = Arrays.asList(
+                            txtField33, txtField34, txtField35, txtField36, txtField38, txtField39, txtField40, txtField41, txtField42,
+                            txtField43, txtField44);
+                    loTextField.forEach(tf -> tf.setText("0.00"));
+                    comboBox37.setValue(null);
+                    break;
             }
+        }
 //        // Discount
-            txtField45.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getFleetDsc()))));
-            txtField46.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Sup()))));
-            txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
-            txtField48.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFltDsc()))));
-            txtField49.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Sup()))));
-            txtField50.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Dlr()))));
-            txtField51.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPromoDsc()))));
-            txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
-            txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
-            txtField54.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAddlDsc()))));
-            txtField55.setText("0.00");
-            txtField56.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getBndleDsc()))));
-            txtField57.setText("0.00");
-            txtField58.setText("0.00");
-            // Other Charges
-            txtField59.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAdvDwPmt()))));
-            txtField60.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTPLAmt()))));
-            if (oTransVSP.getMasterModel().getMasterModel().getTPLStat() != null && !oTransVSP.getMasterModel().getMasterModel().getTPLStat().trim().isEmpty()) {
-                comboBox61.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getTPLStat()));
+        txtField45.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getFleetDsc()))));
+        txtField46.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Sup()))));
+        txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
+        txtField48.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFltDsc()))));
+        txtField49.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Sup()))));
+        txtField50.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Dlr()))));
+        txtField51.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPromoDsc()))));
+        txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
+        txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
+        txtField54.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAddlDsc()))));
+        txtField55.setText("0.00");
+        txtField56.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getBndleDsc()))));
+        txtField57.setText("0.00");
+        txtField58.setText("0.00");
+        // Other Charges
+        txtField59.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAdvDwPmt()))));
+        txtField60.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTPLAmt()))));
+        if (oTransVSP.getMasterModel().getMasterModel().getTPLStat() != null && !oTransVSP.getMasterModel().getMasterModel().getTPLStat().trim().isEmpty()) {
+            comboBox61.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getTPLStat()));
+        }
+        String lsBrTPL = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
+        txtField62.setText(lsBrTPL);
+        txtField63.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getInsurAmt()))));
+        if (oTransVSP.getMasterModel().getMasterModel().getCompStat() != null && !oTransVSP.getMasterModel().getMasterModel().getCompStat().trim().isEmpty()) {
+            comboBox64.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getCompStat()));
+        }
+        String lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
+        txtField65.setText(lsBrCom);
+        if (oTransVSP.getMasterModel().getMasterModel().getInsurTyp() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurTyp().trim().isEmpty()) {
+            comboBox66.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getInsurTyp()));
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getInsurYr() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurYr().equals(0)) {
+            int lnYear = -1;
+            switch (oTransVSP.getMasterModel().getMasterModel().getInsurYr()) {
+                case 0:
+                    lnYear = 0;
+                    break;
+                case 1:
+                    lnYear = 1;
+                    break;
+                case 2:
+                    lnYear = 2;
+                    break;
+                case 3:
+                    lnYear = 3;
+                    break;
+                case 4:
+                    lnYear = 4;
+                    break;
             }
-            String lsBrTPL = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
-            txtField62.setText(lsBrTPL);
-            txtField63.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getInsurAmt()))));
-            if (oTransVSP.getMasterModel().getMasterModel().getCompStat() != null && !oTransVSP.getMasterModel().getMasterModel().getCompStat().trim().isEmpty()) {
-                comboBox64.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getCompStat()));
-            }
-            String lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + "" + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
-            txtField65.setText(lsBrCom);
-            if (oTransVSP.getMasterModel().getMasterModel().getInsurTyp() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurTyp().trim().isEmpty()) {
-                comboBox66.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getInsurTyp()));
-            }
-            if (oTransVSP.getMasterModel().getMasterModel().getInsurYr() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurYr().equals(0)) {
-                int lnYear = -1;
-                switch (oTransVSP.getMasterModel().getMasterModel().getInsurYr()) {
-                    case 0:
-                        lnYear = 0;
-                        break;
-                    case 1:
-                        lnYear = 1;
-                        break;
-                    case 2:
-                        lnYear = 2;
-                        break;
-                    case 3:
-                        lnYear = 3;
-                        break;
-                    case 4:
-                        lnYear = 4;
-                        break;
-                }
-                comboBox67.getSelectionModel().select(lnYear);
-            }
-            txtField68.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getLTOAmt()))));
-            if (oTransVSP.getMasterModel().getMasterModel().getLTOStat() != null && !oTransVSP.getMasterModel().getMasterModel().getLTOStat().trim().isEmpty()) {
-                comboBox69.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getLTOStat()));
-            }
-            txtField70.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getChmoAmt()))));
-            if (oTransVSP.getMasterModel().getMasterModel().getChmoStat() != null && !oTransVSP.getMasterModel().getMasterModel().getChmoStat().trim().isEmpty()) {
-                comboBox71.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getChmoStat()));
-            }
-            txtField72.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getLaborAmt()))));
-            txtField73.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAccesAmt()))));
-            txtField74.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getOthrChrg()))));
-            txtField75.setText(oTransVSP.getMasterModel().getMasterModel().getOthrDesc());
+            comboBox67.getSelectionModel().select(lnYear);
+        }
+        txtField68.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getLTOAmt()))));
+        if (oTransVSP.getMasterModel().getMasterModel().getLTOStat() != null && !oTransVSP.getMasterModel().getMasterModel().getLTOStat().trim().isEmpty()) {
+            comboBox69.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getLTOStat()));
+        }
+        txtField70.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getChmoAmt()))));
+        if (oTransVSP.getMasterModel().getMasterModel().getChmoStat() != null && !oTransVSP.getMasterModel().getMasterModel().getChmoStat().trim().isEmpty()) {
+            comboBox71.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getChmoStat()));
+        }
+        txtField72.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getLaborAmt()))));
+        txtField73.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAccesAmt()))));
+        txtField74.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getOthrChrg()))));
+        txtField75.setText(oTransVSP.getMasterModel().getMasterModel().getOthrDesc());
 
-            txtField76.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
+        txtField76.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getTranTotl()))));
 //        txtField77.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().get()))));
-            txtField78.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
-            txtField79.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
-            txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
+        txtField78.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getResrvFee()))));
+        txtField79.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
+        txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
 //        txtField81.setText(oTransVSP.getMasterModel().getMasterModel()());
 //        lblDRNo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
 //        lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
 //        lblSINo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
-            lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
-            if (oTransVSP.getMasterModel().getMasterModel().getTranStat().equals("1")) {
-                lblVSPStatus.setText("Active");
-            } else {
-                lblVSPStatus.setText("Cancelled");
-            }
+        lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
+        if (oTransVSP.getMasterModel().getMasterModel().getTranStat().equals("0")) {
+            lblVSPStatus.setText("Active");
+        } else {
+            lblVSPStatus.setText("Cancelled");
+        }
 //            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
 //                lblApproveDate.setText(InputTextUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
 //            }
-        } else {
-            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-            return false;
-        }
+//    }
+
+//        else {
+//            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//        return false;
+//    }
         return true;
     }
 
@@ -448,8 +450,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
         try {
             oTransVSP.addVSPLabor();
             loadLaborWindowDialog(oTransVSP.getVSPLaborList().size() - 1, true, fsDescript, fbWithLabor);
+
         } catch (IOException ex) {
-            Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VSPFormController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -463,8 +467,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
             if (event.getClickCount() == 2) {
                 try {
                     loadLaborWindowDialog(pnRow, false, "", false);
+
                 } catch (IOException ex) {
-                    Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(VSPFormController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1455,10 +1461,9 @@ public class VSPFormController implements Initializable, ScreenInterface {
                         txtField24.setText("");
                         txtField25.setText("");
                         textArea26.setText("");
-                        clearVSPFields(true);
+                        clearNumberFields();
                     }
                 }
-                initFields(pnEditMode);
             }
         });
         txtField16.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -1581,6 +1586,23 @@ public class VSPFormController implements Initializable, ScreenInterface {
         });
     }
 
+    private void clearNumberFields() {
+        txtField30.setText("0.00");
+        txtField31.setText("0.00");
+        txtField33.setText("0.00");
+        txtField34.setText("0");
+        txtField35.setText("0.00");
+        txtField38.setText("0.00");
+        txtField39.setText("0.00");
+        txtField40.setText("0.00");
+        txtField41.setText("0.00");
+        txtField42.setText("0.00");
+        txtField43.setText("0.00");
+        txtField44.setText("0.00");
+        comboBox37.setValue(null);
+
+    }
+
     private void initButtonsClick() {
         List<Button> loButtons = Arrays.asList(btnAdd, btnEdit, btnSave, btnCancel, btnBrowse, btnPrint, btnCancelVSP,
                 btnApprove, btnGatePass, btnClose, btnJobOrderAdd, btnAdditionalLabor, btnAddParts,
@@ -1667,8 +1689,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 oTransVSP.addVSPLabor();
                 loadLaborWindowDialog(oTransVSP.getVSPLaborList().size() - 1, true, "", false);
                 loadLaborTable();
+
             } catch (IOException ex) {
-                Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VSPFormController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
             break;
             case "btnAddParts":
@@ -1676,8 +1700,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 oTransVSP.addVSPParts();
                 loadPartsWindowDialog(oTransVSP.getVSPPartsList().size() - 1, true);
                 loadPartsTable();
+
             } catch (IOException ex) {
-                Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VSPFormController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
 
             break;

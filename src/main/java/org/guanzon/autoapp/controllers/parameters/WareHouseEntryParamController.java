@@ -69,7 +69,6 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 15);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -86,7 +85,7 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
 
     private void initTextFieldPattern() {
         Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
+        textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
     }
 
@@ -125,6 +124,7 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -135,7 +135,10 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransWarehouse.getModel().getModel().setWHouseNm(lsValue);
+                    loJSON = oTransWarehouse.getModel().getModel().setWHouseNm(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
             }
         } else {
@@ -176,11 +179,6 @@ public class WareHouseEntryParamController implements Initializable, ScreenInter
                 if (ShowMessageFX.YesNo(null, "Warehouse Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
                         ShowMessageFX.Warning(null, "Warehouse Information", "Please enter valid warehouse information.");
-                        txtField02.setText("");
-                        return;
-                    }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Warehouse Information", "Please enter value warehouse information.");
                         txtField02.setText("");
                         return;
                     }

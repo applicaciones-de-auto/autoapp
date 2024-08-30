@@ -51,6 +51,7 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
     private String psVSPNox;
     private String psClient;
     private boolean pbState = false;
+    private String psBranchCd = "";
     private final String pxeModuleName = "Inquiry Lost Sale Remarks Form";
     //if change unit is only VSP will remove
     //if lost of sale both vsp and inquiry
@@ -107,6 +108,10 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
 
     public void setClientName(String fsValue) {
         psClient = fsValue;
+    }
+
+    public void setBranCD(String fsValue) {
+        psBranchCd = fsValue;
     }
 
     private Stage getStage() {
@@ -325,6 +330,7 @@ public class VehicleInquiryLostSaleFormController implements Initializable {
 
                 loJSON = oTransInquiry.lostSale(psSourceNo);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    oTransLost.getMasterModel().setTargetBranchCd(psBranchCd);
                     oTransLost.getMasterModel().getMasterModel().setTransNo(psSourceNo);
                     oTransLost.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
                     oTransLost.getMasterModel().getMasterModel().setMethodCd("UPDATE");

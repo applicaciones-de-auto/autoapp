@@ -69,7 +69,6 @@ public class BinEntryParamController implements Initializable, ScreenInterface {
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 15);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -86,7 +85,7 @@ public class BinEntryParamController implements Initializable, ScreenInterface {
 
     private void initTextFieldPattern() {
         Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
+        textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
 
     }
@@ -126,6 +125,7 @@ public class BinEntryParamController implements Initializable, ScreenInterface {
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -136,7 +136,10 @@ public class BinEntryParamController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransBin.getModel().getModel().setBinName(lsValue);
+                    loJSON = oTransBin.getModel().getModel().setBinName(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
             }
         } else {
@@ -177,11 +180,6 @@ public class BinEntryParamController implements Initializable, ScreenInterface {
                 if (ShowMessageFX.YesNo(null, "Bin Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
                         ShowMessageFX.Warning(null, "Bin Information", "Please enter valid bin information.");
-                        txtField02.setText("");
-                        return;
-                    }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Bin Information", "Please enter value bin information.");
                         txtField02.setText("");
                         return;
                     }

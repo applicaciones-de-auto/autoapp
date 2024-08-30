@@ -69,7 +69,6 @@ public class InvTypeEntryParamController implements Initializable, ScreenInterfa
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 32);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -86,7 +85,7 @@ public class InvTypeEntryParamController implements Initializable, ScreenInterfa
 
     private void initTextFieldPattern() {
         Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
+        textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
 
     }
@@ -126,6 +125,7 @@ public class InvTypeEntryParamController implements Initializable, ScreenInterfa
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -136,7 +136,10 @@ public class InvTypeEntryParamController implements Initializable, ScreenInterfa
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransInventoryType.getModel().getModel().setDescript(lsValue);
+                    loJSON = oTransInventoryType.getModel().getModel().setDescript(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
             }
         } else {
@@ -177,11 +180,6 @@ public class InvTypeEntryParamController implements Initializable, ScreenInterfa
                 if (ShowMessageFX.YesNo(null, "Inventory Type Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
                         ShowMessageFX.Warning(null, "Inventory Type Information", "Please enter valid inventory type information.");
-                        txtField02.setText("");
-                        return;
-                    }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Inventory Type Information", "Please enter value inventory type information.");
                         txtField02.setText("");
                         return;
                     }

@@ -115,22 +115,22 @@ public class VSPLaborEntryDialogController implements Initializable {
 
     private void loadLaborFields() {
         if (!psLbrDsc.isEmpty()) {
-            oTransVSPLabor.setVSPLabor(pnRow, "", psLbrDsc);
+            oTransVSPLabor.setVSPLabor(pnRow, "sLaborDsc", psLbrDsc);
         }
-        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")));
-        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")));
+        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "sLaborCde")));
+        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "sLaborDsc")));
         if (oTransVSPLabor.getVSPLabor(pnRow, "") != null && !oTransVSPLabor.getVSPLabor(pnRow, "").equals("")) {
-            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, ""))));
+            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "sChrgeTyp"))));
             if (oTransVSPLabor.getVSPLabor(pnRow, "").equals(0)) {
                 txtField04.setDisable(true);
             } else {
                 txtField04.setDisable(true);
             }
         }
-        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtDwnPmt")))));
-        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtDwnPmt")))));
-        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtDwnPmt")))));
-        if (oTransVSPLabor.getVSPLabor(pnRow, "").equals("0")) {
+        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborAmt")))));
+        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborDsc")))));
+        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtLabAmt")))));
+        if (oTransVSPLabor.getVSPLabor(pnRow, "cAddtlxxx").equals("0")) {
             checkBoxIsAdd.setSelected(false);
             txtField02.setDisable(true);
         } else {
@@ -167,11 +167,10 @@ public class VSPLaborEntryDialogController implements Initializable {
                 case "txtField02":
                     loJSON = oTransVSPLabor.searchLabor("", pnRow, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        oTransVSPLabor.getVSPLabor(pnRow, "");
+                        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "sLaborDsc")));
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                         txtField02.clear();
-                        txtField02.requestFocus();
                         return;
                     }
                     break;
@@ -196,7 +195,8 @@ public class VSPLaborEntryDialogController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
-        double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, ""))) - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")));
+        double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborAmt"))) - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, " "
+                + " , a.nLaborDsc")));
         if (lsValue == null) {
             return;
         }
@@ -213,9 +213,10 @@ public class VSPLaborEntryDialogController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPLabor.setVSPLabor(pnRow, lsValue, Double.valueOf(lsValue.replace(",", "")));
-                    txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")))));
-                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lnNetPrice))));
+                    oTransVSPLabor.setVSPLabor(pnRow, "nLaborAmt", Double.valueOf(lsValue.replace(",", "")));
+                    txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborAmt")))));
+                    oTransVSPLabor.setVSPLabor(pnRow, "nNtLabAmt", lnNetPrice);
+                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtLabAmt")))));
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
@@ -223,7 +224,8 @@ public class VSPLaborEntryDialogController implements Initializable {
                     }
                     oTransVSPLabor.setVSPLabor(pnRow, lsValue, Double.valueOf(lsValue.replace(",", "")));
                     txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, lsValue)))));
-                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lnNetPrice))));
+                    oTransVSPLabor.setVSPLabor(pnRow, "nNtLabAmt", lnNetPrice);
+                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nNtLabAmt")))));
                     break;
             }
         }
@@ -232,7 +234,7 @@ public class VSPLaborEntryDialogController implements Initializable {
     private void initCmboxFieldAction() {
         comboBox03.setOnAction(event -> {
             if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransVSPLabor.setVSPLabor(pnRow, "", String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+                oTransVSPLabor.setVSPLabor(pnRow, "sChrgeTyp", String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
                 initFields();
             }
         }
@@ -243,7 +245,7 @@ public class VSPLaborEntryDialogController implements Initializable {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    oTransVSPLabor.setVSPLabor(pnRow, "", "");
+                    oTransVSPLabor.setVSPLabor(pnRow, "sLaborDsc", "");
                 }
             }
         });
@@ -269,7 +271,7 @@ public class VSPLaborEntryDialogController implements Initializable {
                 break;
             case "btnCloseLabor":
                 if (pbState) {
-                    if (oTransVSPLabor.getVSPLabor(pnRow, "").toString().isEmpty()) {
+                    if (oTransVSPLabor.getVSPLabor(pnRow, "sLaborCde").toString().isEmpty()) {
                         oTransVSPLabor.removeVSPLabor(pnRow);
                     }
                 } else {
@@ -323,10 +325,10 @@ public class VSPLaborEntryDialogController implements Initializable {
         if (comboBox03.getSelectionModel().getSelectedIndex() == 0) {
             txtField04.setDisable(true);
             txtField05.setDisable(true);
-            oTransVSPLabor.setVSPLabor(pnRow, "", oTransVSPLabor.getVSPLabor(pnRow, ""));
-            txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")))));
-            double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, ""))) - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "")));
-            oTransVSPLabor.setVSPLabor(pnRow, "", lnNetPrice);
+            oTransVSPLabor.setVSPLabor(pnRow, "", oTransVSPLabor.getVSPLabor(pnRow, "nLaborDsc"));
+            txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborDsc")))));
+            double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborAmt"))) - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLabor(pnRow, "nLaborDsc")));
+            oTransVSPLabor.setVSPLabor(pnRow, "nNtLabAmt", lnNetPrice);
         } else {
             txtField04.setDisable(false);
             txtField05.setDisable(!txtField04.getText().isEmpty());

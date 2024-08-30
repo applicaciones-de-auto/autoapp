@@ -50,6 +50,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
     private boolean pbState = false;
     private String psSourceNo = "";
     private String psRefNox = "";
+    private String psBranchCd = "";
     private final String pxeModuleName = "Inquiry Follow Up";
     ObservableList<String> cMedium = FXCollections.observableArrayList("TEXT", "CALL", "SOCIAL MEDIA", "EMAIL", "VIBER");
     @FXML
@@ -88,6 +89,10 @@ public class VehicleInquiryFollowUpController implements Initializable {
 
     public void setRefNo(String fsValue) {
         psRefNox = fsValue;
+    }
+
+    public void setBranCD(String fsValue) {
+        psBranchCd = fsValue;
     }
 
     @Override
@@ -307,6 +312,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
                     if (setSelection()) {
                         oTransFollow.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
                         oTransFollow.getMasterModel().getMasterModel().setTransNo(psSourceNo);
+                        oTransFollow.getMasterModel().setTargetBranchCd(psBranchCd);
                         loJSON = oTransFollow.saveTransaction();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));

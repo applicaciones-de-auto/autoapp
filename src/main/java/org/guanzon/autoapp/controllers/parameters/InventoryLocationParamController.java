@@ -92,9 +92,10 @@ public class InventoryLocationParamController implements Initializable, ScreenIn
 
     private void initTextFieldPattern() {
         Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
+        textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
         txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly));
     }
 
     private void initCapitalizationFields() {
@@ -266,11 +267,6 @@ public class InventoryLocationParamController implements Initializable, ScreenIn
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Item Location Information Saving....", "Are you sure, do you want to save?")) {
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Warning", "Please enter a value for warehouse description");
-                        txtField02.requestFocus();
-                        return;
-                    }
                     loJSON = oTransItemLocation.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));

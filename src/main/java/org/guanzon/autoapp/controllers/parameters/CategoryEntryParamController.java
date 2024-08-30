@@ -70,7 +70,6 @@ public class CategoryEntryParamController implements Initializable, ScreenInterf
         initTextFieldFocus();
         initButtons();
         clearFields();
-        InputTextUtil.addTextLimiter(txtField02, 30);
         txtField03.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -99,7 +98,7 @@ public class CategoryEntryParamController implements Initializable, ScreenInterf
 
     private void initTextFieldPattern() {
         Pattern textOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
+        textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
     }
 
@@ -158,6 +157,7 @@ public class CategoryEntryParamController implements Initializable, ScreenInterf
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -168,7 +168,10 @@ public class CategoryEntryParamController implements Initializable, ScreenInterf
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransCategory.getModel().getModel().setDescript(lsValue);
+                    loJSON = oTransCategory.getModel().getModel().setDescript(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                     break;
             }
         } else {
@@ -212,18 +215,8 @@ public class CategoryEntryParamController implements Initializable, ScreenInterf
                         txtField02.setText("");
                         return;
                     }
-                    if (txtField02.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Category Information", "Please enter value category information.");
-                        txtField02.setText("");
-                        return;
-                    }
-                    if (txtField03.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Category Information", "Please enter valid category abbrev information.");
-                        txtField03.setText("");
-                        return;
-                    }
                     if (txtField03.getText().trim().equals("")) {
-                        ShowMessageFX.Warning(null, "Category Information", "Please enter value category abbrev information.");
+                        ShowMessageFX.Warning(null, "Category Information", "Please enter value invetory type information.");
                         txtField03.setText("");
                         return;
                     }
