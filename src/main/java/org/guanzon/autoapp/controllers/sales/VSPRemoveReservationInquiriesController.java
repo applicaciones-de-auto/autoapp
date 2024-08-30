@@ -24,7 +24,9 @@ import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.ModelVSPReservationInquirers;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -36,6 +38,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
     private GRider oApp;
     private String pxeModuleName = "Remove Reservation Inquirers";
     private ObservableList<ModelVSPReservationInquirers> reserveData = FXCollections.observableArrayList();
+    private VehicleSalesProposal oTransReserve;
     @FXML
     private Button btnRemove, btnClose;
     @FXML
@@ -49,6 +52,10 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public void setObject(VehicleSalesProposal foValue) {
+        oTransReserve = foValue;
     }
 
     private Stage getStage() {
@@ -84,8 +91,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
                     int removeCount = 0;
                     for (ModelVSPReservationInquirers item : selectedItems) {
                         int lnRow = Integer.parseInt(item.getTblindex01_reservation());
-                        String lsRecptNo = item.getTblindex02_reservation();
-//                        oTransReserve.removeReserve(lnRow, lsRecptNo);
+                        oTransReserve.removeVSPReservation(lnRow);
                         removeCount++;
                     }
                     if (removeCount >= 1) {
@@ -107,21 +113,25 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         }
     }
 
-    private void initReservationTable() {
+    private void loadReservationTable() {
         reserveData.clear();
-//        for (int lnCtr = 0; lnCtr <= oTransReserve.getInventoryModelYearList().size() - 1; lnCtr++) {
-//            reserveData.add(new ModelVSPReservationInquirers(
-//                    String.valueOf(lnCtr + 1), // ROW
-//                    "",
-//                    "",
-//                    "",
-//                    ""
-//            ));
-//        }
+        String lsDate = "";
+        for (int lnCtr = 0; lnCtr <= oTransReserve.getVSPReservationList().size() - 1; lnCtr++) {
+            if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate() != null) {
+                lsDate = String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
+            }
+            reserveData.add(new ModelVSPReservationInquirers(
+                    String.valueOf(lnCtr + 1), // ROW
+                    String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSINo()),
+                    lsDate,
+                    String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getCompnyNm()),
+                    ""
+            ));
+        }
         tblViewReservation.setItems(reserveData);
     }
 
-    private void loadReservationTable() {
+    private void initReservationTable() {
         tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01_reservation"));
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("select"));
         tblViewReservation.getItems().forEach(item -> {

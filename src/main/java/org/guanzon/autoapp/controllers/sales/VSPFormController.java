@@ -486,11 +486,11 @@ public class VSPFormController implements Initializable, ScreenInterface {
             loControl.setObject(oTransVSP);
             loControl.setWithLabor(fbWtLabor);
             loControl.setLbrDesc(fsLbrDesc);
-//            loControl.setOrigDsc((String) oTrans.getVSPLaborDetail(fnRow, 7));
+            loControl.setOrigDsc((String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getLaborDsc())));
             loControl.setState(fbIsAdd);
 //            loControl.setJO((String) oTrans.getVSPLaborDetail(fnRow, 11));
             fxmlLoader.setController(loControl);
-//            loControl.setRow(fnRow);
+            loControl.setRow(fnRow);
             //load the main interface
             Parent parent = fxmlLoader.load();
 
@@ -522,7 +522,50 @@ public class VSPFormController implements Initializable, ScreenInterface {
     }
 
     private void loadLaborTable() {
-
+        laborData.clear();
+        boolean lbAdditional = false;
+        boolean lbChargeType = false;
+        String lsGrsAmount = "";
+        String lsDiscAmount = "";
+        String lsNetAmount = "";
+        for (int lnCtr = 0; lnCtr <= oTransVSP.getVSPLaborList().size() - 1; lnCtr++) {
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getLaborAmt() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getLaborAmt())));
+            }
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getLaborDscount() != null) {
+                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getLaborDscount())));
+            }
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getNtLabAmt() != null) {
+                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(pnCtr).getNtLabAmt())));
+            }
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getChrgeTyp().equals("0")) {
+                lbChargeType = true;
+            }
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getAddtl().equals("1")) {
+                lbAdditional = true;
+            }
+            laborData.add(new ModelVSPLabor(
+                    String.valueOf(lnCtr + 1),
+                    String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getTransNo()),
+                    String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde()),
+                    lsGrsAmount,
+                    lsDiscAmount,
+                    lsNetAmount,
+                    String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDsc()),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    lbAdditional,
+                    lbChargeType
+            ));
+            lbAdditional = false;
+            lbChargeType = false;
+        }
+        tblViewLabor.setItems(laborData);
     }
 
     private void initLaborTable() {
@@ -533,14 +576,14 @@ public class VSPFormController implements Initializable, ScreenInterface {
         }
 
         tblindex01_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex01_labor"));
-        tblindex02_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex02_labor"));
-        tblindex03_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex03_labor"));
+        tblindex02_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex03_labor"));
+        tblindex03_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex07_labor"));
         tblindex04_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex04_labor"));
         tblindex05_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex05_labor"));
         tblindex06_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
         tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
         tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("addOrNot"));
-        tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex07_labor"));
+        tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>(""));
 
         tblViewLabor.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewLabor.lookup("TableHeaderRow");
@@ -566,8 +609,8 @@ public class VSPFormController implements Initializable, ScreenInterface {
             fxmlLoader.setController(loControl);
             loControl.setRequest(false);
             loControl.setRow(fnRow);
-//            loControl.setOrigDsc((String) oTrans.getVSPPartsDetail(fnRow, 9));
-//            loControl.setStockID((String) oTrans.getVSPPartsDetail(fnRow, 3));
+            loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
+            loControl.setStockID(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
 //            loControl.setJO((String) oTrans.getVSPPartsDetail(fnRow, 11));
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -599,18 +642,71 @@ public class VSPFormController implements Initializable, ScreenInterface {
     private void tblParts_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnRow = tblViewParts.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewParts.getItems().size()) {
+                ShowMessageFX.Warning(getStage(), "Please select valid parts information.", "Warning", null);
+                return;
+            }
             if (pnRow == 0) {
                 return;
             }
             if (event.getClickCount() == 2) {
-//                loadPartsAdditionalDialog(pnRow, false);
-                loadPartsTable();
+                try {
+                    loadPartsWindowDialog(pnRow, false);
+                    loadPartsTable();
+                } catch (IOException ex) {
+                    Logger.getLogger(VSPFormController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
         }
     }
 
     private void loadPartsTable() {
+        partData.clear();
+        boolean lbChargeType = false;
+        String lsGrsAmount = "";
+        String lsDiscAmount = "";
+        String lsNetAmount = "";
+        String lsQuantity = "";
+        double totalAmount = 0.00;
+        for (int lnCtr = 0; lnCtr <= oTransVSP.getVSPPartsList().size() - 1; lnCtr++) {
+            if (oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getQuantity() != null) {
+                lsQuantity = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getQuantity())));
+            }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getSelPrice() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getSelPrice())));
+            }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getPartsDscount() != null) {
+                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getPartsDscount())));
+            }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getNtPrtAmt() != null) {
+                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getNtPrtAmt())));
+            }
 
+            if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
+                lbChargeType = true;
+            }
+            totalAmount = Integer.parseInt(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getQuantity())) * Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(pnCtr).getNtPrtAmt()));
+            String lsTotalAmount = poGetDecimalFormat.format(totalAmount);
+            partData.add(new ModelVSPPart(
+                    String.valueOf(lnCtr + 1),
+                    String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
+                    String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
+                    String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getDescript()),
+                    lsQuantity,
+                    lsGrsAmount,
+                    lsDiscAmount,
+                    lsNetAmount,
+                    "",
+                    "",
+                    "",
+                    "",
+                    lsTotalAmount,
+                    lbChargeType
+            ));
+            lbChargeType = false;
+        }
+        tblViewParts.setItems(partData);
     }
 
     private void initPartsTable() {
@@ -619,18 +715,17 @@ public class VSPFormController implements Initializable, ScreenInterface {
         } else {
             tblViewParts.setEditable(false);
         }
-
         tblindex01_part.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part"));
-        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("tblindex02_part"));
-        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex03_part"));
-        tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
-        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
-        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
-        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
-        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
-        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part"));
-        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>("tblindex10_part"));
+        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("tblindex03_part"));
+        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
+        tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
+        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
+        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
+        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex14_part"));
+        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
+        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>(""));
 
         tblViewParts.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewParts.lookup("TableHeaderRow");
@@ -995,7 +1090,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
 
                     if (lnSTDFleet > 0.00) {
-                        double remainingValue = 100.00 - lnSTDFleet;
+                        double remainingValue = 100.00 - lnValueSTDSup;
                         oTransVSP.getMasterModel().getMasterModel().setDue2Dlr(remainingValue);
                         txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
                         oTransVSP.getMasterModel().getMasterModel().setDue2Sup(lnValueSTDSup);
@@ -1015,10 +1110,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
 
                     if (lnSTDFleet > 0.00) {
-                        double remainingValue = 100.00 - lnSTDFleet;
-                        oTransVSP.getMasterModel().getMasterModel().setDue2Dlr(remainingValue);
+                        double remainingValue = 100.00 - lnValueSTDDlr;
+                        oTransVSP.getMasterModel().getMasterModel().setDue2Sup(remainingValue);
                         txtField46.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Sup()))));
-                        oTransVSP.getMasterModel().getMasterModel().setDue2Sup(lnValueSTDDlr);
+                        oTransVSP.getMasterModel().getMasterModel().setDue2Dlr(lnValueSTDDlr);
                         txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
                     }
                     break;
@@ -1053,7 +1148,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
 
                     if (lnSPLFleet > 0.00) {
-                        double remainingValue = 100.00 - lnSPLFleet;
+                        double remainingValue = 100.00 - lnValueSPLSup;
                         oTransVSP.getMasterModel().getMasterModel().setSPFD2Dlr(remainingValue);
                         txtField50.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Dlr()))));
                         oTransVSP.getMasterModel().getMasterModel().setSPFD2Sup(lnValueSPLSup);
@@ -1073,7 +1168,7 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
 
                     if (lnSPLFleet > 0.00) {
-                        double remainingValue = 100.00 - lnSPLFleet;
+                        double remainingValue = 100.00 - lnValueSPLDlr;
                         oTransVSP.getMasterModel().getMasterModel().setSPFD2Sup(remainingValue);
                         txtField49.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSPFD2Sup()))));
                         oTransVSP.getMasterModel().getMasterModel().setSPFD2Dlr(lnValueSPLDlr);
@@ -1103,26 +1198,6 @@ public class VSPFormController implements Initializable, ScreenInterface {
                         lsValue = "0.00";
                     }
 
-                    double lnValuePromoDlr = Double.parseDouble(lsValue.replace(",", ""));
-
-                    if (lnValuePromoDlr > 100.00) {
-                        ShowMessageFX.Warning(getStage(), "Invalid Amount", "Warning", null);
-                        break;
-                    }
-
-                    if (lnPromoDsc > 0.00) {
-                        double remainingValue = 100.00 - lnPromoDsc;
-                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Sup(remainingValue);
-                        txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
-                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Dlr(lnValuePromoDlr);
-                        txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
-                    }
-                    break;
-                case 53://Promo Discount Dealer
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-
                     double lnValuePromoSup = Double.parseDouble(lsValue.replace(",", ""));
 
                     if (lnValuePromoSup > 100.00) {
@@ -1131,11 +1206,31 @@ public class VSPFormController implements Initializable, ScreenInterface {
                     }
 
                     if (lnPromoDsc > 0.00) {
-                        double remainingValue = 100.00 - lnPromoDsc;
+                        double remainingValue = 100.00 - lnValuePromoSup;
                         oTransVSP.getMasterModel().getMasterModel().setPrmD2Dlr(remainingValue);
-                        txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
+                        txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
                         oTransVSP.getMasterModel().getMasterModel().setPrmD2Sup(lnValuePromoSup);
-                        txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
+                        txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
+                    }
+                    break;
+                case 53://Promo Discount Dealer
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+
+                    double lnValuePromoDlr = Double.parseDouble(lsValue.replace(",", ""));
+
+                    if (lnValuePromoDlr > 100.00) {
+                        ShowMessageFX.Warning(getStage(), "Invalid Amount", "Warning", null);
+                        break;
+                    }
+
+                    if (lnPromoDsc > 0.00) {
+                        double remainingValue = 100.00 - lnValuePromoDlr;
+                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Sup(remainingValue);
+                        txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Sup()))));
+                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Dlr(lnValuePromoDlr);
+                        txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getPrmD2Dlr()))));
                     }
                     break;
                 case 54:// Cash Discount
@@ -1248,7 +1343,6 @@ public class VSPFormController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-//                case 27:
                 case 28:
                     oTransVSP.getMasterModel().getMasterModel().setRemarks(lsValue);
                     break;
@@ -1584,6 +1678,65 @@ public class VSPFormController implements Initializable, ScreenInterface {
                 }
             }
         });
+//        txtField46.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setDue2Sup(0.00);
+//                    }
+//                }
+//            }
+//        });
+//        txtField47.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setDue2Dlr(0.00);
+//                    }
+//                }
+//            }
+//        });
+//        txtField49.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setSPFD2Sup(0.00);
+//                        txtField49.setText("0.00");
+//                    }
+//                }
+//            }
+//        });
+//        txtField50.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setSPFD2Dlr(0.00);
+//                        txtField50.setText("0.00");
+//                    }
+//                }
+//            }
+//        });
+//        txtField52.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Sup(0.00);
+//                        txtField52.setText("0.00");
+//                    }
+//                }
+//            }
+//        });
+//        txtField53.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (newValue != null) {
+//                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+//                        oTransVSP.getMasterModel().getMasterModel().setPrmD2Dlr(0.00);
+//                        txtField53.setText("0.00");
+//                    }
+//                }
+//            }
+//        });
+
     }
 
     private void clearNumberFields() {
@@ -1771,10 +1924,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPAddReservationInquiries.fxml"));
-//           VSPAddReservationInquiriesController loControl = new VSPAddReservationInquiriesController();
-//            loControl.setGRider(oApp);
-//            loControl.setObject(oTransVSP);
-//            fxmlLoader.setController(loControl);
+            VSPAddReservationInquiriesController loControl = new VSPAddReservationInquiriesController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransVSP);
+            fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -1808,10 +1961,10 @@ public class VSPFormController implements Initializable, ScreenInterface {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPRemoveReservationInquiries.fxml"));
-//           VSPRemoveReservationInquiriesController loControl = new VSPRemoveReservationInquiriesController();
-//            loControl.setGRider(oApp);
-//            loControl.setObject(oTransVSP);
-//            fxmlLoader.setController(loControl);
+            VSPRemoveReservationInquiriesController loControl = new VSPRemoveReservationInquiriesController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransVSP);
+            fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {

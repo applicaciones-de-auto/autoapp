@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.sales;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -107,23 +108,23 @@ public class VSPAccessoriesDialogController implements Initializable {
     }
 
     private void loadPartsFields() {
-        txtField01.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "sStockIDx")));
-        txtField02.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "sDescript")));
-        txtField03.setText(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "nQuantity")));
-        if (oTransVSPAccessories.getVSPParts(pnRow, "") != null && !oTransVSPAccessories.getVSPParts(pnRow, "").equals("")) {
-            comboBox04.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, ""))));
-            if (oTransVSPAccessories.getVSPParts(pnRow, "").equals(0)) {
+        txtField01.setText(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getStockID()));
+        txtField02.setText(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getDescript()));
+        txtField03.setText(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity()));
+        if (oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getChrgeTyp() != null && !oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getChrgeTyp().isEmpty()) {
+            comboBox04.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getChrgeTyp())));
+            if (oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getChrgeTyp().equals(0)) {
                 txtField05.setDisable(true);
             } else {
                 txtField05.setDisable(true);
             }
         }
-        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "nNtDwnPmt")))));
-        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "nNtDwnPmt")))));
-        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "nNtDwnPmt")))));
-//        if ((!oTransVSPAccessories.getVSPParts(pnRow, "sTransNox").toString().isEmpty())) {
-//            txtField02.setDisable(true);
-//        }
+        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
+        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
+        if (!oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getTransNo().isEmpty()) {
+            txtField02.setDisable(true);
+        }
     }
 
     private void initFielPattern() {
@@ -152,7 +153,7 @@ public class VSPAccessoriesDialogController implements Initializable {
                 case "txtField02":
                     loJSON = oTransVSPAccessories.searchParts("", pnRow, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        oTransVSPAccessories.getVSPParts(pnRow, "");
+                        txtField02.setText(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getDescript());
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                         txtField02.clear();
@@ -181,7 +182,7 @@ public class VSPAccessoriesDialogController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
-        double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, ""))) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")));
+        double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
         if (lsValue == null) {
             return;
         }
@@ -192,23 +193,22 @@ public class VSPAccessoriesDialogController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "";
                     }
-                    oTransVSPAccessories.setVSPParts(pnRow, lsValue, lsValue);
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setDescript(lsValue);
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPAccessories.setVSPParts(pnRow, lsValue, Double.valueOf(lsValue.replace(",", "")));
-                    txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")))));
-                    txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lnNetPrice))));
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(new BigDecimal(Double.valueOf(lsValue.replace(",", ""))));
+                    txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
+                    txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
                     break;
                 case 6:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    oTransVSPAccessories.setVSPParts(pnRow, lsValue, Double.valueOf(lsValue.replace(",", "")));
-                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, lsValue)))));
-                    txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lnNetPrice))));
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(Double.valueOf(lsValue.replace(",", ""))));
+                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
+                    txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
                     break;
             }
         }
@@ -217,7 +217,7 @@ public class VSPAccessoriesDialogController implements Initializable {
     private void initCmboxFieldAction() {
         comboBox04.setOnAction(event -> {
             if (comboBox04.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransVSPAccessories.setVSPParts(pnRow, "", String.valueOf(comboBox04.getSelectionModel().getSelectedIndex()));
+                oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setChrgeTyp(String.valueOf(comboBox04.getSelectionModel().getSelectedIndex()));
                 initFields();
             }
         }
@@ -228,7 +228,7 @@ public class VSPAccessoriesDialogController implements Initializable {
         txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    oTransVSPAccessories.setVSPParts(pnRow, "", "");
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setStockID("");
                 }
             }
         });
@@ -254,7 +254,7 @@ public class VSPAccessoriesDialogController implements Initializable {
                 break;
             case "btnClose":
                 if (pbState) {
-                    if (oTransVSPAccessories.getVSPParts(pnRow, "").toString().isEmpty()) {
+                    if (oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getStockID().isEmpty()) {
                         oTransVSPAccessories.removeVSPParts(pnRow);
                     }
                 } else {
@@ -308,10 +308,10 @@ public class VSPAccessoriesDialogController implements Initializable {
         if (comboBox04.getSelectionModel().getSelectedIndex() == 0) {
             txtField05.setDisable(true);
             txtField06.setDisable(true);
-            oTransVSPAccessories.setVSPParts(pnRow, "", oTransVSPAccessories.getVSPParts(pnRow, ""));
-            txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")))));
-            double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, ""))) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPParts(pnRow, "")));
-            oTransVSPAccessories.setVSPParts(pnRow, "", lnNetPrice);
+            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
+            txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+            double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
+            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
         } else {
             txtField05.setDisable(false);
             txtField06.setDisable(!txtField05.getText().isEmpty());
@@ -352,11 +352,11 @@ public class VSPAccessoriesDialogController implements Initializable {
                 txtField06.setDisable(true);
             } else {
                 if (pbRequest) {
-                    if (!oTransVSPAccessories.getVSPParts(pnRow, "sApproved").toString().isEmpty()) {
-                        txtField01.setDisable(false);
-                    } else {
-                        txtField01.setDisable(true);
-                    }
+//                    if (!oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().toString().isEmpty()) {
+//                        txtField01.setDisable(false);
+//                    } else {
+//                        txtField01.setDisable(true);
+//                    }
                 }
 
             }

@@ -18,6 +18,7 @@ public class ModelVSPLabor {
     private SimpleStringProperty tblindex04_labor;
     private SimpleStringProperty tblindex05_labor;
     private SimpleStringProperty tblindex06_labor;
+    private SimpleStringProperty tblindex07_labor;
     private SimpleStringProperty tblindex07_labor_Rust;
     private SimpleStringProperty tblindex07_labor_Perma;
     private SimpleStringProperty tblindex07_labor_Under;
@@ -36,6 +37,7 @@ public class ModelVSPLabor {
             String tblindex04_labor,
             String tblindex05_labor,
             String tblindex06_labor,
+            String tblindex07_labor,
             String tblindex07_labor_Rust,
             String tblindex07_labor_Perma,
             String tblindex07_labor_Under,
@@ -53,6 +55,7 @@ public class ModelVSPLabor {
         this.tblindex04_labor = new SimpleStringProperty(tblindex04_labor);
         this.tblindex05_labor = new SimpleStringProperty(tblindex05_labor);
         this.tblindex06_labor = new SimpleStringProperty(tblindex06_labor);
+        this.tblindex07_labor = new SimpleStringProperty(tblindex07_labor);
         this.tblindex07_labor_Rust = new SimpleStringProperty(tblindex07_labor_Rust);
         this.tblindex07_labor_Perma = new SimpleStringProperty(tblindex07_labor_Perma);
         this.tblindex07_labor_Under = new SimpleStringProperty(tblindex07_labor_Under);
@@ -168,6 +171,14 @@ public class ModelVSPLabor {
 
     public void setTblindex06_labor(String tblindex06_labor) {
         this.tblindex06_labor.set(tblindex06_labor);
+    }
+
+    public String getTblindex07_labor() {
+        return tblindex07_labor.get();
+    }
+
+    public void setTblindex07_labor(String tblindex07_labor) {
+        this.tblindex07_labor.set(tblindex07_labor);
     }
 
     public String getTblindex07_labor_Rust() {
