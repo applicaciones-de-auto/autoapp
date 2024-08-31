@@ -158,7 +158,7 @@
                                                                 <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclSalesEntryClick" text="Vehicle Sales Information" />
                                                                 <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
                                                                 <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
-                                                                <MenuItem fx:id="mnuAddOnsApproval" mnemonicParsing="false" onAction="#mnuAddOnsApprovalClick" text="VSP Add Ons Approval" />
+                                                                <MenuItem fx:id="mnuAddOnsApproval" mnemonicParsing="false" onAction="#mnuAddOnsApprovalClick" text="VSP Approval" />
                                                                 <MenuItem fx:id="mnuUnitDeliveryReceipt" mnemonicParsing="false" onAction="#mnuUnitDeliveryReceiptClick" text="Unit Delivery Receipt" />
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
                                                             </items>

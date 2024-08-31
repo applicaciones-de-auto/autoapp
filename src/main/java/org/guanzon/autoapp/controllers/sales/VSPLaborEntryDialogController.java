@@ -6,13 +6,10 @@ package org.guanzon.autoapp.controllers.sales;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -101,7 +98,6 @@ public class VSPLaborEntryDialogController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         initCapitalizationFields();
         comboBox03.setItems(cChargeType);
         initTextKeyPressed();
@@ -116,7 +112,7 @@ public class VSPLaborEntryDialogController implements Initializable {
 
     private void loadLaborFields() {
         if (!psLbrDsc.isEmpty()) {
-            txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborCde(psLbrDsc)));
+            oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborCde(psLbrDsc);
         }
         txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
         txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
