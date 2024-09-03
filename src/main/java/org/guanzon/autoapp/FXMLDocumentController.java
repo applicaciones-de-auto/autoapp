@@ -51,21 +51,11 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityFormController;
-import org.guanzon.autoapp.controllers.general.ActivityFormController;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerFormController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
 import org.guanzon.autoapp.controllers.general.ReferralAgentFormController;
-import org.guanzon.autoapp.controllers.general.ReferralAgentFormController;
-import org.guanzon.autoapp.controllers.general.SalesExecutiveFormController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveFormController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.BankEntryController;
@@ -88,6 +78,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
 import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
 import org.guanzon.autoapp.controllers.parts.ItemEntryFormController;
+import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
 import org.guanzon.autoapp.controllers.sales.VSPFormController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -490,7 +481,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //            case "Parts Requisition":
 //                mnuPartsRequisition.fire();
 //                break;
-            case "Sales Parts Request":
+            case "Vehicle Sales Parts Request":
                 mnuSalesPartsRequest.fire();
                 break;
             /*SERVICE*/
@@ -687,8 +678,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new ItemEntryFormController();
 //            case "PartsRequisitionForm.fxml":
 ////                return new PartsRequisitionFormController();
-//            case "VSPPendingPartsRequest.fxml":
-//                return new VSPPendingPartsRequestController();
+            case "VSPAccessoriesRequest.fxml":
+                return new VSPAccessoriesRequestController();
 //
 //            /*PARAMETERS*/
             case "InventoryLocationParam.fxml":
@@ -781,8 +772,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Item Information";
             case "PartsRequisitionForm.fxml":
                 return "Parts Requisition";
-            case "VSPPendingPartsRequest.fxml":
-                return "Sales Parts Request";
+            case psPartsPath + "VSPAccessoriesRequest.fxml":
+                return "Vehicle Sales Parts Request";
             /**/
             case "JobOrderForm.fxml":
                 if (sJobOrderType.isEmpty()) {
@@ -1151,11 +1142,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesPartsRequestClicked(ActionEvent event) {
-        String sformname = "VSPPendingPartsRequest.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+        String sformname = "VSPAccessoriesRequest.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psPartsPath);
     }
 
     @FXML

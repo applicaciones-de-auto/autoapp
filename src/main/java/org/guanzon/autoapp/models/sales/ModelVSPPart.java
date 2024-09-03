@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.models.sales;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
@@ -190,4 +191,7 @@ public class ModelVSPPart {
         this.tblindex14_part.set(tblindex14_part);
     }
 
+    public BooleanProperty selectedProperty14_Par() {
+        return tblindex14_part;
+    }
 }

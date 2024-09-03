@@ -147,14 +147,14 @@ public class VSPAccessoriesDialogController implements Initializable {
         JSONObject loJSON = new JSONObject();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (lsTxtFieldID) {
-                case "txtField02":
+                case "txtField01":
                     loJSON = oTransVSPAccessories.searchParts("", pnRow, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField02.setText(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getDescript());
+                        txtField01.setText(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getDescript());
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
-                        txtField02.clear();
-                        txtField02.requestFocus();
+                        txtField01.clear();
+                        txtField01.requestFocus();
                         return;
                     }
                     break;
@@ -213,14 +213,14 @@ public class VSPAccessoriesDialogController implements Initializable {
                     if (comboBox04.getSelectionModel().getSelectedIndex() == 0) {
                         handlePartsAmountFree(lsValue);
                     } else {
-                        handlePartsDiscount(lsValue);
+                        handlePartsAmountCharge(lsValue);
                     }
                     break;
                 case 6:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    handlePartsAmountCharge(lsValue);
+                    handlePartsDiscount(lsValue);
                     break;
             }
         }
@@ -324,7 +324,7 @@ public class VSPAccessoriesDialogController implements Initializable {
         double lnNetPrice = calculateNetPrice(0.00,
                 oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().doubleValue());
 
-        oTransVSPAccessories.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPrice));
+        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
         txtField06.setText(poGetDecimalFormat.format(lnNetPrice));
     }
 
@@ -332,7 +332,7 @@ public class VSPAccessoriesDialogController implements Initializable {
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(BigDecimal.ZERO);
         txtField05.setText("0.00");
 
-        double lnNetPrice = calculateNetPrice(oTransVSPAccessories.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt().doubleValue(),
+        double lnNetPrice = calculateNetPrice(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice().doubleValue(),
                 0.00);
 
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(new BigDecimal(lnNetPrice));
@@ -421,17 +421,16 @@ public class VSPAccessoriesDialogController implements Initializable {
             return false;
         }
         if (comboBox04.getSelectionModel().getSelectedIndex() == 1) {
-            String laborAmount = txtField05.getText().replace(",", ""); // Remove commas from the input string
+            String partsAmount = txtField05.getText().replace(",", ""); // Remove commas from the input string
             try {
-                double amount = Double.parseDouble(laborAmount);
+                double amount = Double.parseDouble(partsAmount);
                 if (amount == 0.00 || amount < 0.00) {
-                    ShowMessageFX.Warning(null, "Warning", "Please input Labor Amount");
+                    ShowMessageFX.Warning(null, "Warning", "Please input accessories Amount");
                     txtField05.requestFocus();
                     return false;
                 }
             } catch (NumberFormatException e) {
-                // Handle the case where laborAmount is not a valid number
-                ShowMessageFX.Warning(null, "Warning", "Invalid Labor Amount");
+                ShowMessageFX.Warning(null, "Warning", "Invalid accessories Amount");
                 txtField05.requestFocus();
                 return false;
             }
@@ -441,20 +440,7 @@ public class VSPAccessoriesDialogController implements Initializable {
     }
 
     private void initFields() {
-        switch (comboBox04.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                txtField05.setDisable(false);
-                txtField06.setDisable(true);
-                break;
-            case 1:
-                txtField05.setDisable(false);
-                txtField06.setDisable(txtField05.getText().isEmpty());
-                break;
-            default:
-                txtField05.setDisable(true);
-                txtField06.setDisable(true);
-                break;
-        }
+
         if (pbState) {
             btnAdd.setVisible(true);
             btnAdd.setManaged(true);
@@ -465,21 +451,6 @@ public class VSPAccessoriesDialogController implements Initializable {
             btnAdd.setManaged(false);
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
-
-            if (pbRequest) {
-                txtField02.setDisable(true);
-                txtField03.setDisable(true);
-                comboBox04.setDisable(true);
-                txtField05.setDisable(true);
-                txtField06.setDisable(true);
-            } else {
-                txtField02.setDisable(false);
-                txtField03.setDisable(false);
-                comboBox04.setDisable(false);
-                txtField05.setDisable(false);
-                txtField06.setDisable(false);
-
-            }
             if (!psJO.isEmpty()) {
                 txtField02.setDisable(true);
                 txtField05.setDisable(true);
@@ -498,6 +469,36 @@ public class VSPAccessoriesDialogController implements Initializable {
             if (!txtField01.getText().isEmpty()) {
                 txtField02.setDisable(true);
             }
+        }
+        if (pbRequest) {
+            txtField01.setDisable(false);
+            txtField02.setDisable(true);
+            txtField03.setDisable(true);
+            comboBox04.setDisable(true);
+            txtField05.setDisable(true);
+            txtField06.setDisable(true);
+        } else {
+            txtField01.setDisable(true);
+            txtField02.setDisable(false);
+            txtField03.setDisable(false);
+            comboBox04.setDisable(false);
+            txtField05.setDisable(false);
+            txtField06.setDisable(false);
+
+        }
+        switch (comboBox04.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                txtField05.setDisable(false);
+                txtField06.setDisable(true);
+                break;
+            case 1:
+                txtField05.setDisable(false);
+                txtField06.setDisable(txtField05.getText().isEmpty());
+                break;
+            default:
+                txtField05.setDisable(true);
+                txtField06.setDisable(true);
+                break;
         }
     }
 

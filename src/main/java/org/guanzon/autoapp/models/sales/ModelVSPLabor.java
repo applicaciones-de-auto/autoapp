@@ -121,8 +121,8 @@ public class ModelVSPLabor {
         return tblindex12_labor;
     }
 
-    public SimpleStringProperty laborProperty() {
-        return tblindex04_labor;
+    public String laborProperty() {
+        return tblindex04_labor.get();
     }
 
     public String getTblindex01_labor() {

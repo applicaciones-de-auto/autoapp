@@ -48,7 +48,6 @@ public class VSPLaborEntryDialogController implements Initializable {
     private String psJO = "";
     private String psOrigDsc = "";
     private VehicleSalesProposal oTransVSPLabor;
-    DecimalFormat poSetDecimalFormat = new DecimalFormat("###0.00");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
 
@@ -384,7 +383,6 @@ public class VSPLaborEntryDialogController implements Initializable {
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnEditLabor":
