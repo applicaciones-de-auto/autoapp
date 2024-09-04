@@ -114,8 +114,7 @@ public class VSPAccessoriesDialogController implements Initializable {
             comboBox04.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getChrgeTyp())));
         }
         txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
-//        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
-//        System.out.println("partsDiscount: " + poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
         txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
         if (oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getEntryNo() > 0) {
             txtField02.setDisable(true);
@@ -199,12 +198,22 @@ public class VSPAccessoriesDialogController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    if (Integer.parseInt(lsValue) < 0) {
+                    int lnQnty = Integer.parseInt(lsValue);
+                    if (lnQnty < 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid quantity value.");
                         return;
                     }
-                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setQuantity(Integer.parseInt(lsValue));
-
+                    if (lnQnty <= 0) {
+                        if (!txtField05.getText().equals("0.00")) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter higher than zero if the accessory amount has value.");
+                            return;
+                        }
+                    }
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setQuantity(lnQnty);
+                    double lnDscAmount = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
+                    double lnNetPrtAmt = lnDscAmount * lnQnty;
+                    oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrtAmt));
+                    txtField07.setText(poGetDecimalFormat.format(lnNetPrtAmt));
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
@@ -232,7 +241,7 @@ public class VSPAccessoriesDialogController implements Initializable {
             BigDecimal partDsc = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount();
 
             if (partDsc.compareTo(partAmt) > 0) {
-                showWarning("Discount cannot be greater than the parts amount.");
+                showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsAmount();
                 resetPartsDiscount();
                 return;
@@ -242,13 +251,13 @@ public class VSPAccessoriesDialogController implements Initializable {
 
             double lnNetPrice = calculateNetPrice(partAmt.doubleValue(), partAmt.doubleValue());
 
-            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(lnNetPrice));
+            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
 
             txtField05.setText(poGetDecimalFormat.format(partAmt.doubleValue()));
             txtField06.setText(poGetDecimalFormat.format(partAmt.doubleValue()));
             txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
         } catch (NumberFormatException e) {
-            showWarning("Invalid number format for parts amount.");
+            showWarning("Invalid number format for accessories amount.");
             resetPartsAmount();
             resetPartsDiscount();
         }
@@ -256,26 +265,26 @@ public class VSPAccessoriesDialogController implements Initializable {
 
     private void handlePartsAmountCharge(String lsValue) {
         try {
-            BigDecimal partsAmt = new BigDecimal(lsValue);
-            BigDecimal partsDsc = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount();
+            BigDecimal accessoriesAmt = new BigDecimal(lsValue);
+            BigDecimal accessoriesDsc = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount();
 
-            if (partsDsc.compareTo(partsAmt) > 0) {
-                showWarning("Discount cannot be greater than the parts amount.");
+            if (accessoriesDsc.compareTo(accessoriesAmt) > 0) {
+                showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsAmount();
                 resetPartsDiscount();
                 return;
             }
-            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(partsAmt);
+            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(accessoriesAmt);
 
-            double lnNetPrice = calculateNetPrice(partsAmt.doubleValue(),
+            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(),
                     oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().doubleValue());
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
 
-            txtField05.setText(poGetDecimalFormat.format(partsAmt.doubleValue()));
+            txtField05.setText(poGetDecimalFormat.format(accessoriesAmt.doubleValue()));
             txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
         } catch (NumberFormatException e) {
-            showWarning("Invalid number format for parts amount.");
+            showWarning("Invalid number format for accessories amount.");
             resetPartsAmount();
             resetPartsDiscount();
         }
@@ -283,22 +292,22 @@ public class VSPAccessoriesDialogController implements Initializable {
 
     private void handlePartsDiscount(String lsValue) {
         try {
-            BigDecimal partsDsc = new BigDecimal(lsValue);
-            BigDecimal partsAmt = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice();
+            BigDecimal accessoriesDsc = new BigDecimal(lsValue);
+            BigDecimal accessoriesAmt = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice();
 
-            if (partsDsc.compareTo(partsAmt) > 0) {
-                showWarning("Discount cannot be greater than the parts amount.");
+            if (accessoriesDsc.compareTo(accessoriesAmt) > 0) {
+                showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsDiscount();
                 return;
             }
 
-            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(partsDsc);
+            oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(accessoriesDsc);
 
-            double lnNetPrice = calculateNetPrice(partsAmt.doubleValue(), partsDsc.doubleValue());
+            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(), accessoriesDsc.doubleValue());
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
 
-            txtField05.setText(poGetDecimalFormat.format(partsDsc.doubleValue()));
+            txtField06.setText(poGetDecimalFormat.format(accessoriesDsc.doubleValue()));
             txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
         } catch (NumberFormatException e) {
             showWarning("Invalid number format for discount amount.");
@@ -315,7 +324,7 @@ public class VSPAccessoriesDialogController implements Initializable {
     }
 
     private void resetPartsAmount() {
-        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(BigDecimal.ZERO);
+        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(BigDecimal.ZERO);
         txtField05.setText("0.00");
         if (comboBox04.getSelectionModel().getSelectedIndex() == 0) {
             resetPartsDiscount();
@@ -325,18 +334,18 @@ public class VSPAccessoriesDialogController implements Initializable {
                 oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().doubleValue());
 
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
-        txtField06.setText(poGetDecimalFormat.format(lnNetPrice));
+        txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
     }
 
     private void resetPartsDiscount() {
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(BigDecimal.ZERO);
-        txtField05.setText("0.00");
+        txtField06.setText("0.00");
 
         double lnNetPrice = calculateNetPrice(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice().doubleValue(),
                 0.00);
 
-        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(new BigDecimal(lnNetPrice));
-        txtField06.setText(poGetDecimalFormat.format(lnNetPrice));
+        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
+        txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
     }
 
     private void initCmboxFieldAction() {
@@ -346,14 +355,14 @@ public class VSPAccessoriesDialogController implements Initializable {
                 switch (comboBox04.getSelectionModel().getSelectedIndex()) {
                     case 0:
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
-                        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+                        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
                         double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
                         txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
                         break;
                     case 1:
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(0.00));
-                        txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
+                        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
                         double lnNetPrices = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrices));
                         txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
@@ -416,14 +425,20 @@ public class VSPAccessoriesDialogController implements Initializable {
             txtField02.requestFocus();
             return false;
         }
+        if (!txtField05.getText().equals(0.00) || !txtField05.getText().equals("0.00")) {
+            if (txtField03.getText().equals(0) || txtField03.getText().equals("0")) {
+                ShowMessageFX.Warning(null, "Warning", "Please enter quantity higher than zero.");
+                return false;
+            }
+        }
         if (comboBox04.getSelectionModel().getSelectedIndex() < 0) {
             ShowMessageFX.Warning(null, "Warning", "Please select Charge Type");
             return false;
         }
         if (comboBox04.getSelectionModel().getSelectedIndex() == 1) {
-            String partsAmount = txtField05.getText().replace(",", ""); // Remove commas from the input string
+            String accessoriesAmount = txtField05.getText().replace(",", ""); // Remove commas from the input string
             try {
-                double amount = Double.parseDouble(partsAmount);
+                double amount = Double.parseDouble(accessoriesAmount);
                 if (amount == 0.00 || amount < 0.00) {
                     ShowMessageFX.Warning(null, "Warning", "Please input accessories Amount");
                     txtField05.requestFocus();
