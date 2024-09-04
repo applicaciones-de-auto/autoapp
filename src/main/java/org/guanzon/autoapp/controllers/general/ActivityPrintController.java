@@ -41,7 +41,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
-import org.guanzon.autoapp.models.general.ModelActivityInformation;
 import org.guanzon.autoapp.models.general.ModelActivityMember;
 import org.guanzon.autoapp.models.general.ModelActivityLocation;
 import org.guanzon.autoapp.models.general.ModelActivityVehicle;
@@ -61,7 +60,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "ActivityPrint";
-    private ObservableList<ModelActivityInformation> actMasterData = FXCollections.observableArrayList();
     private List<ModelActivityMember> actMembersData = new ArrayList<ModelActivityMember>();
     private List<ModelActivityLocation> locationData = new ArrayList<ModelActivityLocation>();
     private List<ModelActivityVehicle> actVhclModelData = new ArrayList<ModelActivityVehicle>();
@@ -88,6 +86,10 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
 
     private Stage getStage() {
         return (Stage) btnClose.getScene().getWindow();
+    }
+
+    public void setTransNox(String fsValue) {
+        psTransNox = fsValue;
     }
 
     /**
@@ -177,10 +179,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                 findAndHideButton(childComponent, fsButtonText);
             }
         }
-    }
-
-    public void setTransNox(String fsValue) {
-        psTransNox = fsValue;
     }
 
     private String getValueReport(String fsValue, String fsCol) {
