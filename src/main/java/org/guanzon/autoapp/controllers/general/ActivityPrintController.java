@@ -18,8 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,9 +39,9 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
-import org.guanzon.autoapp.models.general.ModelActivityMember;
-import org.guanzon.autoapp.models.general.ModelActivityLocation;
-import org.guanzon.autoapp.models.general.ModelActivityVehicle;
+import org.guanzon.autoapp.models.general.ActivityMember;
+import org.guanzon.autoapp.models.general.ActivityLocation;
+import org.guanzon.autoapp.models.general.ActivityVehicle;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -59,10 +57,10 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private GRider oApp;
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
-    private final String pxeModuleName = "ActivityPrint";
-    private List<ModelActivityMember> actMembersData = new ArrayList<ModelActivityMember>();
-    private List<ModelActivityLocation> locationData = new ArrayList<ModelActivityLocation>();
-    private List<ModelActivityVehicle> actVhclModelData = new ArrayList<ModelActivityVehicle>();
+    private final String pxeModuleName = "Activity Print";
+    private List<ActivityMember> actMembersData = new ArrayList<ActivityMember>();
+    private List<ActivityLocation> locationData = new ArrayList<ActivityLocation>();
+    private List<ActivityVehicle> actVhclModelData = new ArrayList<ActivityVehicle>();
     private String psTransNox;
     private boolean running = false;
     Map<String, Object> params = new HashMap<>();
@@ -241,7 +239,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             String sAddress = "";
             for (lnCtr = 0; lnCtr <= oTransPrint.getActLocationList().size() - 1; lnCtr++) {
                 sAddress = oTransPrint.getActLocation(lnCtr, "sAddressx").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sTownName").toString().toUpperCase() + ", " + oTransPrint.getActLocation(lnCtr, "sProvName").toString().toUpperCase();
-                locationData.add(new ModelActivityLocation(
+                locationData.add(new ActivityLocation(
                         String.valueOf(lnCtr + 1), //ROW
                         sAddress,
                         oTransPrint.getActLocation(lnCtr, "sTownIDxx").toString().toUpperCase(),
@@ -258,7 +256,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             actMembersData.clear();
             for (lnCtr = 0; lnCtr <= oTransPrint.getActMemberList().size() - 1; lnCtr++) {
                 if (oTransPrint.getActMember(lnCtr, "cOriginal").equals("1")) {
-                    actMembersData.add(new ModelActivityMember(
+                    actMembersData.add(new ActivityMember(
                             String.valueOf(lnCtr + 1), //ROW
                             "",
                             oTransPrint.getActMember(lnCtr, "sDeptName").toString().toUpperCase(),
@@ -269,7 +267,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             //Activity Vehicle
             actVhclModelData.clear();
             for (lnCtr = 0; lnCtr <= oTransPrint.getActVehicleList().size() - 1; lnCtr++) {
-                actVhclModelData.add(new ModelActivityVehicle(
+                actVhclModelData.add(new ActivityVehicle(
                         String.valueOf(lnCtr + 1), //ROW
                         oTransPrint.getActVehicle(lnCtr, "sSerialID").toString().toUpperCase(),
                         oTransPrint.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase(),

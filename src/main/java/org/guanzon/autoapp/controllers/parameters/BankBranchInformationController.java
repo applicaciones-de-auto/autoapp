@@ -53,7 +53,7 @@ public class BankBranchInformationController implements Initializable, ScreenInt
 
     private GRider oApp;
     private BankBranch oTransBankBranch;
-    private final String pxeModuleName = "Bank Branch"; //Form Title
+    private final String pxeModuleName = "Bank Branch Information"; //Form Title
     private int pnEditMode;//Modifying field
     private double xOffset = 0;
     private double yOffset = 0;
@@ -476,9 +476,9 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/BankEntry.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/Bank.fxml"));
 
-            BankEntryController loControl = new BankEntryController();
+            BankController loControl = new BankController();
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
 

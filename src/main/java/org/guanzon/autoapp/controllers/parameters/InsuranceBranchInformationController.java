@@ -39,7 +39,6 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.InsuranceBranch;
-//import org.guanzon.auto.main.parameter.InsuranceBranch;
 import org.guanzon.autoapp.utils.InputTextFormatterUtil;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -54,7 +53,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
 
     private GRider oApp;
     private InsuranceBranch oTransInsuranceBranch;
-    private final String pxeModuleName = "Insurance"; //Form Title
+    private final String pxeModuleName = "Insurance Branch"; //Form Title
     private int pnEditMode;//Modifying fields
     private double xOffset = 0;
     private double yOffset = 0;
@@ -489,9 +488,9 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/InsuranceCompanyEntry.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/InsuranceCompany.fxml"));
 
-            InsuranceCompanyEntryController loControl = new InsuranceCompanyEntryController();
+            InsuranceCompanyController loControl = new InsuranceCompanyController();
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
 

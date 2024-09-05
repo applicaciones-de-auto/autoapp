@@ -5,7 +5,6 @@
 package org.guanzon.autoapp;
 
 import javafx.application.Application;
-import javafx.stage.Stage;
 import org.guanzon.appdriver.base.GRider;
 
 /**

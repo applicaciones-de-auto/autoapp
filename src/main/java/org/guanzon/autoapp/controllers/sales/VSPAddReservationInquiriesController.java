@@ -34,30 +34,30 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.models.sales.ModelVSPReservationInquirers;
+import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
 public class VSPAddReservationInquiriesController implements Initializable {
 
     private GRider oApp;
-    private String pxeModuleName = "Add Reservation Inquirers";
-    private ObservableList<ModelVSPReservationInquirers> reserveData = FXCollections.observableArrayList();
+    private String pxeModuleName = "VSP Add Reservation Inquirers";
+    private ObservableList<VSPReservationInquirers> reserveData = FXCollections.observableArrayList();
     ObservableList<String> cFilter = FXCollections.observableArrayList("RECEIPT NO", "RECEIPT DATE", "CUSTOMER NAME");
     private VehicleSalesProposal oTransReserve;
     @FXML
     private Button btnAdd, btnClose;
     @FXML
-    private TableColumn<ModelVSPReservationInquirers, Boolean> tblindex02;
+    private TableColumn<VSPReservationInquirers, Boolean> tblindex02;
     @FXML
-    private TableColumn<ModelVSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
+    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
     @FXML
-    private TableView<ModelVSPReservationInquirers> tblViewReservation;
+    private TableView<VSPReservationInquirers> tblViewReservation;
     @FXML
     private CheckBox selectAll;
     @FXML
@@ -104,7 +104,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
     }
 
     private void dateValueProperty() {
-        FilteredList<ModelVSPReservationInquirers> filteredTxtFieldReserveDate = new FilteredList<>(reserveData);
+        FilteredList<VSPReservationInquirers> filteredTxtFieldReserveDate = new FilteredList<>(reserveData);
 
         datePicker02.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -112,7 +112,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
                 return;
             }
 
-            ObservableList<ModelVSPReservationInquirers> filteredDate = filteredTxtFieldReserveDate.stream()
+            ObservableList<VSPReservationInquirers> filteredDate = filteredTxtFieldReserveDate.stream()
                     .filter(reserveData -> {
                         LocalDate reserveDate = LocalDate.parse(reserveData.getTblindex03_reservation());
                         return newValue.equals(reserveDate);
@@ -157,15 +157,15 @@ public class VSPAddReservationInquiriesController implements Initializable {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
-                ObservableList<ModelVSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
+                ObservableList<VSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
-                    for (ModelVSPReservationInquirers item : tblViewReservation.getItems()) {
+                    for (VSPReservationInquirers item : tblViewReservation.getItems()) {
                         if (item.getSelect().isSelected()) {
                             selectedItems.add(item);
                         }
                     }
                     int addCount = 0;
-                    for (ModelVSPReservationInquirers item : selectedItems) {
+                    for (VSPReservationInquirers item : selectedItems) {
                         String lsRecptNo = item.getTblindex02_reservation();
                         oTransReserve.addToVSPReservation(lsRecptNo);
                         addCount++;
@@ -199,7 +199,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
                 if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate() != null) {
                     lsDate = InputTextUtil.xsDateShort((Date) oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate());
                 }
-                reserveData.add(new ModelVSPReservationInquirers(
+                reserveData.add(new VSPReservationInquirers(
                         String.valueOf(lnCtr + 1), // ROW
                         String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSINo()),
                         lsDate,
@@ -300,7 +300,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
                 switch (txtFieldID) {
                     case "txtField01":
                         String lsFilterReserve = txtField01.getText().trim().toLowerCase();
-                        FilteredList<ModelVSPReservationInquirers> filteredTxtFieldReserve = new FilteredList<>(reserveData);
+                        FilteredList<VSPReservationInquirers> filteredTxtFieldReserve = new FilteredList<>(reserveData);
                         filteredTxtFieldReserve.setPredicate(clients -> {
                             if (lsFilterReserve.isEmpty()) {
                                 return true;
@@ -316,7 +316,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
                         break;
                     case "txtField03":
                         String lsFilterCustomer = txtField03.getText().trim().toLowerCase();
-                        FilteredList<ModelVSPReservationInquirers> filteredTxtFieldCustomer = new FilteredList<>(reserveData);
+                        FilteredList<VSPReservationInquirers> filteredTxtFieldCustomer = new FilteredList<>(reserveData);
                         filteredTxtFieldCustomer.setPredicate(clients -> {
                             if (lsFilterCustomer.isEmpty()) {
                                 return true;

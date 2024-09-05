@@ -25,8 +25,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.models.sales.ModelVSPReservationInquirers;
-import org.json.simple.JSONObject;
+import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
 
 /**
  * FXML Controller class
@@ -36,17 +35,17 @@ import org.json.simple.JSONObject;
 public class VSPRemoveReservationInquiriesController implements Initializable {
 
     private GRider oApp;
-    private String pxeModuleName = "Remove Reservation Inquirers";
-    private ObservableList<ModelVSPReservationInquirers> reserveData = FXCollections.observableArrayList();
+    private String pxeModuleName = "VSP Remove Reservation Inquirers";
+    private ObservableList<VSPReservationInquirers> reserveData = FXCollections.observableArrayList();
     private VehicleSalesProposal oTransReserve;
     @FXML
     private Button btnRemove, btnClose;
     @FXML
-    private TableColumn<ModelVSPReservationInquirers, Boolean> tblindex02;
+    private TableColumn<VSPReservationInquirers, Boolean> tblindex02;
     @FXML
-    private TableColumn<ModelVSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
+    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
     @FXML
-    private TableView<ModelVSPReservationInquirers> tblViewReservation;
+    private TableView<VSPReservationInquirers> tblViewReservation;
     @FXML
     private CheckBox selectAll;
 
@@ -81,15 +80,15 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnRemove":
-                ObservableList<ModelVSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
+                ObservableList<VSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
-                    for (ModelVSPReservationInquirers item : tblViewReservation.getItems()) {
+                    for (VSPReservationInquirers item : tblViewReservation.getItems()) {
                         if (item.getSelect().isSelected()) {
                             selectedItems.add(item);
                         }
                     }
                     int removeCount = 0;
-                    for (ModelVSPReservationInquirers item : selectedItems) {
+                    for (VSPReservationInquirers item : selectedItems) {
                         int lnRow = Integer.parseInt(item.getTblindex01_reservation());
                         oTransReserve.removeVSPReservation(lnRow);
                         removeCount++;
@@ -120,7 +119,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate() != null) {
                 lsDate = String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
             }
-            reserveData.add(new ModelVSPReservationInquirers(
+            reserveData.add(new VSPReservationInquirers(
                     String.valueOf(lnCtr + 1), // ROW
                     String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSINo()),
                     lsDate,

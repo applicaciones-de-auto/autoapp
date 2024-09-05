@@ -34,7 +34,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -52,35 +51,35 @@ import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
-import org.guanzon.autoapp.controllers.general.ActivityFormController;
-import org.guanzon.autoapp.controllers.general.CustomerFormController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoFormController;
-import org.guanzon.autoapp.controllers.general.ReferralAgentFormController;
-import org.guanzon.autoapp.controllers.general.SalesExecutiveFormController;
-import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeEntryController;
-import org.guanzon.autoapp.controllers.parameters.BankEntryController;
+import org.guanzon.autoapp.controllers.general.ActivityInformationController;
+import org.guanzon.autoapp.controllers.general.CustomerController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
+import org.guanzon.autoapp.controllers.general.ReferralAgentController;
+import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
+import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
+import org.guanzon.autoapp.controllers.parameters.BankController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
-import org.guanzon.autoapp.controllers.parameters.BinEntryParamController;
-import org.guanzon.autoapp.controllers.parameters.BrandEntryParamController;
-import org.guanzon.autoapp.controllers.parameters.CategoryEntryParamController;
+import org.guanzon.autoapp.controllers.parameters.BinController;
+import org.guanzon.autoapp.controllers.parameters.BrandController;
+import org.guanzon.autoapp.controllers.parameters.CategoryController;
 import org.guanzon.autoapp.controllers.parameters.InsuranceBranchInformationController;
-import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyEntryController;
-import org.guanzon.autoapp.controllers.parameters.InvTypeEntryParamController;
-import org.guanzon.autoapp.controllers.parameters.InventoryLocationParamController;
-import org.guanzon.autoapp.controllers.parameters.MeasurementEntryParamController;
-import org.guanzon.autoapp.controllers.parameters.SectionEntryParamController;
-import org.guanzon.autoapp.controllers.parameters.VehicleColorEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleMakeEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleModelEntryController;
-import org.guanzon.autoapp.controllers.parameters.VehicleTypeEntryController;
-import org.guanzon.autoapp.controllers.parameters.WareHouseEntryParamController;
-import org.guanzon.autoapp.controllers.parts.ItemEntryFormController;
+import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyController;
+import org.guanzon.autoapp.controllers.parameters.InvTypeController;
+import org.guanzon.autoapp.controllers.parameters.ItemLocationController;
+import org.guanzon.autoapp.controllers.parameters.MeasurementController;
+import org.guanzon.autoapp.controllers.parameters.SectionController;
+import org.guanzon.autoapp.controllers.parameters.VehicleColorController;
+import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionController;
+import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
+import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatController;
+import org.guanzon.autoapp.controllers.parameters.VehicleMakeController;
+import org.guanzon.autoapp.controllers.parameters.VehicleModelController;
+import org.guanzon.autoapp.controllers.parameters.VehicleTypeController;
+import org.guanzon.autoapp.controllers.parameters.WareHouseController;
+import org.guanzon.autoapp.controllers.parts.ItemInformationController;
 import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
-import org.guanzon.autoapp.controllers.sales.VSPFormController;
-import org.guanzon.autoapp.controllers.sales.VehicleInquiryFormController;
+import org.guanzon.autoapp.controllers.sales.VSPController;
+import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
 /**
@@ -445,7 +444,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "Vehicle Sales Proposal":
                 mnuVSPEntry.fire();
                 break;
-            case "VSP Add Ons Approval":
+            case "VSP Approval":
                 mnuAddOnsApproval.fire();
                 break;
             case "Sales Job Order":
@@ -618,93 +617,93 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "FXMLMainScreen.fxml":
                 return new FXMLMainScreenController();
 //            /*DIRECTORY*/
-            case psGeneralPath + "ActivityForm.fxml":
-                return new ActivityFormController();
+            case psGeneralPath + "ActivityInformation.fxml":
+                return new ActivityInformationController();
             case psGeneralPath + "ActivityApproval.fxml":
                 return new ActivityApprovalController();
-            case "ActivitySourceTypeEntry.fxml":
-                return new ActivitySourceTypeEntryController();
-            case psGeneralPath + "CustomerForm.fxml":
-                return new CustomerFormController();
-            case psGeneralPath + "CustomerVehicleInfoForm.fxml":
-                return new CustomerVehicleInfoFormController();
-            case "SalesExecutiveForm.fxml":
-                return new SalesExecutiveFormController();
-            case psGeneralPath + "ReferralAgentForm.fxml":
-                return new ReferralAgentFormController();
+            case "ActivitySourceType.fxml":
+                return new ActivitySourceTypeController();
+            case psGeneralPath + "Customer.fxml":
+                return new CustomerController();
+            case psGeneralPath + "CustomerVehicleInfo.fxml":
+                return new CustomerVehicleInfoController();
+            case "SalesExecutive.fxml":
+                return new SalesExecutiveController();
+            case psGeneralPath + "ReferralAgent.fxml":
+                return new ReferralAgentController();
 ////               case "SupplierInfo.fxml":
 ////                    return new SupplierInfoController();
 //            /*SALES*/
-            case "VehicleDescriptionEntry.fxml":
-                return new VehicleDescriptionEntryController();
-            case "VehicleMakeEntry.fxml":
-                return new VehicleMakeEntryController();
-            case "VehicleModelEntry.fxml":
-                return new VehicleModelEntryController();
-            case "VehicleTypeEntry.fxml":
-                return new VehicleTypeEntryController();
-            case "VehicleColorEntry.fxml":
-                return new VehicleColorEntryController();
-            case "VehicleFrameFormatEntry.fxml":
-                return new VehicleFrameFormatEntryController();
-            case "VehicleEngineFormatEntry.fxml":
-                return new VehicleEngineFormatEntryController();
+            case "VehicleDescription.fxml":
+                return new VehicleDescriptionController();
+            case "VehicleMake.fxml":
+                return new VehicleMakeController();
+            case "VehicleModel.fxml":
+                return new VehicleModelController();
+            case "VehicleType.fxml":
+                return new VehicleTypeController();
+            case "VehicleColor.fxml":
+                return new VehicleColorController();
+            case "VehicleFrameFormat.fxml":
+                return new VehicleFrameFormatController();
+            case "VehicleEngineFormat.fxml":
+                return new VehicleEngineFormatController();
 
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
 //            case "UnitReceivingForm.fxml":
 //                return new UnitReceivingFormController();
-            case psSalesPath + "VehicleInquiryForm.fxml":
-                return new VehicleInquiryFormController();
+            case psSalesPath + "VehicleInquiry.fxml":
+                return new VehicleInquiryController();
 //            case "VehicleSalesApproval.fxml":
 //                return new VehicleSalesApprovalController();
-            case "BankEntry.fxml":
-                return new BankEntryController();
+            case "Bank.fxml":
+                return new BankController();
             case "BankBranchInformation.fxml":
                 return new BankBranchInformationController();
-            case "InsuranceCompanyEntry.fxml":
-                return new InsuranceCompanyEntryController();
+            case "InsuranceCompany.fxml":
+                return new InsuranceCompanyController();
             case "InsuranceBranchInformation.fxml":
                 return new InsuranceBranchInformationController();
 //            case "UnitDeliveryReceiptForm.fxml":
 //                return new UnitDeliveryReceiptFormController();
-            case psSalesPath + "VSPForm.fxml":
-                return new VSPFormController();
+            case psSalesPath + "VSP.fxml":
+                return new VSPController();
 //            case "VSPAddOnsApproval.fxml":
 //                return new VSPAddOnsApprovalController();
 //
 //            /*PARTS*/
-            case psPartsPath + "ItemEntryForm.fxml":
-                return new ItemEntryFormController();
+            case psPartsPath + "ItemInformation.fxml":
+                return new ItemInformationController();
 //            case "PartsRequisitionForm.fxml":
 ////                return new PartsRequisitionFormController();
             case "VSPAccessoriesRequest.fxml":
                 return new VSPAccessoriesRequestController();
 //
 //            /*PARAMETERS*/
-            case "InventoryLocationParam.fxml":
-                return new InventoryLocationParamController();
-            case "BinEntryParam.fxml":
-                return new BinEntryParamController();
-            case "SectionEntryParam.fxml":
-                return new SectionEntryParamController();
-            case "WareHouseEntryParam.fxml":
-                return new WareHouseEntryParamController();
-            case "CategoryEntryParam.fxml":
-                return new CategoryEntryParamController();
-            case "InvTypeEntryParam.fxml":
-                return new InvTypeEntryParamController();
-            case "MeasurementEntryParam.fxml":
-                return new MeasurementEntryParamController();
-            case "BrandEntryParam.fxml":
-                return new BrandEntryParamController();
-//            case "InvoiceForm.fxml":
-//                return new InvoiceFormController();
-//            case "VehicleSalesInvoiceForm.fxml":
-//                return new VehicleSalesInvoiceFormController();
+            case "ItemLocation.fxml":
+                return new ItemLocationController();
+            case "Bin.fxml":
+                return new BinController();
+            case "Section.fxml":
+                return new SectionController();
+            case "WareHouse.fxml":
+                return new WareHouseController();
+            case "Category.fxml":
+                return new CategoryController();
+            case "InvType.fxml":
+                return new InvTypeController();
+            case "Measurement.fxml":
+                return new MeasurementController();
+            case "Brand.fxml":
+                return new BrandController();
+//            case "Invoice.fxml":
+//                return new InvoiceController();
+//            case "VehicleSalesInvoice.fxml":
+//                return new VehicleSalesInvoiceController();
 //            /*SERVICE*/
-//            case "JobOrderForm.fxml":
-//                return new JobOrderFormController();
+//            case "JobOrder.fxml":
+//                return new JobOrderController();
 //            /*SERVICE*/
 //            case "InsuranceInformation_1.fxml":
 //                return new InsuranceInformation_1Controller();
@@ -718,17 +717,17 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
             /*DIRECTORY*/
-            case psGeneralPath + "ActivityForm.fxml":
+            case psGeneralPath + "ActivityInformation.fxml":
                 return "Activity Information";
             case psGeneralPath + "ActivityApproval.fxml":
                 return "Activity Approval";
-            case psGeneralPath + "CustomerForm.fxml":
+            case psGeneralPath + "Customer.fxml":
                 return "Customer";
-            case "SalesExecutiveForm.fxml":
+            case "SalesExecutive.fxml":
                 return "Sales Executive Information";
-            case psGeneralPath + "ReferralAgentForm.fxml":
+            case psGeneralPath + "ReferralAgent.fxml":
                 return "Referral Agent Information";
-            case psGeneralPath + "CustomerVehicleInfoForm.fxml":
+            case psGeneralPath + "CustomerVehicleInfo.fxml":
 //                if (sVehicleInfoType.isEmpty()) {
 //                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
 //                    return null;
@@ -744,38 +743,38 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "SupplierInfo.fxml":
                 return "Supplier";
             /*SALES*/
-//            case "VehicleEntryForm.fxml":
+//            case "Vehicle.fxml":
 //                return "Vehicle Information";
-            case "UnitReceivingForm.fxml":
+            case "UnitReceiving.fxml":
                 return "Unit Receiving";
-            case psSalesPath + "VehicleInquiryForm.fxml":
+            case psSalesPath + "VehicleInquiry.fxml":
                 return "Vehicle Inquiry";
             case "VehicleSalesApproval.fxml":
                 return "Vehicle Reservation Approval";
-            case "UnitDeliveryReceiptForm.fxml":
+            case "UnitDeliveryReceipt.fxml":
                 return "Unit Delivery Receipt";
-            case psSalesPath + "VSPForm.fxml":
+            case psSalesPath + "VSP.fxml":
                 return "Vehicle Sales Proposal";
-            case "VSPAddOnsApproval.fxml":
-                return "VSP Add Ons Approval";
+            case "VSPApproval.fxml":
+                return "VSP Approval";
             /*CASHIERING*/
-            case "InvoiceForm.fxml":
+            case "Invoice.fxml":
                 if (sSalesInvoiceType.isEmpty()) {
                     ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
                     return null;
                 }
                 return sSalesInvoiceType;
-            case "VehicleSalesInvoiceForm.fxml":
+            case "VehicleSalesInvoice.fxml":
                 return "Vehicle Sales Invoice";
             /*PARTS*/
-            case psPartsPath + "ItemEntryForm.fxml":
+            case psPartsPath + "ItemInformation.fxml":
                 return "Item Information";
-            case "PartsRequisitionForm.fxml":
+            case "PartsRequisition.fxml":
                 return "Parts Requisition";
             case psPartsPath + "VSPAccessoriesRequest.fxml":
                 return "Vehicle Sales Parts Request";
             /**/
-            case "JobOrderForm.fxml":
+            case "JobOrder.fxml":
                 if (sJobOrderType.isEmpty()) {
                     ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
                     return null;
@@ -844,7 +843,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*MENU ACTIONS OPENING FXML's*/
     @FXML
     private void mnuCustomerInfoClick(ActionEvent event) {
-        String sformname = psGeneralPath + "CustomerForm.fxml";
+        String sformname = psGeneralPath + "Customer.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -864,7 +863,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuVhclSalesEntryClick(ActionEvent event) {
         sVehicleInfoType = "Vehicle Sales Information";
-        String sformname = psGeneralPath + "CustomerVehicleInfoForm.fxml";
+        String sformname = psGeneralPath + "CustomerVehicleInfo.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -874,7 +873,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuSalesJobOrderClick(ActionEvent event) {
         sJobOrderType = "Sales Job Order";
-        String sformname = "JobOrderForm.fxml";
+        String sformname = "JobOrder.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -883,7 +882,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesAgentClick(ActionEvent event) {
-        String sformname = psGeneralPath + "ReferralAgentForm.fxml";
+        String sformname = psGeneralPath + "ReferralAgent.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -892,13 +891,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuSalesExecutiveClick(ActionEvent event) {
-        String sformname = "SalesExecutiveForm.fxml";
+        String sformname = "SalesExecutive.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
     }
 
     @FXML
     private void mnuUnitRecvClick(ActionEvent event) {
-        String sformname = "UnitReceivingForm.fxml";
+        String sformname = "UnitReceiving.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -916,7 +915,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuInquiryClick(ActionEvent event) {
-        String sformname = psSalesPath + "VehicleInquiryForm.fxml";
+        String sformname = psSalesPath + "VehicleInquiry.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -925,7 +924,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuUnitDeliveryReceiptClick(ActionEvent event) {
-        String sformname = "UnitDeliveryReceiptForm.fxml";
+        String sformname = "UnitDeliveryReceipt.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -934,7 +933,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuVSPEntryClick(ActionEvent event) {
-        String sformname = psSalesPath + "VSPForm.fxml";
+        String sformname = psSalesPath + "VSP.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -944,7 +943,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuCustVhclInfoClick(ActionEvent event) {
         sVehicleInfoType = "Customer Vehicle Information";
-        String sformname = psGeneralPath + "CustomerVehicleInfoForm.fxml";
+        String sformname = psGeneralPath + "CustomerVehicleInfo.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -953,7 +952,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     private void mnuVhclEntryClick(ActionEvent event) {
         sVehicleInfoType = "Vehicle Sales Information";
-        String sformname = psGeneralPath + "CustomerVehicleInfoForm.fxml";
+        String sformname = psGeneralPath + "CustomerVehicleInfo.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -967,7 +966,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuAddOnsApprovalClick(ActionEvent event) {
-        String sformname = "VSPAddOnsApproval.fxml";
+        String sformname = "VSPApproval.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -977,44 +976,44 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*VEHICLE DESCRIPTION AND PARAMETERS*/
     @FXML
     public void mnuVhclDescClick(ActionEvent event) {
-        String sformname = "VehicleDescriptionEntry.fxml";
+        String sformname = "VehicleDescription.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclMakeEntryClicked(ActionEvent event) {
-        String sformname = "VehicleMakeEntry.fxml";
+        String sformname = "VehicleMake.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclModelEntryClicked(ActionEvent event) {
-        String sformname = "VehicleModelEntry.fxml";
+        String sformname = "VehicleModel.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclTypeEntryClicked(ActionEvent event) {
-        String sformname = "VehicleTypeEntry.fxml";
+        String sformname = "VehicleType.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclColorEntryClicked(ActionEvent event) {
-        String sformname = "VehicleColorEntry.fxml";
+        String sformname = "VehicleColor.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuVhclEngEntryClicked(ActionEvent event) {
-        String sformname = "VehicleEngineFormatEntry.fxml";
+        String sformname = "VehicleEngineFormat.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
 
     @FXML
     private void mnuVhclFrmEntryClicked(ActionEvent event) {
-        String sformname = "VehicleFrameFormatEntry.fxml";
+        String sformname = "VehicleFrameFormat.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
@@ -1023,7 +1022,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*Bank*/
     @FXML
     private void mnuBankClick(ActionEvent event) {
-        String sformname = "BankEntry.fxml";
+        String sformname = "Bank.fxml";
         //check tab
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
@@ -1039,7 +1038,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuAckReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Acknowledgement Receipt";
-        String sformname = "InvoiceForm.fxml";
+        String sformname = "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1050,7 +1049,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuBillingStmtClick(ActionEvent event) {
         sSalesInvoiceType = "Billing Statement";
-        String sformname = "InvoiceForm.fxml";
+        String sformname = "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1060,7 +1059,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuColReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Collection Receipt";
-        String sformname = "InvoiceForm.fxml";
+        String sformname = "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1070,7 +1069,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuOfcReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Official Receipt";
-        String sformname = "InvoiceForm.fxml";
+        String sformname = "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1080,7 +1079,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPartsSalesInvClick(ActionEvent event) {
         sSalesInvoiceType = "Parts Sales Invoice";
-        String sformname = "InvoiceForm.fxml";
+        String sformname = "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1089,7 +1088,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuVhclSalesInvClick(ActionEvent event) {
-        String sformname = "VehicleSalesInvoiceForm.fxml";
+        String sformname = "VehicleSalesInvoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1099,7 +1098,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*ACTIVITY*/
     @FXML
     private void mnuActivityClick(ActionEvent event) {
-        String sformname = psGeneralPath + "ActivityForm.fxml";
+        String sformname = psGeneralPath + "ActivityInformation.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1117,7 +1116,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuActivityTypeClick(ActionEvent event) {
-        String sformname = "ActivitySourceTypeEntry.fxml";
+        String sformname = "ActivitySourceType.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
 
     }
@@ -1125,7 +1124,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     /*PARTS*/
     @FXML
     private void mnuItemEntryClicked(ActionEvent event) {
-        String sformname = psPartsPath + "ItemEntryForm.fxml";
+        String sformname = psPartsPath + "ItemInformation.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1133,7 +1132,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     private void mnuPartsRequisitionClicked(ActionEvent event) {
-        String sformname = "PartsRequisitionForm.fxml";
+        String sformname = "PartsRequisition.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1148,55 +1147,55 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuBinEntryClicked(ActionEvent event) {
-        String sformname = "BinEntryParam.fxml";
+        String sformname = "Bin.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInvLocEntryClicked(ActionEvent event) {
-        String sformname = "InventoryLocationParam.fxml";
+        String sformname = "ItemLocation.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuMeasureEntryClicked(ActionEvent event) {
-        String sformname = "MeasurementEntryParam.fxml";
+        String sformname = "Measurement.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuSectionEntryClicked(ActionEvent event) {
-        String sformname = "SectionEntryParam.fxml";
+        String sformname = "Section.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuWarehsEntryClicked(ActionEvent event) {
-        String sformname = "WareHouseEntryParam.fxml";
+        String sformname = "WareHouse.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuBrandEntryClicked(ActionEvent event) {
-        String sformname = "BrandEntryParam.fxml";
+        String sformname = "Brand.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuCategoryEntryClicked(ActionEvent event) {
-        String sformname = "CategoryEntryParam.fxml";
+        String sformname = "Category.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInvTypeEntryClicked(ActionEvent event) {
-        String sformname = "InvTypeEntryParam.fxml";
+        String sformname = "InvType.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
     private void mnuInsurClick(ActionEvent event) {
-        String sformname = "InsuranceCompanyEntry.fxml";
+        String sformname = "InsuranceCompany.fxml";
         //check tab
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
@@ -1212,7 +1211,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuJobOrderClick(ActionEvent event) {
         sJobOrderType = "Service Job Order";
-        String sformname = "JobOrderForm.fxml";
+        String sformname = "JobOrder.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

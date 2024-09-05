@@ -38,8 +38,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.controllers.sales.VSPAccessoriesDialogController;
-import org.guanzon.autoapp.models.sales.ModelVSPPart;
+import org.guanzon.autoapp.controllers.sales.VSPAccessoriesController;
+import org.guanzon.autoapp.models.sales.VSPPart;
 import org.guanzon.autoapp.utils.InputTextUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -53,9 +53,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     private GRider oApp;
     private VehicleSalesProposal oTransVSPRequest;
-    private String pxeModuleName = "Vehicle Sales Accessories Request";
+    private String pxeModuleName = "VSP Accessories Request";
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
-    private ObservableList<ModelVSPPart> accessoriesData = FXCollections.observableArrayList();
+    private ObservableList<VSPPart> accessoriesData = FXCollections.observableArrayList();
     private int pnEditMode;
     private int pnRow = -1;
     private double xOffset = 0;
@@ -69,9 +69,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     @FXML
     private TextArea textArea05;
     @FXML
-    private TableView<ModelVSPPart> tblViewAccessories;
+    private TableView<VSPPart> tblViewAccessories;
     @FXML
-    private TableColumn<ModelVSPPart, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
+    private TableColumn<VSPPart, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -187,7 +187,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             }
             totalAmount = Integer.parseInt(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity())) * Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt()));
             String lsTotalAmount = poGetDecimalFormat.format(totalAmount);
-            accessoriesData.add(new ModelVSPPart(
+            accessoriesData.add(new VSPPart(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
@@ -236,8 +236,8 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPAccessoriesDialog.fxml"));
-            VSPAccessoriesDialogController loControl = new VSPAccessoriesDialogController();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSPAccessories.fxml"));
+            VSPAccessoriesController loControl = new VSPAccessoriesController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransVSPRequest);
             loControl.setState(fbIsAdd);

@@ -43,7 +43,7 @@ import org.guanzon.autoapp.utils.InputTextUtil;
 public class VehicleInquirySalesAdvancesController implements Initializable {
 
     private GRider oApp;
-    private final String pxeModuleName = "Inquiry Vehicle Sales Advances";
+    private final String pxeModuleName = "Vehicle Inquiry Sales Advances";
     ObservableList<String> cSlipType = FXCollections.observableArrayList("RESERVATION", "DEPOSIT", "SAFEGUARD DUTY");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow = 0;
