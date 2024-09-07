@@ -63,8 +63,8 @@ import org.guanzon.autoapp.models.general.CustomerMobile;
 import org.guanzon.autoapp.models.general.CustomerSocialMedia;
 import org.guanzon.autoapp.models.general.RefAgentRequirements;
 import org.guanzon.autoapp.models.general.RefAgentTrans;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -201,15 +201,15 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         Pattern textOnly, suffOnly;
         textOnly = Pattern.compile("[A-Za-z ]*");
         suffOnly = Pattern.compile("[A-Za-z .]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly)); //lastname
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly)); //firstname
-        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly)); //middlename
-        txtField05.setTextFormatter(new InputTextFormatterUtil(suffOnly));
+        txtField02.setTextFormatter(new TextFormatterUtil(textOnly)); //lastname
+        txtField03.setTextFormatter(new TextFormatterUtil(textOnly)); //firstname
+        txtField04.setTextFormatter(new TextFormatterUtil(textOnly)); //middlename
+        txtField05.setTextFormatter(new TextFormatterUtil(suffOnly));
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
@@ -978,7 +978,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
             comboBox08.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getCvilStat()));
         }
         if (oTransClient.getModel().getModel().getBirthDte() != null && !oTransClient.getModel().getModel().getBirthDte().toString().isEmpty()) {
-            datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransClient.getModel().getModel().getBirthDte())));
+            datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransClient.getModel().getModel().getBirthDte())));
         }
         if (oTransRef.getModel().getModel().getRecdStat() != null) {
             switch (oTransRef.getModel().getModel().getRecdStat()) {
@@ -1621,7 +1621,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         try {
             fsValue = "";
             if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = InputTextUtil.xsDateShort((Date) oTransRef.getVSPTransDetail(loRow, fsCol));
+                fsValue = CustomCommonUtil.xsDateShort((Date) oTransRef.getVSPTransDetail(loRow, fsCol));
 
             }
         } catch (SQLException ex) {

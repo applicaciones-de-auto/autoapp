@@ -90,7 +90,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
                     int removeCount = 0;
                     for (VSPReservationInquirers item : selectedItems) {
                         int lnRow = Integer.parseInt(item.getTblindex01_reservation());
-                        oTransReserve.removeVSPReservation(lnRow);
+                        oTransReserve.removeVSPReservation(lnRow - 1);
                         removeCount++;
                     }
                     if (removeCount >= 1) {

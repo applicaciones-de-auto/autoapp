@@ -32,8 +32,8 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -91,7 +91,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         comboBox01.setItems(cSlipType); //Slipt Type
         Pattern pattern = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new InputTextFormatterUtil(pattern));
+        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         textArea05.setOnKeyPressed(this::txtArea_KeyPressed);
         txtField04.focusedProperty().addListener(txtField_Focus);
@@ -103,9 +103,9 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField06, txtField07);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         /*TextArea*/
-        InputTextUtil.setCapsLockBehavior(textArea05);
+        CustomCommonUtil.setCapsLockBehavior(textArea05);
     }
 
     /*TRIGGER FOCUS*/
@@ -236,10 +236,10 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         comboBox01.getSelectionModel().select(Integer.parseInt(oTransAS.getReservation(pnRow, "cResrvTyp").toString())); //VSA Type
         txtField02.setText(oTransAS.getReservation(pnRow, "sReferNox").toString());
         if (pbState) { //Add
-            txtField03.setText(InputTextUtil.xsDateShort((Date) oApp.getServerDate()));
+            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
             txtField06.setText("FOR APPROVAL");
         } else {
-            txtField03.setText(InputTextUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dTransact")));
+            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dTransact")));
             txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAS.getReservation(pnRow, "nAmountxx")))));
             switch (oTransAS.getReservation(pnRow, "cTranStat").toString()) {
                 case "0":
@@ -294,7 +294,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                     break;
             }
             txtField07.setText((String) oTransAS.getReservation(pnRow, "sApproved"));
-            txtField08.setText(InputTextUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dApproved")));
+            txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dApproved")));
             textArea05.setText((String) oTransAS.getReservation(pnRow, "sRemarksx"));
         }
     }

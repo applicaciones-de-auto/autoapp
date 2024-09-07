@@ -32,8 +32,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 
 /**
@@ -99,7 +99,7 @@ public class CustomerContactController implements Initializable, ScreenInterface
     public void initialize(URL url, ResourceBundle rb) {
 
         Pattern loPattern = Pattern.compile("[0-9]*");
-        txtField03Cont.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Mobile No
+        txtField03Cont.setTextFormatter(new TextFormatterUtil(loPattern)); //Mobile No
         initComboBoxItems();
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
@@ -119,13 +119,13 @@ public class CustomerContactController implements Initializable, ScreenInterface
                 switch (selectedIndex) {
                     case 0:
                         if (txtField03Cont != null) {
-                            InputTextUtil.addTextLimiter(txtField03Cont, 11); // CONTACT NO
+                            CustomCommonUtil.addTextLimiter(txtField03Cont, 11); // CONTACT NO
                         }
                         break;
                     case 1:
                     case 2:
                         if (txtField03Cont != null) {
-                            InputTextUtil.addTextLimiter(txtField03Cont, 10); // TELE & FAX NO
+                            CustomCommonUtil.addTextLimiter(txtField03Cont, 10); // TELE & FAX NO
                         }
                         break;
                 }
@@ -168,8 +168,8 @@ public class CustomerContactController implements Initializable, ScreenInterface
     }
 
     private void initCapitalizationFields() {
-        InputTextUtil.setCapsLockBehavior(txtField03Cont);
-        InputTextUtil.setCapsLockBehavior(textArea13Cont);
+        CustomCommonUtil.setCapsLockBehavior(txtField03Cont);
+        CustomCommonUtil.setCapsLockBehavior(textArea13Cont);
     }
 
     private void initTextKeyPressed() {

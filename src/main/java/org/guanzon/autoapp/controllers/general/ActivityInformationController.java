@@ -58,8 +58,8 @@ import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.models.general.ActivityMember;
 import org.guanzon.autoapp.models.general.ActivityLocation;
 import org.guanzon.autoapp.models.general.ActivityVehicle;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -153,7 +153,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
         initButtons();
         clearFields();
         clearTables();
-        InputTextUtil.addTextLimiter(txtField15, 4);
+        CustomCommonUtil.addTextLimiter(txtField15, 4);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -186,15 +186,15 @@ public class ActivityInformationController implements Initializable, ScreenInter
     private void initTextFieldPattern() {
         Pattern numOnly = Pattern.compile("[0-9]*");
         Pattern decOnly = Pattern.compile("[0-9,.]*");
-        txtField15.setTextFormatter(new InputTextFormatterUtil(numOnly));  //nTrgtClnt
-        txtField16.setTextFormatter(new InputTextFormatterUtil(decOnly));  //nRcvdBdgt
+        txtField15.setTextFormatter(new TextFormatterUtil(numOnly));  //nTrgtClnt
+        txtField16.setTextFormatter(new TextFormatterUtil(decOnly));  //nRcvdBdgt
     }
 
     private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate()));
+            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
             setDisable(fbEmpty || foItem.isBefore(minDate));
         }
     };
@@ -210,10 +210,10 @@ public class ActivityInformationController implements Initializable, ScreenInter
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField06, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
         List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea08, textArea09, textArea10);
-        loTxtArea.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtArea.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
@@ -831,10 +831,10 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
         txtField02.setText(oTransActivity.getModel().getModel().getActNo());
         if (oTransActivity.getModel().getModel().getDateFrom() != null && !oTransActivity.getModel().getModel().getDateFrom().toString().isEmpty()) {
-            dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getDateFrom())));
+            dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getDateFrom())));
         }
         if (oTransActivity.getModel().getModel().getDateThru() != null && !oTransActivity.getModel().getModel().getDateThru().toString().isEmpty()) {
-            dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getDateThru())));
+            dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getDateThru())));
         }
         if (oTransActivity.getModel().getModel().getEventTyp() != null && !oTransActivity.getModel().getModel().getEventTyp().trim().isEmpty()) {
             switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
@@ -864,7 +864,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
 //        if (oTransActivity.getModel().getModel().getApproved() != null) {
 //            lblApprovedBy.setText(oTransActivity.getModel().getModel().getApproved());
 //            if (oTransActivity.getModel().getModel().getApprovedDte() != null && !oTransActivity.getModel().getModel().getApprovedDte().toString().isEmpty()) {
-//                lblApprovedDate.setText(InputTextUtil.xsDateShort(oTransActivity.getModel().getModel().getApprovedDte()));//dApproved
+//                lblApprovedDate.setText(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getApprovedDte()));//dApproved
 //            }
 //        } else {
 //            lblApprovedBy.setText("");
@@ -1164,8 +1164,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
         lblActivityID.setText("");
         lblActivityIDValue.setText("");
         txtField02.setText("");
-        dateFrom03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
-        dateTo04.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
+        dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
+        dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
         comboBox05.setValue("");
         txtField06.setText("");
         textArea07.setText("");

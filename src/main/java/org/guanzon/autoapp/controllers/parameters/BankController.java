@@ -28,8 +28,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Bank;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -76,8 +76,8 @@ public class BankController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
 
         oTransBank = new Bank(oApp, false, oApp.getBranchCode());
-        InputTextUtil.addTextLimiter(txtField03, 30);
-        InputTextUtil.addTextLimiter(txtField04, 10);
+        CustomCommonUtil.addTextLimiter(txtField03, 30);
+        CustomCommonUtil.addTextLimiter(txtField04, 10);
 
         initTextKeyPressed();
         comboBox02.setItems(cBankType);
@@ -151,8 +151,8 @@ public class BankController implements Initializable, ScreenInterface {
     private void initTextFieldPattern() {
         Pattern Bank;
         Bank = Pattern.compile("[A-Za-z 0-9]*");
-        txtField03.setTextFormatter(new InputTextFormatterUtil(Bank));
-        txtField04.setTextFormatter(new InputTextFormatterUtil(Bank));
+        txtField03.setTextFormatter(new TextFormatterUtil(Bank));
+        txtField04.setTextFormatter(new TextFormatterUtil(Bank));
 
     }
 
@@ -180,7 +180,7 @@ public class BankController implements Initializable, ScreenInterface {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField04);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextFieldFocus() {

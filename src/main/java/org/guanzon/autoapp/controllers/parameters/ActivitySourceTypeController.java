@@ -28,8 +28,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Activity_Source;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -148,12 +148,12 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
     private void initTextFieldPattern() {
         Pattern actPat;
         actPat = Pattern.compile("[A-Za-z0-9 ,/'.]*");
-        txtField03.setTextFormatter(new InputTextFormatterUtil(actPat));
+        txtField03.setTextFormatter(new TextFormatterUtil(actPat));
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {

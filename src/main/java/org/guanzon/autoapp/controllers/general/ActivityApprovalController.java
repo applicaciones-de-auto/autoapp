@@ -30,7 +30,7 @@ import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.models.general.ActivityApproval;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -110,12 +110,12 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
         lFrom.setManaged(false);
         lFrom.setVisible(false);
         fromDate.setVisible(false);
-        fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+        fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
         fromDate.setManaged(false);
         lTo.setVisible(false);
         lTo.setManaged(false);
         toDate.setVisible(false);
-        toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+        toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
         toDate.setManaged(false);
         comboType.setVisible(false);
         comboType.setManaged(false);
@@ -285,16 +285,16 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 LocalDate loDateTo = toDate.getValue();
                 if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
                     ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
-                    fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                     loadActApprovalTable();
                     return;
                 }
                 if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
                     ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
                     loadActApprovalTable();
-                    fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                     loadActApprovalTable();
                     return;
                 }
@@ -342,8 +342,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                         .clearSelection();
                 txtFieldSearch.clear();
 
-                fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                 loadActApprovalTable();
 
                 selectAllCheckBox.setSelected(

@@ -57,11 +57,11 @@ import org.guanzon.autoapp.models.general.CustomerEmail;
 import org.guanzon.autoapp.models.general.CustomerMobile;
 import org.guanzon.autoapp.models.general.CustomerSocialMedia;
 import org.guanzon.autoapp.models.general.CustomerVehicleInfo;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
 
 /**
  * FXML Controller class
@@ -205,8 +205,8 @@ public class CustomerController implements Initializable, ScreenInterface {
         initButtons();
         clearFields();
         clearTables();
-        InputTextUtil.addTextLimiter(txtField13, 15); // tin
-        InputTextUtil.addTextLimiter(txtField14, 15); // lto
+        CustomCommonUtil.addTextLimiter(txtField13, 15); // tin
+        CustomCommonUtil.addTextLimiter(txtField14, 15); // lto
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -224,14 +224,14 @@ public class CustomerController implements Initializable, ScreenInterface {
         textOnly = Pattern.compile("[A-Za-z ]*");
         suffOnly = Pattern.compile("[A-Za-z .]*");
         ltoOnly = Pattern.compile("[A-Za-z0-9-]*");
-        txtField13.setTextFormatter(new InputTextFormatterUtil(TinOnly));
-        txtField10.setTextFormatter(new InputTextFormatterUtil(textOnly)); //citezenship
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly)); //lastname
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly)); //firstname
-        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly)); //middlename
-        txtField05.setTextFormatter(new InputTextFormatterUtil(textOnly)); // maidenname
-        txtField06.setTextFormatter(new InputTextFormatterUtil(suffOnly));
-        txtField14.setTextFormatter(new InputTextFormatterUtil(ltoOnly));
+        txtField13.setTextFormatter(new TextFormatterUtil(TinOnly));
+        txtField10.setTextFormatter(new TextFormatterUtil(textOnly)); //citezenship
+        txtField02.setTextFormatter(new TextFormatterUtil(textOnly)); //lastname
+        txtField03.setTextFormatter(new TextFormatterUtil(textOnly)); //firstname
+        txtField04.setTextFormatter(new TextFormatterUtil(textOnly)); //middlename
+        txtField05.setTextFormatter(new TextFormatterUtil(textOnly)); // maidenname
+        txtField06.setTextFormatter(new TextFormatterUtil(suffOnly));
+        txtField14.setTextFormatter(new TextFormatterUtil(ltoOnly));
 
     }
 
@@ -249,9 +249,9 @@ public class CustomerController implements Initializable, ScreenInterface {
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06,
                 txtField16, txtField10, txtField25, txtField12, txtField14, txtField13);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         /*TextArea*/
-        InputTextUtil.setCapsLockBehavior(textArea15);
+        CustomCommonUtil.setCapsLockBehavior(textArea15);
     }
 
     private void initTextKeyPressed() {
@@ -929,7 +929,7 @@ public class CustomerController implements Initializable, ScreenInterface {
                 comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getCvilStat()));
             }
             if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
-                txtField11.setValue(InputTextUtil.strToDate(oTrans.getMaster(11).toString()));
+                txtField11.setValue(CustomCommonUtil.strToDate(oTrans.getMaster(11).toString()));
             }
             txtField10.setText(oTrans.getModel().getModel().getCntryNme());
             txtField12.setText(oTrans.getModel().getModel().getTownName());

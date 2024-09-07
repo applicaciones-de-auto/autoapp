@@ -36,7 +36,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -163,7 +163,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private String getValueDateReport(Integer fnRow, String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getReservation(fnRow, fsCol) != null) {
-            fsValue = InputTextUtil.xsDateShort((Date) oTransPrint.getReservation(fnRow, fsCol));
+            fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getReservation(fnRow, fsCol));
         }
         return fsValue;
     }

@@ -33,7 +33,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.model.sales.Model_Inquiry_FollowUp;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -151,9 +151,9 @@ public class VehicleInquiryFollowUpController implements Initializable {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        InputTextUtil.setCapsLockBehavior(textArea05);
-        InputTextUtil.setCapsLockBehavior(textArea06);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        CustomCommonUtil.setCapsLockBehavior(textArea05);
+        CustomCommonUtil.setCapsLockBehavior(textArea06);
     }
 
     private void initTextKeyPressed() {
@@ -428,7 +428,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
             Model_Inquiry_FollowUp master = oTransFollow.getMasterModel().getMasterModel();
 
             txtFieldRef.setText(master.getReferNo());
-            txtField01.setText(InputTextUtil.xsDateShort(master.getTransactDte()));
+            txtField01.setText(CustomCommonUtil.xsDateShort(master.getTransactDte()));
 
             if (master.getMethodCd() != null) {
                 String lnMethod = "";
@@ -456,7 +456,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
             }
 
             if (master.getFollowUpDte() != null) {
-                datePicker03.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(master.getFollowUpDte())));
+                datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(master.getFollowUpDte())));
             }
 
             txtField04.setText(master.getPlatform());

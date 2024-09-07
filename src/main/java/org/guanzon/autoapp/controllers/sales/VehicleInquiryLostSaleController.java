@@ -34,8 +34,8 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -128,7 +128,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Pattern pattern;
         pattern = Pattern.compile("^[a-zA-Z0-9 .,]*");
-        textArea06.setTextFormatter(new InputTextFormatterUtil(pattern));
+        textArea06.setTextFormatter(new TextFormatterUtil(pattern));
 
         lblClientName.setText(psClient);
         comboBox01.setItems(cTag);
@@ -291,10 +291,10 @@ public class VehicleInquiryLostSaleController implements Initializable {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField04, txtField05);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
         List<TextArea> loTxtArea = Arrays.asList(textArea06);
-        loTxtArea.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtArea.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -327,7 +327,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 if (!pbIsInquiry) {
                     loJSON = oTransVSP.cancelTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;

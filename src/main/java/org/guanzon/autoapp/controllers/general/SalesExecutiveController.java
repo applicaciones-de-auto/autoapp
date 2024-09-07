@@ -35,7 +35,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.clients.Sales_Executive;
 import org.guanzon.autoapp.models.general.SalesExecutiveTrans;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -274,9 +274,9 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField04);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         /*TextArea*/
-        InputTextUtil.setCapsLockBehavior(textArea03);
+        CustomCommonUtil.setCapsLockBehavior(textArea03);
     }
 
     private void initTextKeyPressed() {
@@ -388,7 +388,7 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
         try {
             fsValue = "";
             if (oTransSalesExe.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = InputTextUtil.xsDateShort((Date) oTransSalesExe.getVSPTransDetail(loRow, fsCol));
+                fsValue = CustomCommonUtil.xsDateShort((Date) oTransSalesExe.getVSPTransDetail(loRow, fsCol));
 
             }
         } catch (SQLException ex) {

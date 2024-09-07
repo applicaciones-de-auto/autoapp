@@ -38,8 +38,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Description;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -123,8 +123,8 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
         clearFields();
 
         Pattern numOnly = Pattern.compile("[0-9]*");
-        txtField06.setTextFormatter(new InputTextFormatterUtil(numOnly));
-        InputTextUtil.addTextLimiter(txtField06, 4);
+        txtField06.setTextFormatter(new TextFormatterUtil(numOnly));
+        CustomCommonUtil.addTextLimiter(txtField06, 4);
         comboBox07.setItems(cTransmission);
         comboBox08.setItems(cModelsize);
         pnEditMode = EditMode.UNKNOWN;
@@ -170,7 +170,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {

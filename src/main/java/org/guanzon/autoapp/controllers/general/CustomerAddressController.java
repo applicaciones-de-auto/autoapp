@@ -28,8 +28,8 @@ import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.auto.main.clients.Client;
 import org.json.simple.JSONObject;
@@ -110,10 +110,10 @@ public class CustomerAddressController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        InputTextUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
+        CustomCommonUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
         Pattern loPattern = Pattern.compile("[0-9]*");
-        txtField03Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //House No
-        txtField07Addr.setTextFormatter(new InputTextFormatterUtil(loPattern)); //Zip code
+        txtField03Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //House No
+        txtField07Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //Zip code
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
@@ -153,8 +153,8 @@ public class CustomerAddressController implements Initializable, ScreenInterface
 
     private void initCapitalizationFields() {
         List<TextField> poTxtFieldList = Arrays.asList(txtField03Addr, txtField04Addr, txtField05Addr, txtField06Addr, txtField07Addr, txtField23Addr);
-        poTxtFieldList.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        InputTextUtil.setCapsLockBehavior(textArea11Addr);
+        poTxtFieldList.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        CustomCommonUtil.setCapsLockBehavior(textArea11Addr);
     }
 
     private void initTextKeyPressed() {

@@ -28,8 +28,8 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_MakeFramePattern;
 import org.guanzon.auto.main.parameter.Vehicle_ModelFramePattern;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -128,8 +128,8 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
             initFields(pnEditMode);
         });
 
-        InputTextUtil.addTextLimiter(txtField04, 3);
-        InputTextUtil.addTextLimiter(txtField05, 3);
+        CustomCommonUtil.addTextLimiter(txtField04, 3);
+        CustomCommonUtil.addTextLimiter(txtField05, 3);
 
         txtField02.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -193,16 +193,16 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
         textOnly = Pattern.compile("[A-Za-z -]*");
         frmPat = Pattern.compile("[A-Za-z0-9-]*");
         numOnly = Pattern.compile("[0-9]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField04.setTextFormatter(new InputTextFormatterUtil(frmPat));
-        txtField05.setTextFormatter(new InputTextFormatterUtil(numOnly));
+        txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
+        txtField03.setTextFormatter(new TextFormatterUtil(textOnly));
+        txtField04.setTextFormatter(new TextFormatterUtil(frmPat));
+        txtField05.setTextFormatter(new TextFormatterUtil(numOnly));
 
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {

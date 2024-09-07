@@ -35,7 +35,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.BankApplication;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -135,8 +135,8 @@ public class VehicleInquiryBankApplicationController implements Initializable {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField01, txtField04, txtField05);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        InputTextUtil.setCapsLockBehavior(textArea10);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        CustomCommonUtil.setCapsLockBehavior(textArea10);
     }
 
     private void initComvoValue() {
@@ -376,11 +376,11 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 }
             }
             if (oTransBankApp.getMasterModel().getMasterModel().getAppliedDte() != null) {
-                datePicker08.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
+                datePicker08.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
             }
 
             if (oTransBankApp.getMasterModel().getMasterModel().getApprovedDte() != null) {
-                datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getApprovedDte())));
+                datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getApprovedDte())));
             }
             textArea10.setText(oTransBankApp.getMasterModel().getMasterModel().getRemarks()); //Remarks
         } else {
@@ -436,15 +436,15 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                     }
                 }
                 if (oTransBankApp.getMasterModel().getMasterModel().getAppliedDte() != null) {
-                    datePicker08.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
+                    datePicker08.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
                 }
 
                 if (oTransBankApp.getMasterModel().getMasterModel().getApprovedDte() != null) {
-                    datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getApprovedDte())));
+                    datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getApprovedDte())));
                 }
                 textArea10.setText(oTransBankApp.getMasterModel().getMasterModel().getRemarks()); //Remarks
                 if (psOApplieddate.isEmpty()) {
-                    psOApplieddate = InputTextUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte());
+                    psOApplieddate = CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte());
                 }
             }
         }
@@ -463,7 +463,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 loMinDate = loToday.minusDays(7);
             } else {
                 if (pnEditMode == EditMode.UPDATE) {
-                    LocalDate loAppliedDate = InputTextUtil.strToDate(psOApplieddate);
+                    LocalDate loAppliedDate = CustomCommonUtil.strToDate(psOApplieddate);
                     loMinDate = loAppliedDate.minusDays(7);
                 } else {
                     loMinDate = loToday.minusDays(7); // Default case
@@ -504,7 +504,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 datePicker08.setDayCellFactory(callApplied);
                 datePicker09.setDayCellFactory(callApprove);
                 if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
-                    datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((oApp.getServerDate()))));
+                    datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((oApp.getServerDate()))));
                 } else {
                     datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
                 }
@@ -523,7 +523,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         comboBox06.setOnAction(event -> {
             if (comboBox06.getSelectionModel().getSelectedIndex() == 2) {
                 datePicker08.setDisable(false);
-                datePicker08.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
+                datePicker08.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
             }
         }
         );
@@ -532,7 +532,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 if (comboBox07.getSelectionModel().getSelectedIndex() == 2) {
                     datePicker09.setDisable(false);
                     datePicker09.setDayCellFactory(callApprove);
-                    datePicker09.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((oApp.getServerDate()))));
+                    datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((oApp.getServerDate()))));
                 } else {
                     datePicker09.setDisable(true);
                     datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));

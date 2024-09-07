@@ -28,8 +28,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -142,13 +142,13 @@ public class VSPLaborController implements Initializable {
 
     private void initFielPattern() {
         Pattern pattern = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new InputTextFormatterUtil(pattern));
-        txtField05.setTextFormatter(new InputTextFormatterUtil(pattern));
+        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
+        txtField05.setTextFormatter(new TextFormatterUtil(pattern));
     }
 
     private void initCapitalizationFields() {
-        InputTextUtil.setCapsLockBehavior(txtField01);
-        InputTextUtil.setCapsLockBehavior(txtField02);
+        CustomCommonUtil.setCapsLockBehavior(txtField01);
+        CustomCommonUtil.setCapsLockBehavior(txtField02);
     }
 
     private void initTextKeyPressed() {

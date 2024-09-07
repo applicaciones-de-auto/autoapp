@@ -25,8 +25,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Insurance;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -65,7 +65,7 @@ public class InsuranceCompanyController implements Initializable, ScreenInterfac
 
         oTransInsurance = new Insurance(oApp, false, oApp.getBranchCode());
 
-        InputTextUtil.addTextLimiter(txtField03, 10);
+        CustomCommonUtil.addTextLimiter(txtField03, 10);
 
         initTextKeyPressed();
 
@@ -85,8 +85,8 @@ public class InsuranceCompanyController implements Initializable, ScreenInterfac
     private void initTextFieldPattern() {
         Pattern Insurance;
         Insurance = Pattern.compile("[A-Za-z 0-9]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(Insurance));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(Insurance));
+        txtField02.setTextFormatter(new TextFormatterUtil(Insurance));
+        txtField03.setTextFormatter(new TextFormatterUtil(Insurance));
 
     }
 
@@ -114,7 +114,7 @@ public class InsuranceCompanyController implements Initializable, ScreenInterfac
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextFieldFocus() {

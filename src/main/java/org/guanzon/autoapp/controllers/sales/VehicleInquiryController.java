@@ -72,7 +72,7 @@ import org.guanzon.autoapp.models.sales.InquiryRequirements;
 import org.guanzon.autoapp.models.sales.InquiryVehiclePriority;
 import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.models.sales.InquiryVehicleBankApplications;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -262,10 +262,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField05, txtField06, txtField07, txtField08, txtField09,
                 txtField11, txtField12, txtField13, txtField14, txtField16, txtField18, txtField20, txtField27, txtField29, txtField30);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         List<TextArea> loTxtArea = Arrays.asList(textArea04, textArea23, textArea24, textArea28);
 
-        loTxtArea.forEach(ta -> InputTextUtil.setCapsLockBehavior(ta));
+        loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
     }
 
     private void initTextKeyPressed() {
@@ -695,7 +695,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                     return false;
                 }
                 break;
-            case 2:
+            case 1:
                 if (txtField11.getText().equals("") || txtField11.getText() == null) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please select `Online Store` value.");
                     txtField11.requestFocus();
@@ -1165,13 +1165,15 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         try {
             String lsFormName = "Vehicle Sales Proposal";
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("org/guanzon/autoapp/views/sales/VSP.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VSP.fxml"));
             VSPController loControl = new VSPController();
             loControl.setGRider(oApp);
-            loControl.setAddMode(oTransInquiry.getMasterModel().getMasterModel().getTransNo());
+            loControl.setIsInquiryState(true);
+            if (oTransInquiry.getMasterModel().getMasterModel().getTransNo() != null) {
+                loControl.setInquiryTrans(oTransInquiry.getMasterModel().getMasterModel().getTransNo());
+            }
             fxmlLoader.setController(loControl);
             Parent parent = fxmlLoader.load();
-
             AnchorPane otherAnchorPane = loControl.AnchorMain;
 
             // Get the parent of the TabContent node
@@ -1314,7 +1316,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
     private void loadCustomerInquiryInformation() {
         txtField01.setText(oTransInquiry.getMasterModel().getMasterModel().getInqryID());
         if (oTransInquiry.getMasterModel().getMasterModel().getTransactDte() != null && !oTransInquiry.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
-            txtField02.setText(InputTextUtil.xsDateShort(oTransInquiry.getMasterModel().getMasterModel().getTransactDte()));
+            txtField02.setText(CustomCommonUtil.xsDateShort(oTransInquiry.getMasterModel().getMasterModel().getTransactDte()));
         }
         txtField03.setText(oTransInquiry.getMasterModel().getMasterModel().getClientNm());
         textArea04.setText(oTransInquiry.getMasterModel().getMasterModel().getAddress());
@@ -1353,7 +1355,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
             comboBox21.getSelectionModel().select(Integer.parseInt(oTransInquiry.getMasterModel().getMasterModel().getIsVhclNw()));
         }
         if (oTransInquiry.getMasterModel().getMasterModel().getTargetDt() != null && !oTransInquiry.getMasterModel().getMasterModel().getTargetDt().toString().isEmpty()) {
-            datePicker22.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort(oTransInquiry.getMasterModel().getMasterModel().getTargetDt())));
+            datePicker22.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransInquiry.getMasterModel().getMasterModel().getTargetDt())));
         }
         textArea23.setText(oTransInquiry.getMasterModel().getMasterModel().getRemarks());
         textArea24.setText("");
@@ -1462,16 +1464,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         textArea23.setDisable(!lbShow);
         textArea24.setDisable(!lbShow);
         txtField14.setDisable(true);
-        if (fnValue == EditMode.ADDNEW) {
-            if (oApp.isMainOffice()) {
-                txtField14.setDisable(!lbShow); // Branch Name
-                txtField14.setEditable(true); // Branch Name
-            } else {
-                txtField14.setDisable(true); // Branch Name
-                txtField14.setEditable(false); // Branch Name
-            }
-        }
-
+        txtField05.setDisable(true);
         switch (comboBox10.getSelectionModel().getSelectedIndex()) {
             case 1:
                 txtField11.setDisable(!lbShow);//Online Store
@@ -1662,6 +1655,16 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
             txtField03.setDisable(true);
             txtField09.setDisable(true);
         }
+        if (fnValue == EditMode.ADDNEW) {
+            if (oApp.isMainOffice()) {
+                txtField14.setDisable(!lbShow); // Branch Name
+                txtField14.setEditable(true); // Branch Name
+            } else {
+                txtField14.setDisable(true); // Branch Name
+                txtField14.setEditable(false); // Branch Name
+            }
+        }
+
     }
 
     private void initInquiryProcessFieldsFalse() {
@@ -1885,7 +1888,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
 
         resetRadioButtons(rdbtnHtA19, rdbtnHtB19, rdbtnHtC19);
 
-        datePicker22.setValue(InputTextUtil.strToDate(InputTextUtil.xsDateShort((Date) oApp.getServerDate())));
+        datePicker22.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
     }
 
     private void clearTextFields(TextInputControl... fields) {
@@ -2079,8 +2082,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         for (lnCtr = 0; lnCtr <= oTransInquiry.getPromoList().size() - 1; lnCtr++) {
             promosoffereddata.add(new InquiryPromoOffered(
                     String.valueOf(lnCtr + 1), //ROW
-                    InputTextUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateFrom")),
-                    InputTextUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateThru")),
+CustomCommonUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateFrom")),
+                    CustomCommonUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateThru")),
                     String.valueOf(oTransInquiry.getPromo(lnCtr, "sActTitle")).toUpperCase(),
                     String.valueOf(oTransInquiry.getPromo(lnCtr, "sPromoIDx")).toUpperCase()
             ));
@@ -2114,7 +2117,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                 lbCheck = String.valueOf(oTransInquiry.getRequirement(lnCtr, "cSubmittd")).equals("1");
                 if (lbCheck) {
                     lsReceive = String.valueOf(oTransInquiry.getRequirement(lnCtr, "sCompnyNm"));
-                    lsReceiveDte = InputTextUtil.xsDateShort((Date) oTransInquiry.getRequirement(lnCtr, "dReceived"));
+                    lsReceiveDte = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getRequirement(lnCtr, "dReceived"));
                 } else {
                     lsReceive = "";
                     lsReceiveDte = "";
@@ -2151,7 +2154,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
             loadInquiryRequirements();
             selected.addListener((obs, oldValue, newValue) -> {
                 if (newValue) {
-                    JSONObject loJSON = oTransInquiry.searchEmployee(requirement.getTblindex05(), requirement.getTblindex02());
+                    JSONObject loJSON = oTransInquiry.searchEmployee(requirement.getTblindex05(), requirement.getTblindex02(), requirement.getTblindex06());
                     if (!"error".equals(loJSON.get("result"))) {
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
@@ -2229,7 +2232,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         String lsSlipNo = "";
         for (int lnCtr = 0; lnCtr <= oTransInquiry.getReservationList().size() - 1; lnCtr++) {
             if (String.valueOf(oTransInquiry.getReservation(lnCtr, "dTransact")) != null) {
-                lsResDte = InputTextUtil.xsDateShort((Date) oTransInquiry.getReservation(lnCtr, "dTransact"));
+                lsResDte = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getReservation(lnCtr, "dTransact"));
             }
             switch (String.valueOf(oTransInquiry.getReservation(lnCtr, "cResrvTyp"))) {
                 case "0":
@@ -2250,7 +2253,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                 lsApprovedBy = String.valueOf(oTransInquiry.getReservation(lnCtr, "sApproved"));
             }
             if (String.valueOf(oTransInquiry.getReservation(lnCtr, "dApproved")) != null) {
-                lsApprovedDte = InputTextUtil.xsDateShort((Date) oTransInquiry.getReservation(lnCtr, "dApproved"));
+                lsApprovedDte = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getReservation(lnCtr, "dApproved"));
             }
             if (String.valueOf(oTransInquiry.getReservation(lnCtr, "cTranStat")) != null) {
                 switch (String.valueOf(oTransInquiry.getReservation(lnCtr, "cTranStat"))) {
@@ -2436,7 +2439,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
             if ("success".equals((String) loJSON.get("result"))) {
                 for (int lnCtr = 1; lnCtr <= oTransInquiry.getBankApplicationCount(); lnCtr++) {
                     if (!String.valueOf(oTransInquiry.getBankApplicationDetail(lnCtr, "sCancelld")).isEmpty()) {
-                        lsCancelledDt = InputTextUtil.xsDateShort((Date) oTransInquiry.getBankApplicationDetail(lnCtr, "dCancelld"));
+                        lsCancelledDt = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getBankApplicationDetail(lnCtr, "dCancelld"));
                         lsStatus = "CANCELLED";
                     } else {
                         if (oTransInquiry.getBankApplicationDetail(lnCtr, "cTranStat") != null) {
@@ -2616,10 +2619,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
             try {
                 for (int lnCtr = 1; lnCtr <= oTransInquiry.getFollowUpCount(); lnCtr++) {
                     if (oTransInquiry.getFollowUpDetail(lnCtr, "dFollowUp") != null) {
-                        lsFollowUpDate = InputTextUtil.xsDateShort((Date) oTransInquiry.getFollowUpDetail(lnCtr, "dFollowUp"));
+                        lsFollowUpDate = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getFollowUpDetail(lnCtr, "dFollowUp"));
                     }
                     if (oTransInquiry.getFollowUpDetail(lnCtr, "dTransact") != null) {
-                        lsTransact = InputTextUtil.xsDateShort((Date) oTransInquiry.getFollowUpDetail(lnCtr, "dTransact"));
+                        lsTransact = CustomCommonUtil.xsDateShort((Date) oTransInquiry.getFollowUpDetail(lnCtr, "dTransact"));
                     }
                     if (oTransInquiry.getFollowUpDetail(lnCtr, "sMethodCd") != null) {
                         lsMethod = String.valueOf(oTransInquiry.getFollowUpDetail(lnCtr, "sMethodCd"));

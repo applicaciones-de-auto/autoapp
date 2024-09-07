@@ -27,8 +27,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -123,15 +123,15 @@ public class VSPAccessoriesController implements Initializable {
 
     private void initFielPattern() {
         Pattern patternInt = Pattern.compile("[0-9]*");
-        txtField03.setTextFormatter(new InputTextFormatterUtil(patternInt));
+        txtField03.setTextFormatter(new TextFormatterUtil(patternInt));
         Pattern patternDec = Pattern.compile("[0-9,.]*");
-        txtField05.setTextFormatter(new InputTextFormatterUtil(patternDec));
-        txtField06.setTextFormatter(new InputTextFormatterUtil(patternDec));
+        txtField05.setTextFormatter(new TextFormatterUtil(patternDec));
+        txtField06.setTextFormatter(new TextFormatterUtil(patternDec));
     }
 
     private void initCapitalizationFields() {
-        InputTextUtil.setCapsLockBehavior(txtField01);
-        InputTextUtil.setCapsLockBehavior(txtField02);
+        CustomCommonUtil.setCapsLockBehavior(txtField01);
+        CustomCommonUtil.setCapsLockBehavior(txtField02);
     }
 
     private void initTextKeyPressed() {
@@ -149,7 +149,7 @@ public class VSPAccessoriesController implements Initializable {
                 case "txtField01":
                     loJSON = oTransVSPAccessories.searchParts("", pnRow, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField01.setText(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getDescript());
+                        txtField01.setText(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getBarCode());
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                         txtField01.clear();
@@ -499,22 +499,23 @@ public class VSPAccessoriesController implements Initializable {
             comboBox04.setDisable(false);
             txtField05.setDisable(false);
             txtField06.setDisable(false);
+            switch (comboBox04.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    txtField05.setDisable(false);
+                    txtField06.setDisable(true);
+                    break;
+                case 1:
+                    txtField05.setDisable(false);
+                    txtField06.setDisable(txtField05.getText().isEmpty());
+                    break;
+                default:
+                    txtField05.setDisable(true);
+                    txtField06.setDisable(true);
+                    break;
+            }
 
         }
-        switch (comboBox04.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                txtField05.setDisable(false);
-                txtField06.setDisable(true);
-                break;
-            case 1:
-                txtField05.setDisable(false);
-                txtField06.setDisable(txtField05.getText().isEmpty());
-                break;
-            default:
-                txtField05.setDisable(true);
-                txtField06.setDisable(true);
-                break;
-        }
+
     }
 
 }

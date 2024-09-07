@@ -58,8 +58,8 @@ import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
 import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatController;
 import org.guanzon.autoapp.models.general.VehicleOwnerHistory;
 import org.guanzon.autoapp.models.general.VehicleWarehouseHistory;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -163,9 +163,9 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         initButtons();
         clearFields();
         clearTables();
-        InputTextUtil.addTextLimiter(txtField15, 12);
-        InputTextUtil.addTextLimiter(txtField11, 10);
-        InputTextUtil.addTextLimiter(txtField12, 12);
+        CustomCommonUtil.addTextLimiter(txtField15, 12);
+        CustomCommonUtil.addTextLimiter(txtField11, 10);
+        CustomCommonUtil.addTextLimiter(txtField12, 12);
         Platform.runLater(() -> {
             if (getParentTabTitle().contains("SALES")) {
                 pbisVhclSales = true;
@@ -236,10 +236,10 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         Pattern removeSymbols, withSpace;
         removeSymbols = Pattern.compile("[A-Za-z0-9]*");
         withSpace = Pattern.compile("[A-Za-z0-9 ]*");
-        txtField11.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //PlateNo
-        txtField12.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //CsNo
-        txtField15.setTextFormatter(new InputTextFormatterUtil(removeSymbols)); //keyno
-        txtField24.setTextFormatter(new InputTextFormatterUtil(withSpace)); //register
+        txtField11.setTextFormatter(new TextFormatterUtil(removeSymbols)); //PlateNo
+        txtField12.setTextFormatter(new TextFormatterUtil(removeSymbols)); //CsNo
+        txtField15.setTextFormatter(new TextFormatterUtil(removeSymbols)); //keyno
+        txtField24.setTextFormatter(new TextFormatterUtil(withSpace)); //register
     }
 
     private void getDate(ActionEvent event) {
@@ -251,12 +251,12 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField05, txtField07, txtField09, txtField06, txtField08, txtField10, txtField11, txtField15, txtField12, txtField14,
                 txtField16, txtField20, txtField19, txtField23, txtField22, txtField21, txtField24, txtField25, txtField13);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
         /*TextArea*/
-        InputTextUtil.setCapsLockBehavior(textArea02);
-        InputTextUtil.setCapsLockBehavior(textArea04);
-        InputTextUtil.setCapsLockBehavior(textArea27);
+        CustomCommonUtil.setCapsLockBehavior(textArea02);
+        CustomCommonUtil.setCapsLockBehavior(textArea04);
+        CustomCommonUtil.setCapsLockBehavior(textArea27);
     }
 
     private void initTextKeyPressed() {
@@ -777,7 +777,6 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                     return;
                 }
                 break;
-
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
@@ -950,7 +949,7 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         }
         // Your code
         if (oTransVchInfo.getModel().getModel().getRegisterDte() != null && !oTransVchInfo.getModel().getModel().getRegisterDte().toString().isEmpty()) {
-            datePicker26.setValue(InputTextUtil.strToDate(oTransVchInfo.getMaster(22).toString()));
+            datePicker26.setValue(CustomCommonUtil.strToDate(oTransVchInfo.getMaster(22).toString()));
         }
 
     }

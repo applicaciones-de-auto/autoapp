@@ -35,7 +35,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -100,7 +100,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void dateValueProperty() {
@@ -197,7 +197,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTransReserve.getOTHReservationList().size() - 1; lnCtr++) {
                 if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate() != null) {
-                    lsDate = InputTextUtil.xsDateShort((Date) oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate());
+                    lsDate = CustomCommonUtil.xsDateShort((Date) oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate());
                 }
                 reserveData.add(new VSPReservationInquirers(
                         String.valueOf(lnCtr + 1), // ROW

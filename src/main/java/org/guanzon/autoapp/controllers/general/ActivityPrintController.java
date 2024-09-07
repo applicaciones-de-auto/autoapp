@@ -42,7 +42,7 @@ import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.models.general.ActivityMember;
 import org.guanzon.autoapp.models.general.ActivityLocation;
 import org.guanzon.autoapp.models.general.ActivityVehicle;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -58,6 +58,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Activity Print";
+
     private List<ActivityMember> actMembersData = new ArrayList<ActivityMember>();
     private List<ActivityLocation> locationData = new ArrayList<ActivityLocation>();
     private List<ActivityVehicle> actVhclModelData = new ArrayList<ActivityVehicle>();
@@ -190,7 +191,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     private String getValueDateReport(String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getMaster(fsCol) != null) {
-            fsValue = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
+            fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
         }
         return fsValue;
     }
@@ -230,8 +231,8 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
             params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
             params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
             params.put("actApprovDte", getValueDateReport("actApprovDte", "dApproved"));
-            String lsFrom = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
-            String lsTo = InputTextUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
+            String lsFrom = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
+            String lsTo = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
             String duration = lsFrom + " - " + lsTo;
             params.put("durationTime", duration);
             //Activity Location

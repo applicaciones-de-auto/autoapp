@@ -21,7 +21,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -88,8 +88,8 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
 
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
-        InputTextUtil.setCapsLockBehavior(textArea06);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        CustomCommonUtil.setCapsLockBehavior(textArea06);
         initButtons();
         textProperty();
         if (pbState) {

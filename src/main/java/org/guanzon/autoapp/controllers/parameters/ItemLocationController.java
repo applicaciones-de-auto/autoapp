@@ -23,8 +23,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_ItemLocation;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -93,14 +93,14 @@ public class ItemLocationController implements Initializable, ScreenInterface {
     private void initTextFieldPattern() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z 0-9]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField04.setTextFormatter(new InputTextFormatterUtil(textOnly));
+        txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
+        txtField03.setTextFormatter(new TextFormatterUtil(textOnly));
+        txtField04.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {

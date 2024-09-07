@@ -40,7 +40,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.controllers.sales.VSPAccessoriesController;
 import org.guanzon.autoapp.models.sales.VSPPart;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -63,7 +63,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnClose, btnRefresh, btnCancel, btnBrowse;
+    private Button btnClose, btnCancel, btnBrowse, btnEdit, btnSave;
     @FXML
     private TextField txtField01, txtField02, txtField04, txtField03, txtField06, txtField07;
     @FXML
@@ -94,15 +94,15 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField04, txtField03, txtField06, txtField07);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
         List<TextArea> loTxtArea = Arrays.asList(textArea05);
 
-        loTxtArea.forEach(ta -> InputTextUtil.setCapsLockBehavior(ta));
+        loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
     }
 
     private void initButtonsClick() {
-        List<Button> loButtons = Arrays.asList(btnClose, btnRefresh, btnCancel, btnBrowse);
+        List<Button> loButtons = Arrays.asList(btnClose, btnSave, btnCancel, btnBrowse, btnEdit);
         loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
@@ -135,12 +135,34 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     ShowMessageFX.Warning(null, "Search Vehicle Sales Accessories Request Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
+            case "btnEdit":
+                loJSON = oTransVSPRequest.updateTransaction();
+                pnEditMode = oTransVSPRequest.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
+                    loJSON = oTransVSPRequest.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "VSP Parts Request Information", (String) loJSON.get("message"));
+                        loJSON = oTransVSPRequest.openTransaction(oTransVSPRequest.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadAccessoriesFields();
+                            loadAccessoriesTable();
+                            pnEditMode = oTransVSPRequest.getEditMode();
+                            initFields(pnEditMode);
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                } else {
+                    return;
+                }
+                break;
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
-                break;
-            case "btnRefresh":
-                loadAccessoriesFields();
-                loadAccessoriesTable();
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
@@ -153,11 +175,11 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     private void loadAccessoriesFields() {
         txtField01.setText(oTransVSPRequest.getMasterModel().getMasterModel().getBuyCltNm());
         txtField02.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCoCltNm());
-        txtField04.setText(oTransVSPRequest.getMasterModel().getMasterModel().getSEName());
-        txtField03.setText(oTransVSPRequest.getMasterModel().getMasterModel().getAgentNm());
-        txtField06.setText(oTransVSPRequest.getMasterModel().getMasterModel().getVhclDesc());
-        txtField07.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCSNo());
-        textArea05.setText(oTransVSPRequest.getMasterModel().getMasterModel().getPlateNo());
+        txtField03.setText(oTransVSPRequest.getMasterModel().getMasterModel().getSEName());
+        txtField04.setText(oTransVSPRequest.getMasterModel().getMasterModel().getAgentNm());
+        textArea05.setText(oTransVSPRequest.getMasterModel().getMasterModel().getVhclDesc());
+        txtField06.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCSNo());
+        txtField07.setText(oTransVSPRequest.getMasterModel().getMasterModel().getPlateNo());
     }
 
     private void loadAccessoriesTable() {
@@ -167,10 +189,11 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         String lsDiscAmount = "";
         String lsNetAmount = "";
         String lsQuantity = "";
+        String lsPartsDesc = "";
         double totalAmount = 0.00;
         for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                lsQuantity = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity())));
+                lsQuantity = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
                 lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
@@ -187,6 +210,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             }
             totalAmount = Integer.parseInt(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity())) * Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt()));
             String lsTotalAmount = poGetDecimalFormat.format(totalAmount);
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
+                lsPartsDesc = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
+            }
             accessoriesData.add(new VSPPart(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
@@ -199,7 +225,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     "",
                     "",
                     "",
-                    "",
+                    lsPartsDesc,
                     lsTotalAmount,
                     lbChargeType
             ));
@@ -217,9 +243,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part")); // tblindexRow
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part")); // sales accessories description
         tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03_part")); // accessories number
-        tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part")); // accessories description
+        tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part")); // accessories description
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part")); // quantity
-        tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex14_part")); // foc
+        tblindex06.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot")); // foc
 
         tblViewAccessories.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
@@ -267,7 +293,23 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+//            JSONObject loJSON = new JSONObject();
+//            loJSON = oTransVSPRequest.saveTransaction();
+//            if ("success".equals((String) loJSON.get("result"))) {
+//                ShowMessageFX.Information(null, pxeModuleName, "Successfully updated parts request information!");
+//                loJSON = oTransVSPRequest.openTransaction(oTransVSPRequest.getMasterModel().getMasterModel().getTransNo());
+//                if ("success".equals((String) loJSON.get("result"))) {
+            loadAccessoriesFields();
             loadAccessoriesTable();
+//                    pnEditMode = EditMode.UPDATE;
+//                    initFields(pnEditMode);
+//                } else {
+//                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                }
+//            } else {
+//                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                return;
+//            }
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
@@ -291,19 +333,17 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     @FXML
     private void tblAccessories_Click(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.UPDATE) {
             pnRow = tblViewAccessories.getSelectionModel().getSelectedIndex();
             if (pnRow < 0 || pnRow >= tblViewAccessories.getItems().size()) {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
-                return;
-            }
-            if (pnRow == 0) {
                 return;
             }
             if (event.getClickCount() == 2) {
                 try {
                     loadAccessoriesWindowDialog(pnRow, false);
                     loadAccessoriesTable();
+
                 } catch (IOException ex) {
                     Logger.getLogger(VSPAccessoriesRequestController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -315,9 +355,16 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.UPDATE);
+        btnEdit.setVisible(false);
+        btnEdit.setManaged(false);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
-        btnRefresh.setVisible(lbShow);
-        btnRefresh.setManaged(lbShow);
+        btnSave.setVisible(lbShow);
+        btnSave.setManaged(lbShow);
+        if (fnValue == EditMode.READY) {
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+
     }
 }

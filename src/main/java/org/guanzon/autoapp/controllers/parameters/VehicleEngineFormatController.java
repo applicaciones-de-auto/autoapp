@@ -24,8 +24,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_ModelEnginePattern;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -132,8 +132,8 @@ public class VehicleEngineFormatController implements Initializable, ScreenInter
                     }
                 }
                 );
-        InputTextUtil.addTextLimiter(txtField03, 3);
-        InputTextUtil.addTextLimiter(txtField04, 4);
+        CustomCommonUtil.addTextLimiter(txtField03, 3);
+        CustomCommonUtil.addTextLimiter(txtField04, 4);
         initFields(pnEditMode);
 
     }
@@ -154,15 +154,15 @@ public class VehicleEngineFormatController implements Initializable, ScreenInter
         textOnly = Pattern.compile("[A-Za-z -]*");
         engPat = Pattern.compile("[A-Za-z0-9-]*");
         numOnly = Pattern.compile("[0-9]*");
-        txtField02.setTextFormatter(new InputTextFormatterUtil(textOnly));
-        txtField03.setTextFormatter(new InputTextFormatterUtil(engPat));
-        txtField04.setTextFormatter(new InputTextFormatterUtil(numOnly));
+        txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
+        txtField03.setTextFormatter(new TextFormatterUtil(engPat));
+        txtField04.setTextFormatter(new TextFormatterUtil(numOnly));
 
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
