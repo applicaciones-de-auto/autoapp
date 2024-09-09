@@ -5,7 +5,6 @@
 package org.guanzon.autoapp.controllers.general;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +29,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.autoapp.models.general.ModelActivityApproval;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.models.general.ActivityApproval;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -52,7 +51,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             "Person in Charge", "Department");
     ObservableList<String> cType = FXCollections.observableArrayList("EVENT", "PROMO", "SALES");
 
-    private ObservableList<ModelActivityApproval> actApprovalData = FXCollections.observableArrayList();
+    private ObservableList<ActivityApproval> actApprovalData = FXCollections.observableArrayList();
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -68,11 +67,11 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
     @FXML
     private Button btnRefresh;
     @FXML
-    private TableView<ModelActivityApproval> tblViewActApproval;
+    private TableView<ActivityApproval> tblViewActApproval;
     @FXML
-    private TableColumn<ModelActivityApproval, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08, tblindex09;
+    private TableColumn<ActivityApproval, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08, tblindex09;
     @FXML
-    private TableColumn<ModelActivityApproval, Boolean> tblindexselect;
+    private TableColumn<ActivityApproval, Boolean> tblindexselect;
     @FXML
     private CheckBox selectAllCheckBox;
 
@@ -111,12 +110,12 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
         lFrom.setManaged(false);
         lFrom.setVisible(false);
         fromDate.setVisible(false);
-        fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+        fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
         fromDate.setManaged(false);
         lTo.setVisible(false);
         lTo.setManaged(false);
         toDate.setVisible(false);
-        toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+        toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
         toDate.setManaged(false);
         comboType.setVisible(false);
         comboType.setManaged(false);
@@ -255,8 +254,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                     tblViewActApproval.setItems(actApprovalData);
                 } else {
                     // Filter data based on selected type
-                    ObservableList<ModelActivityApproval> filteredCombo = FXCollections.observableArrayList();
-                    for (ModelActivityApproval actData : actApprovalData) {
+                    ObservableList<ActivityApproval> filteredCombo = FXCollections.observableArrayList();
+                    for (ActivityApproval actData : actApprovalData) {
                         if (actData.getTblindex11().equals(lsSelectedType)) {
                             filteredCombo.add(actData);
                         }
@@ -270,8 +269,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             case "btnDate": //btn filter for Activity Date
                 LocalDate loFilterFromDate = fromDate.getValue();
                 LocalDate loFilterToDate = toDate.getValue();
-                ObservableList<ModelActivityApproval> filteredDate = FXCollections.observableArrayList();
-                for (ModelActivityApproval actData : actApprovalData) {
+                ObservableList<ActivityApproval> filteredDate = FXCollections.observableArrayList();
+                for (ActivityApproval actData : actApprovalData) {
                     LocalDate actDateFrom = LocalDate.parse(actData.getTblindex06());
                     LocalDate actDateTo = LocalDate.parse(actData.getTblindex07());
 
@@ -286,16 +285,16 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 LocalDate loDateTo = toDate.getValue();
                 if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
                     ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
-                    fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                     loadActApprovalTable();
                     return;
                 }
                 if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
                     ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
                     loadActApprovalTable();
-                    fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                     loadActApprovalTable();
                     return;
                 }
@@ -304,8 +303,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 }
                 break;
             case "btnApproved": //btn for approval
-                ObservableList<ModelActivityApproval> selectedItems = FXCollections.observableArrayList();
-                for (ModelActivityApproval item : tblViewActApproval.getItems()) {
+                ObservableList<ActivityApproval> selectedItems = FXCollections.observableArrayList();
+                for (ActivityApproval item : tblViewActApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
@@ -319,7 +318,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                     return;
                 }
                 int approvedCount = 0;
-//                for (ModelActivityApproval item : selectedItems) {
+//                for (ActivityApproval item : selectedItems) {
 //                    String fsTransNox = item.getTblindex01(); // Assuming there is a method to retrieve the transaction number
 //                    loJSON = oTrans.ApproveActivity(fsTransNox);
 //                    if ("success".equals((String) loJSON.get("result"))) {
@@ -343,8 +342,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                         .clearSelection();
                 txtFieldSearch.clear();
 
-                fromDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
-                toDate.setValue(InputTextUtil.strToDate(oApp.getServerDate().toString()));
+                fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
+                toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
                 loadActApprovalTable();
 
                 selectAllCheckBox.setSelected(
@@ -356,7 +355,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
 
     private void filterTable(String searchText, String fieldType) {
         String filterText = searchText.trim().toLowerCase();
-        FilteredList<ModelActivityApproval> filteredList = new FilteredList<>(actApprovalData);
+        FilteredList<ActivityApproval> filteredList = new FilteredList<>(actApprovalData);
         filteredList.setPredicate(clients -> {
             if (filterText.isEmpty()) {
                 return true;
@@ -410,7 +409,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
 //                    res = "EVENT";
 //                }
 //
-//                actApprovalData.add(new ModelActivityApproval(
+//                actApprovalData.add(new ActivityApproval(
 //                        String.valueOf(poCtr),
 //                        oTrans.getDetail(poCtr, "cTranStat").toString().toUpperCase(),
 //                        oTrans.getDetail(poCtr, "sActvtyID").toString().toUpperCase(),
@@ -452,7 +451,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
         tblindex03.setCellValueFactory(cellData -> {
             // Get the data for the current row
-            ModelActivityApproval rowData = cellData.getValue();
+            ActivityApproval rowData = cellData.getValue();
 
             // Get the values you want to concatenate
             String value1 = rowData.getTblindex03(); //from date

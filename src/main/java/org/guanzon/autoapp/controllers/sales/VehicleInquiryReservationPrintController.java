@@ -20,7 +20,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -36,8 +35,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
-import org.guanzon.autoapp.models.sales.ModelInquiryVehicleSalesAdvances;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -52,10 +51,10 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private GRider oApp;
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
-    private final String pxeModuleName = "Reservation Print";
+    private final String pxeModuleName = "Vehicle Inquiry Reservation Print";
     private Integer[] pnRows;
     private boolean running = false;
-    private ObservableList<ModelInquiryVehicleSalesAdvances> vhlApprovalPrintData = FXCollections.observableArrayList();
+    private ObservableList<InquiryVehicleSalesAdvances> vhlApprovalPrintData = FXCollections.observableArrayList();
     Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
@@ -70,14 +69,6 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private VBox vbProgress;
     @FXML
     private AnchorPane reportPane;
-    @FXML
-    private Button btnChangeAmt;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private Button btnUpdateAmt;
-    @FXML
-    private Button btnCancel;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -172,7 +163,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private String getValueDateReport(Integer fnRow, String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getReservation(fnRow, fsCol) != null) {
-            fsValue = InputTextUtil.xsDateShort((Date) oTransPrint.getReservation(fnRow, fsCol));
+            fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getReservation(fnRow, fsCol));
         }
         return fsValue;
     }
@@ -232,7 +223,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                             break;
                     }
                 }
-                vhlApprovalPrintData.add(new ModelInquiryVehicleSalesAdvances(
+                vhlApprovalPrintData.add(new InquiryVehicleSalesAdvances(
                         String.valueOf(lnCtr),
                         getValueDateReport(lnCtr, "lsSlipDate", "dTransact"),
                         lsResType,

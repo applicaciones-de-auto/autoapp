@@ -39,8 +39,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.BankBranch;
-import org.guanzon.autoapp.utils.InputTextFormatterUtil;
-import org.guanzon.autoapp.utils.InputTextUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -53,7 +53,7 @@ public class BankBranchInformationController implements Initializable, ScreenInt
 
     private GRider oApp;
     private BankBranch oTransBankBranch;
-    private final String pxeModuleName = "Bank Branch"; //Form Title
+    private final String pxeModuleName = "Bank Branch Information"; //Form Title
     private int pnEditMode;//Modifying field
     private double xOffset = 0;
     private double yOffset = 0;
@@ -100,24 +100,23 @@ public class BankBranchInformationController implements Initializable, ScreenInt
     }
 
     private void initTextFieldLimiter() {
-        InputTextUtil.addTextLimiter(txtField05_Branch, 30);
-        InputTextUtil.addTextLimiter(txtField06_Branch, 10);
-        InputTextUtil.addTextLimiter(txtField12_Branch, 30);
-        InputTextUtil.addTextLimiter(txtField13_Branch, 15);
+        CustomCommonUtil.addTextLimiter(txtField05_Branch, 30);
+        CustomCommonUtil.addTextLimiter(txtField06_Branch, 10);
+        CustomCommonUtil.addTextLimiter(txtField12_Branch, 30);
+        CustomCommonUtil.addTextLimiter(txtField13_Branch, 15);
     }
 
     private void initTextFieldPattern() {
         Pattern patt;
         patt = Pattern.compile("[0-9-,]*");
-        txtField12_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sTelNoxxx
-
-        txtField13_Branch.setTextFormatter(new InputTextFormatterUtil(patt)); //sFaxNoxxx
+        txtField12_Branch.setTextFormatter(new TextFormatterUtil(patt)); //sTelNoxxx
+        txtField13_Branch.setTextFormatter(new TextFormatterUtil(patt)); //sFaxNoxxx
     }
 
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01_Branch, txtField02_Branch, txtField04_Branch, txtField05_Branch, txtField06_Branch, txtField07_Branch, txtField08_Branch,
                 txtField09_Branch, txtField10_Branch, txtField11_Branch, txtField12_Branch, txtField13_Branch);
-        loTxtField.forEach(tf -> InputTextUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextFieldFocus() {
@@ -477,9 +476,9 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/BankEntry.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/Bank.fxml"));
 
-            BankEntryController loControl = new BankEntryController();
+            BankController loControl = new BankController();
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
 
