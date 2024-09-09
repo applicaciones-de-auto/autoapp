@@ -6,12 +6,14 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -49,13 +52,14 @@ public class VSPAddReservationInquiriesController implements Initializable {
     private String pxeModuleName = "VSP Add Reservation Inquirers";
     private ObservableList<VSPReservationInquirers> reserveData = FXCollections.observableArrayList();
     ObservableList<String> cFilter = FXCollections.observableArrayList("RECEIPT NO", "RECEIPT DATE", "CUSTOMER NAME");
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private VehicleSalesProposal oTransReserve;
     @FXML
-    private Button btnAdd, btnClose;
+    private Button btnAdd, btnClose, btnFilter;
     @FXML
     private TableColumn<VSPReservationInquirers, Boolean> tblindex02;
     @FXML
-    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
+    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06;
     @FXML
     private TableView<VSPReservationInquirers> tblViewReservation;
     @FXML
@@ -68,6 +72,8 @@ public class VSPAddReservationInquiriesController implements Initializable {
     private TextField txtField03;
     @FXML
     private ComboBox<String> comboBoxFilter;
+    @FXML
+    private HBox hboxPain;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -90,7 +96,6 @@ public class VSPAddReservationInquiriesController implements Initializable {
         initReservationTable();
         loadReservationTable();
         initTextKeyPressed();
-        dateValueProperty();
         initFieldTextProperty();
         initCapitalizationFields();
         initComboFields();
@@ -103,79 +108,62 @@ public class VSPAddReservationInquiriesController implements Initializable {
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void dateValueProperty() {
-        FilteredList<VSPReservationInquirers> filteredTxtFieldReserveDate = new FilteredList<>(reserveData);
-
-        datePicker02.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                tblViewReservation.setItems(filteredTxtFieldReserveDate);
-                return;
-            }
-
-            ObservableList<VSPReservationInquirers> filteredDate = filteredTxtFieldReserveDate.stream()
-                    .filter(reserveData -> {
-                        LocalDate reserveDate = LocalDate.parse(reserveData.getTblindex03_reservation());
-                        return newValue.equals(reserveDate);
-                    })
-                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
-
-            tblViewReservation.setItems(filteredDate);
-
-            if (filteredDate.isEmpty()) {
-                ShowMessageFX.Information(null, "ModuleName", "No record found!");
-            }
-        });
-    }
-
     private void initFieldTextProperty() {
-        txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    loadReservationTable();
-                    tblViewReservation.setItems(reserveData);
-                    tblViewReservation.refresh();
+        txtField01.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            loadReservationTable();
+                            tblViewReservation.setItems(reserveData);
+                            tblViewReservation.refresh();
+                        }
+                    }
                 }
-            }
-        });
-        txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    loadReservationTable();
-                    tblViewReservation.setItems(reserveData);
-                    tblViewReservation.refresh();
+                );
+        txtField03.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            loadReservationTable();
+                            tblViewReservation.setItems(reserveData);
+                            tblViewReservation.refresh();
+                        }
+                    }
                 }
-            }
-        });
+                );
     }
 
     private void initButtonClick() {
-        List<Button> buttons = Arrays.asList(btnClose, btnAdd);
+        List<Button> buttons = Arrays.asList(btnClose, btnAdd, btnFilter);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnAdd":
                 ObservableList<VSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove?")) {
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                     for (VSPReservationInquirers item : tblViewReservation.getItems()) {
                         if (item.getSelect().isSelected()) {
                             selectedItems.add(item);
                         }
                     }
-                    int addCount = 0;
-                    for (VSPReservationInquirers item : selectedItems) {
-                        String lsRecptNo = item.getTblindex02_reservation();
-                        oTransReserve.addToVSPReservation(lsRecptNo);
-                        addCount++;
-                    }
-                    if (addCount >= 1) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Added reservation Successfully");
-                        selectAll.setSelected(false);
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Failed to add reservation.");
+                    if (selectedItems.isEmpty()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "No selected Items");
                         return;
+                    }
+                    for (VSPReservationInquirers item : selectedItems) {
+                        String lsTransNo = item.getTblindex05_reservation();
+                        String lsTransID = item.getTblindex07_reservation();
+                        loJSON = oTransReserve.addToVSPReservation(lsTransNo, lsTransID);
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            return;
+                        } else {
+                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        }
                     }
                 }
                 loadReservationTable();
@@ -183,6 +171,42 @@ public class VSPAddReservationInquiriesController implements Initializable {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
+            case "btnFilter":
+                LocalDate selectedDate = datePicker02.getValue();
+
+                // Filter the data based on the selected date
+                ObservableList<VSPReservationInquirers> filteredData = FXCollections.observableArrayList();
+
+                if (selectedDate == null) {
+                    // If no date is selected, reset the table to show all data
+                    tblViewReservation.setItems(FXCollections.observableArrayList(reserveData));
+                } else {
+                    // Filter data
+                    for (VSPReservationInquirers reserveDataItem : reserveData) {
+                        try {
+                            // Parse the reservation date from the model
+                            LocalDate reservationDate = LocalDate.parse(reserveDataItem.getTblindex03_reservation(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                            // Check if the reservation date matches the selected date
+                            if (reservationDate.isEqual(selectedDate)) {
+                                filteredData.add(reserveDataItem);
+                            }
+                        } catch (DateTimeParseException e) {
+                            // Handle parsing exceptions if necessary
+                            System.err.println("Error parsing reservation date: " + e.getMessage());
+                        }
+                    }
+
+                    // Set the filtered items in the table view
+                    tblViewReservation.setItems(filteredData);
+
+                    // Show a message if no records were found
+                    if (filteredData.isEmpty()) {
+                        ShowMessageFX.Information(null, "ModuleName", "No record found!");
+                    }
+                }
+                break;
+
             default:
                 ShowMessageFX.Information(null, pxeModuleName, "Please inform admin for the unregistered " + lsButton + "button.");
                 break;
@@ -193,18 +217,33 @@ public class VSPAddReservationInquiriesController implements Initializable {
         JSONObject loJSON = new JSONObject();
         reserveData.clear();
         String lsDate = "";
+        String lsTransAmount = "";
+        String lsTransNo = "";
+        String lsTransID = "";
         loJSON = oTransReserve.loadOTHReservationList();
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTransReserve.getOTHReservationList().size() - 1; lnCtr++) {
                 if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate() != null) {
                     lsDate = CustomCommonUtil.xsDateShort((Date) oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate());
+
+                }
+                if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTranAmt() != null) {
+                    lsTransAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTranAmt())));
+                }
+                if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransNo() != null) {
+                    lsTransNo = oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransNo();
+                }
+                if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransID() != null) {
+                    lsTransID = oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransID();
                 }
                 reserveData.add(new VSPReservationInquirers(
                         String.valueOf(lnCtr + 1), // ROW
                         String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSINo()),
                         lsDate,
                         String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getCompnyNm()),
-                        ""
+                        lsTransNo,
+                        lsTransAmount,
+                        lsTransID
                 ));
             }
         }
@@ -233,6 +272,8 @@ public class VSPAddReservationInquiriesController implements Initializable {
         tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex02_reservation"));
         tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex03_reservation"));
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex04_reservation"));
+        tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06_reservation"));
+
         tblViewReservation.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewReservation.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -248,26 +289,23 @@ public class VSPAddReservationInquiriesController implements Initializable {
             String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
             txtField01.setVisible(false);
             txtField01.setManaged(false);
-            datePicker02.setVisible(false);
-            datePicker02.setManaged(false);
             txtField03.setVisible(false);
             txtField03.setManaged(false);
+            hboxPain.setVisible(false);
             switch (lsSelectedFilter) {
                 case "RECEIPT NO":
+                    hboxPain.setVisible(false);
                     txtField01.setText("");
                     txtField01.setDisable(false);
                     txtField01.setVisible(true);
                     txtField01.setManaged(true);
-                    datePicker02.setVisible(false);
-                    datePicker02.setManaged(false);
                     txtField03.setVisible(false);
                     txtField03.setManaged(false);
                     tblViewReservation.setItems(reserveData);
                     break;
                 case "RECEIPT DATE":
-                    datePicker02.setValue(LocalDate.now());
-                    datePicker02.setVisible(true);
-                    datePicker02.setManaged(true);
+                    datePicker02.setValue(null);
+                    hboxPain.setVisible(true);
                     txtField01.setVisible(false);
                     txtField01.setManaged(false);
                     txtField03.setVisible(false);
@@ -275,11 +313,10 @@ public class VSPAddReservationInquiriesController implements Initializable {
                     tblViewReservation.setItems(reserveData);
                     break;
                 case "CUSTOMER NAME":
+                    hboxPain.setVisible(false);
                     txtField03.setText("");
                     txtField03.setVisible(true);
                     txtField03.setManaged(true);
-                    datePicker02.setVisible(false);
-                    datePicker02.setManaged(false);
                     txtField01.setVisible(false);
                     txtField01.setManaged(false);
                     tblViewReservation.setItems(reserveData);

@@ -6,7 +6,9 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +28,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -35,15 +39,16 @@ import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
 public class VSPRemoveReservationInquiriesController implements Initializable {
 
     private GRider oApp;
-    private String pxeModuleName = "VSP Remove Reservation Inquirers";
+    private String pxeModuleName = "VSP Remove Inquiry Reservations";
     private ObservableList<VSPReservationInquirers> reserveData = FXCollections.observableArrayList();
     private VehicleSalesProposal oTransReserve;
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     @FXML
     private Button btnRemove, btnClose;
     @FXML
     private TableColumn<VSPReservationInquirers, Boolean> tblindex02;
     @FXML
-    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05;
+    private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06;
     @FXML
     private TableView<VSPReservationInquirers> tblViewReservation;
     @FXML
@@ -69,6 +74,9 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         initButtonClick();
         initReservationTable();
         loadReservationTable();
+        if (oTransReserve.getEditMode() == 1) {
+            tblindex02.setVisible(false);
+        }
     }
 
     private void initButtonClick() {
@@ -78,6 +86,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
 
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnRemove":
                 ObservableList<VSPReservationInquirers> selectedItems = FXCollections.observableArrayList();
@@ -87,22 +96,21 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
                             selectedItems.add(item);
                         }
                     }
-                    int removeCount = 0;
+                    if (selectedItems.isEmpty()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "No selected Items");
+                        return;
+                    }
                     for (VSPReservationInquirers item : selectedItems) {
                         int lnRow = Integer.parseInt(item.getTblindex01_reservation());
-                        oTransReserve.removeVSPReservation(lnRow - 1);
-                        removeCount++;
-                    }
-                    if (removeCount >= 1) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Removed reservation Successfully");
-                        selectAll.setSelected(false);
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Failed to remove reservation.");
-                        return;
+                        loJSON = oTransReserve.removeVSPReservation(lnRow - 1);
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        }
                     }
                 }
                 loadReservationTable();
                 break;
+
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
@@ -115,16 +123,31 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
     private void loadReservationTable() {
         reserveData.clear();
         String lsDate = "";
+        String lsTransAmount = "";
+        String lsTransNo = "";
+        String lsTransID = "";
         for (int lnCtr = 0; lnCtr <= oTransReserve.getVSPReservationList().size() - 1; lnCtr++) {
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate() != null) {
-                lsDate = String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
+                lsDate = CustomCommonUtil.xsDateShort((Date) oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
             }
+            if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTranAmt() != null) {
+                lsTransAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTranAmt())));
+            }
+            if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransNo() != null) {
+                lsTransNo = oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransNo();
+            }
+            if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransID() != null) {
+                lsTransID = oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransID();
+            }
+
             reserveData.add(new VSPReservationInquirers(
                     String.valueOf(lnCtr + 1), // ROW
                     String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSINo()),
                     lsDate,
                     String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getCompnyNm()),
-                    ""
+                    lsTransNo,
+                    lsTransAmount,
+                    lsTransID
             ));
         }
         tblViewReservation.setItems(reserveData);
@@ -152,6 +175,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex02_reservation"));
         tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex03_reservation"));
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex04_reservation"));
+        tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06_reservation"));
         tblViewReservation.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewReservation.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -160,5 +184,4 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         });
 
     }
-
 }

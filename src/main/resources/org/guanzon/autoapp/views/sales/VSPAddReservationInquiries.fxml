@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="328.0" prefWidth="724.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="328.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="317.0" prefWidth="490.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -54,31 +54,40 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
+                                                <HBox fx:id="hboxPain" prefHeight="100.0" prefWidth="200.0" visible="false" GridPane.columnIndex="3">
+                                                    <children>
+                                                        <DatePicker fx:id="datePicker02" prefHeight="24.0" prefWidth="109.0" promptText="mm/dd/yyyy" />
+                                                        <AnchorPane prefHeight="24.0" prefWidth="10.0" />
+                                                        <Button fx:id="btnFilter" mnemonicParsing="false" text="Filter" />
+                                                    </children>
+                                                </HBox>
                                                 <Label text="Search:" />
-                                                <TextField fx:id="txtField01" promptText="Search Receipt No:" GridPane.columnIndex="3" />
-                                                <DatePicker fx:id="datePicker02" promptText="mm/dd/yyyy" visible="false" GridPane.columnIndex="3" />
+                                                <TextField fx:id="txtField01" promptText="Search Receipt No:" visible="false" GridPane.columnIndex="3" />
                                                 <TextField fx:id="txtField03" promptText="Search Customer Name:" visible="false" GridPane.columnIndex="3" />
                                                 <ComboBox fx:id="comboBoxFilter" prefWidth="180.0" GridPane.columnIndex="1" />
+                                    <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" GridPane.columnIndex="4" />
                                             </children>
                                         </GridPane>
                                         <AnchorPane maxHeight="10.0" minHeight="10.0" />
                                         <TableView fx:id="tblViewReservation" prefHeight="200.0" prefWidth="200.0">
                                             <columns>
                                                 <TableColumn fx:id="tblindex01" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="Row" />
-                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false">
+                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false">
                                                     <graphic>
                                                         <CheckBox fx:id="selectAll" mnemonicParsing="false" />
                                                     </graphic>
                                                 </TableColumn>
-                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" resizable="false" sortable="false" text="Receipt No." />
-                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Receipt Date" />
+                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" resizable="false" sortable="false" text="Receipt No." />
+                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Receipt Date" />
                                                 <TableColumn fx:id="tblindex05" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
+                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction Amount" />
                                             </columns>
                                         </TableView>
                                     </children>

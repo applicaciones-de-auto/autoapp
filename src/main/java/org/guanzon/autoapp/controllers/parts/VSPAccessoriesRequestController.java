@@ -125,7 +125,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                         return;
                     }
                 }
-                loJSON = oTransVSPRequest.searchTransaction("", false);
+                loJSON = oTransVSPRequest.searchTransaction("", false, true);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadAccessoriesFields();
                     loadAccessoriesTable();

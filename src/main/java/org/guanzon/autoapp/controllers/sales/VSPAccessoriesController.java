@@ -52,10 +52,16 @@ public class VSPAccessoriesController implements Initializable {
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
     @FXML
     private Button btnAdd, btnEdit, btnClose;
+    private TextField txtField01;
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField05, txtField06, txtField07;
-    @FXML
+    private TextField txtField02, txtField03, txtField05, txtField06, txtField07;
     private ComboBox<String> comboBox04;
+    @FXML
+    private ComboBox<?> comboBox03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField08;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -210,8 +216,8 @@ public class VSPAccessoriesController implements Initializable {
                         }
                     }
                     oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setQuantity(lnQnty);
-                    double lnDscAmount = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
-                    double lnNetPrtAmt = lnDscAmount * lnQnty;
+                    double lnDscAmount = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()));
+                    double lnNetPrtAmt = (lnDscAmount * lnQnty) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
                     oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrtAmt));
                     txtField07.setText(poGetDecimalFormat.format(lnNetPrtAmt));
                     break;
@@ -239,7 +245,7 @@ public class VSPAccessoriesController implements Initializable {
         try {
             BigDecimal partAmt = new BigDecimal(lsValue);
             BigDecimal partDsc = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount();
-
+            int partsQuantity = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity();
             if (partDsc.compareTo(partAmt) > 0) {
                 showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsAmount();
@@ -249,7 +255,7 @@ public class VSPAccessoriesController implements Initializable {
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(partAmt);
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(partAmt);
 
-            double lnNetPrice = calculateNetPrice(partAmt.doubleValue(), partAmt.doubleValue());
+            double lnNetPrice = calculateNetPrice(partAmt.doubleValue(), partsQuantity, partAmt.doubleValue());
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
 
@@ -267,7 +273,7 @@ public class VSPAccessoriesController implements Initializable {
         try {
             BigDecimal accessoriesAmt = new BigDecimal(lsValue);
             BigDecimal accessoriesDsc = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount();
-
+            int partsQuantity = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity();
             if (accessoriesDsc.compareTo(accessoriesAmt) > 0) {
                 showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsAmount();
@@ -276,7 +282,7 @@ public class VSPAccessoriesController implements Initializable {
             }
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setSelPrice(accessoriesAmt);
 
-            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(),
+            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(), partsQuantity,
                     oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().doubleValue());
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
@@ -294,7 +300,8 @@ public class VSPAccessoriesController implements Initializable {
         try {
             BigDecimal accessoriesDsc = new BigDecimal(lsValue);
             BigDecimal accessoriesAmt = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice();
-
+            BigDecimal accessories = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice();
+            int quantity = oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity();
             if (accessoriesDsc.compareTo(accessoriesAmt) > 0) {
                 showWarning("Discount cannot be greater than the accessories amount.");
                 resetPartsDiscount();
@@ -303,7 +310,7 @@ public class VSPAccessoriesController implements Initializable {
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(accessoriesDsc);
 
-            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(), accessoriesDsc.doubleValue());
+            double lnNetPrice = calculateNetPrice(accessoriesAmt.doubleValue(), quantity, accessoriesDsc.doubleValue());
 
             oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
 
@@ -315,8 +322,8 @@ public class VSPAccessoriesController implements Initializable {
         }
     }
 
-    private double calculateNetPrice(double partAmt, double partDscount) {
-        return partAmt - partDscount;
+    private double calculateNetPrice(double partAmt, int quantity, double partDscount) {
+        return (partAmt * quantity) - partDscount;
     }
 
     private void showWarning(String message) {
@@ -330,7 +337,7 @@ public class VSPAccessoriesController implements Initializable {
             resetPartsDiscount();
         }
 
-        double lnNetPrice = calculateNetPrice(0.00,
+        double lnNetPrice = calculateNetPrice(0.00, oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity(),
                 oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().doubleValue());
 
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
@@ -340,8 +347,7 @@ public class VSPAccessoriesController implements Initializable {
     private void resetPartsDiscount() {
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(BigDecimal.ZERO);
         txtField06.setText("0.00");
-
-        double lnNetPrice = calculateNetPrice(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice().doubleValue(),
+        double lnNetPrice = calculateNetPrice(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice().doubleValue(), oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity(),
                 0.00);
 
         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
@@ -352,19 +358,20 @@ public class VSPAccessoriesController implements Initializable {
         comboBox04.setOnAction(event -> {
             if (comboBox04.getSelectionModel().getSelectedIndex() >= 0) {
                 oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setChrgeTyp(String.valueOf(comboBox04.getSelectionModel().getSelectedIndex()));
+                double partsAmnt = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()));
+                int partsQuantity = Integer.parseInt(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getQuantity()));
+                double partsDisc = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));;
+                double lnNetPrice = (partsAmnt * partsQuantity) - partsDisc;
                 switch (comboBox04.getSelectionModel().getSelectedIndex()) {
                     case 0:
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice()))));
                         txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
-                        double lnNetPrice = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
-                        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
-                        txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
+                        txtField07.setText(poGetDecimalFormat.format(lnNetPrice));
                         break;
                     case 1:
                         oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setPartsDscount(new BigDecimal(0.00));
-                        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()))));
-                        double lnNetPrices = Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getSelPrice())) - Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount()));
-                        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrices));
+                        txtField06.setText(poGetDecimalFormat.format(partsDisc));
+                        oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setNtPrtAmt(new BigDecimal(lnNetPrice));
                         txtField07.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getNtPrtAmt()))));
                         break;
                     default:

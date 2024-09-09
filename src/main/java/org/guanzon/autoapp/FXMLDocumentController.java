@@ -78,6 +78,7 @@ import org.guanzon.autoapp.controllers.parameters.VehicleTypeController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseController;
 import org.guanzon.autoapp.controllers.parts.ItemInformationController;
 import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
+import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -648,7 +649,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new VehicleFrameFormatController();
             case "VehicleEngineFormat.fxml":
                 return new VehicleEngineFormatController();
-
+            case psSalesPath + "SalesJobOrder.fxml":
+                return new SalesJobOrderController();
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
 //            case "UnitReceivingForm.fxml":
@@ -757,6 +759,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Vehicle Sales Proposal";
             case "VSPApproval.fxml":
                 return "VSP Approval";
+            case psSalesPath + "SalesJobOrder.fxml":
+                return "Sales Job Order Information";
             /*CASHIERING*/
             case "Invoice.fxml":
                 if (sSalesInvoiceType.isEmpty()) {
@@ -873,7 +877,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuSalesJobOrderClick(ActionEvent event) {
         sJobOrderType = "Sales Job Order";
-        String sformname = "JobOrder.fxml";
+        String sformname = psSalesPath + "SalesJobOrder.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
