@@ -792,11 +792,13 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                         return;
                     }
                 }
+
                 if (pbisVhclSales) {
                     loJson = oTransVchInfo.searchRecord("", false, true);
                 } else {
                     loJson = oTransVchInfo.searchRecord("", false, false);
                 }
+
                 if ("success".equals((String) loJson.get("result"))) {
                     loadVehicleInformation();
 //                    loadOwnerHistory();
@@ -804,7 +806,7 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                     pnEditMode = oTransVchInfo.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Information Confirmation", (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle Information", (String) loJson.get("message"));
                 }
                 break;
             case "btnClose":
@@ -844,7 +846,7 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                 if ("success".equals((String) loJson.get("result"))) {
                     loadAvailableVehicle();
                 } else {
-                    ShowMessageFX.Warning(null, "Search Available Vehicle Confirmation", (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, "Search Available Vehicle", (String) loJson.get("message"));
                 }
                 break;
             case "btnVhclMnl":
@@ -935,8 +937,15 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         txtField16.setText(oTransVchInfo.getModel().getModel().getLocation());
 //        txtField19.setText(oTransVchInfo.getModel().getModel().);
 //        txtField20.setText(oTransVchInfo.getModel().getModel().getDlvryIns());
-//        txtField21.setText(oTransVchInfo.getModel().getModel().getDrNumber());
-//        txtField22.setText(oTransVchInfo.getModel().getModel().get);
+        String lsDRNo = "";
+        if (oTransVchInfo.getModel().getModel().getUdrNo() != null && !String.valueOf(oTransVchInfo.getModel().getModel().getUdrNo()).isEmpty()) {
+            lsDRNo = String.valueOf(oTransVchInfo.getModel().getModel().getUdrNo());
+
+        }
+        txtField21.setText(lsDRNo);
+        if (oTransVchInfo.getModel().getModel().getUdrDate() != null && !String.valueOf(oTransVchInfo.getModel().getModel().getUdrDate()).isEmpty()) {
+            txtField22.setText(CustomCommonUtil.xsDateShort((Date) oTransVchInfo.getModel().getModel().getUdrDate()));
+        }
         txtField23.setText(oTransVchInfo.getModel().getModel().getSoldTo());
         txtField24.setText(oTransVchInfo.getModel().getModel().getDealerNm());
         txtField25.setText(oTransVchInfo.getModel().getModel().getPlaceReg());
@@ -952,10 +961,6 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
             datePicker26.setValue(CustomCommonUtil.strToDate(oTransVchInfo.getMaster(22).toString()));
         }
 
-    }
-
-    public static LocalDate dateToLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private void clearFields() {

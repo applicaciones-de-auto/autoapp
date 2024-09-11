@@ -6,15 +6,11 @@ package org.guanzon.autoapp.controllers.sales;
 
 import java.awt.Component;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingNode;
@@ -36,7 +32,6 @@ import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -196,7 +191,7 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("branchName", oApp.getBranchName());
             params.put("branchAddress", oApp.getAddress());
-            params.put("vspNo", getValueReport("vspNo", "sVSPNOxxx"));
+            params.put("vdrNo", getValueReport("vspNo", "sVSPNOxxx"));
             params.put("vspDate", getValueDate2Report("vspDate", "dTransact"));
             params.put("model", getValueReport("model", "sVhclDesc"));
             params.put("customerName", getValueReport("customerName", "sBuyCltNm"));
@@ -224,9 +219,9 @@ public class VSPPrintController implements Initializable, ScreenInterface {
             params.put("emailAddress", getValueReport("emailAddress", "sEmailAdd"));
             String lsPlateCSNo = "";
             if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
+                lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo() + " / " + oTransPrint.getMasterModel().getMasterModel().getPlateNo();
+            } else if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
                 lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();
-            } else if (oTransPrint.getMasterModel().getMasterModel().getPlateNo() != null) {
-                lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getPlateNo();
             }
             params.put("csplateNo", lsPlateCSNo);
             params.put("keyNo", getValueReport("keyNo", "sKeyNoxxx"));

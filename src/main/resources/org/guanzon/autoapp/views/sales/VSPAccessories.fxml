@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="344.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.controllers.sales.VSPAccessoriesController">
+<AnchorPane id="AnchorPane" prefHeight="344.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -75,14 +75,16 @@
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField05" alignment="CENTER_RIGHT" maxWidth="50.0" promptText="0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                        <ComboBox fx:id="comboBox03" prefHeight="24.0" prefWidth="151.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                                        <ComboBox fx:id="comboBox03" maxWidth="150.0" prefHeight="24.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                                         <Label id="LabelDesc" text="Amount" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
                                         <TextField fx:id="txtField04" alignment="CENTER_RIGHT" maxWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtField05" alignment="CENTER_RIGHT" maxWidth="50.0" promptText="0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                        <TextField fx:id="txtField07" alignment="CENTER_RIGHT" maxWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                        <TextField fx:id="txtField06" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                         <Label id="LabelDesc" text="Quantity" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
@@ -98,7 +100,6 @@
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField07" alignment="CENTER_RIGHT" maxWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                         <Label id="LabelDesc" text="Net Price" GridPane.columnIndex="1" GridPane.rowIndex="8">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
@@ -111,7 +112,6 @@
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField06" alignment="CENTER_RIGHT" maxWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

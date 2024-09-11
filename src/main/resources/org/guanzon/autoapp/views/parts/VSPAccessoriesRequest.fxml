@@ -203,12 +203,12 @@
                                                                                 </Label>
                                                                                 <TableView fx:id="tblViewAccessories" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#tblAccessories_Click" prefHeight="170.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                                                                     <columns>
-                                                                                        <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" sortable="false" text="Row" />
-                                                                                        <TableColumn fx:id="tblindex02" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" text="(Sales) Accessories Description" />
-                                                                                        <TableColumn fx:id="tblindex03" maxWidth="170.0" minWidth="100.0" prefWidth="150.0" text="Accessories Number" />
-                                                                                        <TableColumn fx:id="tblindex04" maxWidth="250.0" minWidth="100.0" prefWidth="200.0" text="Accessories Description" />
-                                                                                        <TableColumn fx:id="tblindex05" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Qty" />
-                                                                                        <TableColumn fx:id="tblindex06" maxWidth="150.0" minWidth="50.0" prefWidth="50.0" text="FOC" />
+                                                                                        <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                        <TableColumn fx:id="tblindex02" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="(Sales) Accessories Description" />
+                                                                                        <TableColumn fx:id="tblindex03" maxWidth="170.0" minWidth="100.0" prefWidth="150.0" resizable="false" sortable="false" text="Accessories Number" />
+                                                                                        <TableColumn fx:id="tblindex04" maxWidth="250.0" minWidth="100.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Description" />
+                                                                                        <TableColumn fx:id="tblindex05" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="Qty" />
+                                                                                        <TableColumn fx:id="tblindex06" maxWidth="150.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
                                                                                     </columns>
                                                                                 </TableView>
                                                                             </children>

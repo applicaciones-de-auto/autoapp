@@ -60,10 +60,10 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.FXMLDocumentController;
 import org.guanzon.autoapp.models.sales.VSPLabor;
 import org.guanzon.autoapp.models.sales.VSPPart;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
@@ -411,21 +411,40 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField79.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAmtPaid()))));
         txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
-//        txtField81.setText(oTransVSP.getMasterModel().getMasterModel()());
-//        lblDRNo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
-//        lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
-//        lblSINo.setText(oTransVSP.getMasterModel().getMasterModel().getNetMont());
+        if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null) {
+            txtField81.setText(oTransVSP.getMasterModel().getMasterModel().getJONo());
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null) {
+            lblDRNo.setText(oTransVSP.getMasterModel().getMasterModel().getUDRNo());
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
+            lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
+        }
+        if (oTransVSP.getMasterModel().getMasterModel().getSINo() != null) {
+            lblSINo.setText(oTransVSP.getMasterModel().getMasterModel().getSINo());
+        }
         lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
-        if (oTransVSP.getMasterModel().getMasterModel().getTranStat().equals("0")) {
-            lblVSPStatus.setText("Active");
-        } else {
-            lblVSPStatus.setText("Cancelled");
+        switch (oTransVSP.getMasterModel().getMasterModel().getTranStat()) {
+            case TransactionStatus.STATE_OPEN:
+                lblVSPStatus.setText("Active");
+                break;
+            case TransactionStatus.STATE_CLOSED:
+                lblVSPStatus.setText("Approved");
+                break;
+            case TransactionStatus.STATE_CANCELLED:
+                lblVSPStatus.setText("Cancelled");
+                break;
+            case TransactionStatus.STATE_POSTED:
+                lblVSPStatus.setText("Posted");
+                break;
+            default:
+                lblVSPStatus.setText("");
+                break;
         }
 //            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
 //                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
 //            }
 //    }
-
 //        else {
 //            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
 //        return false;
@@ -593,6 +612,7 @@ public class VSPController implements Initializable, ScreenInterface {
         String lsGrsAmount = "";
         String lsDiscAmount = "";
         String lsNetAmount = "";
+        String lsJoNoxx = "";
         for (int lnCtr = 0; lnCtr <= oTransVSP.getVSPLaborList().size() - 1; lnCtr++) {
             if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt() != null) {
                 lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt())));
@@ -609,6 +629,9 @@ public class VSPController implements Initializable, ScreenInterface {
             if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getAddtl().equals("1")) {
                 lbAdditional = true;
             }
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo() != null) {
+                lsJoNoxx = oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo();
+            }
             laborData.add(new VSPLabor(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getTransNo()),
@@ -623,12 +646,16 @@ public class VSPController implements Initializable, ScreenInterface {
                     "",
                     "",
                     "",
-                    "",
+                    lsJoNoxx,
                     lbAdditional,
                     lbChargeType
             ));
             lbAdditional = false;
             lbChargeType = false;
+            lsGrsAmount = "";
+            lsDiscAmount = "";
+            lsNetAmount = "";
+            lsJoNoxx = "";
         }
         tblViewLabor.setItems(laborData);
     }
@@ -648,7 +675,7 @@ public class VSPController implements Initializable, ScreenInterface {
         tblindex06_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
         tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
         tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("addOrNot"));
-        tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex10_labor"));
 
         tblViewLabor.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewLabor.lookup("TableHeaderRow");
@@ -732,11 +759,11 @@ public class VSPController implements Initializable, ScreenInterface {
         String lsQuantity = "";
         String lsDiscAmount = "";
         String lsTotalAmount = "";
-
         String lsNetAmount = "";
-
+        String lsPartsDesc = "";
+        String lsBarCode = "";
+        String lsJoNoxx = "";
         for (int lnCtr = 0; lnCtr <= oTransVSP.getVSPPartsList().size() - 1; lnCtr++) {
-
             if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
                 lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
             }
@@ -757,6 +784,15 @@ public class VSPController implements Initializable, ScreenInterface {
             if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
                 lbChargeType = true;
             }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
+                lsPartsDesc = String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
+            }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
+                lsBarCode = String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
+            }
+            if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
+                lsJoNoxx = oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getDSNo();
+            }
             accessoriesData.add(new VSPPart(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
@@ -766,14 +802,22 @@ public class VSPController implements Initializable, ScreenInterface {
                     lsGrsAmount,
                     lsDiscAmount,
                     lsNetAmount,
+                    lsBarCode,
                     "",
-                    "",
-                    "",
-                    "",
+                    lsJoNoxx,
+                    lsPartsDesc,
                     lsTotalAmount,
                     lbChargeType
             ));
             lbChargeType = false;
+            lsGrsAmount = "";
+            lsQuantity = "";
+            lsDiscAmount = "";
+            lsTotalAmount = "";
+            lsNetAmount = "";
+            lsPartsDesc = "";
+            lsBarCode = "";
+            lsJoNoxx = "";
         }
         tblViewAccessories.setItems(accessoriesData);
     }
@@ -785,16 +829,16 @@ public class VSPController implements Initializable, ScreenInterface {
             tblViewAccessories.setEditable(false);
         }
         tblindex01_part.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part"));
-        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("tblindex03_part"));
+        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part"));
         tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
         tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
-        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
-        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
-        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
-        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>(""));
-        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));
-        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
+        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));
+        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
+        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
+        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
+        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>("tblindex11_part"));
 
         tblViewAccessories.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
@@ -960,8 +1004,6 @@ public class VSPController implements Initializable, ScreenInterface {
                         txtField32.setText(lsBrBank);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField32.setText("");
-                        txtField32.requestFocus();
                         return;
                     }
                     initFields(pnEditMode);
@@ -985,8 +1027,6 @@ public class VSPController implements Initializable, ScreenInterface {
                         txtField62.setText(lsBrTpl);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField62.setText("");
-                        txtField62.requestFocus();
                         return;
                     }
                     initFields(pnEditMode);
@@ -998,8 +1038,6 @@ public class VSPController implements Initializable, ScreenInterface {
                         txtField65.setText(lsBrCom);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField65.setText("");
-                        txtField65.requestFocus();
                         return;
                     }
                     initFields(pnEditMode);
@@ -1983,24 +2021,24 @@ public class VSPController implements Initializable, ScreenInterface {
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Sales Proposal Information Saving....", "Are you sure, do you want to save?")) {
-                    if (setSelection()) {
-                        loJSON = oTransVSP.saveTransaction();
-                        if ("success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Information(null, "Vehicle Sales Proposal Information", (String) loJSON.get("message"));
-                            loJSON = oTransVSP.openTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
-                            if ("success".equals((String) loJSON.get("result"))) {
-                                loadVSPFields();
-                                loadLaborTable();
-                                loadAccessoriesTable();
-                                pnEditMode = oTransVSP.getEditMode();
-                                initFields(pnEditMode);
-                            }
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        }
+                    if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select Inquiry Source.");
+                        return;
                     }
-                } else {
-                    return;
+                    loJSON = oTransVSP.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Vehicle Sales Proposal Information", (String) loJSON.get("message"));
+                        loJSON = oTransVSP.openTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadVSPFields();
+                            loadLaborTable();
+                            loadAccessoriesTable();
+                            pnEditMode = oTransVSP.getEditMode();
+                            initFields(pnEditMode);
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                 }
                 break;
             case "btnCancel":
@@ -2027,7 +2065,7 @@ public class VSPController implements Initializable, ScreenInterface {
                     pnEditMode = oTransVSP.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Sales Proposal Information Confirmation", (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle Sales Proposal Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnAdditionalLabor":
@@ -2110,10 +2148,6 @@ public class VSPController implements Initializable, ScreenInterface {
                 break;
         }
         initFields(pnEditMode);
-    }
-
-    private boolean setSelection() {
-        return true;
     }
 
     private void loadAddReservationWindowDialog() throws IOException {

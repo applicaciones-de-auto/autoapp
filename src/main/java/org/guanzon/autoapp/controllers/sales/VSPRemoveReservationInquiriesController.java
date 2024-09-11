@@ -76,6 +76,8 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         loadReservationTable();
         if (oTransReserve.getEditMode() == 1) {
             tblindex02.setVisible(false);
+            btnRemove.setVisible(false);
+            btnRemove.setManaged(false);
         }
     }
 
