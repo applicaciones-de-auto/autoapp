@@ -414,9 +414,11 @@ public class VSPController implements Initializable, ScreenInterface {
         if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null) {
             txtField81.setText(oTransVSP.getMasterModel().getMasterModel().getJONo());
         }
+        String lsVDRNo = "";
         if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null) {
-            lblDRNo.setText(oTransVSP.getMasterModel().getMasterModel().getUDRNo());
+            lsVDRNo = oTransVSP.getMasterModel().getMasterModel().getUDRNo();
         }
+        lblDRNo.setText(lsVDRNo);
         if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
             lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
         }

@@ -45,7 +45,7 @@ public class VDRPrintController implements Initializable, ScreenInterface {
 
     private VehicleDeliveryReceipt oTransPrint;
     private GRider oApp;
-    private JasperPrint poJasperPrint; //Jasper Libraries
+    private JasperPrint poJasperPrint;
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Vehicle Delivery Receipt Print";
     private boolean running = false;
@@ -152,14 +152,6 @@ public class VDRPrintController implements Initializable, ScreenInterface {
     private String getValueDateReport(String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getMaster(fsCol) != null) {
-            fsValue = CustomCommonUtil.xsDateWMonthName((Date) oTransPrint.getMaster(fsCol));
-        }
-        return fsValue;
-    }
-
-    private String getValueDate2Report(String fsValue, String fsCol) {
-        fsValue = "";
-        if (oTransPrint.getMaster(fsCol) != null) {
             fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
         }
         return fsValue;
@@ -172,7 +164,7 @@ public class VDRPrintController implements Initializable, ScreenInterface {
             params.put("branchName", oApp.getBranchName());
             params.put("branchAddress", oApp.getAddress());
             params.put("vdrNo", getValueReport("vdrNo", "sReferNox"));
-            params.put("vdrDate", getValueDate2Report("vdrDate", "dTransact"));
+            params.put("vdrDate", getValueDateReport("vdrDate", "dTransact"));
             if (oTransPrint.getMasterModel().getMasterModel().getPayMode() != null) {
                 String lsPaymentMethod = "";
                 switch (oTransPrint.getMasterModel().getMasterModel().getPayMode()) {
@@ -214,7 +206,7 @@ public class VDRPrintController implements Initializable, ScreenInterface {
             params.put("csPlateNo", lsPlateCSNo);
             params.put("frameNo", getValueReport("frameNo", "sFrameNox"));
             params.put("engineNo", getValueReport("engineNo", "sEngineNo"));
-            params.put("keyNo", getValueReport("keyNo", "sKeyNoxxx"));
+            params.put("color", getValueReport("color", "sColorDsc"));
             String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vdr.jasper";
             String printFileName = null;
             try {

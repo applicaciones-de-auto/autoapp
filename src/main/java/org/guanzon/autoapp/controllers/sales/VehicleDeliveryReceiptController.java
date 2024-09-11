@@ -368,7 +368,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         txtField09.setText(oTransVDR.getMasterModel().getMasterModel().getPlateNo());
         txtField10.setText(oTransVDR.getMasterModel().getMasterModel().getEngineNo());
         txtField11.setText(oTransVDR.getMasterModel().getMasterModel().getFrameNo());
-        textArea12.setText(oTransVDR.getMasterModel().getMasterModel().getVhclDesc());
+        textArea12.setText(oTransVDR.getMasterModel().getMasterModel().getVhclFDsc());
         textArea13.setText(oTransVDR.getMasterModel().getMasterModel().getRemarks());
         textArea14.setText("");
         lblVSINo.setText("");
