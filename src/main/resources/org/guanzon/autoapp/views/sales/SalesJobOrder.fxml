@@ -219,7 +219,7 @@
                                                                                                                                 <Label id="LabelDesc" text="Sales Job Order Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                                                                                 <TextField fx:id="txtField01" disable="true" editable="false" maxWidth="200.0" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                                                 <TextField fx:id="txtField02" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                                                                                <DatePicker fx:id="datePicker03" disable="true" prefHeight="24.0" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                                                <DatePicker fx:id="datePicker03" disable="true" editable="false" prefHeight="24.0" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                                                                                 <Label id="LabelDesc" text="Labor Gross Amount:" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                                                                                                     <font>
                                                                                                                                         <Font name="Arial Bold" size="11.5" />
@@ -429,7 +429,7 @@
                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                                                             </rowConstraints>
                                                                                                             <children>
-                                                                                                                <TextArea fx:id="textArea09" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+                                                                                                                <TextArea fx:id="textArea15" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                                                                                             </children>
                                                                                                         </GridPane>
                                                                                                     </children>
@@ -458,15 +458,6 @@
                                                                                         <RowConstraints minHeight="-Infinity" prefHeight="100.0" vgrow="ALWAYS" />
                                                                                     </rowConstraints>
                                                                                     <children>
-                                                                                        <TableView fx:id="tblViewLabor" prefHeight="175.0" prefWidth="1077.0" GridPane.rowIndex="1">
-                                                                                            <columns>
-                                                                                                <TableColumn fx:id="tblindex01_labor" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
-                                                                                                <TableColumn fx:id="tblindex02_labor" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Labor ID" />
-                                                                                                <TableColumn fx:id="tblindex03_labor" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Labor Description" />
-                                                                                                <TableColumn fx:id="tblindex04_labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
-                                                                                                <TableColumn fx:id="tblindex05_Labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
-                                                                                            </columns>
-                                                                                        </TableView>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                                                                             <children>
                                                                                                 <Button fx:id="btnAddLabor" mnemonicParsing="false" text="Add Labor">
@@ -482,6 +473,18 @@
                                                                                                 </Button>
                                                                                             </children>
                                                                                         </HBox>
+                                                                                        <TableView fx:id="tblViewLabor" prefHeight="175.0" prefWidth="1077.0" GridPane.rowIndex="1">
+                                                                                            <columns>
+                                                                                                <TableColumn fx:id="tblindex01_labor" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                <TableColumn fx:id="tblindex02_labor" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Labor ID" />
+                                                                                                <TableColumn fx:id="tblindex03_labor" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Labor Description" />
+                                                                                                <TableColumn fx:id="tblindex04_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
+                                                                                                <TableColumn fx:id="tblindex05_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount" />
+                                                                                                <TableColumn fx:id="tblindex06_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
+                                                                                                <TableColumn fx:id="tblindex07_labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
+                                                                                                <TableColumn fx:id="tblindex08_labor" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
+                                                                                            </columns>
+                                                                                        </TableView>
                                                                                     </children>
                                                                                 </GridPane>
                                                                             </children>
@@ -524,14 +527,16 @@
                                                                                         </HBox>
                                                                                         <TableView fx:id="tblViewAccessories" prefHeight="240.0" GridPane.rowIndex="1">
                                                                                             <columns>
-                                                                                                <TableColumn fx:id="tblindex01_accer" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
-                                                                                                <TableColumn fx:id="tblindex02_accer" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Number" />
-                                                                                                <TableColumn fx:id="tblindex03_accer" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Accesssories Description" />
-                                                                                                <TableColumn fx:id="tblindex04_accer" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
-                                                                                                <TableColumn fx:id="tblindex05_accer" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Quantity" />
-                                                                                                <TableColumn fx:id="tblindex06_accer" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Installed Quantity" />
-                                                                                                <TableColumn fx:id="tblindex07_accer" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
-                                                                                                <TableColumn fx:id="tblindex08_accer" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Amount" />
+                                                                                                <TableColumn fx:id="tblindex01_part" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                                                <TableColumn fx:id="tblindex02_part" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Number" />
+                                                                                                <TableColumn fx:id="tblindex03_part" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Accessories Description" />
+                                                                                                <TableColumn fx:id="tblindex04_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
+                                                                                                <TableColumn fx:id="tblindex05_part" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Quantity" />
+                                                                                                <TableColumn fx:id="tblindex06_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total" />
+                                                                                                <TableColumn fx:id="tblindex07_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount" />
+                                                                                                <TableColumn fx:id="tblindex08_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
+                                                                                                <TableColumn fx:id="tblindex09_part" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
+                                                                                                <TableColumn fx:id="tblindex10_part" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
                                                                                             </columns>
                                                                                         </TableView>
                                                                                     </children>
