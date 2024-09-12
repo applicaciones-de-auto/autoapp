@@ -64,6 +64,7 @@ import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
+import org.guanzon.autoapp.FXMLDocumentController;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
@@ -84,7 +85,7 @@ public class VSPController implements Initializable, ScreenInterface {
     private FollowUp oTransFollow;
     private Inquiry oTransInquiry;
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    private final String pxeModuleName = "Vehicle Sales Proposal"; //Form Title
+    private final String pxeModuleName = "Sales Job Order"; //Form Title
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     public int pnEditMode = -1;//Modifying fields
     private int pnCtr = 0;
@@ -130,7 +131,7 @@ public class VSPController implements Initializable, ScreenInterface {
             txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
             txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60, txtField62,
             txtField63, txtField65, txtField68, txtField70, txtField72, txtField73, txtField74, txtField75, txtField76,
-            txtField77, txtField78, txtField79, txtField80, txtField81;
+            txtField77, txtField78, txtField79, txtField80, txtField81, txtField82, txtField83, txtField84, txtField85;
     @FXML
     private DatePicker datePicker09;
     @FXML
@@ -155,6 +156,8 @@ public class VSPController implements Initializable, ScreenInterface {
     private TableColumn<Part, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part,
             tblindex05_part, tblindex06_part, tblindex07_part, tblindex08_part, tblindex09_part, tblindex10_part,
             tblindex11_part;
+
+    private FXMLDocumentController fdController = new FXMLDocumentController();
 
     private Stage getStage() {
         return (Stage) btnClose.getScene().getWindow();
@@ -222,7 +225,7 @@ public class VSPController implements Initializable, ScreenInterface {
     private void intiPatternFields() {
         List<TextField> loTxtField = Arrays.asList(txtField30, txtField31, txtField33, txtField35, txtField39, txtField42,
                 txtField45, txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
-                txtField54, txtField55, txtField59, txtField60, txtField63, txtField68, txtField70, txtField74);
+                txtField54, txtField55, txtField59, txtField60, txtField63, txtField68, txtField70, txtField74, txtField82, txtField83);
         Pattern decOnly = Pattern.compile("[0-9,.]*");
         Pattern numOnly = Pattern.compile("[0-9]*");
         loTxtField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(decOnly)));
@@ -411,9 +414,16 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField79.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAmtPaid()))));
         txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
+        String lsJobNO = "";
         if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null) {
-            txtField81.setText(oTransVSP.getMasterModel().getMasterModel().getJONo());
+            lsJobNO = oTransVSP.getMasterModel().getMasterModel().getJONo();
         }
+        txtField81.setText(lsJobNO);
+        txtField82.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDealrRte()))));
+        txtField83.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDealrAmt()))));
+        txtField84.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSlsInRte()))));
+        txtField85.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSlsInAmt()))));
+
         String lsVDRNo = "";
         if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null) {
             lsVDRNo = oTransVSP.getMasterModel().getMasterModel().getUDRNo();
@@ -878,7 +888,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField56, txtField58, txtField59, txtField60, txtField62,
                 txtField63, txtField65, txtField68, txtField70, txtField74, txtField75,
-                txtField81);
+                txtField81, txtField82, txtField83);
         //Detail & AddOns TextField Tab);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -1063,7 +1073,7 @@ public class VSPController implements Initializable, ScreenInterface {
         List<TextField> loTxtField = Arrays.asList(txtField24, txtField30, txtField31, txtField45, txtField46, txtField47, txtField48,
                 txtField49, txtField50, txtField51, txtField52, txtField53, txtField54,
                 txtField56, txtField58, txtField59, txtField60, txtField63, txtField68, txtField70,
-                txtField74, txtField75
+                txtField74, txtField75, txtField82, txtField83
         );
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
         List<TextField> loTxtFieldFinacne = Arrays.asList(txtField33, txtField34, txtField35, txtField39, txtField42);
@@ -1445,7 +1455,42 @@ public class VSPController implements Initializable, ScreenInterface {
                 case 75://Description
                     oTransVSP.getMasterModel().getMasterModel().setOthrDesc(lsValue);
                     break;
-
+                case 82: // DownPayment
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    double diIncent = Double.parseDouble(lsValue.replace(",", ""));
+                    if (lnUnitPrice >= 0.00) {
+                        if (diIncent > lnUnitPrice) {
+                            ShowMessageFX.Warning(null, "Warning", "Dealer Incentives Rate cannot be greater than Vehicle Price");
+                            lsValue = "0.00";
+                        }
+                    }
+                    oTransVSP.getMasterModel().getMasterModel().setDealrRte((Double.valueOf(lsValue.replace(",", ""))));
+                    if (!loadVSPFields()) {
+                        txtField82.setText("0.00");
+                        oTransVSP.getMasterModel().getMasterModel().setDealrRte(Double.valueOf(txtField31.getText().replace(",", "")));
+                    }
+                    txtField82.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDealrRte()))));
+                    break;
+                case 83: // DownPayment
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    double siIncent = Double.parseDouble(lsValue.replace(",", ""));
+                    if (lnUnitPrice >= 0.00) {
+                        if (siIncent > lnUnitPrice) {
+                            ShowMessageFX.Warning(null, "Warning", "Sales Executive Incentives Rate cannot be greater than Vehicle Price");
+                            lsValue = "0.00";
+                        }
+                    }
+                    oTransVSP.getMasterModel().getMasterModel().setSlsInRte((Double.valueOf(lsValue.replace(",", ""))));
+                    if (!loadVSPFields()) {
+                        txtField83.setText("0.00");
+                        oTransVSP.getMasterModel().getMasterModel().setSlsInRte(Double.valueOf(txtField31.getText().replace(",", "")));
+                    }
+                    txtField83.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSlsInRte()))));
+                    break;
             }
             loadVSPFields();
         } else {
@@ -1607,22 +1652,22 @@ public class VSPController implements Initializable, ScreenInterface {
         });
         comboBox61.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox61.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSP.getMasterModel().getMasterModel().setTPLStat(String.valueOf(comboBox61.getSelectionModel().getSelectedIndex()));
+                oTransVSP.getMasterModel().getMasterModel().setTPLStat(String.valueOf(comboBox61.getSelectionModel().getSelectedIndex()));
+                if (comboBox61.getSelectionModel().getSelectedIndex() < 0) {
                     oTransVSP.getMasterModel().getMasterModel().setInsTplCd("");
                     oTransVSP.getMasterModel().getMasterModel().setTPLBrIns("");
                     oTransVSP.getMasterModel().getMasterModel().setTPLInsNm("");
                     txtField62.setText("");
                     oTransVSP.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal(0.00));
                     txtField60.setText("0.00");
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
-        });
+        }
+        );
         comboBox64.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox64.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSP.getMasterModel().getMasterModel().setCompStat(String.valueOf(comboBox64.getSelectionModel().getSelectedIndex()));
+                if (comboBox64.getSelectionModel().getSelectedIndex() < 0) {
                     oTransVSP.getMasterModel().getMasterModel().setInsCode("");
                     oTransVSP.getMasterModel().getMasterModel().setCOMBrIns("");
                     oTransVSP.getMasterModel().getMasterModel().setCOMInsNm("");
@@ -1633,6 +1678,9 @@ public class VSPController implements Initializable, ScreenInterface {
                     txtField65.setText("");
                     comboBox66.setValue(null);
                     comboBox67.setValue(null);
+                }
+                if (comboBox64.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTransVSP.getMasterModel().getMasterModel().setCompStat(String.valueOf(comboBox64.getSelectionModel().getSelectedIndex()));
                     switch (comboBox64.getSelectionModel().getSelectedIndex()) {
                         case 0:
                         case 2:
@@ -1654,7 +1702,8 @@ public class VSPController implements Initializable, ScreenInterface {
                     initFields(pnEditMode);
                 }
             }
-        });
+        }
+        );
         comboBox66.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 int selectedIndex = comboBox66.getSelectionModel().getSelectedIndex();
@@ -1684,8 +1733,8 @@ public class VSPController implements Initializable, ScreenInterface {
         );
 
         comboBox67.setOnAction(e -> {
-            if (comboBox67.getSelectionModel().getSelectedIndex() >= 0) {
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox67.getSelectionModel().getSelectedIndex() >= 0) {
                     oTransVSP.getMasterModel().getMasterModel().setInsurYr(comboBox67.getSelectionModel().getSelectedIndex());
                     initFields(pnEditMode);
                 }
@@ -1694,25 +1743,26 @@ public class VSPController implements Initializable, ScreenInterface {
         );
         comboBox69.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox69.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSP.getMasterModel().getMasterModel().setLTOStat(String.valueOf(comboBox69.getSelectionModel().getSelectedIndex()));
+                oTransVSP.getMasterModel().getMasterModel().setLTOStat(String.valueOf(comboBox69.getSelectionModel().getSelectedIndex()));
+                if (comboBox69.getSelectionModel().getSelectedIndex() < 0) {
                     oTransVSP.getMasterModel().getMasterModel().setLTOAmt(new BigDecimal(0.00));
                     txtField68.setText("0.00");
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
         }
         );
         comboBox71.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox71.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSP.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
+                oTransVSP.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
+                if (comboBox71.getSelectionModel().getSelectedIndex() < 0) {
                     oTransVSP.getMasterModel().getMasterModel().setCompAmt(new BigDecimal(0.00));
                     txtField70.setText("0.00");
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
-        });
+        }
+        );
     }
 
     private void setClearFinanceIntoMaster() {
@@ -1965,7 +2015,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
                 txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
-                txtField77, txtField78, txtField79, txtField80);
+                txtField77, txtField78, txtField79, txtField80, txtField82, txtField83, txtField84, txtField85);
         loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
         txtField34.setText("0");
         List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
@@ -2022,14 +2072,14 @@ public class VSPController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Vehicle Sales Proposal Information Saving....", "Are you sure, do you want to save?")) {
+                if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
                     if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please select Inquiry Source.");
                         return;
                     }
                     loJSON = oTransVSP.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Vehicle Sales Proposal Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
                         loJSON = oTransVSP.openTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
                         if ("success".equals((String) loJSON.get("result"))) {
                             loadVSPFields();
@@ -2054,7 +2104,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.YesNo(null, "Search Vehicle Sales Proposal Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    if (ShowMessageFX.YesNo(null, "Search Sales Job Order Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
@@ -2067,7 +2117,7 @@ public class VSPController implements Initializable, ScreenInterface {
                     pnEditMode = oTransVSP.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Sales Proposal Information", (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, "Search Sales Job Order Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnAdditionalLabor":
@@ -2095,14 +2145,16 @@ public class VSPController implements Initializable, ScreenInterface {
             case "btnPrint":
                 try {
                 loadVSPPrint();
+
             } catch (SQLException ex) {
-                Logger.getLogger(VSPController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(VSPController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
             break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Vehicle Sales Proposal");
+                        poUnload.unloadForm(AnchorMain, oApp, "Sales Job Order");
                     } else {
                         ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
                     }
@@ -2113,19 +2165,21 @@ public class VSPController implements Initializable, ScreenInterface {
                 if ("success".equals((String) loJSON.get("result"))) {
                     try {
                         loadLostSaleWindow(false);
+
                     } catch (SQLException ex) {
-                        Logger.getLogger(VehicleInquiryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(VehicleInquiryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     ShowMessageFX.Warning(null, "Integrated Automotive System", (String) loJSON.get("message"));
                 }
                 break;
             case "btnJobOrderAdd":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to create new sales job order record?") == true) {
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to create new sales job order record?")) {
+                    loadSJOWindow();
                 } else {
                     return;
                 }
-//                    loadJobOrderWindow();
                 break;
             case "btnAddReservation":
                 try {
@@ -2244,7 +2298,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
                 txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
-                txtField77, txtField78, txtField79, txtField80);
+                txtField77, txtField78, txtField79, txtField80, txtField82, txtField83, txtField84, txtField85);
         loTxtFieldDouble.forEach(tf -> tf.setText("0.00"));
         txtField34.setText("0");
         List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
@@ -2286,14 +2340,14 @@ public class VSPController implements Initializable, ScreenInterface {
                 txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField56, txtField59, txtField60, txtField62,
                 txtField63, txtField65, txtField68, txtField70, txtField72, txtField73, txtField74, txtField75, btnJobOrderAdd,
-                txtField51, txtField53, txtField56);
+                txtField51, txtField53, txtField56, comboBox71);
         setDisable(!lbShow,
                 txtField15, textArea28,
                 //discount
                 comboBox61, comboBox64, comboBox66, comboBox67, comboBox69,
                 //add ons
                 txtField74, chckBoxRustProof, chckBoxPermaShine, chckBoxUndercoat, chckBoxTint,
-                btnAdditionalLabor, btnAddParts, datePicker09
+                btnAdditionalLabor, btnAddParts, datePicker09, txtField82, txtField83
         );
 
         tabAddOns.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
@@ -2432,7 +2486,6 @@ public class VSPController implements Initializable, ScreenInterface {
                     comboBox67.setDisable(true);
                     break;
             }
-
             switch (comboBox69.getSelectionModel().getSelectedIndex()) {
                 case 2: //
                     txtField68.setDisable(!lbShow);
@@ -2587,6 +2640,68 @@ public class VSPController implements Initializable, ScreenInterface {
                 pnEditMode = oTransVSP.getEditMode();
                 initFields(pnEditMode);
             }
+        } catch (IOException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
+    private void loadSJOWindow() {
+        try {
+            String lsFormName = "Sales Job Order";
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/SalesJobOrder.fxml"));
+            SalesJobOrderController loControl = new SalesJobOrderController();
+            loControl.setGRider(oApp);
+            loControl.setIsVSPState(true);
+            if (oTransVSP.getMasterModel().getMasterModel().getTransNo() != null) {
+                loControl.setVSPTrans(oTransVSP.getMasterModel().getMasterModel().getTransNo());
+            }
+            fxmlLoader.setController(loControl);
+            Parent parent = fxmlLoader.load();
+            AnchorPane otherAnchorPane = loControl.AnchorMain;
+
+            // Get the parent of the TabContent node
+            Node tabContent = AnchorMain.getParent();
+            Parent tabContentParent = tabContent.getParent();
+
+            // If the parent is a TabPane, you can work with it directly
+            if (tabContentParent instanceof TabPane) {
+                TabPane tabpane = (TabPane) tabContentParent;
+
+                for (Tab tab : tabpane.getTabs()) {
+                    if (tab.getText().equals(lsFormName)) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Sales Job Order Form. Are you sure you want to convert this vsp for a new sjo record?")) {
+                            tabpane.getSelectionModel().select(tab);
+                            poUnload.unloadForm(AnchorMain, oApp, lsFormName);
+                            loadSJOWindow();
+                        } else {
+                            return;
+                        }
+                        return;
+                    }
+                }
+                Tab loNewTab = new Tab(lsFormName, parent);
+                loNewTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: arial;");
+                loNewTab.setContextMenu(fdController.createContextMenu(tabpane, loNewTab, oApp));
+                tabpane.getTabs().add(loNewTab);
+                tabpane.getSelectionModel().select(loNewTab);
+                loNewTab.setOnCloseRequest(event -> {
+                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?") == true) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(otherAnchorPane, oApp, lsFormName);
+                        } else {
+                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
+                        }
+                    } else {
+                        // Cancel the close request
+                        event.consume();
+                    }
+
+                });
+
+            }
+
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
