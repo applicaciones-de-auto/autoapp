@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="384.0" prefWidth="1078.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="384.0" prefWidth="1078.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -83,9 +83,9 @@
                                                 <TableColumn fx:id="tblindex04_labor" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Labor Description" />
                                                 <TableColumn fx:id="tblindex05_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
                                                 <TableColumn fx:id="tblindex06_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount" />
-                                                <TableColumn fx:id="tblindex06_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
-                                                <TableColumn fx:id="tblindex07_labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
-                                                <TableColumn fx:id="tblindex08_labor" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
+                                                <TableColumn fx:id="tblindex07_labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
+                                                <TableColumn fx:id="tblindex08_labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
+                                                <TableColumn fx:id="tblindex09_labor" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
                                             </columns>
                                         </TableView>
                                     </children>
