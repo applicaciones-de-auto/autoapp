@@ -48,7 +48,7 @@ public class VSPPrintController implements Initializable, ScreenInterface {
     private GRider oApp;
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
-    private final String pxeModuleName = "Vehicle SAles Proposal Print";
+    private final String pxeModuleName = "Vehicle Sales Proposal Print";
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
@@ -165,10 +165,18 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         return fsValue;
     }
 
+    private String getValueDate2Report(String fsValue, String fsCol) {
+        fsValue = "";
+        if (oTransPrint.getMaster(fsCol) != null) {
+            fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
+        }
+        return fsValue;
+    }
+
     private static String getValueNumberReport(String fsAmountString) {
         DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
         String lsFormattedAmount = "";
-        if (fsAmountString.contains("0.00") || fsAmountString.isEmpty()) {
+        if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
             lsFormattedAmount = "";
         } else {
             double amount = Double.parseDouble(fsAmountString);
@@ -183,29 +191,42 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("branchName", oApp.getBranchName());
             params.put("branchAddress", oApp.getAddress());
-            params.put("vspNo", getValueReport("vspNo", "sVSPNOxxx"));
-            params.put("vspDate", getValueDateReport("vspDate", "dDelvryDt"));
+            params.put("vdrNo", getValueReport("vspNo", "sVSPNOxxx"));
+            params.put("vspDate", getValueDate2Report("vspDate", "dTransact"));
             params.put("model", getValueReport("model", "sVhclDesc"));
-            params.put("customerName", getValueReport("customerName", ""));
-            params.put("birthDate", getValueReport("birthDate", ""));
-            params.put("tinNo", getValueReport("tinNo", ""));
-            params.put("homeAddress", getValueReport("homeAddress", ""));
-            params.put("officeAddress", getValueReport("officeAddress", ""));
-            params.put("contactNo", getValueReport("contactNo", ""));
-            params.put("officeTelNo", getValueReport("officeTelNo", ""));
-            params.put("emailAddress", getValueReport("emailAddress", ""));
+            params.put("customerName", getValueReport("customerName", "sBuyCltNm"));
+            if (oTransPrint.getMasterModel().getMasterModel().getClientTp().equals("0")) {
+                params.put("birthDate", getValueDateReport("birthDate", "dBirthDte"));
+            } else {
+                params.put("birthDate", "");
+            }
 
+//            params.put("birthDate", getValueDateReport("birthDate", "dBirthDte"));
+            params.put("tinNo", getValueReport("tinNo", "sTaxIDNox"));
+            if (oTransPrint.getMasterModel().getMasterModel().getOffice() != null) {
+                if (oTransPrint.getMasterModel().getMasterModel().getOffice().equals("0")) {
+                    params.put("officeAddress", "");
+                    params.put("officeTelNo", "");
+                    params.put("homeAddress", getValueReport("homeAddress", "sAddressx"));
+                    params.put("contactNo", getValueReport("contactNo", "sMobileNo"));
+                } else {
+                    params.put("homeAddress", "");
+                    params.put("contactNo", "");
+                    params.put("officeAddress", getValueReport("officeAddress", "sAddressx"));
+                    params.put("officeTelNo", getValueReport("officeTelNo", "sMobileNo"));
+                }
+            }
+            params.put("emailAddress", getValueReport("emailAddress", "sEmailAdd"));
             String lsPlateCSNo = "";
             if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
+                lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo() + " / " + oTransPrint.getMasterModel().getMasterModel().getPlateNo();
+            } else if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
                 lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();
-            } else if (oTransPrint.getMasterModel().getMasterModel().getPlateNo() != null) {
-                lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getPlateNo();
             }
             params.put("csplateNo", lsPlateCSNo);
             params.put("keyNo", getValueReport("keyNo", "sKeyNoxxx"));
             params.put("engineNo", getValueReport("engineNo", "sEngineNo"));
             params.put("frameNo", getValueReport("frameNo", "sFrameNox"));
-            params.put("vspDate", getValueReport("vspDate", "dDelvryDt"));
             if (oTransPrint.getMasterModel().getMasterModel().getPayMode() != null) {
                 String lsPaymentMethod = "";
                 switch (oTransPrint.getMasterModel().getMasterModel().getPayMode()) {
@@ -243,37 +264,37 @@ public class VSPPrintController implements Initializable, ScreenInterface {
                 params.put("bankName", lsBank);
                 String lnTerms = "0";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm() != null) {
-                    lnTerms = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm()));
+                    lnTerms = String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm());
                 }
                 params.put("terms", lnTerms);
                 String lnRate = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctRate() != null) {
-                    lnTerms = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctRate()));
+                    lnRate = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctRate())));
                 }
                 params.put("rate", lnRate);
                 String lnAmtFince = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getFinAmt() != null) {
-                    lnAmtFince = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getFinAmt()));
+                    lnAmtFince = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getFinAmt())));
                 }
                 params.put("amountFinanced", lnAmtFince);
                 String lnNetMonth = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getMonAmort() != null) {
-                    lnAmtFince = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getMonAmort()));
+                    lnAmtFince = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getMonAmort())));
                 }
                 params.put("netMonthInstall", lnNetMonth);
                 String lnPromptPaymentDiscount = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getRebates() != null) {
-                    lnPromptPaymentDiscount = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getMonAmort()));
+                    lnPromptPaymentDiscount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getMonAmort())));
                 }
                 params.put("promptPaymentDiscount", lnPromptPaymentDiscount);
                 String lnGrsMonthIns = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth() != null) {
-                    lnGrsMonthIns = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth()));
+                    lnGrsMonthIns = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getGrsMonth())));
                 }
                 params.put("grsMontInst", lnGrsMonthIns);
                 String lnPromiAmnt = "0.00";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getPNValue() != null) {
-                    lnPromiAmnt = poGetDecimalFormat.format(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getPNValue()));
+                    lnPromiAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getPNValue())));
                 }
                 params.put("promiNtAmnt", lnPromiAmnt);
             }
@@ -414,6 +435,11 @@ public class VSPPrintController implements Initializable, ScreenInterface {
                     break;
             }
             params.put("inqType", lsInqTypDisplay);
+            params.put("deliveryDate", getValueDateReport("deliveryDate", "dDelvryDt"));
+            params.put("agent", getValueDateReport("agent", "sAgentNmx"));
+            params.put("agent", getValueDateReport("agent", "sAgentNmx"));
+            params.put("joNo", getValueDateReport("joNo", "sJONoxxxx"));
+
             params.put("pRomo", "Promo disc:");
             params.put("promoAmnt", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPromoDsc())));
             params.put("caSh", "Cash disc:");
@@ -430,10 +456,21 @@ public class VSPPrintController implements Initializable, ScreenInterface {
             params.put("dnPymntAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAmtPaid())));
             params.put("netAmountDueTotal", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getNetTTotl())));
             params.put("remarksNote", getValueReport("remarksNote", "sRemarksx"));
-            params.put("salesExecutive", getValueReport("salesExecutive", "sSENamexx"));
-            params.put("branchUserName", oApp.getClientName());
-            params.put("transNo", getValueReport("transNo", "sTransNox"));
+            String lsBranchName = oApp.getBranchName();
+            String lsBranchName_1_Display = "3. Deposit is good for 30 days(except in cases where stock is not available), and does not guarantee the buyer protection from sudden price increases. "
+                    + lsBranchName + " reserves the right to sell the car after the agreed period and will reimburse deposit to the client less administrative and incidental fees.";
+            String lsBranchName_3_Display = "4. " + lsBranchName + " controls neither production, delivery prices nor specifications. The company agrees to relay to the customer all information concerning the order and in turn, the customer agrees to absolve the company from blame if factory cannot meet the requirements.";
 
+            String lsBrancName_6_Display = "6. As a matter of policy, Sales Personnel are not allowed to receive payments. Please remit all payments to our duly authorized cashier. All checks should be made payable to "
+                    + lsBranchName + " .";
+
+            params.put("branchName1", lsBranchName_1_Display);
+            params.put("branchName2", lsBranchName_3_Display);
+            params.put("branchName3", lsBrancName_6_Display);
+            params.put("salesExecutive", CustomCommonUtil.formatName(getValueReport("salesExecutive", "sSENamexx")));
+            params.put("customName", getValueReport("customName", "sBuyCltNm"));
+            params.put("transNo", getValueReport("transNo", "sTransNox"));
+            params.put("brancUserName", CustomCommonUtil.formatName(System.getProperty("user.name").toUpperCase()));
             String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vsp.jasper";
             String printFileName = null;
             try {

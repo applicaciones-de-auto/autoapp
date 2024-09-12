@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
 
-public class VSPLabor {
+public class Labor {
 
     private SimpleStringProperty tblindex01_labor;
     private CheckBox select;
@@ -31,7 +31,7 @@ public class VSPLabor {
     private SimpleBooleanProperty tblindex12_labor;
     private CheckBox FreeOrNot;
 
-    public VSPLabor(String tblindex01_labor,
+    public Labor(String tblindex01_labor,
             String tblindex02_labor,
             String tblindex03_labor,
             String tblindex04_labor,

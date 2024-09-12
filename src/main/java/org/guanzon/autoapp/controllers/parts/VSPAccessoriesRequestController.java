@@ -6,6 +6,7 @@ package org.guanzon.autoapp.controllers.parts;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.controllers.sales.VSPAccessoriesController;
-import org.guanzon.autoapp.models.sales.VSPPart;
+import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -55,7 +56,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     private VehicleSalesProposal oTransVSPRequest;
     private String pxeModuleName = "VSP Accessories Request";
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
-    private ObservableList<VSPPart> accessoriesData = FXCollections.observableArrayList();
+    private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
     private int pnEditMode;
     private int pnRow = -1;
     private double xOffset = 0;
@@ -69,9 +70,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     @FXML
     private TextArea textArea05;
     @FXML
-    private TableView<VSPPart> tblViewAccessories;
+    private TableView<Part> tblViewAccessories;
     @FXML
-    private TableColumn<VSPPart, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
+    private TableColumn<Part, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -125,7 +126,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                         return;
                     }
                 }
-                loJSON = oTransVSPRequest.searchTransaction("", false);
+                loJSON = oTransVSPRequest.searchTransaction("", false, true);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadAccessoriesFields();
                     loadAccessoriesTable();
@@ -186,17 +187,23 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         accessoriesData.clear();
         boolean lbChargeType = false;
         String lsGrsAmount = "";
-        String lsDiscAmount = "";
-        String lsNetAmount = "";
         String lsQuantity = "";
+        String lsDiscAmount = "";
+        String lsTotalAmount = "";
+        String lsNetAmount = "";
         String lsPartsDesc = "";
-        double totalAmount = 0.00;
+        String lsBarCode = "";
         for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
+            }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
                 lsQuantity = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
             }
-            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
-                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
+                BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
+                int lsQuan = Integer.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
                 lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
@@ -204,16 +211,16 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt() != null) {
                 lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
             }
-
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
                 lbChargeType = true;
             }
-            totalAmount = Integer.parseInt(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity())) * Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt()));
-            String lsTotalAmount = poGetDecimalFormat.format(totalAmount);
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
                 lsPartsDesc = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
             }
-            accessoriesData.add(new VSPPart(
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
+                lsBarCode = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
+            }
+            accessoriesData.add(new Part(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
@@ -222,7 +229,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     lsGrsAmount,
                     lsDiscAmount,
                     lsNetAmount,
-                    "",
+                    lsBarCode,
                     "",
                     "",
                     lsPartsDesc,
@@ -230,6 +237,13 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     lbChargeType
             ));
             lbChargeType = false;
+            lsGrsAmount = "";
+            lsQuantity = "";
+            lsDiscAmount = "";
+            lsTotalAmount = "";
+            lsNetAmount = "";
+            lsPartsDesc = "";
+            lsBarCode = "";
         }
         tblViewAccessories.setItems(accessoriesData);
     }
@@ -242,7 +256,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         }
         tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part")); // tblindexRow
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part")); // sales accessories description
-        tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex03_part")); // accessories number
+        tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part")); // accessories number
         tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part")); // accessories description
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part")); // quantity
         tblindex06.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot")); // foc

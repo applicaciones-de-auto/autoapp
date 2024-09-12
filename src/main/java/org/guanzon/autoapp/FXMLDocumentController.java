@@ -50,11 +50,19 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
+import org.guanzon.autoapp.controllers.general.ActivityInformationController;
+import org.guanzon.autoapp.controllers.general.CustomerController;
 import org.guanzon.autoapp.controllers.general.CustomerController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
+import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
 import org.guanzon.autoapp.controllers.general.ReferralAgentController;
+import org.guanzon.autoapp.controllers.general.ReferralAgentController;
+import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
@@ -78,7 +86,9 @@ import org.guanzon.autoapp.controllers.parameters.VehicleTypeController;
 import org.guanzon.autoapp.controllers.parameters.WareHouseController;
 import org.guanzon.autoapp.controllers.parts.ItemInformationController;
 import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
+import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
+import org.guanzon.autoapp.controllers.sales.VehicleDeliveryReceiptController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
@@ -171,7 +181,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuCategoryEntry;
     @FXML
     private MenuItem mnuInvTypeEntry;
-    @FXML
     private MenuItem mnuUnitDeliveryReceipt;
     @FXML
     private MenuItem mnuAckReceipt;
@@ -213,6 +222,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuBankInfo;
     @FXML
     private MenuItem mnuInsurInfo1;
+    @FXML
+    private MenuItem mnuVchlDeliveryReceipt;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -648,7 +659,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new VehicleFrameFormatController();
             case "VehicleEngineFormat.fxml":
                 return new VehicleEngineFormatController();
-
+            case psSalesPath + "SalesJobOrder.fxml":
+                return new SalesJobOrderController();
 //            case "VehicleEntryForm.fxml":
 //                return new VehicleEntryFormController();
 //            case "UnitReceivingForm.fxml":
@@ -665,8 +677,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new InsuranceCompanyController();
             case "InsuranceBranchInformation.fxml":
                 return new InsuranceBranchInformationController();
-//            case "UnitDeliveryReceiptForm.fxml":
-//                return new UnitDeliveryReceiptFormController();
+            case "VehicleDeliveryReceipt.fxml":
+                return new VehicleDeliveryReceiptController();
             case psSalesPath + "VSP.fxml":
                 return new VSPController();
 //            case "VSPAddOnsApproval.fxml":
@@ -757,6 +769,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return "Vehicle Sales Proposal";
             case "VSPApproval.fxml":
                 return "VSP Approval";
+            case psSalesPath + "SalesJobOrder.fxml":
+                return "Sales Job Order Information";
             /*CASHIERING*/
             case "Invoice.fxml":
                 if (sSalesInvoiceType.isEmpty()) {
@@ -873,7 +887,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuSalesJobOrderClick(ActionEvent event) {
         sJobOrderType = "Sales Job Order";
-        String sformname = "JobOrder.fxml";
+        String sformname = psSalesPath + "SalesJobOrder.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -893,6 +907,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuSalesExecutiveClick(ActionEvent event) {
         String sformname = "SalesExecutive.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
+    }
+
+    @FXML
+    private void mnuVchlDeliveryReceiptClick(ActionEvent event) {
+        String sformname = "VehicleDeliveryReceipt.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psSalesPath);
+
     }
 
     @FXML
@@ -916,15 +937,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuInquiryClick(ActionEvent event) {
         String sformname = psSalesPath + "VehicleInquiry.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuUnitDeliveryReceiptClick(ActionEvent event) {
-        String sformname = "UnitDeliveryReceipt.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

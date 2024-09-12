@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
 
-public class VSPPart {
+public class Part {
 
     private SimpleStringProperty tblindex01_part;
     private CheckBox select;
@@ -28,7 +28,7 @@ public class VSPPart {
     private SimpleBooleanProperty tblindex14_part;
     private CheckBox FreeOrNot;
 
-    public VSPPart(String tblindex01_part,
+    public Part(String tblindex01_part,
             String tblindex02_part,
             String tblindex03_part,
             String tblindex04_part,
