@@ -463,8 +463,8 @@
                                                                                                 <TableColumn fx:id="tblindex01_labor" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                 <TableColumn fx:id="tblindex02_labor" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Labor ID" />
                                                                                                 <TableColumn fx:id="tblindex03_labor" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Labor Description" />
-                                                                                                <TableColumn fx:id="tblindex03_Labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
-                                                                                                <TableColumn fx:id="tblindex06_Labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
+                                                                                                <TableColumn fx:id="tblindex04_labor" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
+                                                                                                <TableColumn fx:id="tblindex05_Labor" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
                                                                                             </columns>
                                                                                         </TableView>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
@@ -562,7 +562,7 @@
                                                                                         </TableView>
                                                                                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                                                                                             <children>
-                                                                                                <Button fx:id="btnAddLabor1" mnemonicParsing="false" text="Add Technician">
+                                                                                                <Button fx:id="btnAddTechnician" mnemonicParsing="false" text="Add Technician">
                                                                                                     <graphic>
                                                                                                         <FontAwesomeIconView glyphName="PLUS" />
                                                                                                     </graphic>
