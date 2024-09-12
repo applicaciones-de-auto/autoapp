@@ -64,8 +64,8 @@ import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
-import org.guanzon.autoapp.models.sales.VSPLabor;
-import org.guanzon.autoapp.models.sales.VSPPart;
+import org.guanzon.autoapp.models.sales.Labor;
+import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
@@ -102,8 +102,8 @@ public class VSPController implements Initializable, ScreenInterface {
     ObservableList<String> cCompYearType2 = FXCollections.observableArrayList("0", "1", "2", "3", "4");
     ObservableList<String> cLTOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE");
     ObservableList<String> cHMOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE", "C/o BANK");
-    private ObservableList<VSPLabor> laborData = FXCollections.observableArrayList();
-    private ObservableList<VSPPart> accessoriesData = FXCollections.observableArrayList();
+    private ObservableList<Labor> laborData = FXCollections.observableArrayList();
+    private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
     @FXML
     AnchorPane AnchorMain;
     @FXML
@@ -143,16 +143,16 @@ public class VSPController implements Initializable, ScreenInterface {
     @FXML
     private RadioButton brandNewCat, preOwnedCat;
     @FXML
-    private TableView<VSPLabor> tblViewLabor;
+    private TableView<Labor> tblViewLabor;
     @FXML
-    private TableColumn<VSPLabor, String> tblindex01_labor, tblindex02_labor, tblindex03_labor, tblindex04_labor,
+    private TableColumn<Labor, String> tblindex01_labor, tblindex02_labor, tblindex03_labor, tblindex04_labor,
             tblindex05_labor, tblindex06_labor, tblindex07_labor, tblindex08_labor, tblindex09_labor;
     @FXML
     private CheckBox chckBoxSpecialAccount, chckBoxRustProof, chckBoxPermaShine, chckBoxUndercoat, chckBoxTint;
     @FXML
-    private TableView<VSPPart> tblViewAccessories;
+    private TableView<Part> tblViewAccessories;
     @FXML
-    private TableColumn<VSPPart, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part,
+    private TableColumn<Part, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part,
             tblindex05_part, tblindex06_part, tblindex07_part, tblindex08_part, tblindex09_part, tblindex10_part,
             tblindex11_part;
 
@@ -182,7 +182,7 @@ public class VSPController implements Initializable, ScreenInterface {
         oTransInquiry = new Inquiry(oApp, false, oApp.getBranchCode());
         oTransFollow = new FollowUp(oApp, false, oApp.getBranchCode());
         initLaborTable();
-        initPartsTable();
+        initAccessoriesTable();
         datePicker09.setDayCellFactory(DateFormatCell);
         initCapitalizationFields();
         initTextKeyPressed();
@@ -634,7 +634,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo() != null) {
                 lsJoNoxx = oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo();
             }
-            laborData.add(new VSPLabor(
+            laborData.add(new Labor(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getTransNo()),
                     String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde()),
@@ -795,7 +795,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
                 lsJoNoxx = oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getDSNo();
             }
-            accessoriesData.add(new VSPPart(
+            accessoriesData.add(new Part(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
                     String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
@@ -824,7 +824,7 @@ public class VSPController implements Initializable, ScreenInterface {
         tblViewAccessories.setItems(accessoriesData);
     }
 
-    private void initPartsTable() {
+    private void initAccessoriesTable() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             tblViewAccessories.setEditable(true);
         } else {
@@ -1477,7 +1477,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
                     if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
-                        VSPLabor selectedVSPLabor = getLaborSelectedItem();
+                        Labor selectedVSPLabor = getLaborSelectedItem();
                         int removeCount = 0;
                         if (selectedVSPLabor != null) {
                             String lsRow = selectedVSPLabor.getTblindex01_labor();
@@ -1502,7 +1502,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
                     if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this accessories?")) {
-                        VSPPart selectedVSPPart = getPartSelectedItem();
+                        Part selectedVSPPart = getPartSelectedItem();
                         int removeCount = 0;
                         if (selectedVSPPart != null) {
                             String lsRow = selectedVSPPart.getTblindex01_part();
@@ -1525,11 +1525,11 @@ public class VSPController implements Initializable, ScreenInterface {
         });
     }
 
-    private VSPLabor getLaborSelectedItem() {
+    private Labor getLaborSelectedItem() {
         return tblViewLabor.getSelectionModel().getSelectedItem();
     }
 
-    private VSPPart getPartSelectedItem() {
+    private Part getPartSelectedItem() {
         return tblViewAccessories.getSelectionModel().getSelectedItem();
     }
 
