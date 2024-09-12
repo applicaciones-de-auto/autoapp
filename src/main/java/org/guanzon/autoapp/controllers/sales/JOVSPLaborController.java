@@ -6,7 +6,6 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
@@ -49,7 +48,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
     private TableView<Labor> tblViewLabor;
     @FXML
     private TableColumn<Labor, String> tblindex01_labor, tblindex03_labor, tblindex04_labor, tblindex05_labor,
-            tblindex06_labor, tblindex07_labor, tblindex08_labor;
+            tblindex06_labor, tblindex07_labor, tblindex08_labor, tblindex09_labor;
     @FXML
     private TableColumn<Labor, Boolean> tblindex02_labor;
     @FXML
@@ -197,9 +196,10 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
         tblindex03_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex03_labor"));
         tblindex04_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex07_labor"));
         tblindex05_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex04_labor"));
-        tblindex06_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
-        tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex10_labor"));
+        tblindex06_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex05_labor"));
+        tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
+        tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
+        tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex10_labor"));
 
         tblViewLabor.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewLabor.lookup("TableHeaderRow");
