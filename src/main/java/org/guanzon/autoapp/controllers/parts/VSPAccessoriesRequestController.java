@@ -40,7 +40,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.controllers.sales.VSPAccessoriesController;
-import org.guanzon.autoapp.models.sales.VSPPart;
+import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -56,7 +56,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     private VehicleSalesProposal oTransVSPRequest;
     private String pxeModuleName = "VSP Accessories Request";
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
-    private ObservableList<VSPPart> accessoriesData = FXCollections.observableArrayList();
+    private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
     private int pnEditMode;
     private int pnRow = -1;
     private double xOffset = 0;
@@ -70,9 +70,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     @FXML
     private TextArea textArea05;
     @FXML
-    private TableView<VSPPart> tblViewAccessories;
+    private TableView<Part> tblViewAccessories;
     @FXML
-    private TableColumn<VSPPart, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
+    private TableColumn<Part, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -220,7 +220,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
                 lsBarCode = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
             }
-            accessoriesData.add(new VSPPart(
+            accessoriesData.add(new Part(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),

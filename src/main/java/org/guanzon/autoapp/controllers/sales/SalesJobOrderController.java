@@ -19,6 +19,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.autoapp.models.general.Technician;
+import org.guanzon.autoapp.models.sales.Labor;
+import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.ScreenInterface;
 
 /**
@@ -34,77 +37,36 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     @FXML
     private Label lblFormTitle, lblJobOrderStatus;
     @FXML
-    private Button btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnCancelJobOrder, btnClose, btnDone;
+    private Button btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnCancelJobOrder, btnClose, btnDone, btnAddLabor, btnAddAccessories;
     @FXML
     private TabPane ImTabPane;
     @FXML
-    private Tab tabMain;
+    private Tab tabMain, laborTab, accessoriesTab, technicianTab, accessoriesMatTab, issuanceTab;
     @FXML
-    private TextField txtField01, txtField02, txtField04, txtField05, txtField06, txtField07, txtField09, txtField10, txtField12, txtField13;
+    private TextField txtField01, txtField02, txtField04, txtField05, txtField06, txtField07, txtField09, txtField10, txtField11, txtField12, txtField13;
     @FXML
     private DatePicker datePicker03;
     @FXML
     private TextArea textArea08, textArea14, textArea09;
     @FXML
-    private Tab laborTab;
+    private TableView<Labor> tblViewLabor;
     @FXML
-    private TableView<?> tblViewLabor;
+    private TableColumn<Labor, String> tblindex01_labor, tblindex02_labor, tblindex03_labor, tblindex04_labor, tblindex05_Labor;
     @FXML
-    private TableColumn<?, ?> tblindex01_labor;
+    private TableView<Part> tblViewAccessories;
     @FXML
-    private TableColumn<?, ?> tblindex02_labor;
+    private TableColumn<Part, String> tblindex01_accer, tblindex02_accer, tblindex03_accer, tblindex04_accer, tblindex05_accer, tblindex06_accer,
+            tblindex07_accer, tblindex08_accer;
     @FXML
-    private TableColumn<?, ?> tblindex03_labor;
+    private TableView<Technician> tblViewTechnician;
     @FXML
-    private TableColumn<?, ?> tblindex03_Labor;
-    @FXML
-    private TableColumn<?, ?> tblindex06_Labor;
-    @FXML
-    private Button btnAddLabor;
-    @FXML
-    private Tab accessoriesTab;
-    @FXML
-    private Button btnAddAccessories;
-    @FXML
-    private TableView<?> tblViewAccessories;
-    @FXML
-    private TableColumn<?, ?> tblindex01_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex02_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex03_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex04_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex05_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex06_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex07_accer;
-    @FXML
-    private TableColumn<?, ?> tblindex08_accer;
-    @FXML
-    private Tab technicianTab;
-    @FXML
-    private TableView<?> tblViewTechnician;
-    @FXML
-    private TableColumn<?, ?> tblindex01_tech;
-    @FXML
-    private TableColumn<?, ?> tblindex02_tech;
-    @FXML
-    private TableColumn<?, ?> tblindex03_tech;
-    @FXML
-    private Button btnAddLabor1;
-    @FXML
-    private Tab accessoriesMatTab;
+    private TableColumn<Technician, String> tblindex01_tech, tblindex02_tech, tblindex03_tech;
     @FXML
     private TableView<?> tblViewPaintings;
     @FXML
-    private Tab issuanceTab;
-    @FXML
     private TableView<?> tblViewPaintings1;
     @FXML
-    private TextField txtField11;
+    private Button btnAddTechnician;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -116,7 +78,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }
 
 }
