@@ -7,8 +7,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,6 +16,10 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@../css/MainPanelStyle.css" />
+        <URL value="@../css/FrameStyle.css" />
+    </stylesheets>
     <children>
         <StackPane prefHeight="584.0" prefWidth="646.0">
             <children>
@@ -25,7 +27,7 @@
                     <top>
                         <AnchorPane prefHeight="33.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" text="REFUND PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="RESERVATION PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font name="Arial Bold" size="13.0" />
                                     </font>
@@ -42,12 +44,12 @@
                             <children>
                                 <VBox fx:id="vbProgress" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Label text="Loading print please wait...">
+                                        <Label text="Loading reservation please wait...">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
                                         </Label>
-                                        <Label text="(Note: Please don't do anything while loading print!!!)" textFill="#d30909">
+                                        <Label text="(Note: Please don't do anything while loading reservation!!!)" textFill="#d30909">
                                             <font>
                                                 <Font size="14.0" />
                                             </font>
@@ -69,59 +71,23 @@
                     <bottom>
                         <AnchorPane prefHeight="51.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                    <effect>
-                                        <Blend />
-                                    </effect>
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
-                                    </graphic>
-                                </Button>
-                                <HBox layoutX="5.0" layoutY="5.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <HBox prefHeight="50.0" prefWidth="180.0" spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>
-                                        <Button fx:id="btnChangeAmt" contentDisplay="TOP" mnemonicParsing="false" prefHeight="72.0" prefWidth="180.0" text="Change amount to be refunded">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="CREDIT_CARD" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <VBox spacing="3.0">
-                                            <children>
-                                                <TextField fx:id="txtField01" alignment="CENTER_RIGHT" promptText="0.00">
-                                                    <tooltip>
-                                                        <Tooltip text="Please Fill in the Refund Amount" />
-                                                    </tooltip>
-                                                </TextField>
-                                                <Button fx:id="btnUpdateAmt" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="150.0" text="Update Refund Amount">
-                                                    <effect>
-                                                        <Blend />
-                                                    </effect>
-                                                    <graphic>
-                                                        <FontAwesomeIconView glyphName="CREDIT_CARD" size="20" />
-                                                    </graphic>
-                                                </Button>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-                                <HBox layoutX="371.0" layoutY="5.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="86.0" AnchorPane.topAnchor="5.0">
-                                    <children>
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="72.0" prefWidth="80.0" text="Cancel">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnPrint" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Print">
+                                        <AnchorPane prefHeight="47.0" prefWidth="43.0" />
+                                        <Button fx:id="btnPrint" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                             </graphic>
                                         </Button>
                                     </children>
@@ -133,8 +99,4 @@
             </children>
         </StackPane>
     </children>
-    <stylesheets>
-        <URL value="@../../css/FrameStyle.css" />
-        <URL value="@../../css/MainPanelStyle.css" />
-    </stylesheets>
 </AnchorPane>

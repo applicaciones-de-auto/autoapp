@@ -170,7 +170,7 @@ public class VSPAccessoriesController implements Initializable {
             switch (lnIndex) {
                 case 2:
                     if (lsValue.isEmpty()) {
-                        lsValue = "0";
+                        lsValue = "";
                     }
                     oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).setDescript(lsValue);
                     break;

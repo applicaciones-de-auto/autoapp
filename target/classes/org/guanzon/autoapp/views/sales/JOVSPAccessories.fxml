@@ -79,16 +79,15 @@
                                                         <CheckBox fx:id="selectAll" mnemonicParsing="false" />
                                                     </graphic>
                                                 </TableColumn>
-                                                <TableColumn fx:id="tblindex03_part" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="(Sales) Accessories Description" />
-                                                <TableColumn fx:id="tblindex04_part" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Number" />
-                                                <TableColumn fx:id="tblindex05_part" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Accessories Description" />
-                                                <TableColumn fx:id="tblindex06_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
-                                                <TableColumn fx:id="tblindex07_part" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Quantity" />
-                                                <TableColumn fx:id="tblindex08_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total" />
-                                                <TableColumn fx:id="tblindex09_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount" />
-                                                <TableColumn fx:id="tblindex10_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
-                                                <TableColumn fx:id="tblindex11_part" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
-                                                <TableColumn fx:id="tblindex12_part" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
+                                                <TableColumn fx:id="tblindex03_part" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Number" />
+                                                <TableColumn fx:id="tblindex04_part" editable="false" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" resizable="false" sortable="false" text="Accessories Description" />
+                                                <TableColumn fx:id="tblindex05_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
+                                                <TableColumn fx:id="tblindex06_part" editable="false" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" sortable="false" text="Quantity" />
+                                                <TableColumn fx:id="tblindex07_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total" />
+                                                <TableColumn fx:id="tblindex08_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount" />
+                                                <TableColumn fx:id="tblindex09_part" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Price" />
+                                                <TableColumn fx:id="tblindex10_part" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="FOC" />
+                                                <TableColumn fx:id="tblindex11_part" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Job No." />
                                             </columns>
                                         </TableView>
                                     </children>

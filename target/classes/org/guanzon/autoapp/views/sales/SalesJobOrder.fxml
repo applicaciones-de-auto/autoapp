@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="587.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="587.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.controllers.sales.SalesJobOrderController">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -74,20 +74,20 @@
                                                 <FontAwesomeIconView glyphName="EDIT" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnCancel" contentDisplay="TOP" layoutX="294.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
                                         <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
@@ -473,7 +473,7 @@
                                                                                                 </Button>
                                                                                             </children>
                                                                                         </HBox>
-                                                                                        <TableView fx:id="tblViewLabor" onMouseClicked="#tblViewLabor_Clicked" prefHeight="175.0" prefWidth="1077.0" GridPane.rowIndex="1">
+                                                                                        <TableView fx:id="tblViewLabor" prefHeight="175.0" prefWidth="1077.0" GridPane.rowIndex="1">
                                                                                             <columns>
                                                                                                 <TableColumn fx:id="tblindex01_labor" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                 <TableColumn fx:id="tblindex02_labor" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Labor ID" />
@@ -522,7 +522,7 @@
                                                                                                 </Button>
                                                                                             </children>
                                                                                         </HBox>
-                                                                                        <TableView fx:id="tblViewAccessories" onMouseClicked="#tblViewAccessories_Clicked" prefHeight="240.0" GridPane.rowIndex="1">
+                                                                                        <TableView fx:id="tblViewAccessories" prefHeight="240.0" GridPane.rowIndex="1">
                                                                                             <columns>
                                                                                                 <TableColumn fx:id="tblindex01_part" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                 <TableColumn fx:id="tblindex02_part" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Accessories Number" />

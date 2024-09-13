@@ -5,6 +5,7 @@
 package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
@@ -22,7 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.auto.main.sales.VehicleSalesProposal;
+import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.utils.ScreenInterface;
 
@@ -33,7 +34,7 @@ import org.guanzon.autoapp.utils.ScreenInterface;
  */
 public class JOVSPLaborController implements Initializable, ScreenInterface {
 
-    private VehicleSalesProposal oTransLabor;
+    private JobOrder oTransLabor;
     private GRider oApp;
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
     private final String pxeModuleName = "Job Order VSP Labor";
@@ -54,7 +55,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
     @FXML
     private CheckBox selectAll;
 
-    public void setObject(VehicleSalesProposal foValue) {
+    public void setObject(JobOrder foValue) {
         oTransLabor = foValue;
     }
 
@@ -76,6 +77,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         btnClose.setOnAction(this::handleButtonAction);
         btnAdd.setOnAction(this::handleButtonAction);
         initLaborTable();
@@ -104,25 +106,26 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                 }
                 int addedCount = 0;
                 for (Labor item : selectedItems) {
-                    int lsRow = Integer.parseInt(item.getTblindex01_labor());// Assuming there is a method to retrieve the transaction number
-                    String lsLaborID = item.getTblindex03_labor();
-                    String lsDesc = item.getTblindex07_labor();
-
+                    String lsLaborID = item.getTblindex07_labor();
+                    String lsLaborDesc = item.getTblindex07_labor();
+                    String lsAmnt = item.getTblindex04_labor();
+                    String lsChargeType = item.getTblindex08_labor();
                     boolean isLaborExist = false;
-                    for (int lnCtr = 0; lnCtr <= oTransLabor.getVSPLaborList().size() - 1; lnCtr++) {
-                        if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDsc().equals(lsDesc)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsDesc + " already exist.");
+                    for (int lnCtr = 0; lnCtr <= oTransLabor.getJOLaborList().size() - 1; lnCtr++) {
+                        if (oTransLabor.getJOLaborModel().getDetailModel(lnCtr).getLaborDsc().equals(lsLaborDesc)) {
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already exist.");
                             isLaborExist = true;
                             break;
                         }
                     }
                     if (!isLaborExist) {
-                        oTransLabor.addVSPLabor();
-//                        int fnRow = oTransLabor.getActVehicleList().size() - 1;
-//                        oTransLabor.setActVehicle(fnRow, "sSerialID", lsSerialID);
-//                        oTransLabor.setActVehicle(fnRow, "sDescript", lsDescript);
-//                        oTransLabor.setActVehicle(fnRow, "sCSNoxxxx", lsCSNoxxxx);
-//                        addedCount++;
+                        oTransLabor.addJOLabor();
+                        int lnRow = oTransLabor.getJOLaborList().size() - 1;
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborCde(lsLaborID);
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborDsc(lsLaborDesc);
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setPayChrge(lsChargeType);
+                        addedCount++;
                     }
                 }
                 if (addedCount > 0) {
@@ -139,6 +142,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
         laborData.clear();
         boolean lbAdditional = false;
         boolean lbChargeType = false;
+        String lsChargeType = "";
         String lsGrsAmount = "";
         String lsDiscAmount = "";
         String lsNetAmount = "";
@@ -155,6 +159,9 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
             }
             if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getChrgeTyp().equals("0")) {
                 lbChargeType = true;
+                lsChargeType = "0";
+            } else {
+                lsChargeType = "1";
             }
             if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getAddtl().equals("1")) {
                 lbAdditional = true;
@@ -174,7 +181,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                     "",
                     "",
                     "",
-                    "",
+                    lsChargeType,
                     "",
                     lsJoNoxx,
                     lbAdditional,
@@ -186,6 +193,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
             lsDiscAmount = "";
             lsNetAmount = "";
             lsJoNoxx = "";
+            lsChargeType = "";
         }
         tblViewLabor.setItems(laborData);
     }
@@ -200,7 +208,20 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
         tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
         tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
         tblindex09_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex10_labor"));
-
+        tblViewLabor.getItems().forEach(item -> {
+            CheckBox selectCheckBox = item.getSelect();
+            selectCheckBox.setOnAction(event -> {
+                if (tblViewLabor.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                    selectAll.setSelected(true);
+                } else {
+                    selectAll.setSelected(false);
+                }
+            });
+        });
+        selectAll.setOnAction(event -> {
+            boolean newValue = selectAll.isSelected();
+            tblViewLabor.getItems().forEach(item -> item.getSelect().setSelected(newValue));
+        });
         tblViewLabor.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewLabor.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
