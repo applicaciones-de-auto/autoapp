@@ -217,7 +217,7 @@
                                                                                                                                 </Label>
                                                                                                                                 <Label id="LabelDesc" text="Sales Job Order No." GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                                                                                 <Label id="LabelDesc" text="Sales Job Order Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                                                                                <TextField fx:id="txtField01" disable="true" editable="false" maxWidth="200.0" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                                <TextField fx:id="txtField01" maxWidth="200.0" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                                                 <TextField fx:id="txtField02" disable="true" editable="false" maxWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                                                                                 <DatePicker fx:id="datePicker03" disable="true" editable="false" prefHeight="24.0" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                                                                                 <Label id="LabelDesc" text="Labor Gross Amount:" GridPane.columnIndex="1" GridPane.rowIndex="5">
@@ -514,7 +514,7 @@
                                                                                                         <FontAwesomeIconView glyphName="PLUS" />
                                                                                                     </graphic>
                                                                                                     <tooltip>
-                                                                                                        <Tooltip text="Add Parts" />
+                                                                                                        <Tooltip text="Add Accessories" />
                                                                                                     </tooltip>
                                                                                                     <HBox.margin>
                                                                                                         <Insets top="2.0" />

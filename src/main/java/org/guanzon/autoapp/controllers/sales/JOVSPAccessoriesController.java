@@ -89,54 +89,85 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
                 break;
             case "btnAdd":
                 ObservableList<Part> selectedItems = FXCollections.observableArrayList();
+
+                // Collect selected items from the table
                 for (Part item : tblViewAccessories.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
                 }
+
+                // Check if no items are selected
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
                     return;
                 }
+
+                // Confirmation before adding accessories
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                     return;
                 }
+
                 int addedCount = 0;
+
+                // Iterate through selected items
                 for (Part item : selectedItems) {
+                    String lsStockID = item.getTblindex03_part();
                     String lsAccDesc = item.getTblindex04_part();
                     String lsBarCde = item.getTblindex09_part();
                     String lsAmnt = item.getTblindex06_part();
                     String lsQuan = item.getTblindex05_part();
                     String lsChrgTyp = item.getTblindex10_part();
+                    String lsJO = item.getTblindex11_part();
+
+                    // Check if the part already exists by barcode
                     boolean isPartExist = false;
                     for (int lnCtr = 0; lnCtr <= oTransAccessories.getJOPartsList().size() - 1; lnCtr++) {
                         if (oTransAccessories.getJOPartsModel().getDetailModel(lnCtr).getBarCode().equals(lsBarCde)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " already exist.");
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " already exists.");
                             isPartExist = true;
                             break;
                         }
                     }
-                    if (!isPartExist) {
-                        if (lsBarCde.equals("")) {
-                        } else {
-                            oTransAccessories.addJOParts();
-                            int lnRow = oTransAccessories.getJOPartsList().size() - 1;
-                            oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setBarCode(lsBarCde);
-                            oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setDescript(lsAccDesc);
-                            oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setPayChrge(lsChrgTyp);
-                            oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
-                            oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt));
-                            addedCount++;
-                        }
+
+                    // Skip the part if it exists
+                    if (isPartExist) {
+                        continue; // Skip to the next selected item
                     }
+
+                    // Skip if Stock ID is missing
+                    if (lsStockID.equals("")) {
+                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " has no Stock ID available.");
+                        continue; // Skip to the next selected item
+                    }
+
+                    // Skip if the part already has a job order
+                    if (!lsJO.isEmpty()) {
+                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " already has a Job Order.");
+                        continue; // Skip to the next selected item
+                    }
+
+                    // Add the part if all checks pass
+                    oTransAccessories.addJOParts();
+                    int lnRow = oTransAccessories.getJOPartsList().size() - 1;
+                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setBarCode(lsBarCde);
+                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setDescript(lsAccDesc);
+                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setPayChrge(lsChrgTyp);
+                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
+                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
+                    addedCount++;
                 }
+
+                // Show result messages based on the number of added items
                 if (addedCount > 0) {
                     ShowMessageFX.Information(null, pxeModuleName, "Added accessories successfully.");
                 } else {
                     ShowMessageFX.Error(null, pxeModuleName, "Failed to add accessories");
                 }
+
                 CommonUtils.closeStage(btnAdd);
                 break;
+
         }
     }
 
@@ -218,9 +249,9 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
     private void initAccessoriesTable() {
         tblindex01_part.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part"));
         tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part"));
+        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
         tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part"));
-        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
+        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part"));
         tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
         tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
         tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));

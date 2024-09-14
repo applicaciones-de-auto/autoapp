@@ -92,32 +92,52 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                 break;
             case "btnAdd":
                 ObservableList<Labor> selectedItems = FXCollections.observableArrayList();
+
+                // Collect selected items from the table
                 for (Labor item : tblViewLabor.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
                 }
+
+                // Check if no items are selected
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
                     return;
                 }
+
+                // Confirmation before adding labor
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
                     return;
                 }
+
                 int addedCount = 0;
+
+                // Iterate through selected items
                 for (Labor item : selectedItems) {
-                    String lsLaborID = item.getTblindex07_labor();
+                    String lsLaborID = item.getTblindex03_labor();
                     String lsLaborDesc = item.getTblindex07_labor();
                     String lsAmnt = item.getTblindex04_labor();
                     String lsChargeType = item.getTblindex08_labor();
+                    String lsJO = item.getTblindex10_labor();
+
+                    // Skip adding if labor already has a job order
+                    if (!lsJO.isEmpty()) {
+                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already has a job order.");
+                        continue; // Skip this item and move to the next
+                    }
+
+                    // Check if the labor description already exists
                     boolean isLaborExist = false;
                     for (int lnCtr = 0; lnCtr <= oTransLabor.getJOLaborList().size() - 1; lnCtr++) {
                         if (oTransLabor.getJOLaborModel().getDetailModel(lnCtr).getLaborDsc().equals(lsLaborDesc)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already exist.");
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already exists.");
                             isLaborExist = true;
                             break;
                         }
                     }
+
+                    // Add labor if it doesn't already exist
                     if (!isLaborExist) {
                         oTransLabor.addJOLabor();
                         int lnRow = oTransLabor.getJOLaborList().size() - 1;
@@ -128,6 +148,8 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                         addedCount++;
                     }
                 }
+
+                // Show result messages based on the number of added items
                 if (addedCount > 0) {
                     ShowMessageFX.Information(null, pxeModuleName, "Added labor successfully.");
                 } else {
@@ -135,6 +157,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                 }
                 CommonUtils.closeStage(btnAdd);
                 break;
+
         }
     }
 

@@ -69,9 +69,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     private int pnEditMode = -1;
     private double xOffset = 0;
     private double yOffset = 0;
-    private String psJOTransNo = "";
+    private String psVSPTransNo = "";
     private int pnRow = -1;
-    private boolean pbIsJO = false;
+    private boolean pbIsVSP = false;
     private final String pxeModuleName = "Sales Job Order"; //Form Title
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
@@ -119,11 +119,11 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     public void setIsVSPState(boolean fbValue) {
-        pbIsJO = fbValue;
+        pbIsVSP = fbValue;
     }
 
     public void setVSPTrans(String fsValue) {
-        psJOTransNo = fsValue;
+        psVSPTransNo = fsValue;
     }
 
     /**
@@ -145,17 +145,18 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
         Platform.runLater(() -> {
-            if (pbIsJO) {
+            if (pbIsVSP) {
                 btnAdd.fire();
                 JSONObject loJSON = new JSONObject();
-//                loJSON = oTransSJO.searchJO(psJOTransNo, true);
-//                if (!"error".equals((String) loJSON.get("result"))) {
-//                    loadSJOFields();
-//                    pnEditMode = oTransSJO.getEditMode();
-//                    initFields(pnEditMode);
-//                } else {
-//                    clearFields();
-//                }
+                loJSON = oTransSJO.searchVSP(psVSPTransNo, true);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    loadSJOFields();
+                    pnEditMode = oTransSJO.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    clearFields();
+                }
             }
         });
     }
@@ -273,7 +274,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
                 case "txtField01":
-                    loJSON = oTransSJO.searchVSP(lsValue.trim());
+                    loJSON = oTransSJO.searchVSP(lsValue.trim(), false);
                     if (!"error".equals(loJSON.get("result"))) {
                         loadSJOFields();
                     } else {
@@ -282,9 +283,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     }
                     break;
             }
-            initFields(pnEditMode);
             event.consume();
             CommonUtils.SetNextFocus((TextField) event.getSource());
+            initFields(pnEditMode);
         } else if (event.getCode()
                 == KeyCode.UP) {
             event.consume();

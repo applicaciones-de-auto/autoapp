@@ -176,12 +176,14 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         params.put("sAddressx", oApp.getAddress());
         String lsPlateCSNo = "";
         String lsDescript = "";
-        if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPlateNo()) != null) {
+        if (oTransPrint.getMasterModel().getMasterModel().getPlateNo() != null) {
             lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getPlateNo();
         } else {
-            lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();
+            if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
+                lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();
+            }
         }
-        if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getDescript()) != null) {
+        if (oTransPrint.getMasterModel().getMasterModel().getDescript() != null) {
             lsDescript = oTransPrint.getMasterModel().getMasterModel().getDescript();
         }
         params.put("sDescript", lsPlateCSNo + " " + lsDescript);
@@ -210,7 +212,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                         break;
                 }
                 String lsInqStat = "";
-                if (String.valueOf(oTransPrint.getReservation(lnCtr, "cTranStat")) != null) {
+                if (oTransPrint.getReservation(lnCtr, "cTranStat") != null) {
                     switch (String.valueOf(oTransPrint.getReservation(lnCtr, "cTranStat"))) {
                         case "0":
                             lsInqStat = "CANCELLED";

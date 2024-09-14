@@ -50,21 +50,11 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
-import org.guanzon.autoapp.controllers.general.ActivityInformationController;
-import org.guanzon.autoapp.controllers.general.CustomerController;
 import org.guanzon.autoapp.controllers.general.CustomerController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
-import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
 import org.guanzon.autoapp.controllers.general.ReferralAgentController;
-import org.guanzon.autoapp.controllers.general.ReferralAgentController;
-import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
@@ -772,7 +762,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "VSPApproval.fxml":
                 return "VSP Approval";
             case psSalesPath + "SalesJobOrder.fxml":
-                return "Sales Job Order Information";
+                return "Sales Job Order";
             /*CASHIERING*/
             case "Invoice.fxml":
                 if (sSalesInvoiceType.isEmpty()) {
