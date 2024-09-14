@@ -100,10 +100,11 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
                     String lsSerialID = item.getTblindex02();
                     String lsDescript = item.getTblindex04();
                     String lsCSNoxxxx = item.getTblindex03();// Assuming there is a method to retrieve the transaction number
+
                     boolean isVhclExist = false;
                     for (int lnCtr = 0; lnCtr <= oTransActVehicle.getActVehicleList().size() - 1; lnCtr++) {
-                        if (oTransActVehicle.getActVehicle(lnCtr, "sDescript").toString().equals(lsDescript)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add vehicle model, " + lsDescript + " already exist.");
+                        if (oTransActVehicle.getActVehicle(lnCtr, "sCSNoxxxx").toString().equals(lsCSNoxxxx)) {
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add vehicle model, " + lsCSNoxxxx + " already exist.");
                             isVhclExist = true;
                             break;
                         }
@@ -134,6 +135,7 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
         loJSON = oTransActVehicle.loadVehicle();
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTransActVehicle.getVehicleList().size() - 1; lnCtr++) {
+
                 actVhclModelData.add(new ActivityVehicle(
                         String.valueOf(lnCtr + 1), //ROW
                         oTransActVehicle.getSerialID(lnCtr, lnCtr).toString(),
