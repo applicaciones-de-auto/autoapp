@@ -50,6 +50,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.service.JobOrder;
+import org.guanzon.autoapp.controllers.service.TechnicianServiceController;
 import org.guanzon.autoapp.models.general.Technician;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
@@ -333,7 +334,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
-
                     loJSON = oTransSJO.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
@@ -341,6 +341,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                         if ("success".equals((String) loJSON.get("result"))) {
                             switchToTab(tabMain, ImTabPane);
                             loadSJOFields();
+                            loadLaborTable();
+                            loadAccessoriesTable();
                             pnEditMode = oTransSJO.getEditMode();
                             initFields(pnEditMode);
                         }
@@ -367,7 +369,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 }
                 loJSON = oTransSJO.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    switchToTab(tabMain, ImTabPane);
                     loadSJOFields();
+                    loadLaborTable();
+                    loadAccessoriesTable();
                     pnEditMode = oTransSJO.getEditMode();
                     initFields(pnEditMode);
                 } else {
@@ -382,7 +387,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             case "btnPrint":
 //                loadSJOPrint();
                 break;
-            case "btnCancelSJO":
+            case "btnCancelJobOrder":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this SJO?")) {
                     loJSON = oTransSJO.cancelTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -416,6 +421,14 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
             }
             break;
+            case "btnAddTechnician":
+                try {
+                loadTechnicianServiceWindowDialog();
+            } catch (IOException ex) {
+                Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
+
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                 break;
@@ -673,23 +686,24 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         btnCancelJobOrder.setManaged(false);
         btnDone.setVisible(false);
         btnDone.setManaged(false);
-        laborTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        accessoriesTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        technicianTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        laborTab.setDisable(txtField01.getText().isEmpty());
+        accessoriesTab.setDisable(txtField01.getText().isEmpty());
+        technicianTab.setDisable(txtField01.getText().isEmpty());
         accessoriesMatTab.setDisable(true);
         issuanceTab.setDisable(true);
         btnAddLabor.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddAccessories.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        btnAddTechnician.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         if (fnValue == EditMode.READY) {
             if (!lblJobOrderStatus.getText().equals("Cancelled")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
-                btnPrint.setVisible(true);
-                btnPrint.setManaged(true);
+//                btnPrint.setVisible(true);
+//                btnPrint.setManaged(true);
                 btnCancelJobOrder.setVisible(true);
                 btnCancelJobOrder.setManaged(true);
-                btnDone.setVisible(true);
-                btnDone.setManaged(true);
+//                btnDone.setVisible(true);
+//                btnDone.setManaged(true);
             }
         }
     }
@@ -753,6 +767,44 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 }
             }
         });
+    }
+
+    private void loadTechnicianServiceWindowDialog() throws IOException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/service/TechnicianService.fxml"));
+            TechnicianServiceController loControl = new TechnicianServiceController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransSJO);
+            loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadAccessoriesTable();
+            loadSJOFields();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+        }
     }
 
     @FXML
