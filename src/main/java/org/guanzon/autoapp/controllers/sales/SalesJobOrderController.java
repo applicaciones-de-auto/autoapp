@@ -694,6 +694,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         btnAddLabor.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddAccessories.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddTechnician.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        if (fnValue == EditMode.UPDATE) {
+            txtField01.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
             if (!lblJobOrderStatus.getText().equals("Cancelled")) {
                 btnEdit.setVisible(true);
