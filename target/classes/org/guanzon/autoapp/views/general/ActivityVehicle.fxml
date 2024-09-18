@@ -65,14 +65,14 @@
                                     <children>
                                         <TableView fx:id="tblViewActVhcl" prefHeight="200.0" prefWidth="200.0">
                                             <columns>
-                                                <TableColumn fx:id="tblindexVehicle01" prefWidth="42.0" text="Row" />
-                                                <TableColumn fx:id="tblindexVehicle02" prefWidth="30.0">
+                                                <TableColumn fx:id="tblindexVehicle01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                <TableColumn fx:id="tblindexVehicle02" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false">
                                                     <graphic>
                                                         <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
                                                     </graphic>
                                                 </TableColumn>
-                                                <TableColumn fx:id="tblindexVehicle03" prefWidth="164.0" text="Plate/ CS No." />
-                                                <TableColumn fx:id="tblindexVehicle04" prefWidth="397.0" text="Vehicle Description" />
+                                                <TableColumn fx:id="tblindexVehicle03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Plate/ CS No." />
+                                                <TableColumn fx:id="tblindexVehicle04" editable="false" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" resizable="false" sortable="false" text="Vehicle Description" />
                                             </columns>
                                         </TableView>
                                     </children>
