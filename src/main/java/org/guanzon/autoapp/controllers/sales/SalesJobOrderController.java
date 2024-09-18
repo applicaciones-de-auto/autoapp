@@ -645,8 +645,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     private void clearTables() {
-        initLaborTable();
-        initAccessoriesTable();
+        laborData.clear();
+        accessoriesData.clear();
     }
 
     private void clearFields() {
