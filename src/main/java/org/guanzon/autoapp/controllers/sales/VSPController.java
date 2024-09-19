@@ -336,7 +336,7 @@ public class VSPController implements Initializable, ScreenInterface {
         } else {
             clearFinanceFields();
         }
-//        // Discount
+        // Discount
         txtField45.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getFleetDsc()))));
         txtField46.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Sup()))));
         txtField47.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDue2Dlr()))));
@@ -432,12 +432,16 @@ public class VSPController implements Initializable, ScreenInterface {
             lsVDRNo = oTransVSP.getMasterModel().getMasterModel().getUDRNo();
         }
         lblDRNo.setText(lsVDRNo);
+        String lsRFNO = "";
         if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
-            lblRFNo.setText(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
+            lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
         }
+        lblRFNo.setText(lsRFNO);
+        String lsVSI = "";
         if (oTransVSP.getMasterModel().getMasterModel().getSINo() != null) {
-            lblSINo.setText(oTransVSP.getMasterModel().getMasterModel().getSINo());
+            lsVSI = oTransVSP.getMasterModel().getMasterModel().getSINo();
         }
+        lblSINo.setText(lsVSI);
         lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
         switch (oTransVSP.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
