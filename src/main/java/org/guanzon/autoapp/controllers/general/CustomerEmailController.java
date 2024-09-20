@@ -93,28 +93,13 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
         comboBox04EmAd.setItems(cOwnEmAd); // Email Ownership
         //CLIENT Email
         txtField03EmAd.setOnKeyPressed(this::txtField_KeyPressed); // Email Address
-        initButtons();
+        initButtonsClick();
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
             lblFormTitle.setText(pxeRefModuleName);
         }
-        if (pbState) {
-            int lnSize = oTransEmail.getEmailList().size() - 1;
-            if (lnSize == 0) {
-                radiobtn05EmaY.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
+        initFields();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -137,7 +122,7 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
         }
     }
 
-    private void initButtons() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -148,7 +133,11 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
             case "btnEdit":
             case "btnAdd":
                 if (settoClass()) {
-                    CommonUtils.closeStage(btnClose);
+                    if (lsButton.equals("btnEdit")) {
+                        CommonUtils.closeStage(btnEdit);
+                    } else {
+                        CommonUtils.closeStage(btnAdd);
+                    }
                 }
                 break;
             case "btnClose":
@@ -165,12 +154,19 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
 
     private boolean settoClass() {
         for (int lnCtr = 0; lnCtr <= oTransEmail.getEmailList().size() - 1; lnCtr++) {
-            if (oTransEmail.getEmail(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
+            if (String.valueOf(oTransEmail.getEmail(lnCtr, "cPrimaryx")).equals("1") && (lnCtr != pnRow)) {
                 if (radiobtn05EmaY.isSelected()) {
                     showWarning(psFormStateName, "Email Warning", "Please note that you cannot add more than 1 primary email.");
                     return false;
                 }
             }
+            if (oTransEmail.getEmail(lnCtr, "sEmailAdd") != null) {
+                if (String.valueOf(oTransEmail.getEmail(lnCtr, "sEmailAdd")).equals(txtField03EmAd.getText()) && (lnCtr != pnRow)) {
+                    showWarning(psFormStateName, "Email Warning", "This email address: " + txtField03EmAd.getText() + " already exists.");
+                    return false;
+                }
+            }
+
         }
         //User cannot set primary that is inactive
         if (radiobtn05EmaY.isSelected() && radiobtn06EmaN.isSelected()) {
@@ -198,17 +194,17 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
             showWarning(psFormStateName, "Email Warning", "Please select Email Ownership. Insert to table Aborted!");
             return false;
         }
-        oTransEmail.setEmail(pnRow, 3, txtField03EmAd.getText());
-        oTransEmail.setEmail(pnRow, 4, comboBox04EmAd.getSelectionModel().getSelectedIndex());
+        oTransEmail.setEmail(pnRow, "sEmailAdd", txtField03EmAd.getText());
+        oTransEmail.setEmail(pnRow, "cOwnerxxx", comboBox04EmAd.getSelectionModel().getSelectedIndex());
         if (radiobtn05EmaY.isSelected()) {
-            oTransEmail.setEmail(pnRow, 5, 1);
+            oTransEmail.setEmail(pnRow, "cPrimaryx", 1);
         } else {
-            oTransEmail.setEmail(pnRow, 5, 0);
+            oTransEmail.setEmail(pnRow, "cPrimaryx", 0);
         }
         if (radiobtn06EmaY.isSelected()) {
-            oTransEmail.setEmail(pnRow, 6, 1);
+            oTransEmail.setEmail(pnRow, "cRecdStat", 1);
         } else {
-            oTransEmail.setEmail(pnRow, 6, 0);
+            oTransEmail.setEmail(pnRow, "cRecdStat", 0);
         }
         return true;
     }
@@ -229,6 +225,25 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
         } else {
             radiobtn05EmaY.setSelected(false);
             radiobtn05EmaN.setSelected(true);
+        }
+    }
+
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransEmail.getEmailList().size() - 1;
+            if (lnSize == 0) {
+                radiobtn05EmaY.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
         }
     }
 }
