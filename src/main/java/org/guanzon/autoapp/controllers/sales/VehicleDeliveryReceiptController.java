@@ -371,7 +371,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         textArea12.setText(oTransVDR.getMasterModel().getMasterModel().getVhclFDsc());
         textArea13.setText(oTransVDR.getMasterModel().getMasterModel().getRemarks());
         textArea14.setText("");
-        lblVSINo.setText("");
+        lblVSINo.setText(oTransVDR.getMasterModel().getMasterModel().getSINo());
         switch (oTransVDR.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lblVDRStatus.setText("Active");
