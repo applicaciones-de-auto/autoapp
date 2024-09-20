@@ -27,7 +27,6 @@ import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -79,10 +78,6 @@ public class CustomerContactController implements Initializable, ScreenInterface
         pbState = fbValue;
     }
 
-    private Stage getStage() {
-        return (Stage) btnClose.getScene().getWindow();
-    }
-
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -97,7 +92,6 @@ public class CustomerContactController implements Initializable, ScreenInterface
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
-
         Pattern loPattern = Pattern.compile("[0-9]*");
         txtField03Cont.setTextFormatter(new TextFormatterUtil(loPattern)); //Mobile No
         initComboBoxItems();
@@ -106,16 +100,35 @@ public class CustomerContactController implements Initializable, ScreenInterface
         } else {
             lblFormTitle.setText(pxeRefModuleName);
         }
-        // Set the action handler for the combo box
+        initFieldAction();
+        initCapitalizationFields();
+        initTextKeyPressed();
+        initButtonsClick();
+        initFields();
+    }
+
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initComboBoxItems() {
+        comboBox05Cont.setItems(cOwnCont); // Contact Ownership
+        comboBox04Cont.setItems(cTypCont); // Mobile Type
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initFieldAction() {
         comboBox04Cont.setOnAction(event -> {
-            // Clear the text field when an action is performed on the combo box
             if (txtField03Cont != null) {
                 txtField03Cont.clear();
             }
-            Integer selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
-
-            // Set the text limiter based on the selected index
-            if (selectedIndex != null) {
+            int selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
                 switch (selectedIndex) {
                     case 0:
                         if (txtField03Cont != null) {
@@ -131,40 +144,6 @@ public class CustomerContactController implements Initializable, ScreenInterface
                 }
             }
         });
-
-        initCapitalizationFields();
-        initTextKeyPressed();
-        initButtons();
-        if (pbState) {
-            int lnSize = oTransMobile.getMobileList().size() - 1;
-            if (lnSize == 0) {
-                radiobtn11CntY.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
-    }
-
-    private void showWarning(String formStateName, String warningTitle, String message) {
-        if (formStateName.equals("Referral Agent Information")) {
-            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
-        } else {
-            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initComboBoxItems() {
-        comboBox05Cont.setItems(cOwnCont); // Contact Ownership
-        comboBox04Cont.setItems(cTypCont); // Mobile Type
     }
 
     private void initCapitalizationFields() {
@@ -200,7 +179,7 @@ public class CustomerContactController implements Initializable, ScreenInterface
         }
     }
 
-    private void initButtons() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -211,7 +190,11 @@ public class CustomerContactController implements Initializable, ScreenInterface
             case "btnEdit":
             case "btnAdd":
                 if (settoClass()) {
-                    CommonUtils.closeStage(btnClose);
+                    if (lsButton.equals("btnEdit")) {
+                        CommonUtils.closeStage(btnEdit);
+                    } else {
+                        CommonUtils.closeStage(btnAdd);
+                    }
                 }
                 break;
             case "btnClose":
@@ -221,7 +204,7 @@ public class CustomerContactController implements Initializable, ScreenInterface
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
-                showWarning(psFormStateName, "", "Button with name " + lsButton + " not registered.");
+                showWarning(psFormStateName, "Information", "Button with name " + lsButton + " not registered.");
                 break;
 
         }
@@ -229,58 +212,83 @@ public class CustomerContactController implements Initializable, ScreenInterface
 
     private boolean settoClass() {
         for (int lnCtr = 0; lnCtr <= oTransMobile.getMobileList().size() - 1; lnCtr++) {
-            if (oTransMobile.getMobile(lnCtr, "cPrimaryx").toString().equals("1") && (lnCtr != pnRow)) {
+            if (String.valueOf(oTransMobile.getMobile(lnCtr, "cPrimaryx")).equals("1") && (lnCtr != pnRow)) {
                 if (radiobtn11CntY.isSelected()) {
-                    showWarning(psFormStateName, "Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
-                    break;
+                    if (lnCtr != pnRow) {
+                        showWarning(psFormStateName, "Mobile Warning", "Please note that you cannot add more than 1 primary contact number.");
+                        return false;
+                    }
+                }
+            }
+            if (oTransMobile.getMobile(lnCtr, "sMobileNo") != null) {
+                if (String.valueOf(oTransMobile.getMobile(lnCtr, "sMobileNo")).equals(txtField03Cont.getText()) && (lnCtr != pnRow)) {
+                    showWarning(psFormStateName, "Mobile Warning", "This mobile no.: " + txtField03Cont.getText() + " already exists.");
+                    return false;
                 }
             }
         }
-        if (radiobtn11CntY.isSelected() && radiobtn14CntN.isSelected()) {
+
+        if (radiobtn11CntY.isSelected()
+                && radiobtn14CntN.isSelected()) {
             showWarning(psFormStateName, "Mobile Warning", "Please note that you cannot set primary contact that is inactive.");
             return false;
         }
-        if (comboBox04Cont.getSelectionModel().getSelectedIndex() == 0) {
+
+        if (comboBox04Cont.getSelectionModel()
+                .getSelectedIndex() == 0) {
             if (CommonUtils.classifyNetwork(txtField03Cont.getText()).isEmpty()) {
                 showWarning(psFormStateName, "Mobile Warning", "Prefix not registered " + txtField03Cont.getText());
                 return false;
             }
         }
         //Validate Before adding to tables
-        if (txtField03Cont.getText().isEmpty() || txtField03Cont.getText().trim().equals("")) {
+
+        if (txtField03Cont.getText()
+                .isEmpty() || txtField03Cont.getText().trim().equals("")) {
             showWarning(psFormStateName, "Mobile Warning", "Invalid Mobile. Insert to table Aborted!");
             return false;
         }
-        if (!radiobtn11CntY.isSelected() && !radiobtn11CntN.isSelected()) {
+
+        if (!radiobtn11CntY.isSelected()
+                && !radiobtn11CntN.isSelected()) {
             showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
             return false;
         }
-        if (!radiobtn14CntY.isSelected() && !radiobtn14CntN.isSelected()) {
+
+        if (!radiobtn14CntY.isSelected()
+                && !radiobtn14CntN.isSelected()) {
             showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Status. Insert to table Aborted!");
             return false;
         }
-        if (comboBox05Cont.getValue().equals("")) {
+
+        if (comboBox05Cont.getValue()
+                .equals("")) {
             showWarning(psFormStateName, "Mobile Warning", "Please select Contact Ownership. Insert to table Aborted!");
             return false;
         }
-        if (comboBox04Cont.getValue().equals("")) {
+
+        if (comboBox04Cont.getValue()
+                .equals("")) {
             showWarning(psFormStateName, "Mobile Warning", "Please select Mobile Type. Insert to table Aborted!");
             return false;
         }
-        oTransMobile.setMobile(pnRow, 3, txtField03Cont.getText());
-        oTransMobile.setMobile(pnRow, 4, comboBox04Cont.getSelectionModel().getSelectedIndex());
-        oTransMobile.setMobile(pnRow, 5, comboBox05Cont.getSelectionModel().getSelectedIndex());
-        oTransMobile.setMobile(pnRow, 13, textArea13Cont.getText());
+
+        oTransMobile.setMobile(pnRow, "sMobileNo", txtField03Cont.getText());
+        oTransMobile.setMobile(pnRow, "cMobileTp", comboBox04Cont.getSelectionModel().getSelectedIndex());
+        oTransMobile.setMobile(pnRow, "cOwnerxxx", comboBox05Cont.getSelectionModel().getSelectedIndex());
+        oTransMobile.setMobile(pnRow, "sRemarksx", textArea13Cont.getText());
         if (radiobtn11CntY.isSelected()) {
-            oTransMobile.setMobile(pnRow, 11, 1);
+            oTransMobile.setMobile(pnRow, "cPrimaryx", 1);
         } else {
-            oTransMobile.setMobile(pnRow, 11, 0);
+            oTransMobile.setMobile(pnRow, "cPrimaryx", 0);
         }
+
         if (radiobtn14CntY.isSelected()) {
-            oTransMobile.setMobile(pnRow, 14, 1);
+            oTransMobile.setMobile(pnRow, "cRecdStat", 1);
         } else {
-            oTransMobile.setMobile(pnRow, 14, 0);
+            oTransMobile.setMobile(pnRow, "cRecdStat", 0);
         }
+
         return true;
     }
 
@@ -303,6 +311,25 @@ public class CustomerContactController implements Initializable, ScreenInterface
         } else {
             radiobtn11CntY.setSelected(false);
             radiobtn11CntN.setSelected(true);
+        }
+    }
+
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransMobile.getMobileList().size() - 1;
+            if (lnSize == 0) {
+                radiobtn11CntY.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
         }
     }
 
