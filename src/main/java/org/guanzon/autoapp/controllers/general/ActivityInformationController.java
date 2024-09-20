@@ -76,7 +76,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
     private ObservableList<ActivityLocation> locationData = FXCollections.observableArrayList();
     private ObservableList<ActivityMember> actMembersData = FXCollections.observableArrayList();
     private ObservableList<ActivityVehicle> actVhclModelData = FXCollections.observableArrayList();
-    DecimalFormat poSetDecimalFormat = new DecimalFormat("###0.00");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private final String pxeModuleName = "Activity Information"; //Form Title

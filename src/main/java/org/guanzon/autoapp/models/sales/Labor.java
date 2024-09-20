@@ -237,4 +237,19 @@ public class Labor {
         this.tblindex10_labor.set(tblindex10_labor);
     }
 
+//    public String getTblindex11_labor() {
+//        return tblindex11_labor.get();
+//    }
+//
+//    public void setTblindex11_labor(String tblindex11_labor) {
+//        this.tblindex11_labor.set(tblindex11_labor);
+//    }
+//
+//    public String getTblindex12_labor() {
+//        return tblindex12_labor.get();
+//    }
+//
+//    public void setTblindex12_labor(String tblindex12_labor) {
+//        this.tblindex12_labor.set(tblindex12_labor);
+//    }
 }

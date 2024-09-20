@@ -436,9 +436,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
             }
             params.put("inqType", lsInqTypDisplay);
             params.put("deliveryDate", getValueDateReport("deliveryDate", "dDelvryDt"));
-            params.put("agent", getValueDateReport("agent", "sAgentNmx"));
-            params.put("agent", getValueDateReport("agent", "sAgentNmx"));
-            params.put("joNo", getValueDateReport("joNo", "sJONoxxxx"));
+            params.put("agent", getValueReport("agent", "sAgentNmx"));
+            params.put("joNo", getValueReport("joNo", "sJONoxxxx"));
 
             params.put("pRomo", "Promo disc:");
             params.put("promoAmnt", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPromoDsc())));

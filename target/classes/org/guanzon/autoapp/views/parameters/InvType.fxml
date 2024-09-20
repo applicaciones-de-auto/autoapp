@@ -7,7 +7,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="230.0" prefWidth="554.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.autoapp.views.parameters.MeasurementEntryParamController">
+<AnchorPane id="AnchorPane" prefHeight="206.0" prefWidth="554.0" stylesheets="@../css/FrameStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -29,7 +28,7 @@
                     <top>
                         <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" prefHeight="17.0" text="Measurement Entry Form" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                <Label alignment="CENTER" prefHeight="17.0" text="Inventory Type" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                     <font>
                                         <Font name="Arial Bold" size="12.0" />
                                     </font>
@@ -43,44 +42,27 @@
                                 <GridPane layoutX="2.0" layoutY="2.0" prefHeight="40.0" prefWidth="505.0" vgap="3.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="20.0">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="120.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="190.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Measurement ID" GridPane.columnIndex="1">
-                                            <GridPane.margin>
-                                                <Insets />
-                                            </GridPane.margin>
+                                        <Label text="Inventory Type  ID" GridPane.columnIndex="1">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Label id="LabelDesc" text="Measurement Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtField01" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="1">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Measurement Description." />
-                                            </tooltip>
-                                        </TextField>
-                                        <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                            <tooltip>
-                                                <Tooltip text="Please fill in the Measurement Abbrev." />
-                                            </tooltip>
-                                        </TextField>
-                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" mnemonicParsing="false" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                        <Label id="LabelDesc" text="Measurement Abbrev" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
+                                        <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" mnemonicParsing="false" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label id="LabelDesc" text="Inventory Type  Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />
@@ -141,17 +123,6 @@
                                                 <Insets />
                                             </HBox.margin>
                                         </Button>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
-                                            </graphic>
-                                            <HBox.margin>
-                                                <Insets />
-                                            </HBox.margin>
-                                        </Button>
                                         <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
                                             <effect>
                                                 <Blend />
@@ -162,6 +133,22 @@
                                             <HBox.margin>
                                                 <Insets />
                                             </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Activate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
+                                            </graphic>
                                         </Button>
                                     </children>
                                 </HBox>
@@ -178,10 +165,10 @@
                     </bottom>
                 </BorderPane>
             </children>
+            <stylesheets>
+                <URL value="@../../css/FrameStyle.css" />
+                <URL value="@../../css/MainPanelStyle.css" />
+            </stylesheets>
         </StackPane>
     </children>
-    <stylesheets>
-        <URL value="@../../css/FrameStyle.css" />
-        <URL value="@../../css/MainPanelStyle.css" />
-    </stylesheets>
 </AnchorPane>

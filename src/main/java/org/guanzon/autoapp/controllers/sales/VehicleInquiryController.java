@@ -1724,7 +1724,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         setVisible(false, btnFollowUp, btnBankAppNew);
         setDisable(false, comboBox25, comboBox26, btnASadd, txtField27, btnSndMngerApprov, btnASadd);
         tblAdvanceSlip.setDisable(false);
-        if (tblAdvanceSlip.getItems().size() <= 0) {
+        if (tblAdvanceSlip.getItems().size() < 0) {
             btnASCancel.setDisable(true);
             btnASremove.setDisable(true);
             if (pnEditMode == EditMode.READY) {
@@ -1786,10 +1786,12 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         //            cmbInqpr02.setDisable(!lbShow);
         //        }
         //Reservation
-        btnASCancel.setDisable(false);
+        if (tblAdvanceSlip.getItems().size() > 0) {
+            btnASCancel.setDisable(false);
+            btnASprint.setDisable(false);
+        }
         btnASadd.setDisable(!lbShow);
         btnASremove.setDisable(!lbShow);
-        btnASprint.setDisable(false);
         btnProcess.setVisible(false);
         btnProcess.setManaged(false);
 
@@ -2082,7 +2084,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         for (lnCtr = 0; lnCtr <= oTransInquiry.getPromoList().size() - 1; lnCtr++) {
             promosoffereddata.add(new InquiryPromoOffered(
                     String.valueOf(lnCtr + 1), //ROW
-CustomCommonUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateFrom")),
+                    CustomCommonUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateFrom")),
                     CustomCommonUtil.xsDateShort((Date) oTransInquiry.getPromo(lnCtr, "dDateThru")),
                     String.valueOf(oTransInquiry.getPromo(lnCtr, "sActTitle")).toUpperCase(),
                     String.valueOf(oTransInquiry.getPromo(lnCtr, "sPromoIDx")).toUpperCase()

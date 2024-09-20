@@ -6,7 +6,6 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -49,7 +48,9 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.auto.main.sales.VehicleSalesProposal;
+import org.guanzon.appdriver.constant.TransactionStatus;
+import org.guanzon.auto.main.service.JobOrder;
+import org.guanzon.autoapp.controllers.service.TechnicianServiceController;
 import org.guanzon.autoapp.models.general.Technician;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
@@ -64,12 +65,13 @@ import org.json.simple.JSONObject;
  */
 public class SalesJobOrderController implements Initializable, ScreenInterface {
 
-    private VehicleSalesProposal oTransSJO;
+    private JobOrder oTransSJO;
     private GRider oApp;
     private int pnEditMode = -1;
     private double xOffset = 0;
     private double yOffset = 0;
     private String psVSPTransNo = "";
+    private int pnRow = -1;
     private boolean pbIsVSP = false;
     private final String pxeModuleName = "Sales Job Order"; //Form Title
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
@@ -94,8 +96,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     @FXML
     private TableView<Labor> tblViewLabor;
     @FXML
-    private TableColumn<Labor, String> tblindex01_labor, tblindex02_labor, tblindex03_labor, tblindex04_labor, tblindex05_labor, tblindex06_labor,
-            tblindex07_labor, tblindex08_labor;
+    private TableColumn<Labor, String> tblindex01_labor;
+    @FXML
+    private TableColumn<Labor, String> tblindex02_labor, tblindex03_labor, tblindex04_labor, tblindex05_labor;
     @FXML
     private TableView<Part> tblViewAccessories;
     @FXML
@@ -109,7 +112,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     @FXML
     private Button btnAddTechnician;
     @FXML
-    private TableColumn<Part, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part, tblindex05_part, tblindex06_part, tblindex07_part, tblindex08_part, tblindex09_part, tblindex10_part;
+    private TableColumn<Part, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part, tblindex05_part, tblindex06_part;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -129,31 +132,34 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        oTransSJO = new JobOrder(oApp, false, oApp.getBranchCode());
         initLaborTable();
         initAccessoriesTable();
         initCapitalizationFields();
+        initFieldActions();
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         initButtonsClick();
         textArea15.focusedProperty().addListener(txtArea_Focus);
         clearFields();
         clearTables();
+        initTableKeyPressed();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
         Platform.runLater(() -> {
             if (pbIsVSP) {
                 btnAdd.fire();
                 JSONObject loJSON = new JSONObject();
-//                loJSON = oTransSJO.searchVSP(psVSPTransNo, true);
-//                if (!"error".equals((String) loJSON.get("result"))) {
-//                    loadSJOFields();
-//                    pnEditMode = oTransSJO.getEditMode();
-//                    initFields(pnEditMode);
-//                } else {
-//                    clearFields();
-//                }
+                loJSON = oTransSJO.searchVSP(psVSPTransNo, true);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    loadSJOFields();
+                    pnEditMode = oTransSJO.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    clearFields();
+                }
             }
         });
-
     }
 
     private void switchToTab(Tab foTab, TabPane foTabPane) {
@@ -161,22 +167,40 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     private void loadSJOFields() {
-        txtField01.setText("");
-        txtField02.setText("");
-        datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        txtField04.setText("0.00");
-        txtField05.setText("0.00");
-        txtField06.setText("0.00");
-        txtField07.setText("");
-        textArea08.setText("");
-        txtField09.setText("");
-        txtField10.setText("");
-        txtField11.setText("");
-        txtField12.setText("");
-        txtField13.setText("");
-        textArea14.setText("");
-        textArea15.setText("");
-
+        txtField01.setText(oTransSJO.getMasterModel().getMasterModel().getVSPNo());
+        txtField02.setText(oTransSJO.getMasterModel().getMasterModel().getDSNo());
+        if (oTransSJO.getMasterModel().getMasterModel().getTransactDte() != null) {
+            datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransSJO.getMasterModel().getMasterModel().getTransactDte())));
+        }
+        txtField04.setText(poGetDecimalFormat.format(oTransSJO.getMasterModel().getMasterModel().getLaborAmt()));
+        txtField05.setText(poGetDecimalFormat.format(oTransSJO.getMasterModel().getMasterModel().getPartsAmt()));
+        txtField06.setText(poGetDecimalFormat.format(oTransSJO.getMasterModel().getMasterModel().getTranAmt()));
+        txtField07.setText(oTransSJO.getMasterModel().getMasterModel().getOwnrNm());
+        textArea08.setText(oTransSJO.getMasterModel().getMasterModel().getAddress());
+        txtField09.setText(oTransSJO.getMasterModel().getMasterModel().getCoBuyrNm());
+        txtField10.setText(oTransSJO.getMasterModel().getMasterModel().getCSNo());
+        txtField11.setText(oTransSJO.getMasterModel().getMasterModel().getPlateNo());
+        txtField12.setText(oTransSJO.getMasterModel().getMasterModel().getFrameNo());
+        txtField13.setText(oTransSJO.getMasterModel().getMasterModel().getEngineNo());
+        textArea14.setText(oTransSJO.getMasterModel().getMasterModel().getVhclDesc());
+        textArea15.setText(oTransSJO.getMasterModel().getMasterModel().getRemarks());
+        switch (oTransSJO.getMasterModel().getMasterModel().getTranStat()) {
+            case TransactionStatus.STATE_OPEN:
+                lblJobOrderStatus.setText("Active");
+                break;
+            case TransactionStatus.STATE_CLOSED:
+                lblJobOrderStatus.setText("Approved");
+                break;
+            case TransactionStatus.STATE_CANCELLED:
+                lblJobOrderStatus.setText("Cancelled");
+                break;
+            case TransactionStatus.STATE_POSTED:
+                lblJobOrderStatus.setText("Posted");
+                break;
+            default:
+                lblJobOrderStatus.setText("");
+                break;
+        }
     }
 
     private void initCapitalizationFields() {
@@ -212,11 +236,30 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
-                        oTransSJO.getMasterModel().getMasterModel().setVSPNO("");
+                        oTransSJO.getMasterModel().getMasterModel().setVSPNo("");
+                        clearFieldsNoVS();
                     }
                 }
+                initFields(pnEditMode);
             }
         });
+    }
+
+    private void clearFieldsNoVS() {
+        txtField02.setText("");
+        datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        txtField04.setText("0.00");
+        txtField05.setText("0.00");
+        txtField06.setText("0.00");
+        txtField07.setText("");
+        textArea08.setText("");
+        txtField09.setText("");
+        txtField10.setText("");
+        txtField11.setText("");
+        txtField12.setText("");
+        txtField13.setText("");
+        textArea14.setText("");
+        textArea15.setText("");
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -232,18 +275,18 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
                 case "txtField01":
-//                    loJSON = oTransSJO.searchVSP(lsValue.trim(), false);
-//                    if (!"error".equals(loJSON.get("result"))) {
-////                        loadSJOFields();
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                        return;
-//                    }
+                    loJSON = oTransSJO.searchVSP(lsValue.trim(), false);
+                    if (!"error".equals(loJSON.get("result"))) {
+                        loadSJOFields();
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
                     break;
             }
-            initFields(pnEditMode);
             event.consume();
             CommonUtils.SetNextFocus((TextField) event.getSource());
+            initFields(pnEditMode);
         } else if (event.getCode()
                 == KeyCode.UP) {
             event.consume();
@@ -268,9 +311,13 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 clearFields();
                 clearTables();
                 switchToTab(tabMain, ImTabPane);
-                oTransSJO = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
+                oTransSJO = new JobOrder(oApp, false, oApp.getBranchCode());
                 loJSON = oTransSJO.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
+                    oTransSJO.getMasterModel().getMasterModel().setJobType("");
+                    oTransSJO.getMasterModel().getMasterModel().setPaySrce("3");
+                    oTransSJO.getMasterModel().getMasterModel().setWorkCtgy("2");
+                    oTransSJO.getMasterModel().getMasterModel().setLaborTyp("");
                     loadSJOFields();
                     pnEditMode = oTransSJO.getEditMode();
                     initFields(pnEditMode);
@@ -292,7 +339,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
                         loJSON = oTransSJO.openTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
                         if ("success".equals((String) loJSON.get("result"))) {
+                            switchToTab(tabMain, ImTabPane);
                             loadSJOFields();
+                            loadLaborTable();
+                            loadAccessoriesTable();
                             pnEditMode = oTransSJO.getEditMode();
                             initFields(pnEditMode);
                         }
@@ -306,7 +356,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     clearFields();
                     clearTables();
                     switchToTab(tabMain, ImTabPane);
-                    oTransSJO = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
+                    oTransSJO = new JobOrder(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -317,9 +367,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransSJO.searchTransaction("", true, false);
+                loJSON = oTransSJO.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    switchToTab(tabMain, ImTabPane);
                     loadSJOFields();
+                    loadLaborTable();
+                    loadAccessoriesTable();
                     pnEditMode = oTransSJO.getEditMode();
                     initFields(pnEditMode);
                 } else {
@@ -334,7 +387,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             case "btnPrint":
 //                loadSJOPrint();
                 break;
-            case "btnCancelSJO":
+            case "btnCancelJobOrder":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this SJO?")) {
                     loJSON = oTransSJO.cancelTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -368,6 +421,14 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
             }
             break;
+            case "btnAddTechnician":
+                try {
+                loadTechnicianServiceWindowDialog();
+            } catch (IOException ex) {
+                Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
+
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                 break;
@@ -383,33 +444,22 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         String lsDiscAmount = "";
         String lsNetAmount = "";
         String lsJoNoxx = "";
-        for (int lnCtr = 0; lnCtr <= oTransSJO.getVSPLaborList().size() - 1; lnCtr++) {
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt() != null) {
-                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt())));
+        for (int lnCtr = 0; lnCtr <= oTransSJO.getJOLaborList().size() - 1; lnCtr++) {
+            if (oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getUnitPrce() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getUnitPrce())));
             }
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDscount() != null) {
-                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDscount())));
-            }
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getNtLabAmt() != null) {
-                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getNtLabAmt())));
-            }
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getChrgeTyp().equals("0")) {
+
+            if (oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getPayChrge().equals("0")) {
                 lbChargeType = true;
-            }
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getAddtl().equals("1")) {
-                lbAdditional = true;
-            }
-            if (oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo() != null) {
-                lsJoNoxx = oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo();
             }
             laborData.add(new Labor(
                     String.valueOf(lnCtr + 1),
-                    String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getTransNo()),
-                    String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde()),
+                    String.valueOf(oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getTransNo()),
+                    String.valueOf(oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getLaborCde()),
                     lsGrsAmount,
                     lsDiscAmount,
                     lsNetAmount,
-                    String.valueOf(oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDsc()),
+                    String.valueOf(oTransSJO.getJOLaborModel().getDetailModel(lnCtr).getLaborDsc()),
                     "",
                     "",
                     "",
@@ -434,11 +484,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         tblindex01_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex01_labor"));
         tblindex02_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex03_labor"));
         tblindex03_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex07_labor"));
-        tblindex04_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex05_labor"));
-        tblindex05_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex05_labor"));
-        tblindex06_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex06_labor"));
-        tblindex07_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex08_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex10_labor"));
+        tblindex04_labor.setCellValueFactory(new PropertyValueFactory<>("tblindex04_labor"));
+        tblindex05_labor.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
         tblViewLabor.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewLabor.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -453,13 +500,13 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/JOVSPLabor.fxml"));
-
+//
             JOVSPLaborController loControl = new JOVSPLaborController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransSJO);
             loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
-            //load the main interface
+
             Parent parent = fxmlLoader.load();
 
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -498,41 +545,27 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         String lsPartsDesc = "";
         String lsBarCode = "";
         String lsJoNoxx = "";
-        for (int lnCtr = 0; lnCtr <= oTransSJO.getVSPPartsList().size() - 1; lnCtr++) {
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
-                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
+        for (int lnCtr = 0; lnCtr <= oTransSJO.getJOPartsList().size() - 1; lnCtr++) {
+            if (oTransSJO.getJOPartsModel().getJOParts(lnCtr).getDescript() != null) {
+                lsPartsDesc = String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getDescript());
             }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                lsQuantity = String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+            if (oTransSJO.getJOPartsModel().getJOParts(lnCtr).getUnitPrce() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getUnitPrce())));
             }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
-                int lsQuan = oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getQuantity();
-                lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
+            if (oTransSJO.getJOPartsModel().getJOParts(lnCtr).getQtyEstmt() != null) {
+                lsQuantity = String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getQtyEstmt());
             }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
-                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
-            }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt() != null) {
-                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
-            }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
+            if (oTransSJO.getJOPartsModel().getJOParts(lnCtr).getPayChrge().equals("0")) {
                 lbChargeType = true;
             }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
-                lsPartsDesc = String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
-            }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
-                lsBarCode = String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
-            }
-            if (oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
-                lsJoNoxx = oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getDSNo();
+            if (oTransSJO.getJOPartsModel().getJOParts(lnCtr).getBarCode() != null) {
+                lsBarCode = String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getBarCode());
             }
             accessoriesData.add(new Part(
                     String.valueOf(lnCtr + 1),
-                    String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
-                    String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
-                    String.valueOf(oTransSJO.getVSPPartsModel().getVSPParts(lnCtr).getDescript()),
+                    String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getTransNo()),
+                    String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getStockID()),
+                    String.valueOf(oTransSJO.getJOPartsModel().getJOParts(lnCtr).getDescript()),
                     lsQuantity,
                     lsGrsAmount,
                     lsDiscAmount,
@@ -563,11 +596,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
         tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
         tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
-        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));
-        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
-        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
-        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>("tblindex11_part"));
+        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
         tblViewAccessories.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -616,14 +645,14 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     private void clearTables() {
-        initLaborTable();
-        initAccessoriesTable();
+        laborData.clear();
+        accessoriesData.clear();
     }
 
     private void clearFields() {
         txtField01.setText("");
         txtField02.setText("");
-        datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oApp.getServerDate())));
         txtField04.setText("0.00");
         txtField05.setText("0.00");
         txtField06.setText("0.00");
@@ -657,23 +686,148 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         btnCancelJobOrder.setManaged(false);
         btnDone.setVisible(false);
         btnDone.setManaged(false);
-        laborTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        accessoriesTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        technicianTab.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        laborTab.setDisable(txtField01.getText().isEmpty());
+        accessoriesTab.setDisable(txtField01.getText().isEmpty());
+        technicianTab.setDisable(txtField01.getText().isEmpty());
         accessoriesMatTab.setDisable(true);
         issuanceTab.setDisable(true);
         btnAddLabor.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddAccessories.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        btnAddTechnician.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        if (fnValue == EditMode.UPDATE) {
+            txtField01.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
             if (!lblJobOrderStatus.getText().equals("Cancelled")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
-                btnPrint.setVisible(true);
-                btnPrint.setManaged(true);
+//                btnPrint.setVisible(true);
+//                btnPrint.setManaged(true);
                 btnCancelJobOrder.setVisible(true);
                 btnCancelJobOrder.setManaged(true);
-                btnDone.setVisible(true);
-                btnDone.setManaged(true);
+//                btnDone.setVisible(true);
+//                btnDone.setManaged(true);
+            }
+        }
+    }
+
+    private Labor getLaborSelectedItem() {
+        return tblViewLabor.getSelectionModel().getSelectedItem();
+    }
+
+    private Part getPartSelectedItem() {
+        return tblViewAccessories.getSelectionModel().getSelectedItem();
+    }
+
+    private void initTableKeyPressed() {
+        tblViewLabor.setOnKeyPressed(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
+                        Labor selectedVSPLabor = getLaborSelectedItem();
+                        int removeCount = 0;
+                        if (selectedVSPLabor != null) {
+                            String lsRow = selectedVSPLabor.getTblindex01_labor();
+                            int lnRow = Integer.parseInt(lsRow);
+                            oTransSJO.removeJOLabor(lnRow - 1);
+                            removeCount++;
+                        }
+                        if (removeCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed labor successfully");
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed labor failed");
+                        }
+                        loadSJOFields();
+                        loadLaborTable();
+                    } else {
+                        return;
+                    }
+                }
+            }
+        });
+        tblViewAccessories.setOnKeyPressed(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this accessories?")) {
+                        Part selectedVSPPart = getPartSelectedItem();
+                        int removeCount = 0;
+                        if (selectedVSPPart != null) {
+                            String lsRow = selectedVSPPart.getTblindex01_part();
+                            int lnRow = Integer.parseInt(lsRow);
+                            oTransSJO.removeJOParts(lnRow - 1);
+                            removeCount++;
+                        }
+                        if (removeCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed accessories successfully");
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed accessories failed");
+                        }
+                        loadSJOFields();
+                        loadAccessoriesTable();
+                    }
+                } else {
+                    return;
+                }
+            }
+        });
+    }
+
+    private void loadTechnicianServiceWindowDialog() throws IOException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/service/TechnicianService.fxml"));
+            TechnicianServiceController loControl = new TechnicianServiceController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransSJO);
+            loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadAccessoriesTable();
+            loadSJOFields();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    @FXML
+    private void tblViewLabor_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnRow = tblViewLabor.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewLabor.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid labor information.");
+                return;
+            }
+        }
+    }
+
+    @FXML
+    private void tblViewAccessories_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnRow = tblViewAccessories.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewAccessories.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
+                return;
             }
         }
     }
