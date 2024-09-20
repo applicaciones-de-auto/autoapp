@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="312.0" prefWidth="568.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="312.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -62,23 +62,23 @@
                             <children>
                                 <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <TableView fx:id="tblViewDepart" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/FrameStyle.css">
+                                        <TableView fx:id="tblViewDepart" prefHeight="219.0" prefWidth="252.0" stylesheets="@../css/FrameStyle.css">
                                             <columns>
-                                                <TableColumn fx:id="tblDprtmntndex01" editable="false" prefWidth="195.0" sortable="false" style="-fx-alignment: CENTER-LEFT;" text="Department" />
+                                                <TableColumn fx:id="tblDprtmntndex01" editable="false" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-LEFT;" text="Department" />
                                             </columns>
                                             <HBox.margin>
                                                 <Insets right="5.0" />
                                             </HBox.margin>
                                         </TableView>
-                                        <TableView fx:id="tblViewEmployee" prefHeight="217.0" prefWidth="356.0">
+                                        <TableView fx:id="tblViewEmployee" prefHeight="219.0" prefWidth="369.0">
                                             <columns>
-                                                <TableColumn fx:id="tblEmplyIndex01" editable="false" prefWidth="44.0" sortable="false" text="Row" />
-                                                <TableColumn fx:id="tblEmplyIndex02" editable="false" prefWidth="32.0" sortable="false">
+                                                <TableColumn fx:id="tblEmplyIndex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                <TableColumn fx:id="tblEmplyIndex02" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false">
                                                     <graphic>
                                                         <CheckBox fx:id="selectAllEmployee" mnemonicParsing="false" />
                                                     </graphic>
                                                 </TableColumn>
-                                                <TableColumn fx:id="tblEmplyIndex03" editable="false" prefWidth="269.0" sortable="false" text="Employee Name" />
+                                                <TableColumn fx:id="tblEmplyIndex03" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Employee Name" />
                                             </columns>
                                         </TableView>
                                     </children>
