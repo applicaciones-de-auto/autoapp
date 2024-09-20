@@ -219,14 +219,15 @@ public class CustomerController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldPattern() {
-        Pattern TinOnly, textOnly, suffOnly, ltoOnly;
+        Pattern TinOnly, textOnly, suffOnly, ltoOnly, lastOnly;
         TinOnly = Pattern.compile("[0-9-]*");
         textOnly = Pattern.compile("[A-Za-z ]*");
+        lastOnly = Pattern.compile("[A-Za-z -]*");
         suffOnly = Pattern.compile("[A-Za-z .]*");
         ltoOnly = Pattern.compile("[A-Za-z0-9-]*");
         txtField13.setTextFormatter(new TextFormatterUtil(TinOnly));
         txtField10.setTextFormatter(new TextFormatterUtil(textOnly)); //citezenship
-        txtField02.setTextFormatter(new TextFormatterUtil(textOnly)); //lastname
+        txtField02.setTextFormatter(new TextFormatterUtil(lastOnly)); //lastname
         txtField03.setTextFormatter(new TextFormatterUtil(textOnly)); //firstname
         txtField04.setTextFormatter(new TextFormatterUtil(textOnly)); //middlename
         txtField05.setTextFormatter(new TextFormatterUtil(textOnly)); // maidenname
