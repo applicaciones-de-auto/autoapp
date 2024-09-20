@@ -218,7 +218,7 @@ public class VSPPrintController implements Initializable, ScreenInterface {
             }
             params.put("emailAddress", getValueReport("emailAddress", "sEmailAdd"));
             String lsPlateCSNo = "";
-            if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
+            if (oTransPrint.getMasterModel().getMasterModel().getPlateNo() != null) {
                 lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo() + " / " + oTransPrint.getMasterModel().getMasterModel().getPlateNo();
             } else if (oTransPrint.getMasterModel().getMasterModel().getCSNo() != null) {
                 lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getCSNo();

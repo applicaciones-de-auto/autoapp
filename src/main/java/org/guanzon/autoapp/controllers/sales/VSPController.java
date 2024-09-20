@@ -418,7 +418,7 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
         String lsJobNO = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null) {
+        if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null && !oTransVSP.getMasterModel().getMasterModel().getJONo().isEmpty()) {
             lsJobNO = oTransVSP.getMasterModel().getMasterModel().getJONo();
         }
         txtField81.setText(lsJobNO);
@@ -428,20 +428,30 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField85.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSlsInAmt()))));
 
         String lsVDRNo = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null) {
+
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getUDRNo() != null) {
             lsVDRNo = oTransVSP.getMasterModel().getMasterModel().getUDRNo();
         }
+
         lblDRNo.setText(lsVDRNo);
         String lsRFNO = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
+
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getGatePsNo() != null) {
             lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
         }
+
         lblRFNo.setText(lsRFNO);
         String lsVSI = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getSINo() != null) {
+
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getSINo() != null) {
             lsVSI = oTransVSP.getMasterModel().getMasterModel().getSINo();
         }
+
         lblSINo.setText(lsVSI);
+
         lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
         switch (oTransVSP.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
@@ -459,15 +469,15 @@ public class VSPController implements Initializable, ScreenInterface {
             default:
                 lblVSPStatus.setText("");
                 break;
-        }
-//            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
-//                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
-//            }
-//    }
-//        else {
-//            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//        return false;
-//    }
+        } //            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
+        //                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
+        //            }
+        //    }
+        //        else {
+        //            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+        //        return false;
+        //    }
+
         return true;
     }
 
@@ -551,6 +561,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 oTransVSP.removeVSPLabor(oTransVSP.getVSPLaborList().size() - 1);
                 return;
+
             }
         } catch (IOException ex) {
             Logger.getLogger(VSPController.class
@@ -568,6 +579,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (event.getClickCount() == 2) {
                 try {
                     loadLaborWindowDialog(pnRow, false, oTransVSP.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc(), true);
+
                 } catch (IOException ex) {
                     Logger.getLogger(VSPController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -762,6 +774,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (event.getClickCount() == 2) {
                 try {
                     loadAccessoriesWindowDialog(pnRow, false);
+
                 } catch (IOException ex) {
                     Logger.getLogger(VSPController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -2719,7 +2732,8 @@ public class VSPController implements Initializable, ScreenInterface {
 
                 for (Tab tab : tabpane.getTabs()) {
                     if (tab.getText().equals(lsFormName)) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal Form. Are you sure you want to convert this vsp for a new sjo record?")) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal.\n"
+                                + "Are you sure you want to convert this vsp for a new sales job order record?")) {
                             tabpane.getSelectionModel().select(tab);
                             poUnload.unloadForm(AnchorMain, oApp, lsFormName);
                             loadSJOWindow();

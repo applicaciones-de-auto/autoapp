@@ -26,6 +26,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.ScreenInterface;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -83,6 +84,7 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
 
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
@@ -140,24 +142,22 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
                         ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " has no Stock ID available.");
                         continue; // Skip to the next selected item
                     }
-
-                    // Skip if the part already has a job order
-                    if (!lsJO.isEmpty()) {
-                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " already has a Job Order.");
-                        continue; // Skip to the next selected item
-                    }
-
-                    // Add the part if all checks pass
                     oTransAccessories.addJOParts();
                     int lnRow = oTransAccessories.getJOPartsList().size() - 1;
-                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setBarCode(lsBarCde);
-                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setDescript(lsAccDesc);
-                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setPayChrge(lsChrgTyp);
-                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
-                    oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
-                    addedCount++;
+                    loJSON = oTransAccessories.checkVSPJOParts(lsStockID, 0, lnRow, true);
+                    if (!"error".equals((String) loJSON.get("message"))) {
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setStockID(lsStockID);
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setBarCode(lsBarCde);
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setDescript(lsAccDesc);
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setPayChrge(lsChrgTyp);
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
+                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
+                        addedCount++;
+                    } else {
+                        oTransAccessories.removeJOParts(lnRow);
+                        ShowMessageFX.Error(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
                 }
-
                 // Show result messages based on the number of added items
                 if (addedCount > 0) {
                     ShowMessageFX.Information(null, pxeModuleName, "Added accessories successfully.");

@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -329,8 +330,13 @@ public class VSPAccessoriesController implements Initializable {
         return true;
     }
 
-    private void initFields() {
+    private void setDisable(boolean disable, Node... nodes) {
+        for (Node node : nodes) {
+            node.setDisable(disable);
+        }
+    }
 
+    private void initFields() {
         if (pbState) {
             btnAdd.setVisible(true);
             btnAdd.setManaged(true);
@@ -342,11 +348,7 @@ public class VSPAccessoriesController implements Initializable {
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
             if (!psJO.isEmpty()) {
-                txtField02.setDisable(true);
-                comboBox03.setDisable(true);
-                txtField04.setDisable(true);
-                txtField05.setDisable(true);
-                txtField06.setDisable(true);
+                setDisable(true, txtField02, comboBox03, txtField04, txtField05, txtField06);
             } else {
                 if (pbRequest) {
 //                    if (!oTransVSPAccessories.getVSPPartsModel().getVSPParts(pnRow).getPartsDscount().toString().isEmpty()) {
@@ -363,18 +365,10 @@ public class VSPAccessoriesController implements Initializable {
         }
         if (pbRequest) {
             txtField01.setDisable(false);
-            txtField02.setDisable(true);
-            comboBox03.setDisable(true);
-            txtField04.setDisable(true);
-            txtField05.setDisable(true);
-            txtField07.setDisable(true);
+            setDisable(true, txtField02, comboBox03, txtField04, txtField05, txtField07);
         } else {
             txtField01.setDisable(true);
-            txtField02.setDisable(false);
-            comboBox03.setDisable(false);
-            txtField04.setDisable(false);
-            txtField05.setDisable(false);
-            txtField07.setDisable(false);
+            setDisable(false, txtField02, comboBox03, txtField04, txtField05, txtField07);
             switch (comboBox03.getSelectionModel().getSelectedIndex()) {
                 case 0:
                     txtField04.setDisable(false);
@@ -387,14 +381,10 @@ public class VSPAccessoriesController implements Initializable {
                     txtField07.setDisable(txtField04.getText().isEmpty());
                     break;
                 default:
-                    txtField04.setDisable(true);
-                    txtField05.setDisable(true);
-                    txtField07.setDisable(true);
+                    setDisable(true, txtField04, txtField05, txtField07);
                     break;
             }
-
         }
-
     }
 
 }

@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -321,6 +322,12 @@ public class VSPLaborController implements Initializable {
         return true;
     }
 
+    private void setDisable(boolean disable, Node... nodes) {
+        for (Node node : nodes) {
+            node.setDisable(disable);
+        }
+    }
+
     private void initFields() {
         switch (comboBox03.getSelectionModel().getSelectedIndex()) {
             case 0:
@@ -332,8 +339,7 @@ public class VSPLaborController implements Initializable {
                 txtField05.setDisable(txtField04.getText().isEmpty());
                 break;
             default:
-                txtField04.setDisable(true);
-                txtField05.setDisable(true);
+                setDisable(true, txtField04, txtField05);
                 break;
         }
         if (pbState) {
@@ -350,8 +356,7 @@ public class VSPLaborController implements Initializable {
             btnEditLabor.setVisible(true);
             btnEditLabor.setManaged(true);
             if (!psJO.isEmpty()) {
-                txtField04.setDisable(true);
-                comboBox03.setDisable(true);
+                setDisable(true, txtField04, comboBox03);
             }
         }
     }

@@ -4,13 +4,17 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -18,7 +22,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
@@ -28,7 +35,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -54,6 +65,8 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
     private String pxeModuleName = "Vehicle Sales Invoice";
     ObservableList<String> cCustomerType = FXCollections.observableArrayList("CUSTOMER", "SUPPLIER"); // Customer Type Values
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
+    private double xOffset = 0;
+    private double yOffset = 0;
     @FXML
     private AnchorPane AnchorPane;
     @FXML
@@ -345,6 +358,14 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
+                    if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select Customer Type.");
+                        return;
+                    }
+                    if (comboBox02.getSelectionModel().getSelectedIndex() == 1) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose Customer to proceed.");
+                        return;
+                    }
                     loJSON = oTransVSI.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VSI Information", (String) loJSON.get("message"));
@@ -390,8 +411,27 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 }
                 break;
             case "btnPrint":
-                break;
+                try {
+                loadVSIPrint();
+            } catch (SQLException ex) {
+                Logger.getLogger(VehicleSalesInvoiceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
             case "btnVSICancel":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this SJO?")) {
+                    loJSON = oTransVSI.cancelTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "SJO Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "SJO Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTransVSI.openTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadVSIFields();
+                        pnEditMode = oTransVSI.getEditMode();
+                        initFields(pnEditMode);
+                    }
+                }
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
@@ -413,6 +453,39 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         datePicker03.setValue(LocalDate.of(1990, Month.JANUARY, 1));
     }
 
+    private void loadVSIPrint() throws SQLException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSiPrint.fxml"));
+            VSIPrintController loControl = new VSIPrintController();
+            loControl.setGRider(oApp);
+            loControl.setVSIObject(oTransVSI);
+            loControl.setTransNox(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+        }
+    }
+
     private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         txtField01.setDisable(!lbShow);
@@ -431,15 +504,14 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         btnEdit.setManaged(false);
         btnPrint.setVisible(false);
         btnPrint.setManaged(false);
-        btnPrint.setDisable(true);
         btnVSICancel.setVisible(false);
         btnVSICancel.setManaged(false);
         if (fnValue == EditMode.READY) {
             if (!lbStatus.getText().equals("Cancelled")) {
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
-//                btnPrint.setVisible(true);
-//                btnPrint.setManaged(true);
+                btnPrint.setVisible(true);
+                btnPrint.setManaged(true);
                 btnVSICancel.setVisible(true);
                 btnVSICancel.setManaged(true);
             }
