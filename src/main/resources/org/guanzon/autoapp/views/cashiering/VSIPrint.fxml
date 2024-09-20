@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="AnchorMain" prefHeight="660.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane prefHeight="584.0" prefWidth="646.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane prefHeight="626.0" prefWidth="626.0">
+                    <top>
+                        <AnchorPane prefHeight="33.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="VEHICLE SALES INVOICE PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <Separator layoutY="35.0" prefHeight="0.0" prefWidth="626.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <StackPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </StackPane.margin>
+                    <center>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <VBox fx:id="vbProgress" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label text="Loading activity plan please wait...">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="(Note: Please don't do anything while loading activity plan!!!)" textFill="#d30909">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Label>
+                                        <ProgressIndicator>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </ProgressIndicator>
+                                    </children>
+                                </VBox>
+                                <AnchorPane fx:id="reportPane" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: orange; -fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                            <BorderPane.margin>
+                                <Insets bottom="1.0" top="1.0" />
+                            </BorderPane.margin>
+                        </AnchorPane>
+                    </center>
+                    <bottom>
+                        <AnchorPane prefHeight="51.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <HBox prefHeight="47.0" prefWidth="142.0" spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnPrint" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
+</AnchorPane>
