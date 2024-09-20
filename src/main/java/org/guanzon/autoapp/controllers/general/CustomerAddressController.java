@@ -112,7 +112,8 @@ public class CustomerAddressController implements Initializable, ScreenInterface
     public void initialize(URL url, ResourceBundle rb) {
         CustomCommonUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
         Pattern loPattern = Pattern.compile("[0-9]*");
-        txtField03Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //House No
+        Pattern loHsNo = Pattern.compile("[0-9a-zA-Z]*");
+        txtField03Addr.setTextFormatter(new TextFormatterUtil(loHsNo)); //House No
         txtField07Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //Zip code
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
@@ -124,23 +125,8 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         initButtons();
         initCmboxFieldAction();
         initTextFieldListener();
+        initFields();
 
-        if (pbState) {
-            int lnSize = oTransAddress.getAddressList().size() - 1;
-            if (lnSize == 0) {
-                checkBox14Addr.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
     }
 
     private void showWarning(String formStateName, String warningTitle, String message) {
@@ -258,7 +244,7 @@ public class CustomerAddressController implements Initializable, ScreenInterface
                     if (lsConcatAddresses.equals(lsAddress)) {
                         if (lnCtr != pnRow) {
                             lnCtr += 1;
-                            showWarning(psFormStateName, "Information", "Address Information already exist in referral agent address at row " + lnCtr + ".  ");
+                            showWarning(psFormStateName, "Information", "Address Information already exist");
                             return;
                         }
                     }
@@ -540,6 +526,25 @@ public class CustomerAddressController implements Initializable, ScreenInterface
             txtField23Addr.setDisable(true);
             txtField05Addr.setDisable(true);
             txtField06Addr.setDisable(true);
+        }
+    }
+
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransAddress.getAddressList().size() - 1;
+            if (lnSize == 0) {
+                checkBox14Addr.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
         }
     }
 
