@@ -102,11 +102,11 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         timeline = new Timeline();
         generateReport();
 
-        btnClose.setOnAction(this::cmdButton_Click);
-        btnPrint.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::handleButtonAction);
+        btnPrint.setOnAction(this::handleButtonAction);
     }
 
-    private void cmdButton_Click(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
