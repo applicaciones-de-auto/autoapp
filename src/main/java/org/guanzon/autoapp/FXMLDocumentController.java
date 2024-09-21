@@ -721,7 +721,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         } else if (menuaction.contains("ReferralAgent.fxml")) {
             return "Referral Agent Information";
         } else if (menuaction.contains("VehicleInquiry.fxml")) {
-            return "Sales Executive Information";
+            return "Vehicle Inquiry";
         } else if (menuaction.contains("UnitReceiving.fxml")) {
             return "Unit Receiving Information";
         } else if (menuaction.contains("VehicleInquiry.fxml")) {

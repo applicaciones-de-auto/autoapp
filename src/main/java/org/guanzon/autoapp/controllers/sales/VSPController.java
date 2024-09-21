@@ -602,7 +602,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getLaborDsc()));
             }
             loControl.setState(fbIsAdd);
-//            loControl.setJO((String) oTrans.getVSPLaborDetail(fnRow, 11));
+            loControl.setJO(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getDSNo());
             loControl.setRow(fnRow);
             fxmlLoader.setController(loControl);
 
@@ -736,7 +736,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
             }
             loControl.setStockID(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
-//            loControl.setJO((String) oTrans.getVSPPartsDetail(fnRow, 11));
+            loControl.setJO(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -1562,9 +1562,15 @@ public class VSPController implements Initializable, ScreenInterface {
                         int removeCount = 0;
                         if (selectedVSPLabor != null) {
                             String lsRow = selectedVSPLabor.getTblindex01_labor();
+                            String lsLaborID = selectedVSPLabor.getTblindex03_labor();
+                            String lsJO = selectedVSPLabor.getTblindex10_labor();
                             int lnRow = Integer.parseInt(lsRow);
-                            oTransVSP.removeVSPLabor(lnRow - 1);
-                            removeCount++;
+                            if (lsJO.isEmpty()) {
+                                oTransVSP.removeVSPLabor(lnRow - 1);
+                                removeCount++;
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Labor " + lsLaborID + " already job order.");
+                            }
                         }
                         if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed labor successfully");
@@ -1587,9 +1593,15 @@ public class VSPController implements Initializable, ScreenInterface {
                         int removeCount = 0;
                         if (selectedVSPPart != null) {
                             String lsRow = selectedVSPPart.getTblindex01_part();
+                            String lsParts = selectedVSPPart.getTblindex09_part();
+                            String lsJO = selectedVSPPart.getTblindex11_part();
                             int lnRow = Integer.parseInt(lsRow);
-                            oTransVSP.removeVSPParts(lnRow - 1);
-                            removeCount++;
+                            if (lsJO.isEmpty()) {
+                                oTransVSP.removeVSPParts(lnRow - 1);
+                                removeCount++;
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Accessories " + lsParts + " already job order");
+                            }
                         }
                         if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed accessories successfully");
@@ -2421,11 +2433,11 @@ public class VSPController implements Initializable, ScreenInterface {
                         break;
                     case 1: //BANK PURCHASE ORDER
                         txtField31.setDisable(!lbShow);
-                        txtField32.getText();
+                        txtField32.setDisable(!lbShow);
                         if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
                                     txtField33,
-                                    //                                    txtField36,
+                                    //                                                                        txtField36,
                                     comboBox37,
                                     txtField39,
                                     txtField42,
@@ -2441,10 +2453,12 @@ public class VSPController implements Initializable, ScreenInterface {
                     case 3: // Company
                     case 4:
                         txtField31.setDisable(!lbShow);
-                        txtField32.getText();
+                        txtField32.setDisable(!lbShow);
                         if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
                                     txtField33,
+                                    txtField34,
+                                    txtField35,
                                     //                                    txtField36,
                                     comboBox37,
                                     txtField39,

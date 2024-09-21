@@ -7,7 +7,6 @@ package org.guanzon.autoapp.controllers.sales;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -23,7 +22,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -58,6 +56,7 @@ import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
 /**
@@ -73,6 +72,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     private double xOffset = 0;
     private double yOffset = 0;
     private String psVSPTransNo = "";
+    UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private int pnRow = -1;
     private boolean pbIsVSP = false;
     private final String pxeModuleName = "Sales Job Order"; //Form Title
@@ -384,8 +384,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnClose":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
-                    CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
+                    if (poUnload != null) {
+                        poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                    }
                 }
                 break;
             case "btnPrint":

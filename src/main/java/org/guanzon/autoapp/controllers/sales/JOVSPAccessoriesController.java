@@ -82,6 +82,121 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
         loadAccessoriesTable();
     }
 
+    private void loadAccessoriesTable() {
+        accessoriesData.clear();
+        boolean lbChargeType = false;
+        String lsChargeType = "";
+        String lsGrsAmount = "";
+        String lsQuantity = "";
+        String lsDiscAmount = "";
+        String lsTotalAmount = "";
+        String lsNetAmount = "";
+        String lsPartsDesc = "";
+        String lsBarCode = "";
+        String lsJoNoxx = "";
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransAccessories.loadVSPParts();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTransAccessories.getVSPPartsList().size() - 1; lnCtr++) {
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
+                    lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
+                    lsQuantity = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
+                    BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
+                    int lsQuan = Integer.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                    lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
+                    lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt() != null) {
+                    lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
+                    lbChargeType = true;
+                    lsChargeType = "0";
+                } else {
+                    lsChargeType = "1";
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
+                    lsPartsDesc = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
+                    lsBarCode = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
+                }
+                if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
+                    lsJoNoxx = oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDSNo();
+                }
+                accessoriesData.add(new Part(
+                        String.valueOf(lnCtr + 1),
+                        String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
+                        String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
+                        String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDescript()),
+                        lsQuantity,
+                        lsGrsAmount,
+                        lsDiscAmount,
+                        lsNetAmount,
+                        lsBarCode,
+                        lsChargeType,
+                        lsJoNoxx,
+                        lsPartsDesc,
+                        lsTotalAmount,
+                        lbChargeType
+                ));
+                lbChargeType = false;
+                lsChargeType = "";
+                lsGrsAmount = "";
+                lsQuantity = "";
+                lsDiscAmount = "";
+                lsTotalAmount = "";
+                lsNetAmount = "";
+                lsPartsDesc = "";
+                lsBarCode = "";
+                lsJoNoxx = "";
+            }
+        }
+        tblViewAccessories.setItems(accessoriesData);
+    }
+
+    private void initAccessoriesTable() {
+        tblindex01_part.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part"));
+        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
+        tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part"));
+        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part"));
+        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
+        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
+        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));
+        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
+        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
+        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
+        tblindex12_part.setCellValueFactory(new PropertyValueFactory<>("tblindex11_part"));
+
+        tblViewAccessories.getItems().forEach(item -> {
+            CheckBox selectCheckBox = item.getSelect();
+            selectCheckBox.setOnAction(event -> {
+                if (tblViewAccessories.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                    selectAll.setSelected(true);
+                } else {
+                    selectAll.setSelected(false);
+                }
+            });
+        });
+        selectAll.setOnAction(event -> {
+            boolean newValue = selectAll.isSelected();
+            tblViewAccessories.getItems().forEach(item -> item.getSelect().setSelected(newValue));
+        });
+        tblViewAccessories.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         JSONObject loJSON = new JSONObject();
@@ -122,21 +237,6 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
                     String lsChrgTyp = item.getTblindex10_part();
                     String lsJO = item.getTblindex11_part();
 
-                    // Check if the part already exists by barcode
-                    boolean isPartExist = false;
-                    for (int lnCtr = 0; lnCtr <= oTransAccessories.getJOPartsList().size() - 1; lnCtr++) {
-                        if (oTransAccessories.getJOPartsModel().getDetailModel(lnCtr).getBarCode().equals(lsBarCde)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " already exists.");
-                            isPartExist = true;
-                            break;
-                        }
-                    }
-
-                    // Skip the part if it exists
-                    if (isPartExist) {
-                        continue; // Skip to the next selected item
-                    }
-
                     // Skip if Stock ID is missing
                     if (lsStockID.equals("")) {
                         ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add accessories, " + lsBarCde + " has no Stock ID available.");
@@ -145,12 +245,12 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
                     oTransAccessories.addJOParts();
                     int lnRow = oTransAccessories.getJOPartsList().size() - 1;
                     loJSON = oTransAccessories.checkVSPJOParts(lsStockID, 0, lnRow, true);
-                    if (!"error".equals((String) loJSON.get("message"))) {
+                    if (!"error".equals((String) loJSON.get("result"))) {
                         oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setStockID(lsStockID);
                         oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setBarCode(lsBarCde);
                         oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setDescript(lsAccDesc);
                         oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setPayChrge(lsChrgTyp);
-                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
+//                        oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setQtyEstmt(Integer.valueOf(lsQuan));
                         oTransAccessories.getJOPartsModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
                         addedCount++;
                     } else {
@@ -171,114 +271,4 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
         }
     }
 
-    private void loadAccessoriesTable() {
-        accessoriesData.clear();
-        boolean lbChargeType = false;
-        String lsChargeType = "";
-        String lsGrsAmount = "";
-        String lsQuantity = "";
-        String lsDiscAmount = "";
-        String lsTotalAmount = "";
-        String lsNetAmount = "";
-        String lsPartsDesc = "";
-        String lsBarCode = "";
-        String lsJoNoxx = "";
-        for (int lnCtr = 0; lnCtr <= oTransAccessories.getVSPPartsList().size() - 1; lnCtr++) {
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
-                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                lsQuantity = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
-                int lsQuan = Integer.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
-                lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
-                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt() != null) {
-                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
-                lbChargeType = true;
-                lsChargeType = "0";
-            } else {
-                lsChargeType = "1";
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
-                lsPartsDesc = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
-                lsBarCode = String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
-            }
-            if (oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
-                lsJoNoxx = oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDSNo();
-            }
-            accessoriesData.add(new Part(
-                    String.valueOf(lnCtr + 1),
-                    String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
-                    String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
-                    String.valueOf(oTransAccessories.getVSPPartsModel().getVSPParts(lnCtr).getDescript()),
-                    lsQuantity,
-                    lsGrsAmount,
-                    lsDiscAmount,
-                    lsNetAmount,
-                    lsBarCode,
-                    lsChargeType,
-                    lsJoNoxx,
-                    lsPartsDesc,
-                    lsTotalAmount,
-                    lbChargeType
-            ));
-            lbChargeType = false;
-            lsChargeType = "";
-            lsGrsAmount = "";
-            lsQuantity = "";
-            lsDiscAmount = "";
-            lsTotalAmount = "";
-            lsNetAmount = "";
-            lsPartsDesc = "";
-            lsBarCode = "";
-            lsJoNoxx = "";
-        }
-        tblViewAccessories.setItems(accessoriesData);
-    }
-
-    private void initAccessoriesTable() {
-        tblindex01_part.setCellValueFactory(new PropertyValueFactory<>("tblindex01_part"));
-        tblindex02_part.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblindex03_part.setCellValueFactory(new PropertyValueFactory<>("tblindex04_part"));
-        tblindex04_part.setCellValueFactory(new PropertyValueFactory<>("tblindex09_part"));
-        tblindex05_part.setCellValueFactory(new PropertyValueFactory<>("tblindex12_part"));
-        tblindex06_part.setCellValueFactory(new PropertyValueFactory<>("tblindex06_part"));
-        tblindex07_part.setCellValueFactory(new PropertyValueFactory<>("tblindex05_part"));
-        tblindex08_part.setCellValueFactory(new PropertyValueFactory<>("tblindex13_part"));
-        tblindex09_part.setCellValueFactory(new PropertyValueFactory<>("tblindex07_part"));
-        tblindex10_part.setCellValueFactory(new PropertyValueFactory<>("tblindex08_part"));
-        tblindex11_part.setCellValueFactory(new PropertyValueFactory<>("FreeOrNot"));
-        tblindex12_part.setCellValueFactory(new PropertyValueFactory<>("tblindex11_part"));
-
-        tblViewAccessories.getItems().forEach(item -> {
-            CheckBox selectCheckBox = item.getSelect();
-            selectCheckBox.setOnAction(event -> {
-                if (tblViewAccessories.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
-                    selectAll.setSelected(true);
-                } else {
-                    selectAll.setSelected(false);
-                }
-            });
-        });
-        selectAll.setOnAction(event -> {
-            boolean newValue = selectAll.isSelected();
-            tblViewAccessories.getItems().forEach(item -> item.getSelect().setSelected(newValue));
-        });
-        tblViewAccessories.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-    }
 }

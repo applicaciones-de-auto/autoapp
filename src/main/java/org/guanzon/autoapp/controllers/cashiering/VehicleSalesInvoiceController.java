@@ -44,6 +44,7 @@ import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.cashiering.VehicleSalesInvoice;
@@ -127,15 +128,16 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         JSONObject loJSON = new JSONObject();
 //        loJSON = oTransVSI();
         txtField01.setText(oTransVSI.getMasterModel().getMasterModel().getReferNo());
-        if (oTransVSI.getMasterModel().getMasterModel().getClientTp() != null) {
-            if (!oTransVSI.getMasterModel().getMasterModel().getClientTp().isEmpty()) {
-                comboBox02.getSelectionModel().select(Integer.parseInt(oTransVSI.getMasterModel().getMasterModel().getClientTp()));
-            }
-        }
+
         if (oTransVSI.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransVSI.getMasterModel().getMasterModel().getTransactDte())));
         }
         if (oTransVSI.getVSISourceList().size() > 0) {
+            if (oTransVSI.getVSISourceModel().getDetailModel().getCustType() != null) {
+                if (!oTransVSI.getVSISourceModel().getDetailModel().getCustType().isEmpty()) {
+                    comboBox02.getSelectionModel().select(Integer.parseInt(oTransVSI.getVSISourceModel().getDetailModel().getCustType()));
+                }
+            }
             txtField04.setText(oTransVSI.getVSISourceModel().getDetailModel().getUDRNo());
             txtField05.setText(""); // NO PO GETTERS
             txtField06.setText(oTransVSI.getMasterModel().getMasterModel().getBuyCltNm());
@@ -286,6 +288,11 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
     };
 
     private void initFieldActions() {
+        datePicker03.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTransVSI.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            }
+        });
         txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
@@ -342,6 +349,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 oTransVSI = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
                 loJSON = oTransVSI.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
+                    oTransVSI.getMasterModel().getMasterModel().setDocType("0");
                     loadVSIFields();
                     pnEditMode = oTransVSI.getEditMode();
                     initFields(pnEditMode);
@@ -492,7 +500,6 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         comboBox02.setDisable(!lbShow);
         datePicker03.setDisable(!lbShow);
         txtField04.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()));
-        txtField21.setDisable(!lbShow);
         textArea16.setDisable(!lbShow);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);

@@ -1,16 +1,8 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/*
-    Created on : Feb 1, 2023, 10:24:41 AM
-    Author     : Arsiela
-*/
+/*below 1366 resolution*/
 #LabelDesc {
     -fx-text-fill: black;
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
 }
 
 .glyph-icon {
@@ -25,7 +17,7 @@ and open the template in the editor.
     /*-fx-background-color: transparent;*/
     -fx-text-fill: black;
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 11px;
 }
 .button:hover
 {
@@ -45,7 +37,7 @@ and open the template in the editor.
 .text-area {
     -fx-text-fill: black;
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -61,7 +53,7 @@ and open the template in the editor.
 .text-field {
     -fx-text-fill: black;
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -84,7 +76,7 @@ and open the template in the editor.
 .check-box{
     -fx-font-family: "Arial";
     -fx-opacity: 1.0;
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
 }
 .check-box .box {
     -fx-background-color: white;
@@ -104,7 +96,7 @@ and open the template in the editor.
     -fx-text-alignment: center;
     -fx-border-radius:3px;
     -fx-text-fill: black;
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
 }
 
 .combo-box-base:disabled,
@@ -121,7 +113,7 @@ and open the template in the editor.
 /*  Radio Button Css*/
 .radio-button {
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
 
 }
 .radio-button .radio {
@@ -131,7 +123,7 @@ and open the template in the editor.
     -fx-border-radius: 15px;
     -fx-padding: 4px;
     -fx-font-family: "Arial";
-    -fx-font-size: 11.5px;
+    -fx-font-size: 10px;
 
 }
 .radio-button .radio:selected {
@@ -185,7 +177,7 @@ and open the template in the editor.
 
 .table-view .table-cell{
     -fx-text-fill: black;
-    -fx-font-size: 11px;
+    -fx-font-size: 9px;
     -fx-font-weight: 300;
     -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     -fx-alignment: CENTER;
