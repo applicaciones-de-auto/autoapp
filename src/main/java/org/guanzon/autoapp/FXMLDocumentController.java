@@ -736,6 +736,22 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "VSP Approval";
         } else if (menuaction.contains("SalesJobOrder.fxml")) {
             return "Sales Job Order";
+//            case "Vehicle.fxml":
+//                return "Vehicle Information";
+            case "UnitReceiving.fxml":
+                return "Unit Receiving";
+            case psSalesPath + "VehicleInquiry.fxml":
+                return "Vehicle Inquiry";
+            case "VehicleSalesApproval.fxml":
+                return "Vehicle Reservation Approval";
+            case "UnitDeliveryReceipt.fxml":
+                return "Unit Delivery Receipt";
+            case psSalesPath + "VSP.fxml":
+                return "Vehicle Sales Proposal";
+            case "VSPApproval.fxml":
+                return "VSP Approval";
+            case psSalesPath + "SalesJobOrder.fxml":
+                return "Sales Job Order";
             /*CASHIERING*/
         } else if (menuaction.contains("Invoice.fxml")) {
             if (sSalesInvoiceType.isEmpty()) {

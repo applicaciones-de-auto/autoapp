@@ -78,6 +78,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         btnClose.setOnAction(this::handleButtonAction);
         btnAdd.setOnAction(this::handleButtonAction);
         initLaborTable();
@@ -221,6 +222,53 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
                 lsJoNoxx = "";
                 lsChargeType = "";
             }
+        for (int lnCtr = 0; lnCtr <= oTransLabor.getVSPLaborList().size() - 1; lnCtr++) {
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt() != null) {
+                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborAmt())));
+            }
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDscount() != null) {
+                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDscount())));
+            }
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getNtLabAmt() != null) {
+                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getNtLabAmt())));
+            }
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getChrgeTyp().equals("0")) {
+                lbChargeType = true;
+                lsChargeType = "0";
+            } else {
+                lsChargeType = "1";
+            }
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getAddtl().equals("1")) {
+                lbAdditional = true;
+            }
+            if (oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo() != null) {
+                lsJoNoxx = oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getDSNo();
+            }
+            laborData.add(new Labor(
+                    String.valueOf(lnCtr + 1),
+                    String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getTransNo()),
+                    String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde()),
+                    lsGrsAmount,
+                    lsDiscAmount,
+                    lsNetAmount,
+                    String.valueOf(oTransLabor.getVSPLaborModel().getVSPLabor(lnCtr).getLaborDsc()),
+                    "",
+                    "",
+                    "",
+                    "",
+                    lsChargeType,
+                    "",
+                    lsJoNoxx,
+                    lbAdditional,
+                    lbChargeType
+            ));
+            lbAdditional = false;
+            lbChargeType = false;
+            lsGrsAmount = "";
+            lsDiscAmount = "";
+            lsNetAmount = "";
+            lsJoNoxx = "";
+            lsChargeType = "";
         }
         tblViewLabor.setItems(laborData);
     }

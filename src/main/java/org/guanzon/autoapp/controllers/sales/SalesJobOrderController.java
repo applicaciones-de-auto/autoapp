@@ -319,6 +319,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 loJSON = oTransSJO.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
                     oTransSJO.getMasterModel().getMasterModel().setJobType("0");
+                    oTransSJO.getMasterModel().getMasterModel().setJobType("");
                     oTransSJO.getMasterModel().getMasterModel().setPaySrce("3");
                     oTransSJO.getMasterModel().getMasterModel().setWorkCtgy("2");
                     oTransSJO.getMasterModel().getMasterModel().setLaborTyp("");
@@ -826,6 +827,17 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             pnRow = tblViewLabor.getSelectionModel().getSelectedIndex();
             if (pnRow < 0 || pnRow >= tblViewLabor.getItems().size()) {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid labor information.");
+                return;
+            }
+        }
+    }
+
+    @FXML
+    private void tblViewAccessories_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnRow = tblViewAccessories.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewAccessories.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
                 return;
             }
             if (event.getClickCount() == 2) {

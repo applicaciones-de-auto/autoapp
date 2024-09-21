@@ -436,7 +436,6 @@ public class VSPController implements Initializable, ScreenInterface {
 
         lblDRNo.setText(lsVDRNo);
         String lsRFNO = "";
-
         if (oTransVSP.getMasterModel()
                 .getMasterModel().getGatePsNo() != null) {
             lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
@@ -451,7 +450,15 @@ public class VSPController implements Initializable, ScreenInterface {
         }
 
         lblSINo.setText(lsVSI);
-
+        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
+            lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
+        }
+        lblRFNo.setText(lsRFNO);
+        String lsVSI = "";
+        if (oTransVSP.getMasterModel().getMasterModel().getSINo() != null) {
+            lsVSI = oTransVSP.getMasterModel().getMasterModel().getSINo();
+        }
+        lblSINo.setText(lsVSI);
         lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
         switch (oTransVSP.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
@@ -2438,6 +2445,11 @@ public class VSPController implements Initializable, ScreenInterface {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
                                     txtField33,
                                     //                                                                        txtField36,
+                        txtField32.getText();
+                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
+                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
+                                    txtField33,
+                                    //                                    txtField36,
                                     comboBox37,
                                     txtField39,
                                     txtField42,
@@ -2459,6 +2471,10 @@ public class VSPController implements Initializable, ScreenInterface {
                                     txtField33,
                                     txtField34,
                                     txtField35,
+                        txtField32.getText();
+                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
+                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
+                                    txtField33,
                                     //                                    txtField36,
                                     comboBox37,
                                     txtField39,
@@ -2748,6 +2764,7 @@ public class VSPController implements Initializable, ScreenInterface {
                     if (tab.getText().equals(lsFormName)) {
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal.\n"
                                 + "Are you sure you want to convert this vsp for a new sales job order record?")) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal Form. Are you sure you want to convert this vsp for a new sjo record?")) {
                             tabpane.getSelectionModel().select(tab);
                             poUnload.unloadForm(AnchorMain, oApp, lsFormName);
                             loadSJOWindow();
