@@ -59,6 +59,7 @@ import org.guanzon.autoapp.controllers.general.CustomerController;
 import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
 import org.guanzon.autoapp.controllers.general.ReferralAgentController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
+import org.guanzon.autoapp.controllers.general.ServiceAdvisorController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
@@ -71,9 +72,7 @@ import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.ItemLocationController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
 import org.guanzon.autoapp.controllers.parameters.SectionController;
-import org.guanzon.autoapp.controllers.parameters.VehicleColorController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionController;
-import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
 import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatController;
 import org.guanzon.autoapp.controllers.parameters.VehicleMakeController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelController;
@@ -85,6 +84,7 @@ import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
 import org.guanzon.autoapp.controllers.sales.VehicleDeliveryReceiptController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
+import org.guanzon.autoapp.controllers.general.TechnicianController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
 /**
@@ -220,6 +220,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInsurInfo1;
     @FXML
     private MenuItem mnuVchlDeliveryReceipt;
+    @FXML
+    private MenuItem mnuServiceAdvisor;
+    @FXML
+    private MenuItem mnuServiceTech;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -691,6 +695,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new BrandController();
         } else if (fsValue.contains("VehicleSalesInvoice.fxml")) {
             return new VehicleSalesInvoiceController();
+        } else if (fsValue.contains("ServiceAdvisor.fxml")) {
+            return new ServiceAdvisorController();
+        } else if (fsValue.contains("Technician.fxml")) {
+            return new TechnicianController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -736,22 +744,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "VSP Approval";
         } else if (menuaction.contains("SalesJobOrder.fxml")) {
             return "Sales Job Order";
-//            case "Vehicle.fxml":
-//                return "Vehicle Information";
-            case "UnitReceiving.fxml":
-                return "Unit Receiving";
-            case psSalesPath + "VehicleInquiry.fxml":
-                return "Vehicle Inquiry";
-            case "VehicleSalesApproval.fxml":
-                return "Vehicle Reservation Approval";
-            case "UnitDeliveryReceipt.fxml":
-                return "Unit Delivery Receipt";
-            case psSalesPath + "VSP.fxml":
-                return "Vehicle Sales Proposal";
-            case "VSPApproval.fxml":
-                return "VSP Approval";
-            case psSalesPath + "SalesJobOrder.fxml":
-                return "Sales Job Order";
             /*CASHIERING*/
         } else if (menuaction.contains("Invoice.fxml")) {
             if (sSalesInvoiceType.isEmpty()) {
@@ -764,9 +756,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Item Information";
         } else if (menuaction.contains("VSPAccessoriesRequest.fxml")) {
             return "Vehicle Sales Parts Request";
-            /**/
+            /*SERVICE*/
         } else if (menuaction.contains("ServiceJobOrder.fxml")) {
             return "Service Job Order";
+        } else if (menuaction.contains("ServiceAdvisor.fxml")) {
+            return "Service Advisor";
+        } else if (menuaction.contains("Technician.fxml")) {
+            return "Service Technician";
         } else {
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
             return null;
@@ -1209,6 +1205,22 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     /*Service*/
     @FXML
+    private void mnuServiceAdvisorClick(ActionEvent event) {
+        String sformname = "ServiceAdvisor.fxml";
+        //check tab
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
+
+    }
+
+    @FXML
+    private void mnuServiceTechClick(ActionEvent event) {
+        String sformname = "Technician.fxml";
+        //check tab
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
+
+    }
+
+    @FXML
     private void mnuJobOrderClick(ActionEvent event) {
         sJobOrderType = "Service Job Order";
         String sformname = "ServiceJobOrder.fxml";
@@ -1218,8 +1230,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
     }
 
-    /*Service*/
- /*SET CURRENT TIME*/
     private void getTime() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             Calendar cal = Calendar.getInstance();
