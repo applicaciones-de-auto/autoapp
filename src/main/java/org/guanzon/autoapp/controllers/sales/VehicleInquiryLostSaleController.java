@@ -139,6 +139,9 @@ public class VehicleInquiryLostSaleController implements Initializable {
         btnTlost.setOnAction(this::handleButtonAction);
         btnDlost.setOnAction(this::handleButtonAction);
 
+        if (pbIsInquiry) {
+            comboBox01.getSelectionModel().select(1);
+        }
         initCmboxFieldAction();
         initTextKeyPressed();
         initTextFieldFocus();
@@ -252,7 +255,6 @@ public class VehicleInquiryLostSaleController implements Initializable {
                     oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
                 case 5:
-
                     oTransLost.getMasterModel().getMasterModel().setMkeCmptr(lsValue);
                     break;
             }
@@ -411,12 +413,14 @@ public class VehicleInquiryLostSaleController implements Initializable {
     }
 
     private void initFields() {
-        comboBox02.setDisable(true);
+        comboBox01.setDisable(true);
+        comboBox02.setDisable(false);
         comboBox03.setDisable(true);
         txtField04.setDisable(true);
         txtField05.setDisable(true);
         textArea06.setDisable(true);
         if (!pbIsInquiry) {
+            comboBox01.setDisable(false);
             switch (comboBox01.getSelectionModel().getSelectedIndex()) {
                 case 0:
                     comboBox02.setDisable(true);
@@ -433,24 +437,24 @@ public class VehicleInquiryLostSaleController implements Initializable {
                     textArea06.setDisable(false);
                     break;
             }
-            switch (comboBox02.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                case 2:
-                    comboBox03.setDisable(false);
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(false);
-                    break;
-                case 1:
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(false);
-                    break;
-                default:
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(true);
-                    txtField05.setDisable(true);
-                    break;
-            }
+        }
+        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+            case 0:
+            case 2:
+                comboBox03.setDisable(false);
+                txtField04.setDisable(false);
+                txtField05.setDisable(false);
+                break;
+            case 1:
+                comboBox03.setDisable(true);
+                txtField04.setDisable(false);
+                txtField05.setDisable(false);
+                break;
+            default:
+                comboBox03.setDisable(true);
+                txtField04.setDisable(true);
+                txtField05.setDisable(true);
+                break;
         }
     }
 }

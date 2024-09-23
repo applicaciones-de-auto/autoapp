@@ -418,7 +418,7 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField80.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getNetTTotl()))));
 
         String lsJobNO = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null) {
+        if (oTransVSP.getMasterModel().getMasterModel().getJONo() != null && !oTransVSP.getMasterModel().getMasterModel().getJONo().isEmpty()) {
             lsJobNO = oTransVSP.getMasterModel().getMasterModel().getJONo();
         }
         txtField81.setText(lsJobNO);
@@ -428,11 +428,28 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField85.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getSlsInAmt()))));
 
         String lsVDRNo = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null) {
+
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getUDRNo() != null) {
             lsVDRNo = oTransVSP.getMasterModel().getMasterModel().getUDRNo();
         }
+
         lblDRNo.setText(lsVDRNo);
         String lsRFNO = "";
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getGatePsNo() != null) {
+            lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
+        }
+
+        lblRFNo.setText(lsRFNO);
+        String lsVSI = "";
+
+        if (oTransVSP.getMasterModel()
+                .getMasterModel().getSINo() != null) {
+            lsVSI = oTransVSP.getMasterModel().getMasterModel().getSINo();
+        }
+
+        lblSINo.setText(lsVSI);
         if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
             lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
         }
@@ -459,15 +476,15 @@ public class VSPController implements Initializable, ScreenInterface {
             default:
                 lblVSPStatus.setText("");
                 break;
-        }
-//            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
-//                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
-//            }
-//    }
-//        else {
-//            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//        return false;
-//    }
+        } //            if (oTransVSP.getMasterModel().getMasterModel().getApprovedDte() != null && !oTransVSP.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
+        //                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTransVSP.getMasterModel().getMasterModel().getApprovedDte()));
+        //            }
+        //    }
+        //        else {
+        //            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+        //        return false;
+        //    }
+
         return true;
     }
 
@@ -551,6 +568,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 oTransVSP.removeVSPLabor(oTransVSP.getVSPLaborList().size() - 1);
                 return;
+
             }
         } catch (IOException ex) {
             Logger.getLogger(VSPController.class
@@ -568,6 +586,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (event.getClickCount() == 2) {
                 try {
                     loadLaborWindowDialog(pnRow, false, oTransVSP.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc(), true);
+
                 } catch (IOException ex) {
                     Logger.getLogger(VSPController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -590,7 +609,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getLaborDsc()));
             }
             loControl.setState(fbIsAdd);
-//            loControl.setJO((String) oTrans.getVSPLaborDetail(fnRow, 11));
+            loControl.setJO(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getDSNo());
             loControl.setRow(fnRow);
             fxmlLoader.setController(loControl);
 
@@ -724,7 +743,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
             }
             loControl.setStockID(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
-//            loControl.setJO((String) oTrans.getVSPPartsDetail(fnRow, 11));
+            loControl.setJO(String.valueOf(oTransVSP.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -762,6 +781,7 @@ public class VSPController implements Initializable, ScreenInterface {
             if (event.getClickCount() == 2) {
                 try {
                     loadAccessoriesWindowDialog(pnRow, false);
+
                 } catch (IOException ex) {
                     Logger.getLogger(VSPController.class
                             .getName()).log(Level.SEVERE, null, ex);
@@ -1549,9 +1569,15 @@ public class VSPController implements Initializable, ScreenInterface {
                         int removeCount = 0;
                         if (selectedVSPLabor != null) {
                             String lsRow = selectedVSPLabor.getTblindex01_labor();
+                            String lsLaborID = selectedVSPLabor.getTblindex03_labor();
+                            String lsJO = selectedVSPLabor.getTblindex10_labor();
                             int lnRow = Integer.parseInt(lsRow);
-                            oTransVSP.removeVSPLabor(lnRow - 1);
-                            removeCount++;
+                            if (lsJO.isEmpty()) {
+                                oTransVSP.removeVSPLabor(lnRow - 1);
+                                removeCount++;
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Labor " + lsLaborID + " already job order.");
+                            }
                         }
                         if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed labor successfully");
@@ -1574,9 +1600,15 @@ public class VSPController implements Initializable, ScreenInterface {
                         int removeCount = 0;
                         if (selectedVSPPart != null) {
                             String lsRow = selectedVSPPart.getTblindex01_part();
+                            String lsParts = selectedVSPPart.getTblindex09_part();
+                            String lsJO = selectedVSPPart.getTblindex11_part();
                             int lnRow = Integer.parseInt(lsRow);
-                            oTransVSP.removeVSPParts(lnRow - 1);
-                            removeCount++;
+                            if (lsJO.isEmpty()) {
+                                oTransVSP.removeVSPParts(lnRow - 1);
+                                removeCount++;
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Accessories " + lsParts + " already job order");
+                            }
                         }
                         if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed accessories successfully");
@@ -2408,6 +2440,11 @@ public class VSPController implements Initializable, ScreenInterface {
                         break;
                     case 1: //BANK PURCHASE ORDER
                         txtField31.setDisable(!lbShow);
+                        txtField32.setDisable(!lbShow);
+                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
+                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
+                                    txtField33,
+                                    //                                                                        txtField36,
                         txtField32.getText();
                         if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
@@ -2428,6 +2465,12 @@ public class VSPController implements Initializable, ScreenInterface {
                     case 3: // Company
                     case 4:
                         txtField31.setDisable(!lbShow);
+                        txtField32.setDisable(!lbShow);
+                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
+                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
+                                    txtField33,
+                                    txtField34,
+                                    txtField35,
                         txtField32.getText();
                         if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
@@ -2719,6 +2762,8 @@ public class VSPController implements Initializable, ScreenInterface {
 
                 for (Tab tab : tabpane.getTabs()) {
                     if (tab.getText().equals(lsFormName)) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal.\n"
+                                + "Are you sure you want to convert this vsp for a new sales job order record?")) {
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal Form. Are you sure you want to convert this vsp for a new sjo record?")) {
                             tabpane.getSelectionModel().select(tab);
                             poUnload.unloadForm(AnchorMain, oApp, lsFormName);

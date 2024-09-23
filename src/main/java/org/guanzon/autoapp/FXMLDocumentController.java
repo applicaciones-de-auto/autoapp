@@ -30,6 +30,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -44,12 +45,14 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
 import org.guanzon.autoapp.controllers.general.CustomerController;
@@ -103,6 +106,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private final String psPartsPath = "/org/guanzon/autoapp/views/parts/";
     private final String psSalesPath = "/org/guanzon/autoapp/views/sales/";
     private final String psServicePath = "/org/guanzon/autoapp/views/service/";
+    private final String psCashPath = "/org/guanzon/autoapp/views/cashiering/";
     // Variables to track the window movement
     private double xOffset = 0;
     private double yOffset = 0;
@@ -616,137 +620,122 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     public ScreenInterface getController(String fsValue) {
-        switch (fsValue) {
-            case "FXMLMainScreen.fxml":
-                return new FXMLMainScreenController();
-//            /*DIRECTORY*/
-            case psGeneralPath + "ActivityInformation.fxml":
-                return new ActivityInformationController();
-            case psGeneralPath + "ActivityApproval.fxml":
-                return new ActivityApprovalController();
-            case "ActivitySourceType.fxml":
-                return new ActivitySourceTypeController();
-            case psGeneralPath + "Customer.fxml":
-                return new CustomerController();
-            case psGeneralPath + "CustomerVehicleInfo.fxml":
-                return new CustomerVehicleInfoController();
-            case "SalesExecutive.fxml":
-                return new SalesExecutiveController();
-            case psGeneralPath + "ReferralAgent.fxml":
-                return new ReferralAgentController();
-////               case "SupplierInfo.fxml":
-////                    return new SupplierInfoController();
-//            /*SALES*/
-            case "VehicleDescription.fxml":
-                return new VehicleDescriptionController();
-            case "VehicleMake.fxml":
-                return new VehicleMakeController();
-            case "VehicleModel.fxml":
-                return new VehicleModelController();
-            case "VehicleType.fxml":
-                return new VehicleTypeController();
-            case "VehicleColor.fxml":
-                return new VehicleColorController();
-            case "VehicleFrameFormat.fxml":
-                return new VehicleFrameFormatController();
-            case "VehicleEngineFormat.fxml":
-                return new VehicleEngineFormatController();
-            case psSalesPath + "SalesJobOrder.fxml":
-                return new SalesJobOrderController();
-//            case "VehicleEntryForm.fxml":
-//                return new VehicleEntryFormController();
-//            case "UnitReceivingForm.fxml":
-//                return new UnitReceivingFormController();
-            case psSalesPath + "VehicleInquiry.fxml":
-                return new VehicleInquiryController();
-//            case "VehicleSalesApproval.fxml":
-//                return new VehicleSalesApprovalController();
-            case "Bank.fxml":
-                return new BankController();
-            case "BankBranchInformation.fxml":
-                return new BankBranchInformationController();
-            case "InsuranceCompany.fxml":
-                return new InsuranceCompanyController();
-            case "InsuranceBranchInformation.fxml":
-                return new InsuranceBranchInformationController();
-            case "VehicleDeliveryReceipt.fxml":
-                return new VehicleDeliveryReceiptController();
-            case psSalesPath + "VSP.fxml":
-                return new VSPController();
-//            case "VSPAddOnsApproval.fxml":
-//                return new VSPAddOnsApprovalController();
-//
-//            /*PARTS*/
-            case psPartsPath + "ItemInformation.fxml":
-                return new ItemInformationController();
-//            case "PartsRequisitionForm.fxml":
-////                return new PartsRequisitionFormController();
-            case "VSPAccessoriesRequest.fxml":
-                return new VSPAccessoriesRequestController();
-//
-//            /*PARAMETERS*/
-            case "ItemLocation.fxml":
-                return new ItemLocationController();
-            case "Bin.fxml":
-                return new BinController();
-            case "Section.fxml":
-                return new SectionController();
-            case "WareHouse.fxml":
-                return new WareHouseController();
-            case "Category.fxml":
-                return new CategoryController();
-            case "InvType.fxml":
-                return new InvTypeController();
-            case "Measurement.fxml":
-                return new MeasurementController();
-            case "Brand.fxml":
-                return new BrandController();
-//            case "Invoice.fxml":
-//                return new InvoiceController();
-//            case "VehicleSalesInvoice.fxml":
-//                return new VehicleSalesInvoiceController();
-//            /*SERVICE*/
-//            case "JobOrder.fxml":
-//                return new JobOrderController();
-//            /*SERVICE*/
-//            case "InsuranceInformation_1.fxml":
-//                return new InsuranceInformation_1Controller();
-
-            default:
-                ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
-                return null;
+        if (fsValue.contains("FXMLMainScreen.fxml")) {
+            return new FXMLMainScreenController();
+        } else if (fsValue.contains("Customer.fxml")) {
+            return new CustomerController();
+        } else if (fsValue.contains("CustomerVehicleInfo.fxml")) {
+            return new CustomerVehicleInfoController();
+        } else if (fsValue.contains("ActivityInformation.fxml")) {
+            return new ActivityInformationController();
+        } else if (fsValue.contains("ActivityApproval.fxml")) {
+            return new ActivityApprovalController();
+        } else if (fsValue.contains("ActivitySourceType.fxml")) {
+            return new ActivitySourceTypeController();
+        } else if (fsValue.contains("SalesExecutive.fxml")) {
+            return new SalesExecutiveController();
+        } else if (fsValue.contains("ReferralAgent.fxml")) {
+            return new ReferralAgentController();
+            //
+        } else if (fsValue.contains("VehicleDescription.fxml")) {
+            return new VehicleDescriptionController();
+        } else if (fsValue.contains("VehicleMake.fxml")) {
+            return new VehicleMakeController();
+        } else if (fsValue.contains("VehicleModel.fxml")) {
+            return new VehicleModelController();
+        } else if (fsValue.contains("VehicleType.fxml")) {
+            return new VehicleTypeController();
+        } else if (fsValue.contains("VehicleFrameFormat.fxml")) {
+            return new VehicleFrameFormatController();
+        } else if (fsValue.contains("SalesJobOrder.fxml")) {
+            return new SalesJobOrderController();
+        } else if (fsValue.contains("VehicleInquiry.fxml")) {
+            return new VehicleInquiryController();
+        } else if (fsValue.contains("VehicleSalesApproval.fxml")) {
+//            return new VehicleSalesApprovalController();
+            /* BANK */
+        } else if (fsValue.contains("Bank.fxml")) {
+            return new BankController();
+        } else if (fsValue.contains("BankBranchInformation.fxml")) {
+            return new BankBranchInformationController();
+            /* Insurance  */
+        } else if (fsValue.contains("InsuranceCompany.fxml")) {
+            return new InsuranceCompanyController();
+        } else if (fsValue.contains("InsuranceBranchInformation.fxml")) {
+            return new InsuranceBranchInformationController();
+        } else if (fsValue.contains("VehicleDeliveryReceipt.fxml")) {
+            return new VehicleDeliveryReceiptController();
+        } else if (fsValue.contains("VSP.fxml")) {
+            return new VSPController();
+        } else if (fsValue.contains("VSPApproval.fxml")) {
+//            return new VSPApprovalController();
+        } else if (fsValue.contains("ItemInformation.fxml")) {
+            return new ItemInformationController();
+        } else if (fsValue.contains("VSPAccessoriesRequest.fxml")) {
+            return new VSPAccessoriesRequestController();
+        } else if (fsValue.contains("ItemLocation.fxml")) {
+            return new ItemLocationController();
+        } else if (fsValue.contains("Bin.fxml")) {
+            return new BinController();
+        } else if (fsValue.contains("Section.fxml")) {
+            return new SectionController();
+        } else if (fsValue.contains("WareHouse.fxml")) {
+            return new WareHouseController();
+        } else if (fsValue.contains("Category.fxml")) {
+            return new CategoryController();
+        } else if (fsValue.contains("InvType.fxml")) {
+            return new InvTypeController();
+        } else if (fsValue.contains("Measurement.fxml")) {
+            return new MeasurementController();
+        } else if (fsValue.contains("Brand.fxml")) {
+            return new BrandController();
+        } else if (fsValue.contains("VehicleSalesInvoice.fxml")) {
+            return new VehicleSalesInvoiceController();
+        } else {
+            // Handle other controllers here
+            ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
+            return null;
         }
+        return null;
     }
 
     public String SetTabTitle(String menuaction) {
-        switch (menuaction) {
-            /*DIRECTORY*/
-            case psGeneralPath + "ActivityInformation.fxml":
-                return "Activity Information";
-            case psGeneralPath + "ActivityApproval.fxml":
-                return "Activity Approval";
-            case psGeneralPath + "Customer.fxml":
-                return "Customer";
-            case "SalesExecutive.fxml":
-                return "Sales Executive Information";
-            case psGeneralPath + "ReferralAgent.fxml":
-                return "Referral Agent Information";
-            case psGeneralPath + "CustomerVehicleInfo.fxml":
-//                if (sVehicleInfoType.isEmpty()) {
-//                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
-//                    return null;
-//                }
-                return sVehicleInfoType;
-            case psGeneralPath + "VehicleInformation.fxml":
-//                if (sVehicleInfoType.isEmpty()) {
-//                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
-//                    return null;
-//                }
-                return sVehicleInfoType;
-            //return "Customer Vehicle Information";
-            case "SupplierInfo.fxml":
-                return "Supplier";
+        /*DIRECTORY*/
+        if (menuaction.contains("ActivityInformation.fxml")) {
+            return "Activity Information";
+        } else if (menuaction.contains("ActivityApproval.fxml")) {
+            return "Activity Approval";
+        } else if (menuaction.contains("Customer.fxml")) {
+            return "Customer Information";
+        } else if (menuaction.contains("CustomerVehicleInfo.fxml")) {
+            if (sVehicleInfoType.equals("Vehicle Sales Information")) {
+                return "Vehicle Sales Information";
+            } else {
+                return "Customer Vehicle Information";
+            }
+        } else if (menuaction.contains("SupplierInfo.fxml")) {
+            return "Supplier Information";
             /*SALES*/
+        } else if (menuaction.contains("SalesExecutive.fxml")) {
+            return "Sales Executive Information";
+        } else if (menuaction.contains("ReferralAgent.fxml")) {
+            return "Referral Agent Information";
+        } else if (menuaction.contains("VehicleInquiry.fxml")) {
+            return "Vehicle Inquiry";
+        } else if (menuaction.contains("UnitReceiving.fxml")) {
+            return "Unit Receiving Information";
+        } else if (menuaction.contains("VehicleInquiry.fxml")) {
+            return "Vehicle Inquiry";
+        } else if (menuaction.contains("VehicleSalesApproval.fxml")) {
+            return "Vehicle Reservation Approval";
+        } else if (menuaction.contains("VehicleDeliveryReceipt.fxml")) {
+            return "Vehicle Delivery Receipt";
+        } else if (menuaction.contains("VSP.fxml")) {
+            return "Vehicle Sales Proposal";
+        } else if (menuaction.contains("VSPApproval.fxml")) {
+            return "VSP Approval";
+        } else if (menuaction.contains("SalesJobOrder.fxml")) {
+            return "Sales Job Order";
 //            case "Vehicle.fxml":
 //                return "Vehicle Information";
             case "UnitReceiving.fxml":
@@ -764,33 +753,23 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case psSalesPath + "SalesJobOrder.fxml":
                 return "Sales Job Order";
             /*CASHIERING*/
-            case "Invoice.fxml":
-                if (sSalesInvoiceType.isEmpty()) {
-                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
-                    return null;
-                }
-                return sSalesInvoiceType;
-            case "VehicleSalesInvoice.fxml":
-                return "Vehicle Sales Invoice";
-            /*PARTS*/
-            case psPartsPath + "ItemInformation.fxml":
-                return "Item Information";
-            case "PartsRequisition.fxml":
-                return "Parts Requisition";
-            case psPartsPath + "VSPAccessoriesRequest.fxml":
-                return "Vehicle Sales Parts Request";
-            /**/
-            case "JobOrder.fxml":
-                if (sJobOrderType.isEmpty()) {
-                    ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
-                    return null;
-                }
-                return sJobOrderType;
-            case "InsuranceInformation_1.fxml":
-                return "Insurance";
-            default:
+        } else if (menuaction.contains("Invoice.fxml")) {
+            if (sSalesInvoiceType.isEmpty()) {
                 ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
                 return null;
+            }
+            return sSalesInvoiceType;
+            /*PARTS*/
+        } else if (menuaction.contains("ItemInformation.fxml")) {
+            return "Item Information";
+        } else if (menuaction.contains("VSPAccessoriesRequest.fxml")) {
+            return "Vehicle Sales Parts Request";
+            /**/
+        } else if (menuaction.contains("ServiceJobOrder.fxml")) {
+            return "Service Job Order";
+        } else {
+            ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
+            return null;
         }
     }
 
@@ -846,18 +825,44 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         return workingSpace;
     }
 
-    /*MENU ACTIONS OPENING FXML's*/
+    //    Get the screen resolution
+    private String getFormName(String bigFormName, String normalFormName, String smallFormName) {
+
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        double screenWidth = screenBounds.getWidth();
+
+        // Dynamically choose form based on the screen width
+        if (screenWidth >= 1920) {
+            // For large screens (1920x1080 and higher)
+            return bigFormName;
+        } else if (screenWidth >= 1360 && screenWidth < 1920) {
+            // For medium screens (e.g., 1366x768, 1600x900)
+            return normalFormName;
+        } else {
+            // For smaller screens (less than 1366 width)
+            return smallFormName != null ? smallFormName : normalFormName;
+        }
+    }
+
     @FXML
-    private void mnuCustomerInfoClick(ActionEvent event) {
-        String sformname = psGeneralPath + "Customer.fxml";
-        //check tab
+    private void mnuCustomerInfoClick(ActionEvent event
+    ) {
+        String sBigformname = psGeneralPath + "bigscreen/" + "Customer.fxml";
+        String sNormalformname = psGeneralPath + "Customer.fxml";
+        String sSmallFormName = psGeneralPath + "smallscreen/" + "Customer.fxml";
+
+        // Use the reusable function to get the correct form name based on screen size
+        String sformname = getFormName(sBigformname, sNormalformname, sSmallFormName);
+
+        // Check tab and load the form
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
     }
 
     @FXML
-    private void mnuSupplierInfoClick(ActionEvent event) {
+    private void mnuSupplierInfoClick(ActionEvent event
+    ) {
         String sformname = "SupplierInfo.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -877,7 +882,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuSalesJobOrderClick(ActionEvent event) {
+    private void mnuSalesJobOrderClick(ActionEvent event
+    ) {
         sJobOrderType = "Sales Job Order";
         String sformname = psSalesPath + "SalesJobOrder.fxml";
         //check tab
@@ -887,7 +893,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuSalesAgentClick(ActionEvent event) {
+    private void mnuSalesAgentClick(ActionEvent event
+    ) {
         String sformname = psGeneralPath + "ReferralAgent.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -896,20 +903,23 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuSalesExecutiveClick(ActionEvent event) {
+    private void mnuSalesExecutiveClick(ActionEvent event
+    ) {
         String sformname = "SalesExecutive.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psGeneralPath);
     }
 
     @FXML
-    private void mnuVchlDeliveryReceiptClick(ActionEvent event) {
+    private void mnuVchlDeliveryReceiptClick(ActionEvent event
+    ) {
         String sformname = "VehicleDeliveryReceipt.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psSalesPath);
 
     }
 
     @FXML
-    private void mnuUnitRecvClick(ActionEvent event) {
+    private void mnuUnitRecvClick(ActionEvent event
+    ) {
         String sformname = "UnitReceiving.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -918,7 +928,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuVhclRsrvAppClick(ActionEvent event) {
+    private void mnuVhclRsrvAppClick(ActionEvent event
+    ) {
         String sformname = "VehicleSalesApproval.fxml";
 
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -927,7 +938,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuInquiryClick(ActionEvent event) {
+    private void mnuInquiryClick(ActionEvent event
+    ) {
         String sformname = psSalesPath + "VehicleInquiry.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -952,20 +964,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-    }
-
-    private void mnuVhclEntryClick(ActionEvent event) {
-        sVehicleInfoType = "Vehicle Sales Information";
-        String sformname = psGeneralPath + "CustomerVehicleInfo.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-//        String sformname = "VehicleEntryForm.fxml";
-//        //check tab
-//        if (checktabs(SetTabTitle(sformname)) == 1) {
-//            setScene2(loadAnimate(sformname));
-//        }
     }
 
     @FXML
@@ -1093,10 +1091,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuVhclSalesInvClick(ActionEvent event) {
         String sformname = "VehicleSalesInvoice.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psCashPath);
+
     }
 
     /*ACTIVITY*/
@@ -1215,7 +1211,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuJobOrderClick(ActionEvent event) {
         sJobOrderType = "Service Job Order";
-        String sformname = "JobOrder.fxml";
+        String sformname = "ServiceJobOrder.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

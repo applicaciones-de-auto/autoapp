@@ -87,7 +87,6 @@ public class BrandController implements Initializable, ScreenInterface {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
-
     }
 
     private void initCapitalizationFields() {

@@ -7,9 +7,7 @@ package org.guanzon.autoapp.utils;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.util.StringConverter;
 
 /**
  * Date : 3/14/2023

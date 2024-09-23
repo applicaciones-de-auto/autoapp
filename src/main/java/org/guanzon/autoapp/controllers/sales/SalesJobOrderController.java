@@ -56,6 +56,7 @@ import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
 /**
@@ -71,6 +72,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     private double xOffset = 0;
     private double yOffset = 0;
     private String psVSPTransNo = "";
+    UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private int pnRow = -1;
     private boolean pbIsVSP = false;
     private final String pxeModuleName = "Sales Job Order"; //Form Title
@@ -167,6 +169,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     private void loadSJOFields() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransSJO.computeAmount();
         txtField01.setText(oTransSJO.getMasterModel().getMasterModel().getVSPNo());
         txtField02.setText(oTransSJO.getMasterModel().getMasterModel().getDSNo());
         if (oTransSJO.getMasterModel().getMasterModel().getTransactDte() != null) {
@@ -314,6 +318,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 oTransSJO = new JobOrder(oApp, false, oApp.getBranchCode());
                 loJSON = oTransSJO.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
+                    oTransSJO.getMasterModel().getMasterModel().setJobType("0");
                     oTransSJO.getMasterModel().getMasterModel().setJobType("");
                     oTransSJO.getMasterModel().getMasterModel().setPaySrce("3");
                     oTransSJO.getMasterModel().getMasterModel().setWorkCtgy("2");
@@ -380,8 +385,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnClose":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
-                    CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
+                    if (poUnload != null) {
+                        poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                    }
                 }
                 break;
             case "btnPrint":
@@ -398,6 +407,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     loJSON = oTransSJO.openTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadSJOFields();
+                        loadLaborTable();
+                        loadAccessoriesTable();
                         pnEditMode = oTransSJO.getEditMode();
                         initFields(pnEditMode);
                     }
@@ -829,6 +840,130 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
                 return;
             }
+            if (event.getClickCount() == 2) {
+                try {
+                    loadLaborWindowDialog(pnRow, true, false);
+                } catch (IOException ex) {
+                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void tblViewAccessories_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnRow = tblViewAccessories.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewAccessories.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
+                return;
+            }
+            if (event.getClickCount() == 2) {
+                try {
+                    loadAccessoriesWindowDialog(pnRow, true, false);
+                } catch (IOException ex) {
+                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    private void loadLaborWindowDialog(Integer fnRow, boolean fbIsVSPJo, boolean fbIsAdd) throws IOException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/JOLabor.fxml"));
+            JOLaborController loControl = new JOLaborController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransSJO);
+            loControl.setIsVSPJo(fbIsVSPJo);
+            if (!oTransSJO.getJOLaborModel().getDetailModel(fnRow).getLaborDsc().isEmpty()) {
+                loControl.setOrigDsc(String.valueOf(oTransSJO.getJOLaborModel().getDetailModel(fnRow).getLaborDsc()));
+            }
+            loControl.setState(fbIsAdd);
+            loControl.setRow(fnRow);
+            fxmlLoader.setController(loControl);
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadLaborTable();
+            loadSJOFields();
+
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+
+        }
+    }
+
+    private void loadAccessoriesWindowDialog(Integer fnRow, boolean fbIsVSPJO, boolean fbIsAdd) throws IOException {
+        /**
+         * if state = true : ADD else if state = false : UPDATE *
+         */
+        try {
+            Stage stage = new Stage();
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/JOAccessories.fxml"));
+
+            JOAccessoriesController loControl = new JOAccessoriesController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransSJO);
+            loControl.setState(fbIsAdd);
+            loControl.setIsVSPJo(fbIsVSPJO);
+
+            loControl.setRequest(false);
+            loControl.setRow(fnRow);
+            if (oTransSJO.getJOPartsModel().getJOParts(fnRow).getDescript() != null) {
+                loControl.setOrigDsc(String.valueOf(oTransSJO.getJOPartsModel().getJOParts(fnRow).getDescript()));
+            }
+            loControl.setStockID(String.valueOf(oTransSJO.getJOPartsModel().getJOParts(fnRow).getStockID()));
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadAccessoriesTable();
+            loadSJOFields();
+
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+
         }
     }
 }

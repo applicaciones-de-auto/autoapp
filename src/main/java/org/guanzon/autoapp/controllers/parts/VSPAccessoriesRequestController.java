@@ -178,7 +178,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         txtField02.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCoCltNm());
         txtField03.setText(oTransVSPRequest.getMasterModel().getMasterModel().getSEName());
         txtField04.setText(oTransVSPRequest.getMasterModel().getMasterModel().getAgentNm());
-        textArea05.setText(oTransVSPRequest.getMasterModel().getMasterModel().getVhclDesc());
+        textArea05.setText(oTransVSPRequest.getMasterModel().getMasterModel().getVhclFDsc());
         txtField06.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCSNo());
         txtField07.setText(oTransVSPRequest.getMasterModel().getMasterModel().getPlateNo());
     }

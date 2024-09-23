@@ -2,16 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package org.guanzon.autoapp.controllers.general;
+package org.guanzon.autoapp.controllers.cashiering;
 
 import java.awt.Component;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -25,7 +23,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.swing.AbstractButton;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -33,15 +30,11 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.auto.main.sales.Activity;
-import org.guanzon.autoapp.models.general.ActivityMember;
-import org.guanzon.autoapp.models.general.ActivityLocation;
-import org.guanzon.autoapp.models.general.ActivityVehicle;
+import org.guanzon.auto.main.cashiering.VehicleSalesInvoice;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -49,19 +42,15 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author AutoGroup Programmers
  */
-public class ActivityPrintController implements Initializable, ScreenInterface {
+public class VSIPrintController implements Initializable, ScreenInterface {
 
-    private Activity oTransPrint;
+    private VehicleSalesInvoice oTransPrint;
     private GRider oApp;
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
-    private final String pxeModuleName = "Activity Print";
-
-    private List<ActivityMember> actMembersData = new ArrayList<ActivityMember>();
-    private List<ActivityLocation> locationData = new ArrayList<ActivityLocation>();
-    private List<ActivityVehicle> actVhclModelData = new ArrayList<ActivityVehicle>();
+    private final String pxeModuleName = "VSI Print";
     private String psTransNox;
     private boolean running = false;
     Map<String, Object> params = new HashMap<>();
@@ -83,8 +72,8 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         oApp = foValue;
     }
 
-    private Stage getStage() {
-        return (Stage) btnClose.getScene().getWindow();
+    public void setVSIObject(VehicleSalesInvoice foValue) {
+        oTransPrint = foValue;
     }
 
     public void setTransNox(String fsValue) {
@@ -152,7 +141,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
                     try {
                         loadReport();
                     } catch (SQLException ex) {
-                        Logger.getLogger(ActivityPrintController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(VSIPrintController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }));
@@ -196,10 +185,10 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
         return fsValue;
     }
 
-    private static String formatAmount(String fsAmountString) {
+    private static String getValueNumberReport(String fsAmountString) {
         DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
         String lsFormattedAmount = "";
-        if (fsAmountString.contains("0.00") || fsAmountString.isEmpty()) {
+        if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
             lsFormattedAmount = "";
         } else {
             double amount = Double.parseDouble(fsAmountString);
@@ -209,83 +198,106 @@ public class ActivityPrintController implements Initializable, ScreenInterface {
     }
 
     private boolean loadReport() throws SQLException {
-        int lnCtr;
         JSONObject loJSON = new JSONObject();
-        loJSON = oTransPrint.openRecord(psTransNox);
+        loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
-            params.put("actNo", getValueReport("actNo", "sActNoxxx"));
-            params.put("actID", getValueReport("actID", "sActvtyID"));
-            params.put("actDateFrom", getValueDateReport("actDateFrom", "dDateFrom"));
-            params.put("actDateTo", getValueDateReport("actDateTo", "dDateThru"));
-            params.put("actTitle", getValueReport("actTitle", "sActTitle"));
-            params.put("actDesc", getValueReport("actDesc", "sActDescx"));
-            params.put("actTypDs", getValueReport("actTypeDs", "sActTypDs"));
-            params.put("actLogRemrks", getValueReport("actLogRrmks", "sLogRemrk"));
-            params.put("actDeprtName", getValueReport("actDeprtName", "sDeptName"));
-            params.put("actPersonEnhrge", getValueReport("actPersonEnhrge", "sCompnyNm"));
-            params.put("actRemarks", getValueReport("actLogRrmks", "sRemarksx"));
-            params.put("actBranchNm", getValueReport("actBranchNm", "sBranchNm"));
-            params.put("actBranchCd", getValueReport("actLocation", "sLocation"));
-            params.put("actTrgClnt", String.valueOf(oTransPrint.getMaster("nTrgtClnt")));
-            params.put("actRcvdBdgt", formatAmount(oTransPrint.getMaster("nRcvdBdgt").toString()));
-            params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
-            params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
-            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApproved"));
-            String lsFrom = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
-            String lsTo = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
-            String duration = lsFrom + " - " + lsTo;
-            params.put("durationTime", duration);
-            //Activity Location
-            locationData.clear();
-            String sAddress = "";
-            for (lnCtr = 0; lnCtr <= oTransPrint.getActLocationList().size() - 1; lnCtr++) {
-                sAddress = oTransPrint.getActLocation(lnCtr, "sAddressx").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase() + " " + oTransPrint.getActLocation(lnCtr, "sTownName").toString().toUpperCase() + ", " + oTransPrint.getActLocation(lnCtr, "sProvName").toString().toUpperCase();
-                locationData.add(new ActivityLocation(
-                        String.valueOf(lnCtr + 1), //ROW
-                        sAddress,
-                        oTransPrint.getActLocation(lnCtr, "sTownIDxx").toString().toUpperCase(),
-                        oTransPrint.getActLocation(lnCtr, "sTownName").toString().toUpperCase(),
-                        oTransPrint.getActLocation(lnCtr, "sCompnynx").toString().toUpperCase(),
-                        oTransPrint.getActLocation(lnCtr, "sZippCode").toString(),
-                        oTransPrint.getActLocation(lnCtr, "sProvIDxx").toString(),
-                        oTransPrint.getActLocation(lnCtr, "sProvName").toString().toUpperCase(),
-                        oTransPrint.getActLocation(lnCtr, "sBrgyIDxx").toString(),
-                        oTransPrint.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase()
-                ));
-            }
-            //Activity Members
-            actMembersData.clear();
-            for (lnCtr = 0; lnCtr <= oTransPrint.getActMemberList().size() - 1; lnCtr++) {
-                if (oTransPrint.getActMember(lnCtr, "cOriginal").equals("1")) {
-                    actMembersData.add(new ActivityMember(
-                            String.valueOf(lnCtr + 1), //ROW
-                            "",
-                            oTransPrint.getActMember(lnCtr, "sDeptName").toString().toUpperCase(),
-                            oTransPrint.getActMember(lnCtr, "sEmployID").toString().toUpperCase(),
-                            oTransPrint.getActMember(lnCtr, "sCompnyNm").toString().toUpperCase()));
+            params.put("soldTo", getValueReport("soldTo", "sBuyCltNm"));
+            params.put("tinNo", getValueReport("tinNo", "sTaxIDNox"));
+            params.put("address", getValueReport("address", "sAddressx"));
+            params.put("transDate", getValueDateReport("transDate", "dTransact"));
+            params.put("address", getValueReport("address", "sAddressx"));
+            params.put("quantity", "One(1)");
+            if (oTransPrint.getVSISourceList().size() > 0) {
+                String vsiNo = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getReferNo() != null && oTransPrint.getVSISourceModel().getDetailModel().getUDRNo() != null) {
+                    vsiNo = "SI # " + getValueReport("vsiNo", "sReferNox") + " / " + " DR # " + oTransPrint.getVSISourceModel().getDetailModel().getUDRNo();
+                }
+                params.put("vsiNo", vsiNo);
+                String lsPaymentMethod = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getPayMode() != null) {
+                    switch (oTransPrint.getVSISourceModel().getDetailModel().getPayMode()) {
+                        case "0":
+                            lsPaymentMethod = "CASH";
+                            break;
+                        case "1":
+                            lsPaymentMethod = "BANK PURCHASE ORDER";
+                            break;
+                        case "2":
+                            lsPaymentMethod = "BANK FINANCING";
+                            break;
+                        case "3":
+                            lsPaymentMethod = "COMPANY PURCHASE ORDER";
+                            break;
+                        case "4":
+                            lsPaymentMethod = "COMPANY FINANCING";
+                            break;
+                    }
+                }
+                params.put("terms", lsPaymentMethod);
+                String lsBankName = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getPayMode() != null && !oTransPrint.getVSISourceModel().getDetailModel().getPayMode().equals("0")) {
+                    if (oTransPrint.getVSISourceModel().getDetailModel().getBankname() != null) {
+                        lsBankName = oTransPrint.getVSISourceModel().getDetailModel().getBankname();
+                    }
+                }
+                params.put("bankName", lsBankName);
+                String salesAgent = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getSEName() != null) {
+                    salesAgent = oTransPrint.getVSISourceModel().getDetailModel().getSEName();
+                }
+                params.put("salesAgent", CustomCommonUtil.formatName(salesAgent).toUpperCase());
+                if (oTransPrint.getVSISourceModel().getDetailModel().getUnitPrce() != null) {
+                    params.put("vehiclePrice", getValueNumberReport(String.valueOf(oTransPrint.getVSISourceModel().getDetailModel().getUnitPrce())));
+                }
+                String lsPlateCSNo = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getPlateNo() != null) {
+                    lsPlateCSNo = oTransPrint.getVSISourceModel().getDetailModel().getCSNo() + " / " + oTransPrint.getVSISourceModel().getDetailModel().getPlateNo();
+                } else if (oTransPrint.getVSISourceModel().getDetailModel().getCSNo() != null) {
+                    lsPlateCSNo = oTransPrint.getVSISourceModel().getDetailModel().getCSNo();
+                }
+                params.put("plateCSNo", lsPlateCSNo);
+                String lsEngineNo = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getEngineNo() != null) {
+                    lsEngineNo = oTransPrint.getVSISourceModel().getDetailModel().getEngineNo();
+                }
+                params.put("engineNo", lsEngineNo);
+                String lsFrameNo = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getFrameNo() != null) {
+                    lsFrameNo = oTransPrint.getVSISourceModel().getDetailModel().getFrameNo();
+                }
+                params.put("frameNo", lsFrameNo);
+                String lsColor = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getColorDsc() != null) {
+                    lsColor = oTransPrint.getVSISourceModel().getDetailModel().getColorDsc();
+                }
+                params.put("color", lsColor);
+                String lsVchlDesc = "";
+                if (oTransPrint.getVSISourceModel().getDetailModel().getVhclFDsc() != null) {
+                    lsVchlDesc = oTransPrint.getVSISourceModel().getDetailModel().getVhclFDsc();
+                }
+                params.put("descript", lsVchlDesc);
+                if (oTransPrint.getVSISourceModel().getDetailModel().getPromoDsc() != null) {
+                    params.put("promoDisc", getValueNumberReport(String.valueOf(oTransPrint.getVSISourceModel().getDetailModel().getPromoDsc())));
+                }
+                if (oTransPrint.getVSISourceModel().getDetailModel().getFleetDsc() != null) {
+                    params.put("fleetDisc", getValueNumberReport(String.valueOf(oTransPrint.getVSISourceModel().getDetailModel().getFleetDsc())));
+                }
+                if (oTransPrint.getVSISourceModel().getDetailModel().getAddlDsc() != null) {
+                    params.put("cashDisc", getValueNumberReport(String.valueOf(oTransPrint.getVSISourceModel().getDetailModel().getAddlDsc())));
+                }
+                if (oTransPrint.getVSISourceModel().getDetailModel().getTranAmt() != null) {
+                    params.put("totalAmount", getValueNumberReport(String.valueOf(oTransPrint.getVSISourceModel().getDetailModel().getTranAmt())));
                 }
             }
-            //Activity Vehicle
-            actVhclModelData.clear();
-            for (lnCtr = 0; lnCtr <= oTransPrint.getActVehicleList().size() - 1; lnCtr++) {
-                actVhclModelData.add(new ActivityVehicle(
-                        String.valueOf(lnCtr + 1), //ROW
-                        oTransPrint.getActVehicle(lnCtr, "sSerialID").toString().toUpperCase(),
-                        oTransPrint.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase(),
-                        oTransPrint.getActVehicle(lnCtr, "sDescript").toString().toUpperCase()));
-            }
 
-            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/ActivityReport.jasper";
-            JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
-            JRBeanCollectionDataSource actlocation = new JRBeanCollectionDataSource(locationData);
-            JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
-            System.out.println("vehicle: " + vehicle.getData());
-            params.put(
-                    "vehicle", vehicle);
-            params.put(
-                    "actlocation", actlocation);
-            params.put(
-                    "member", member);
+            params.put("totalAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTranTotl())));
+            params.put("vatableSales", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getVatSales())));
+            params.put("zeroVatSales", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getZroVATSl())));
+            params.put("vatAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getVatAmt())));
+            params.put("addVAT", "0.00");
+            params.put("vatExempSales", "0.00");
+            params.put("totalAmntDue", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTranTotl())));
+            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vsi.jasper";
             try {
                 poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, new JREmptyDataSource());
                 if (poJasperPrint != null) {
