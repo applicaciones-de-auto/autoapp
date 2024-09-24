@@ -499,6 +499,6 @@
     </children>
     <stylesheets>
         <URL value="@../../css/MainPanelStyle.css" />
-        <URL value="@../../../css/smallscreen/FrameStyle.css" />
+        <URL value="@../../../css/SmallScreenFS.css" />
     </stylesheets>
 </AnchorPane>

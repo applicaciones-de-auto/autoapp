@@ -339,8 +339,37 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                 }
                 break;
+//            case "btnSave":
+//                if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
+//                    String lsJOLaborCode = "";
+//                    for (int lnCtr = 0; lnCtr <= oTransSJO.getVSPLaborList().size() - 1; lnCtr++) {
+//                        lsJOLaborCode = oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde();
+//                    }
+//                    String lsTechLaborCode = "";
+//                    for (int lnCtr = 0; lnCtr <= oTransSJO.getJOTechList().size() - 1; lnCtr++) {
+//                        lsTechLaborCode = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde();
+//                    }
+//
+//                    loJSON = oTransSJO.saveTransaction();
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
+//                        loJSON = oTransSJO.openTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            switchToTab(tabMain, ImTabPane);
+//                            loadSJOFields();
+//                            loadLaborTable();
+//                            loadAccessoriesTable();
+//                            pnEditMode = oTransSJO.getEditMode();
+//                            initFields(pnEditMode);
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                    }
+//                }
+//                break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
+
                     loJSON = oTransSJO.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
@@ -350,6 +379,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                             loadSJOFields();
                             loadLaborTable();
                             loadAccessoriesTable();
+                            loadTechnician();
                             pnEditMode = oTransSJO.getEditMode();
                             initFields(pnEditMode);
                         }
@@ -380,6 +410,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     loadSJOFields();
                     loadLaborTable();
                     loadAccessoriesTable();
+                    loadTechnician();
                     pnEditMode = oTransSJO.getEditMode();
                     initFields(pnEditMode);
                 } else {
@@ -441,7 +472,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     loadTechnician();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-
                 }
                 break;
             default:
@@ -743,28 +773,48 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         tblViewLabor.setOnKeyPressed(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
-                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
-                        Labor selectedVSPLabor = getLaborSelectedItem();
-                        int removeCount = 0;
-                        if (selectedVSPLabor != null) {
+                    Labor selectedVSPLabor = getLaborSelectedItem();
+                    if (selectedVSPLabor != null) {
+                        // Get the labor code to be deleted
+                        String laborCodeToRemove = selectedVSPLabor.getTblindex03_labor();
+                        String laborDesc = selectedVSPLabor.getTblindex07_labor();
+                        // Validate if the labor code is assigned to any technician
+                        boolean isAssignedToTechnician = false;
+                        for (int lnCtr = 0; lnCtr <= oTransSJO.getJOTechList().size() - 1; lnCtr++) {
+                            String technicianLaborCode = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde();
+                            if (technicianLaborCode.equals(laborCodeToRemove)) {
+                                isAssignedToTechnician = true;
+                                break;
+                            }
+                        }
+
+                        // If labor code is assigned to a technician, show a warning and do not proceed with removal
+                        if (isAssignedToTechnician) {
+                            ShowMessageFX.Warning(null, pxeModuleName,
+                                    "Cannot remove labor description: " + laborDesc + " because it is assigned to a technician.");
+                            return; // Exit method to prevent deletion
+                        }
+
+                        // Confirm removal from the user
+                        if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
                             String lsRow = selectedVSPLabor.getTblindex01_labor();
                             int lnRow = Integer.parseInt(lsRow);
+
+                            // Remove the labor from oTransSJO
                             oTransSJO.removeJOLabor(lnRow - 1);
-                            removeCount++;
-                        }
-                        if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed labor successfully");
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Removed labor failed");
+
+                            // Refresh the fields and tables
+                            loadSJOFields();
+                            loadLaborTable();
                         }
-                        loadSJOFields();
-                        loadLaborTable();
                     } else {
-                        return;
+                        ShowMessageFX.Warning(null, pxeModuleName, "No labor selected to remove.");
                     }
                 }
             }
         });
+
         tblViewAccessories.setOnKeyPressed(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
@@ -793,7 +843,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         tblViewTechnician.setOnKeyPressed(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
-                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this accessories?")) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this technician?")) {
                         TechnicianLabor selectedTech = getTechSelectedItem();
                         int removeCount = 0;
                         if (selectedTech != null) {
@@ -803,12 +853,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                             removeCount++;
                         }
                         if (removeCount >= 1) {
-                            ShowMessageFX.Information(null, pxeModuleName, "Removed accessories successfully");
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed technician successfully");
                         } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Removed accessories failed");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed technician failed");
                         }
                         loadSJOFields();
-                        loadAccessoriesTable();
+                        loadTechnician();
                     }
                 } else {
                     return;
@@ -989,11 +1039,15 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     lsTechName,
                     lsLaborCde,
                     lsLaborDesc));
+            lsTechName = "";
+            lsTechID = "";
+            lsLaborCde = "";
+            lsLaborDesc = "";
         }
         tblViewTechnician.setItems(techData);
     }
 
-    private void loadTechnicianServiceWindowDialog() throws IOException {
+    private void loadTechnicianServiceWindowDialog(int fnRow) throws IOException {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -1001,6 +1055,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             TechnicianServiceController loControl = new TechnicianServiceController();
             loControl.setGRider(oApp);
             loControl.setObject(oTransSJO);
+            loControl.setRow(fnRow);
             loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
@@ -1041,7 +1096,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             }
             if (event.getClickCount() == 2) {
                 try {
-                    loadTechnicianServiceWindowDialog();
+                    loadTechnicianServiceWindowDialog(pnRow);
                 } catch (IOException ex) {
                     Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
                 }

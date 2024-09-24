@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
+import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -371,13 +372,25 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     private void closeSelectTabs(TabPane tabPane, Tab tab) {
         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
-            Tabclose(tabPane);
-            tabName.remove(tab.getText());
 //            TabsStateManager.saveCurrentTab(tabName);
 //            TabsStateManager.closeTab(tab.getText());
-            tabPane.getTabs().remove(tab);
+            if (tabpane.getTabs().size() == 1) {
+                // Fade out the last tab content before removing it
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(300), tab.getContent());
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.setOnFinished(e -> {
+                    Tabclose();
+                    tabName.remove(tab.getText());
+                    tabPane.getTabs().remove(tab);
+                });
+                fadeOut.play();
+            } else {
+                tabName.remove(tab.getText());
+                tabPane.getTabs().remove(tab);
+            }
+            Tabclose(tabPane);
         }
-
     }
 
     private void closeOtherTabs(TabPane tabPane, Tab currentTab) {
@@ -393,21 +406,68 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
     }
 
+//    private void closeAllTabs(TabPane tabPane, GRider oApp) {
+//        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
+//            tabName.clear();
+////            TabsStateManager.saveCurrentTab(tabName);
+//            // Close all tabs using your TabsStateManager
+//            for (Tab tab : tabPane.getTabs()) {
+//                String formName = tab.getText();
+////                TabsStateManager.closeTab(formName);
+//            }
+//            tabPane.getTabs().clear();
+//            UnloadForm unload = new UnloadForm();
+//            StackPane myBox = (StackPane) tabpane.getParent();
+//            myBox.getChildren().clear();
+//            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
+//
+//        }
+//    }
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
-        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
+        if (ShowMessageFX.YesNo(
+                null, "Close All Tabs", "Are you sure you want to close all tabs?")) {
             tabName.clear();
-//            TabsStateManager.saveCurrentTab(tabName);
-            // Close all tabs using your TabsStateManager
-            for (Tab tab : tabPane.getTabs()) {
-                String formName = tab.getText();
-//                TabsStateManager.closeTab(formName);
-            }
-            tabPane.getTabs().clear();
-            UnloadForm unload = new UnloadForm();
-            StackPane myBox = (StackPane) tabpane.getParent();
-            myBox.getChildren().clear();
-            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
+            ObservableList<Tab> tabs = tabPane.getTabs();
 
+            // Create an array to track transitions for all tabs
+            FadeTransition[] fadeTransitions = new FadeTransition[tabs.size()];
+
+            // Apply fade out animation for each tab content
+            for (int i = 0; i < tabs.size(); i++) {
+                Tab tab = tabs.get(i);
+                Node content = tab.getContent();
+
+                if (content != null) {
+                    // Create a fade transition for the tab content
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(300), content);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+
+                    // Remove the tab after the fade-out is finished
+                    int tabIndex = i;
+                    fadeOut.setOnFinished(event -> {
+                        // Remove the tab once the animation is complete
+                        tabPane.getTabs().remove(tabIndex);
+
+                        // If it’s the last tab, clear the stack pane and load the main screen
+                        if (tabPane.getTabs().isEmpty()) {
+                            UnloadForm unload = new UnloadForm();
+                            StackPane myBox = (StackPane) tabPane.getParent();
+                            myBox.getChildren().clear();
+                            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
+                        }
+                    });
+
+                    fadeTransitions[i] = fadeOut;  // Store the transition
+                }
+            }
+
+            // Play the fade-out animations for all tabs
+            for (FadeTransition fade : fadeTransitions) {
+                if (fade != null) {
+                    fade.play();
+                }
+            }
         }
     }
 
@@ -554,15 +614,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         workingSpace.getChildren().add(foPane);
     }
 
-    /*LOAD ANIMATE FOR TABPANE*/
     public TabPane loadAnimate(String fsFormName) {
-        //set fxml controller class
+        // Initialize the TabPane if it's empty
         if (tabpane.getTabs().size() == 0) {
             tabpane = new TabPane();
         }
 
         setTabPane();
 
+        // Controller setup
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
 
@@ -570,52 +630,59 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
         fxmlLoader.setController(fxObj);
 
-        //Add new tab;
+        // Add new tab;
         Tab newTab = new Tab(SetTabTitle(fsFormName));
-        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: arial;");
-        //tabIds.add(fsFormName);
+        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: Arial;");
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
-        // Attach a context menu to each tab
+
         tabName.add(SetTabTitle(fsFormName));
 
-        // Save the list of tab IDs to the JSON file
-//        TabsStateManager.saveCurrentTab(tabName);
         try {
             Node content = fxmlLoader.load();
             newTab.setContent(content);
             tabpane.getTabs().add(newTab);
             tabpane.getSelectionModel().select(newTab);
-            //newTab.setOnClosed(event -> {
-            newTab.setOnCloseRequest(event -> {
-                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?") == true) {
-                    Tabclose();
-                    //tabIds.remove(newTab.getText());
-                    tabName.remove(newTab.getText());
-                    // Save the list of tab IDs to the JSON file
-//                    TabsStateManager.saveCurrentTab(tabName);
-//                    TabsStateManager.closeTab(newTab.getText());
-                } else {
-                    // Cancel the close request
-                    event.consume();
-                }
 
+            // Handle close request with fade-out animation if it's the last tab
+            newTab.setOnCloseRequest(event -> {
+                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this tab?")) {
+                    if (tabpane.getTabs().size() == 1) {
+                        // Fade out the last tab content before removing it
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), newTab.getContent());
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.setOnFinished(e -> {
+                            Tabclose();
+                            tabName.remove(newTab.getText());
+                            tabpane.getTabs().remove(newTab);
+                        });
+                        fadeOut.play();
+                        event.consume();  // Prevent immediate removal to allow fade-out
+                    } else {
+                        // Regular removal for tabs when there are more than one
+                        Tabclose();
+                        tabName.remove(newTab.getText());
+                    }
+                } else {
+                    event.consume(); // Cancel the close request if the user selects "No"
+                }
             });
 
+            // Update tab order when selection changes
             newTab.setOnSelectionChanged(event -> {
                 ObservableList<Tab> tabs = tabpane.getTabs();
                 for (Tab tab : tabs) {
                     if (tab.getText().equals(newTab.getText())) {
                         tabName.remove(newTab.getText());
                         tabName.add(newTab.getText());
-                        // Save the list of tab IDs to the JSON file
-//                        TabsStateManager.saveCurrentTab(tabName);
                         break;
                     }
                 }
-
             });
-            return (TabPane) tabpane;
+
+            return tabpane;
+
         } catch (IOException e) {
             e.printStackTrace();
         }

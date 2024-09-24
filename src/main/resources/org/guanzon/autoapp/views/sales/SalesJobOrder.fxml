@@ -565,7 +565,7 @@
                                                                                                         <FontAwesomeIconView glyphName="PLUS" />
                                                                                                     </graphic>
                                                                                                     <tooltip>
-                                                                                                        <Tooltip text="Add Labor" />
+                                                                                                        <Tooltip text="Add Technician" />
                                                                                                     </tooltip>
                                                                                                     <HBox.margin>
                                                                                                         <Insets top="2.0" />
