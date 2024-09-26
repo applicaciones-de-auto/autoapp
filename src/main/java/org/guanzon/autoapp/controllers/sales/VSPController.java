@@ -221,9 +221,9 @@ public class VSPController implements Initializable, ScreenInterface {
                     clearFields();
                 }
             }
-        });
+        }
+        );
         lblRFNo.setOnMouseEntered(event -> lblRFNo.setCursor(Cursor.HAND));
-
         // Set default cursor when not hovering
         lblRFNo.setOnMouseExited(event -> lblRFNo.setCursor(Cursor.DEFAULT));
 
@@ -443,9 +443,7 @@ public class VSPController implements Initializable, ScreenInterface {
 
         lblDRNo.setText(lsVDRNo);
         String lsRFNO = "";
-
-        if (oTransVSP.getMasterModel()
-                .getMasterModel().getGatePsNo() != null) {
+        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
             lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
         }
 
@@ -2810,6 +2808,7 @@ public class VSPController implements Initializable, ScreenInterface {
             VehicleGatePassController loControl = new VehicleGatePassController();
             loControl.setGRider(oApp);
             loControl.setVSPTransNo(oTransVSP.getMasterModel().getMasterModel().getTransNo());
+            loControl.setVGPTransNo(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
             loControl.setIsVSPState(true);
             loControl.setOpenEvent(true);
             loControl.setIsClicked(fbIsClicked);
@@ -2835,7 +2834,11 @@ public class VSPController implements Initializable, ScreenInterface {
             JSONObject loJSON = new JSONObject();
             loJSON = oTransVSP.openTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
             if ("success".equals((String) loJSON.get("result"))) {
-
+                loadVSPFields();
+                loadLaborTable();
+                loadAccessoriesTable();
+                pnEditMode = oTransVSP.getEditMode();
+                initFields(pnEditMode);
             }
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -2845,8 +2848,10 @@ public class VSPController implements Initializable, ScreenInterface {
 
     @FXML
     private void lblGPClicked(MouseEvent event) {
-        if (event.getClickCount() == 1) {
-            loadGatePassWindow(true);
+        if (!lblRFNo.getText().trim().isEmpty()) {
+            if (event.getClickCount() == 1) {
+                loadGatePassWindow(true);
+            }
         }
     }
 }
