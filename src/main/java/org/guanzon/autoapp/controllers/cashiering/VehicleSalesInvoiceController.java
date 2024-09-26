@@ -426,12 +426,12 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             }
             break;
             case "btnVSICancel":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this SJO?")) {
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VSI?")) {
                     loJSON = oTransVSI.cancelTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "SJO Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, "VSI Information", (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "SJO Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, "VSI Information", (String) loJSON.get("message"));
                     }
                     loJSON = oTransVSI.openTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
