@@ -11,7 +11,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -1519,25 +1518,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
         tabBankHistory.setDisable(!lbTab);
         tabFollowingHistory.setDisable(!lbTab);
         btnTestDriveModel.setDisable(!lbShow);
-//        if (fnValue == EditMode.UPDATE) {
-//            switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) {
-//                case "2":
-//                case "4":
-//                case "5":
-//                    if (tabPaneMain.getSelectionModel().getSelectedIndex() == 0) {
-//                        trgvIndex03.setVisible(false);
-//                        trgvIndex04.setVisible(false);
-//                    }
-//                    break;
-//                default:
-//                    if (tabPaneMain.getSelectionModel().getSelectedIndex() == 0) {
-//                        trgvIndex03.setVisible(true);
-//                        trgvIndex04.setVisible(true);
-//                    }
-//                    break;
-//
-//            }
-//        }
         if (fnValue == EditMode.READY) { //show edit if user clicked save / browse
             trgvIndex03.setVisible(false);
             trgvIndex04.setVisible(false);
@@ -1588,8 +1568,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                     btnLostSale.setManaged(false);
                     break;
             }
-        }
-        if (fnValue == EditMode.READY) {
             switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
                 case 0:
                     switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) {
@@ -1663,6 +1641,33 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                 txtField14.setDisable(true); // Branch Name
                 txtField14.setEditable(false); // Branch Name
             }
+        }
+
+        switch (String.valueOf(oTransInquiry.getMaster("cTranStat"))) {
+            case "0":
+            case "1":
+            case "3":
+                if (fnValue == EditMode.READY) {
+                    if (tblAdvanceSlip.getItems().size() > 0) {
+                        vsasCheck01.setVisible(true);
+                    }
+                }
+                if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
+                    if (tabPinEditMode == 1) {
+                        initCustomerInquiryFieldsFalse();
+                        initInquiryProcessFieldsTrue();
+                    } else {
+                        initCustomerInquiryFieldsTrue();
+                        initInquiryProcessFieldsFalse();
+                    }
+                }
+                break;
+
+            case "2":
+            case "4":
+            case "5":
+                vsasCheck01.setVisible(false);
+                break;
         }
 
     }
@@ -2210,6 +2215,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                         try {
                             loadVehicleSalesAdvancesWindow(pnRow, false, pnEditMode);
                             loadAdvancesSlip();
+
                         } catch (SQLException ex) {
                             Logger.getLogger(VehicleInquiryController.class
                                     .getName()).log(Level.SEVERE, null, ex);
