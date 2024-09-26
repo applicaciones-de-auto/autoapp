@@ -20,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.service.TechnicianLabor;
@@ -42,6 +43,7 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
     private String pxeModuleName = "Technician Service";
     private String psTrans = "";
     private int pnRow = 0;
+
     @FXML
     private Button btnEdit, btnClose;
     @FXML
@@ -78,6 +80,14 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
         txtField03.setOnKeyPressed(event -> txtField_KeyPressed(event));
         initCapitalizationFields();
         loadTechServiceFields();
+        txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransTechnician.getJOTechModel().getDetailModel(pnRow).setLaborCde("");
+                    oTransTechnician.getJOTechModel().getDetailModel(pnRow).setLaborDsc("");
+                }
+            }
+        });
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -85,6 +95,10 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
+                if (txtField03.getText().trim().isEmpty()) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in labor description");
+                    return;
+                }
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnEdit":
@@ -124,7 +138,6 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
                                 txtField03.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getLaborDsc());
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                txtField03.setText("");
                                 return;
                             }
                             break;

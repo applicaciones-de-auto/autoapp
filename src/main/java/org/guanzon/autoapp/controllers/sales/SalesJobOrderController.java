@@ -573,6 +573,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             stage.showAndWait();
             loadLaborTable();
             loadSJOFields();
+            initFields(pnEditMode);
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
@@ -739,7 +740,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         issuanceTab.setDisable(true);
         btnAddLabor.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddAccessories.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        btnAddTechnician.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        btnAddTechnician.setDisable(true);
         if (fnValue == EditMode.UPDATE) {
             txtField01.setDisable(true);
         }
@@ -754,6 +755,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
 //                btnDone.setVisible(true);
 //                btnDone.setManaged(true);
             }
+        }
+        if (!tblViewLabor.getItems().isEmpty()) {
+            btnAddTechnician.setDisable(!lbShow);
         }
     }
 
@@ -812,6 +816,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                         ShowMessageFX.Warning(null, pxeModuleName, "No labor selected to remove.");
                     }
                 }
+                initFields(pnEditMode);
             }
         });
 
@@ -859,10 +864,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                         }
                         loadSJOFields();
                         loadTechnician();
+
                     }
                 } else {
                     return;
                 }
+
             }
         });
     }
