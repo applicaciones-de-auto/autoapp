@@ -191,7 +191,7 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("branchName", oApp.getBranchName());
             params.put("branchAddress", oApp.getAddress());
-            params.put("vdrNo", getValueReport("vspNo", "sVSPNOxxx"));
+            params.put("vspNo", getValueReport("vspNo", "sVSPNOxxx"));
             params.put("vspDate", getValueDate2Report("vspDate", "dTransact"));
             params.put("model", getValueReport("model", "sVhclDesc"));
             params.put("customerName", getValueReport("customerName", "sBuyCltNm"));

@@ -29,6 +29,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -65,6 +66,7 @@ import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.FXMLDocumentController;
+import org.guanzon.autoapp.controllers.general.VehicleGatePassController;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
@@ -196,7 +198,7 @@ public class VSPController implements Initializable, ScreenInterface {
         intiPatternFields();
         initDatePropertyAction();
         initTextPropertyAction();
-        initButtonsClick();
+        initButtonClick();
         clearVSPFields();
         clearTables();
         addRowVSPLabor();
@@ -219,7 +221,12 @@ public class VSPController implements Initializable, ScreenInterface {
                     clearFields();
                 }
             }
-        });
+        }
+        );
+        lblRFNo.setOnMouseEntered(event -> lblRFNo.setCursor(Cursor.HAND));
+        // Set default cursor when not hovering
+        lblRFNo.setOnMouseExited(event -> lblRFNo.setCursor(Cursor.DEFAULT));
+
     }
 
     private void intiPatternFields() {
@@ -436,8 +443,7 @@ public class VSPController implements Initializable, ScreenInterface {
 
         lblDRNo.setText(lsVDRNo);
         String lsRFNO = "";
-        if (oTransVSP.getMasterModel()
-                .getMasterModel().getGatePsNo() != null) {
+        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
             lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
         }
 
@@ -450,15 +456,7 @@ public class VSPController implements Initializable, ScreenInterface {
         }
 
         lblSINo.setText(lsVSI);
-        if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
-            lsRFNO = oTransVSP.getMasterModel().getMasterModel().getGatePsNo();
-        }
-        lblRFNo.setText(lsRFNO);
-        String lsVSI = "";
-        if (oTransVSP.getMasterModel().getMasterModel().getSINo() != null) {
-            lsVSI = oTransVSP.getMasterModel().getMasterModel().getSINo();
-        }
-        lblSINo.setText(lsVSI);
+
         lblPrint.setText(oTransVSP.getMasterModel().getMasterModel().getPrinted());
         switch (oTransVSP.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
@@ -1646,6 +1644,7 @@ public class VSPController implements Initializable, ScreenInterface {
     }
 
     private void initCmboxFieldAction() {
+
         chckBoxSpecialAccount.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (chckBoxSpecialAccount.isSelected()) {
@@ -2109,7 +2108,7 @@ public class VSPController implements Initializable, ScreenInterface {
         switchToTab(tabMain, ImTabPane);
     }
 
-    private void initButtonsClick() {
+    private void initButtonClick() {
         List<Button> loButtons = Arrays.asList(btnAdd, btnEdit, btnSave, btnCancel, btnBrowse, btnPrint, btnCancelVSP,
                 btnApprove, btnGatePass, btnClose, btnJobOrderAdd, btnAdditionalLabor, btnAddParts,
                 btnPaymentHistory, btnAddReservation, btnRemoveReservation);
@@ -2183,6 +2182,7 @@ public class VSPController implements Initializable, ScreenInterface {
                 }
                 loJSON = oTransVSP.searchTransaction("", false, false);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    switchToTab(tabMain, ImTabPane);
                     loadVSPFields();
                     loadLaborTable();
                     loadAccessoriesTable();
@@ -2271,6 +2271,13 @@ public class VSPController implements Initializable, ScreenInterface {
                         .getName()).log(Level.SEVERE, null, ex);
             }
             break;
+            case "btnGatePass":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want create gatepass")) {
+                    loadGatePassWindow(false);
+                } else {
+                    return;
+                }
+                break;
             default:
                 ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
                 break;
@@ -2445,11 +2452,6 @@ public class VSPController implements Initializable, ScreenInterface {
                             setDisable(!(lbShow && !txtField32.getText().isEmpty()),
                                     txtField33,
                                     //                                                                        txtField36,
-                        txtField32.getText();
-                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
-                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
-                                    txtField33,
-                                    //                                    txtField36,
                                     comboBox37,
                                     txtField39,
                                     txtField42,
@@ -2471,10 +2473,6 @@ public class VSPController implements Initializable, ScreenInterface {
                                     txtField33,
                                     txtField34,
                                     txtField35,
-                        txtField32.getText();
-                        if (ldVhclSRP > 0.00 || ldVhclSRP > 0.0) {
-                            setDisable(!(lbShow && !txtField32.getText().isEmpty()),
-                                    txtField33,
                                     //                                    txtField36,
                                     comboBox37,
                                     txtField39,
@@ -2657,27 +2655,29 @@ public class VSPController implements Initializable, ScreenInterface {
         btnGatePass.setManaged(false);
         btnGatePass.setVisible(false);
         if (fnValue == EditMode.READY) {
-            if (lblVSPStatus.getText().equals("Cancelled")) {
-                btnCancelVSP.setVisible(false);
-                btnCancelVSP.setManaged(false);
-                btnEdit.setVisible(false);
-                btnEdit.setManaged(false);
-                tabAddOns.setDisable(false);
-                tabDetails.setDisable(false);
-                btnPrint.setVisible(false);
-                btnPrint.setManaged(false);
-            } else {
-                btnCancelVSP.setVisible(true);
-                btnCancelVSP.setManaged(true);
+            if (!lblVSPStatus.getText().equals("Cancelled")) {
+                if (oTransVSP.getMasterModel().getMasterModel().getUDRNo() != null && !oTransVSP.getMasterModel().getMasterModel().getUDRNo().isEmpty()) {
+                    btnGatePass.setManaged(true);
+                    btnGatePass.setVisible(true);
+                }
                 btnEdit.setVisible(true);
                 btnEdit.setManaged(true);
+                btnCancelVSP.setVisible(true);
+                btnCancelVSP.setManaged(true);
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
                 tabAddOns.setDisable(false);
                 tabDetails.setDisable(false);
+                if (oTransVSP.getMasterModel().getMasterModel().getGatePsNo() != null) {
+                    if (!oTransVSP.getMasterModel().getMasterModel().getGatePsNo().isEmpty()) {
+                        btnGatePass.setManaged(false);
+                        btnGatePass.setVisible(false);
+                    }
+                }
             }
             btnRemoveReservation.setDisable(false);
         }
+
     }
 
     private void setDisable(boolean disable, Node... nodes) {
@@ -2764,7 +2764,6 @@ public class VSPController implements Initializable, ScreenInterface {
                     if (tab.getText().equals(lsFormName)) {
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal.\n"
                                 + "Are you sure you want to convert this vsp for a new sales job order record?")) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal Form. Are you sure you want to convert this vsp for a new sjo record?")) {
                             tabpane.getSelectionModel().select(tab);
                             poUnload.unloadForm(AnchorMain, oApp, lsFormName);
                             loadSJOWindow();
@@ -2798,6 +2797,61 @@ public class VSPController implements Initializable, ScreenInterface {
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
+        }
+    }
+
+    private void loadGatePassWindow(boolean fbIsClicked) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/VehicleGatePass.fxml"));
+            VehicleGatePassController loControl = new VehicleGatePassController();
+            loControl.setGRider(oApp);
+            loControl.setVSPTransNo(oTransVSP.getMasterModel().getMasterModel().getTransNo());
+            loControl.setVGPTransNo(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
+            loControl.setIsVSPState(true);
+            loControl.setOpenEvent(true);
+            loControl.setIsClicked(fbIsClicked);
+            fxmlLoader.setController(loControl);
+            Parent parent = fxmlLoader.load();
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            JSONObject loJSON = new JSONObject();
+            loJSON = oTransVSP.openTransaction(oTransVSP.getMasterModel().getMasterModel().getTransNo());
+            if ("success".equals((String) loJSON.get("result"))) {
+                loadVSPFields();
+                loadLaborTable();
+                loadAccessoriesTable();
+                pnEditMode = oTransVSP.getEditMode();
+                initFields(pnEditMode);
+            }
+        } catch (IOException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
+    @FXML
+    private void lblGPClicked(MouseEvent event) {
+        if (!lblRFNo.getText().trim().isEmpty()) {
+            if (event.getClickCount() == 1) {
+                loadGatePassWindow(true);
+            }
         }
     }
 }

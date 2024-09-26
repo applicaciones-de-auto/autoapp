@@ -51,9 +51,9 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.controllers.service.TechnicianServiceController;
-import org.guanzon.autoapp.models.general.Technician;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
+import org.guanzon.autoapp.models.service.TechnicianLabor;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
@@ -79,6 +79,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
     private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
+    private ObservableList<TechnicianLabor> techData = FXCollections.observableArrayList();
+
     @FXML
     AnchorPane AnchorMain;
     @FXML
@@ -104,9 +106,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     @FXML
     private TableView<Part> tblViewAccessories;
     @FXML
-    private TableView<Technician> tblViewTechnician;
+    private TableView<TechnicianLabor> tblViewTechnician;
     @FXML
-    private TableColumn<Technician, String> tblindex01_tech, tblindex02_tech, tblindex03_tech;
+    private TableColumn<TechnicianLabor, String> tblindex01_tech, tblindex02_tech, tblindex03_tech;
     @FXML
     private TableView<?> tblViewPaintings;
     @FXML
@@ -136,6 +138,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
         oTransSJO = new JobOrder(oApp, false, oApp.getBranchCode());
         initLaborTable();
+        initTechnician();
         initAccessoriesTable();
         initCapitalizationFields();
         initFieldActions();
@@ -303,7 +306,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     }
 
     private void initButtonsClick() {
-        List<Button> loButtons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnCancelJobOrder, btnClose, btnDone, btnAddLabor, btnAddAccessories);
+        List<Button> loButtons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnAddTechnician, btnCancelJobOrder, btnClose, btnDone, btnAddLabor, btnAddAccessories);
         loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
@@ -319,7 +322,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 loJSON = oTransSJO.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
                     oTransSJO.getMasterModel().getMasterModel().setJobType("0");
-                    oTransSJO.getMasterModel().getMasterModel().setJobType("");
                     oTransSJO.getMasterModel().getMasterModel().setPaySrce("3");
                     oTransSJO.getMasterModel().getMasterModel().setWorkCtgy("2");
                     oTransSJO.getMasterModel().getMasterModel().setLaborTyp("");
@@ -337,8 +339,37 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                 }
                 break;
+//            case "btnSave":
+//                if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
+//                    String lsJOLaborCode = "";
+//                    for (int lnCtr = 0; lnCtr <= oTransSJO.getVSPLaborList().size() - 1; lnCtr++) {
+//                        lsJOLaborCode = oTransSJO.getVSPLaborModel().getVSPLabor(lnCtr).getLaborCde();
+//                    }
+//                    String lsTechLaborCode = "";
+//                    for (int lnCtr = 0; lnCtr <= oTransSJO.getJOTechList().size() - 1; lnCtr++) {
+//                        lsTechLaborCode = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde();
+//                    }
+//
+//                    loJSON = oTransSJO.saveTransaction();
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
+//                        loJSON = oTransSJO.openTransaction(oTransSJO.getMasterModel().getMasterModel().getTransNo());
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            switchToTab(tabMain, ImTabPane);
+//                            loadSJOFields();
+//                            loadLaborTable();
+//                            loadAccessoriesTable();
+//                            pnEditMode = oTransSJO.getEditMode();
+//                            initFields(pnEditMode);
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                    }
+//                }
+//                break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Sales Job Order Information Saving....", "Are you sure, do you want to save?")) {
+
                     loJSON = oTransSJO.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
@@ -348,6 +379,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                             loadSJOFields();
                             loadLaborTable();
                             loadAccessoriesTable();
+                            loadTechnician();
                             pnEditMode = oTransSJO.getEditMode();
                             initFields(pnEditMode);
                         }
@@ -378,6 +410,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                     loadSJOFields();
                     loadLaborTable();
                     loadAccessoriesTable();
+                    loadTechnician();
                     pnEditMode = oTransSJO.getEditMode();
                     initFields(pnEditMode);
                 } else {
@@ -433,13 +466,14 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             }
             break;
             case "btnAddTechnician":
-                try {
-                loadTechnicianServiceWindowDialog();
-            } catch (IOException ex) {
-                Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            break;
-
+                loJSON = oTransSJO.searchTechnician();
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    loadSJOFields();
+                    loadTechnician();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                 break;
@@ -539,6 +573,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             stage.showAndWait();
             loadLaborTable();
             loadSJOFields();
+            initFields(pnEditMode);
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
@@ -658,6 +693,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
     private void clearTables() {
         laborData.clear();
         accessoriesData.clear();
+        techData.clear();
     }
 
     private void clearFields() {
@@ -704,7 +740,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         issuanceTab.setDisable(true);
         btnAddLabor.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
         btnAddAccessories.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
-        btnAddTechnician.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+        btnAddTechnician.setDisable(true);
         if (fnValue == EditMode.UPDATE) {
             txtField01.setDisable(true);
         }
@@ -720,6 +756,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
 //                btnDone.setManaged(true);
             }
         }
+        if (!tblViewLabor.getItems().isEmpty()) {
+            btnAddTechnician.setDisable(!lbShow);
+        }
     }
 
     private Labor getLaborSelectedItem() {
@@ -730,32 +769,57 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
         return tblViewAccessories.getSelectionModel().getSelectedItem();
     }
 
+    private TechnicianLabor getTechSelectedItem() {
+        return tblViewTechnician.getSelectionModel().getSelectedItem();
+    }
+
     private void initTableKeyPressed() {
         tblViewLabor.setOnKeyPressed(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
-                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
-                        Labor selectedVSPLabor = getLaborSelectedItem();
-                        int removeCount = 0;
-                        if (selectedVSPLabor != null) {
+                    Labor selectedVSPLabor = getLaborSelectedItem();
+                    if (selectedVSPLabor != null) {
+                        // Get the labor code to be deleted
+                        String laborCodeToRemove = selectedVSPLabor.getTblindex03_labor();
+                        String laborDesc = selectedVSPLabor.getTblindex07_labor();
+                        // Validate if the labor code is assigned to any technician
+                        boolean isAssignedToTechnician = false;
+                        for (int lnCtr = 0; lnCtr <= oTransSJO.getJOTechList().size() - 1; lnCtr++) {
+                            String technicianLaborCode = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde();
+                            if (technicianLaborCode.equals(laborCodeToRemove)) {
+                                isAssignedToTechnician = true;
+                                break;
+                            }
+                        }
+
+                        // If labor code is assigned to a technician, show a warning and do not proceed with removal
+                        if (isAssignedToTechnician) {
+                            ShowMessageFX.Warning(null, pxeModuleName,
+                                    "Cannot remove labor description: " + laborDesc + " because it is assigned to a technician.");
+                            return; // Exit method to prevent deletion
+                        }
+
+                        // Confirm removal from the user
+                        if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this labor?")) {
                             String lsRow = selectedVSPLabor.getTblindex01_labor();
                             int lnRow = Integer.parseInt(lsRow);
+
+                            // Remove the labor from oTransSJO
                             oTransSJO.removeJOLabor(lnRow - 1);
-                            removeCount++;
-                        }
-                        if (removeCount >= 1) {
                             ShowMessageFX.Information(null, pxeModuleName, "Removed labor successfully");
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Removed labor failed");
+
+                            // Refresh the fields and tables
+                            loadSJOFields();
+                            loadLaborTable();
                         }
-                        loadSJOFields();
-                        loadLaborTable();
                     } else {
-                        return;
+                        ShowMessageFX.Warning(null, pxeModuleName, "No labor selected to remove.");
                     }
                 }
+                initFields(pnEditMode);
             }
         });
+
         tblViewAccessories.setOnKeyPressed(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
@@ -781,44 +845,33 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
                 }
             }
         });
-    }
+        tblViewTechnician.setOnKeyPressed(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this technician?")) {
+                        TechnicianLabor selectedTech = getTechSelectedItem();
+                        int removeCount = 0;
+                        if (selectedTech != null) {
+                            String lsRow = selectedTech.getTblindex01_tech();
+                            int lnRow = Integer.parseInt(lsRow);
+                            oTransSJO.removeJOTech(lnRow - 1);
+                            removeCount++;
+                        }
+                        if (removeCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed technician successfully");
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed technician failed");
+                        }
+                        loadSJOFields();
+                        loadTechnician();
 
-    private void loadTechnicianServiceWindowDialog() throws IOException {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/service/TechnicianService.fxml"));
-            TechnicianServiceController loControl = new TechnicianServiceController();
-            loControl.setGRider(oApp);
-            loControl.setObject(oTransSJO);
-            loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
-            fxmlLoader.setController(loControl);
-            //load the main interface
-            Parent parent = fxmlLoader.load();
+                    }
+                } else {
+                    return;
+                }
 
-            parent.setOnMousePressed((MouseEvent event) -> {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            });
-
-            parent.setOnMouseDragged((MouseEvent event) -> {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            });
-
-            //set the main interface as the scene/*
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("");
-            stage.showAndWait();
-            loadAccessoriesTable();
-            loadSJOFields();
-        } catch (IOException e) {
-            ShowMessageFX.Warning(null, "Warning", e.getMessage());
-            System.exit(1);
-        }
+            }
+        });
     }
 
     @FXML
@@ -827,17 +880,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             pnRow = tblViewLabor.getSelectionModel().getSelectedIndex();
             if (pnRow < 0 || pnRow >= tblViewLabor.getItems().size()) {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid labor information.");
-                return;
-            }
-        }
-    }
-
-    @FXML
-    private void tblViewAccessories_Clicked(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            pnRow = tblViewAccessories.getSelectionModel().getSelectedIndex();
-            if (pnRow < 0 || pnRow >= tblViewAccessories.getItems().size()) {
-                ShowMessageFX.Warning(null, "Warning", "Please select valid accessories information.");
                 return;
             }
             if (event.getClickCount() == 2) {
@@ -964,6 +1006,108 @@ public class SalesJobOrderController implements Initializable, ScreenInterface {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
 
+        }
+    }
+
+    private void initTechnician() {
+        tblindex01_tech.setCellValueFactory(new PropertyValueFactory<>("tblindex01_tech"));
+        tblindex02_tech.setCellValueFactory(new PropertyValueFactory<>("tblindex03_tech"));
+        tblindex03_tech.setCellValueFactory(new PropertyValueFactory<>("tblindex05_tech"));
+        tblViewTechnician.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewAccessories.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
+    private void loadTechnician() {
+        techData.clear();
+        String lsTechName = "";
+        String lsTechID = "";
+        String lsLaborCde = "";
+        String lsLaborDesc = "";
+        for (int lnCtr = 0; lnCtr <= oTransSJO.getJOTechList().size() - 1; lnCtr++) {
+            if (oTransSJO.getJOTechModel().getDetailModel(lnCtr).getTechID() != null) {
+                lsTechID = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getTechID();
+            }
+            if (oTransSJO.getJOTechModel().getDetailModel(lnCtr).getTechName() != null) {
+                lsTechName = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getTechName();
+            }
+            if (oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde() != null) {
+                lsLaborCde = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborCde();
+            }
+            if (oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborDsc() != null) {
+                lsLaborDesc = oTransSJO.getJOTechModel().getDetailModel(lnCtr).getLaborDsc();
+            }
+            techData.add(new TechnicianLabor(
+                    String.valueOf(lnCtr + 1),
+                    lsTechID,
+                    lsTechName,
+                    lsLaborCde,
+                    lsLaborDesc));
+            lsTechName = "";
+            lsTechID = "";
+            lsLaborCde = "";
+            lsLaborDesc = "";
+        }
+        tblViewTechnician.setItems(techData);
+    }
+
+    private void loadTechnicianServiceWindowDialog(int fnRow) throws IOException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/service/TechnicianService.fxml"));
+            TechnicianServiceController loControl = new TechnicianServiceController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTransSJO);
+            loControl.setRow(fnRow);
+            loControl.setTrans(oTransSJO.getMasterModel().getMasterModel().getTransNo());
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            loadTechnician();
+            loadSJOFields();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    @FXML
+    private void tblViewTechnicianClick(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnRow = tblViewTechnician.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewTechnician.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid technician information.");
+                return;
+            }
+            if (event.getClickCount() == 2) {
+                try {
+                    loadTechnicianServiceWindowDialog(pnRow);
+                } catch (IOException ex) {
+                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="AnchorPane" prefHeight="322.0" prefWidth="491.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane>
+                    <StackPane.margin>
+                        <Insets />
+                    </StackPane.margin>
+                    <top>
+                        <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER" prefHeight="17.0" text="Technician" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <center>
+                        <AnchorPane>
+                            <BorderPane.margin>
+                                <Insets />
+                            </BorderPane.margin>
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                    <children>
+                                        <AnchorPane style="-fx-background-color: white; -fx-border-color: orange; -fx-background-radius: 5; -fx-border-radius: 5;">
+                                            <children>
+                                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="80.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <TextField fx:id="txtField01" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                        <Label id="LabelDesc" text="Employee Name" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <Label layoutX="20.0" layoutY="51.0" text="Employee ID" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial Bold" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <CheckBox fx:id="cboxActivate" disable="true" mnemonicParsing="false" text="Active" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                        <Label id="LabelDesc" text="Address" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                        <TextArea fx:id="textArea03" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2" />
+                                                    </children>
+                                                </GridPane>
+                                            </children>
+                                        </AnchorPane>
+                                        <AnchorPane style="-fx-background-color: white; -fx-border-color: orange; -fx-background-radius: 5; -fx-border-radius: 5;">
+                                            <children>
+                                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="80.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <CheckBox fx:id="cboxBRP" disable="true" mnemonicParsing="false" text="Body Repair and Painting" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                        <CheckBox fx:id="cboxMecha" disable="true" mnemonicParsing="false" text="Mechanical" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                    </children>
+                                                </GridPane>
+                                                <Label layoutX="10.0" layoutY="10.0" style="-fx-background-color: white; -fx-background-radius: 5;" text="Work Group Assignment Category" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="-9.0">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="11.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                    <bottom>
+                        <AnchorPane prefHeight="0.0" prefWidth="527.0" style="-fx-background-color: #515151;">
+                            <children>
+                                <HBox prefHeight="53.0" prefWidth="430.0" spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PLUS" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnEdit" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Edit">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="19.5" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnActive" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Activate">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="btnClose" contentDisplay="TOP" layoutX="416.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
+    <effect>
+        <DropShadow />
+    </effect>
+</AnchorPane>
