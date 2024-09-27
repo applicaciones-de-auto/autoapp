@@ -6,13 +6,10 @@ package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -50,7 +48,6 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
     private Sales_Executive oTransSalesExe;
     private final String pxeModuleName = "Sales Executive"; //Form Title
     private int pnEditMode;
-    private int lnCtr;
     private ObservableList<SalesExecutiveTrans> transData = FXCollections.observableArrayList();
     @FXML
     private Button btnAdd, btnSave, btnBrowse, btnCancel, btnActive, btnDeactivate, btnClose;
@@ -64,6 +61,8 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
     private TableView<SalesExecutiveTrans> tblTransaction;
     @FXML
     private TableColumn<SalesExecutiveTrans, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08, tblindex09;
+    @FXML
+    private AnchorPane AnchorPane;
 
     /**
      * Initializes the controller class.
@@ -370,60 +369,29 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
         }
     }
 
-    private String getValue(String fsValue, Integer loRow, String fsCol) {
-        try {
-            fsValue = "";
-            if (oTransSalesExe.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = String.valueOf(oTransSalesExe.getVSPTransDetail(loRow, fsCol)).toUpperCase();
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        return fsValue;
-    }
-
-    private String getValueDate(String fsValue, Integer loRow, String fsCol) {
-        try {
-            fsValue = "";
-            if (oTransSalesExe.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = CustomCommonUtil.xsDateShort((Date) oTransSalesExe.getVSPTransDetail(loRow, fsCol));
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        return fsValue;
-    }
-
     private void loadSalesTransaction() {
         transData.clear();
-        JSONObject loJSON = new JSONObject();
-        try {
-            loJSON = oTransSalesExe.loadTransaction();
-            if ("success".equals((String) loJSON.get("result"))) {
-                for (lnCtr = 0; lnCtr <= oTransSalesExe.getVSPTransCount() - 1; lnCtr++) {
-                    String csPlate = String.valueOf(oTransSalesExe.getVSPTransDetail(lnCtr, "sCSNoxxxx")).toUpperCase() + "/" + String.valueOf(oTransSalesExe.getVSPTransDetail(lnCtr, "sPlateNox")).toUpperCase();
-                    transData.add(new SalesExecutiveTrans(
-                            String.valueOf(lnCtr + 1), //ROW
-                            getValueDate("ldVSPDate", lnCtr, ""),
-                            getValue("lsVSPNo", lnCtr, "sVSPNOxxx"),
-                            getValue("lsCustomName", lnCtr, "sBuyCltNm"),
-                            csPlate,
-                            getValue("lsCSPlateNo", lnCtr, "sDescript"),
-                            getValueDate("ldDrDate", lnCtr, "dUDRDatex"),
-                            getValue("lsDrNo", lnCtr, "sUDRNoxxx"),
-                            getValue("lsSalesExe", lnCtr, "sSaleExNm  ")
-                    ));
-
-                }
+        String csPlate = "";
+        for (int lnCtr = 0; lnCtr <= oTransSalesExe.getVSPModelList().size() - 1; lnCtr++) {
+            if (oTransSalesExe.getModel().getVSPModel(lnCtr).getPlateNo() != null) {
+                csPlate = oTransSalesExe.getModel().getVSPModel(lnCtr).getCSNo() + "/" + oTransSalesExe.getModel().getVSPModel(lnCtr).getPlateNo();
+            } else {
+                csPlate = oTransSalesExe.getModel().getVSPModel(lnCtr).getCSNo();
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            transData.add(new SalesExecutiveTrans(
+                    String.valueOf(lnCtr + 1), //ROW
+                    CustomCommonUtil.xsDateShort(oTransSalesExe.getModel().getVSPModel(lnCtr).getDelvryDt()),
+                    String.valueOf(oTransSalesExe.getModel().getVSPModel(lnCtr).getVSPNO().toUpperCase()),
+                    String.valueOf(oTransSalesExe.getModel().getVSPModel(lnCtr).getBuyCltNm().toUpperCase()),
+                    csPlate,
+                    String.valueOf(oTransSalesExe.getModel().getVSPModel(lnCtr).getVhclFDsc().toUpperCase()),
+                    CustomCommonUtil.xsDateShort(oTransSalesExe.getModel().getVSPModel(lnCtr).getUDRDate()),
+                    String.valueOf(oTransSalesExe.getModel().getVSPModel(lnCtr).getUDRNo().toUpperCase()),
+                    String.valueOf(oTransSalesExe.getModel().getVSPModel(lnCtr).getAgentNm())
+            ));
+            csPlate = "";
         }
+        tblTransaction.setItems(transData);
     }
 
     /*populate Social Media Table*/
@@ -443,8 +411,6 @@ public class SalesExecutiveController implements Initializable, ScreenInterface 
                 header.setReordering(false);
             });
         });
-        transData.clear();
-        tblTransaction.setItems(transData);
     }
 
     private void clearFields() {
