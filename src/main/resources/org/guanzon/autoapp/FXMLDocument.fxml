@@ -164,7 +164,14 @@
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
                                                             </items>
                                                         </Menu>
-                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance" />
+                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuInsProposal" mnemonicParsing="false" onAction="#mnuInsProposalClick" text="Insurance Proposal" />
+                                                                <MenuItem fx:id="mnuInsPropApp" mnemonicParsing="false" onAction="#mnuInsPropAppClick" text="Insurance Proposal Approval" />
+                                                                <MenuItem fx:id="mnuInsApplication" mnemonicParsing="false" onAction="#mnuInsApplicationClick" text="Insurance Application" />
+                                                                <MenuItem fx:id="mnuInsPolicy" mnemonicParsing="false" onAction="#mnuInsPolicyClick" text="Insurance Policy" />
+                                                            </items>
+                                                        </Menu>
                                                         <Menu mnemonicParsing="false" text="Cashiering">
                                                             <items>
                                                                 <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />

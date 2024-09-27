@@ -195,7 +195,7 @@ public class VSPController implements Initializable, ScreenInterface {
         initComboBoxItems();
         initCmboxFieldAction();
         initTableKeyPressed();
-        intiPatternFields();
+        initPatternFields();
         initDatePropertyAction();
         initTextPropertyAction();
         initButtonClick();
@@ -229,7 +229,7 @@ public class VSPController implements Initializable, ScreenInterface {
 
     }
 
-    private void intiPatternFields() {
+    private void initPatternFields() {
         List<TextField> loTxtField = Arrays.asList(txtField30, txtField31, txtField33, txtField35, txtField39, txtField42,
                 txtField45, txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField55, txtField59, txtField60, txtField63, txtField68, txtField70, txtField74, txtField82, txtField84);
