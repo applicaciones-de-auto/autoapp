@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javafx.beans.value.ChangeListener;
+import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -164,4 +165,75 @@ public class CustomCommonUtil {
         return lsFNameInitial + ". " + lsLName;
     }
 
+    /**
+     * Sets the disabled state for the given nodes.
+     *
+     * <p>
+     * For example, to disable multiple nodes:</p>
+     * <pre>
+     * {@code
+     * Button button = new Button("Submit");
+     * TextField textField = new TextField();
+     * setDisable(true, button, textField);  // This will disable both the button and the text field
+     * }
+     * </pre>
+     *
+     * @param disable if {@code true}, disables the nodes; otherwise, enables
+     * them.
+     * @param nodes the nodes to be disabled or enabled.
+     */
+    public static void setDisable(boolean disable, Node... nodes) {
+        for (Node node : nodes) {
+            node.setDisable(disable);
+        }
+    }
+
+    /**
+     * Sets the visibility state for the given nodes.
+     *
+     * <p>
+     * For example, to hide or show multiple nodes:</p>
+     * <pre>
+     * {@code
+     * Label label = new Label("Hidden Label");
+     * Button button = new Button("Click Me");
+     * setVisible(false, label, button);  // This will hide both the label and the button
+     * }
+     * </pre>
+     *
+     * @param visible if {@code true}, makes the nodes visible; otherwise, hides
+     * them.
+     * @param nodes the nodes to be shown or hidden.
+     */
+    public static void setVisible(boolean visible, Node... nodes) {
+        for (Node node : nodes) {
+            node.setVisible(visible);
+        }
+    }
+
+    /**
+     * Sets the managed state for the given nodes. A managed node is included in
+     * the layout calculations, so setting it to {@code false} will exclude it
+     * from layout, but the node will still exist in the scene graph.
+     *
+     * <p>
+     * For example, to remove nodes from layout calculations:</p>
+     * <pre>
+     * {
+     * @code
+     * TextField textField = new TextField("Managed TextField");
+     * Label label = new Label("Managed Label");
+     * setManaged(false, textField, label);  // These nodes will no longer be part of the layout
+     * }
+     * </pre>
+     *
+     * @param managed if {@code true}, includes the nodes in layout; otherwise,
+     * excludes them.
+     * @param nodes the nodes to be included or excluded from the layout.
+     */
+    public static void setManaged(boolean managed, Node... nodes) {
+        for (Node node : nodes) {
+            node.setManaged(managed);
+        }
+    }
 }

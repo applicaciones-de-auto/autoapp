@@ -5,8 +5,6 @@
  */
 package org.guanzon.autoapp.models.sales;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**

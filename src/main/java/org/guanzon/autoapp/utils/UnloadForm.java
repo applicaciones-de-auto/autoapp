@@ -5,6 +5,7 @@
  */
 package org.guanzon.autoapp.utils;
 
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;

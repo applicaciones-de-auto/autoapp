@@ -58,7 +58,7 @@ import org.guanzon.autoapp.models.general.CustomerMobile;
 import org.guanzon.autoapp.models.general.CustomerSocialMedia;
 import org.guanzon.autoapp.models.general.CustomerVehicleInfo;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 import org.guanzon.autoapp.utils.TextFormatterUtil;

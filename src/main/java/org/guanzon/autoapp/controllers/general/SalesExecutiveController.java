@@ -34,7 +34,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.clients.Sales_Executive;
 import org.guanzon.autoapp.models.general.SalesExecutiveTrans;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

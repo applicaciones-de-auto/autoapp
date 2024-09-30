@@ -30,7 +30,7 @@ import org.guanzon.auto.main.parameter.Vehicle_MakeFramePattern;
 import org.guanzon.auto.main.parameter.Vehicle_ModelFramePattern;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

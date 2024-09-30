@@ -46,7 +46,7 @@ import org.guanzon.auto.main.clients.Vehicle_Gatepass;
 import org.guanzon.autoapp.models.general.JobDone;
 import org.guanzon.autoapp.models.general.VehicleComponents;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

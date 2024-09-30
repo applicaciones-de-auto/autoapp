@@ -25,7 +25,7 @@ import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.service.TechnicianLabor;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

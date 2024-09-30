@@ -25,9 +25,10 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_Warehouse;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**
@@ -35,7 +36,7 @@ import org.json.simple.JSONObject;
  *
  * @author AutoGroup Programmers
  */
-public class WareHouseController implements Initializable, ScreenInterface {
+public class WareHouseController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private final String pxeModuleName = "Warehouse";
@@ -67,7 +68,7 @@ public class WareHouseController implements Initializable, ScreenInterface {
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
-        initButtons();
+        initButtonsClick();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
@@ -89,12 +90,12 @@ public class WareHouseController implements Initializable, ScreenInterface {
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void initTextKeyPressed() {
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField02);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
@@ -118,7 +119,7 @@ public class WareHouseController implements Initializable, ScreenInterface {
         }
     }
 
-    private void initTextFieldFocus() {
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField02);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
@@ -146,7 +147,8 @@ public class WareHouseController implements Initializable, ScreenInterface {
         }
     };
 
-    private void initButtons() {
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
@@ -265,13 +267,13 @@ public class WareHouseController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
+    public void clearFields() {
         cboxActivate.setSelected(false);
         txtField01.clear();
         txtField02.clear();
     }
 
-    private void initFields(int fnValue) {
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         txtField01.setDisable(true);
         txtField02.setDisable(!lbShow);
@@ -304,5 +306,25 @@ public class WareHouseController implements Initializable, ScreenInterface {
                 btnActive.setManaged(true);
             }
         }
+    }
+
+    @Override
+    public void initComboBoxItems() {
+
+    }
+
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+
+    }
+
+    @Override
+    public void clearTables() {
+
     }
 }
