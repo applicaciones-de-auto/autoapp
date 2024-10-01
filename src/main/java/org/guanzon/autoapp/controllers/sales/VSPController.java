@@ -1051,7 +1051,7 @@ public class VSPController implements Initializable, ScreenInterface {
                     initFields(pnEditMode);
                     break;
                 case "txtField32":
-                    loJSON = oTransVSP.searchBankApp(lsValue.trim());
+                    loJSON = oTransVSP.searchBankApp(lsValue);
                     if (!"error".equals(loJSON.get("result"))) {
                         String lsBrBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + " " + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
                         txtField32.setText(lsBrBank);
