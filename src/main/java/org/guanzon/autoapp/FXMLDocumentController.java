@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXML2.java to edit this template
- */
 package org.guanzon.autoapp;
 
 import java.io.IOException;
@@ -52,6 +48,9 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -61,6 +60,8 @@ import org.guanzon.autoapp.controllers.general.ReferralAgentController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.ServiceAdvisorController;
 import org.guanzon.autoapp.controllers.general.TechnicianController;
+import org.guanzon.autoapp.controllers.insurance.FollowUpController;
+import org.guanzon.autoapp.controllers.insurance.FollowUpSchedController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceApplicationController;
 import org.guanzon.autoapp.controllers.insurance.InsurancePolicyController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceProposalApprovalController;
@@ -236,6 +237,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInsApplication;
     @FXML
     private MenuItem mnuInsPolicy;
+    @FXML
+    private MenuItem mnuFollowUp;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -737,6 +740,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new InsuranceApplicationController();
         } else if (fsValue.contains("InsurancePolicy.fxml")) {
             return new InsurancePolicyController();
+        } else if (fsValue.contains("FollowUp.fxml")) {
+            return new FollowUpController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -810,6 +815,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Insurance Application";
         } else if (menuaction.contains("InsurancePolicy.fxml")) {
             return "Insurance Policy";
+        } else if (menuaction.contains("FollowUp.fxml")) {
+            return "Follow Up List";
         } else {
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
             return null;
@@ -1169,6 +1176,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuInsPolicyClick(ActionEvent event) {
         String sformname = psInsurancePath + "InsurancePolicy.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuFollowUpClick(ActionEvent event) {
+        String sformname = psInsurancePath + "FollowUp.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
