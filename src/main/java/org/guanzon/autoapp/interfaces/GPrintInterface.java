@@ -24,7 +24,7 @@ public interface GPrintInterface {
 
     void generateReport();
 
-    void loadReport();
+    boolean loadReport();
 
     void showReport();
 

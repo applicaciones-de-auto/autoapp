@@ -14,7 +14,7 @@ public interface GTransactionInterface {
 
     void setGRider(GRider foValue);
 
-    void loadMasterFields();
+    boolean loadMasterFields();
 
     void initCapitalizationFields();
 
