@@ -396,7 +396,9 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     }
 
     @Override
-    public void loadMasterFields() {
+    public boolean loadMasterFields() {
+
+        return false;
 
     }
 

@@ -15,7 +15,10 @@ public interface GApprovalInterface {
 
     void initLoadTable();
 
+    void initButtonsClick();
+
     void handleButtonAction(ActionEvent event);
 
     void initFields();
+
 }

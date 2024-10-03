@@ -27,6 +27,7 @@ public class InsuranceProposalApproval {
     private SimpleStringProperty tblindex11;
 
     public InsuranceProposalApproval(String tblindex01,
+            String tblindex02,
             String tblindex03,
             String tblindex04,
             String tblindex05,
@@ -38,6 +39,7 @@ public class InsuranceProposalApproval {
             String tblindex11) {
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.select = new CheckBox();
+        this.tblindex02 = new SimpleStringProperty(tblindex02);
         this.tblindex03 = new SimpleStringProperty(tblindex03);
         this.tblindex04 = new SimpleStringProperty(tblindex04);
         this.tblindex05 = new SimpleStringProperty(tblindex05);

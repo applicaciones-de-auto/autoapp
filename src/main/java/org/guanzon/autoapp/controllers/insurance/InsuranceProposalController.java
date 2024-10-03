@@ -38,6 +38,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.insurance.InsurancePolicyProposal;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.GTransactionInterface;
@@ -58,7 +59,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
     private UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private String lsClientSource = "";
-    private boolean pbIsOrig = false;
     private int pnEditMode = -1;
     private double xOffset = 0;
     private double yOffset = 0;
@@ -136,9 +136,18 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         txtField08.setText(oTransInsProposal.getMasterModel().getMasterModel().getVhclFDsc());
 
         txtField09.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getUnitPrce()))));
+        int lnNew = -1;
         if (oTransInsProposal.getMasterModel().getMasterModel().getVhclNew() != null) {
-            comboBox10.getSelectionModel().select(oTransInsProposal.getMasterModel().getMasterModel().getVhclNew());
+            switch (oTransInsProposal.getMasterModel().getMasterModel().getVhclNew()) {
+                case "0":
+                    lnNew = 0;
+                    break;
+                case "1":
+                    lnNew = 1;
+                    break;
+            }
         }
+        comboBox10.getSelectionModel().select(lnNew);
         if (oTransInsProposal.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker11.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransInsProposal.getMasterModel().getMasterModel().getTransactDte())));
         }
@@ -165,7 +174,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 case "y":
                     policeType = 0;
                     break;
-                case "n":
+                case "c":
                     policeType = 1;
                     break;
                 case "b":
@@ -217,16 +226,33 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getTotalAmt()))));
         String lsApStatus = "";
         String lsAppNo = "";
-        String lsIPStatus = "";
+        if (oTransInsProposal.getMasterModel().getMasterModel().getTranStat() != null) {
+            switch (oTransInsProposal.getMasterModel().getMasterModel().getTranStat()) {
+                case TransactionStatus.STATE_OPEN:
+                    lblIPStatus.setText("Active");
+                    break;
+                case TransactionStatus.STATE_CLOSED:
+                    lblIPStatus.setText("Approved");
+                    break;
+                case TransactionStatus.STATE_CANCELLED:
+                    lblIPStatus.setText("Cancelled");
+                    break;
+                case TransactionStatus.STATE_POSTED:
+                    lblIPStatus.setText("Posted");
+                    break;
+                default:
+                    lblIPStatus.setText("");
+                    break;
+            }
+        }
         String lsIPNoValue = "";
         lblApprovalStatus.setText("");
         lblApprovalNo.setText("");
-        lblIPStatus.setText("");
-//        if (oTransInsProposal.getMasterModel().getMasterModel().getTransNo() != null) {
-//            lblIPNo.setText("Insurance Proposal No: ");
-//            lsIPNoValue = oTransInsProposal.getMasterModel().getMasterModel().getTransNo();
-//        }
-//        lblIPNoValue.setText(lsIPNoValue);
+        if (oTransInsProposal.getMasterModel().getMasterModel().getReferNo() != null) {
+            lblIPNo.setText("Insurance Proposal No: ");
+            lsIPNoValue = oTransInsProposal.getMasterModel().getMasterModel().getReferNo();
+        }
+        lblIPNoValue.setText(lsIPNoValue);
         return true;
     }
 
@@ -490,6 +516,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             /*Lost Focus*/
             switch (lnIndex) {
                 case 13:
+                    oTransInsProposal.getMasterModel().getMasterModel().setRemarks(lsValue);
                     break;
 
             }
@@ -599,7 +626,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                clearTables();
                 oTransInsProposal = new InsurancePolicyProposal(oApp, false, oApp.getBranchCode());
                 loJSON = oTransInsProposal.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
@@ -619,6 +645,15 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Insurance Proposal Information Saving....", "Are you sure, do you want to save?")) {
+                    if (comboBox10.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select vehicle type.");
+                        return;
+                    }
+                    if (comboBox17.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select application type.");
+                        return;
+                    }
+
                     loJSON = oTransInsProposal.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Insurance Proposal Information", (String) loJSON.get("message"));
@@ -644,7 +679,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 }
                 break;
             case "btnBrowse":
-                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.YesNo(null, "Search Insurance Proposal Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
@@ -738,19 +773,48 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             }
         }
         );
+        comboBox10.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox10.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTransInsProposal.getMasterModel().getMasterModel().setVhclNew(String.valueOf(comboBox10.getSelectionModel().getSelectedIndex()));
+                }
+            }
+        }
+        );
         comboBox18.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 String originalPolicy = oTransInsProposal.getMasterModel().getMasterModel().getInsTypID();
                 String lsPolType = "";
                 String lsValuePolType = "";
-                if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
-                    if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
-                        if (!originalPolicy.isEmpty()) {
-                            if (!pbIsOrig) {
+
+                // Get the currently selected index of comboBox18
+                int selectedPolicyIndex = comboBox18.getSelectionModel().getSelectedIndex();
+
+                if (selectedPolicyIndex >= 0) {
+                    // Check if the selected policy type is different from the original
+                    boolean isDifferentPolicy = true;
+                    switch (selectedPolicyIndex) {
+                        case 0:  // Corresponds to "y"
+                            isDifferentPolicy = !"y".equals(originalPolicy);
+                            break;
+                        case 1:  // Corresponds to "c"
+                            isDifferentPolicy = !"c".equals(originalPolicy);
+                            break;
+                        case 2:  // Corresponds to "b"
+                            isDifferentPolicy = !"b".equals(originalPolicy);
+                            break;
+                    }
+
+                    // If the selected policy type is different, show the confirmation dialog
+                    if (isDifferentPolicy) {
+                        if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
+                            if (!originalPolicy.isEmpty() && !txtField02.getText().trim().isEmpty()) {
+                                // Ask for confirmation
                                 if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to replace policy type?\n"
-                                        + "if YES: it will clear all values related fields\n"
-                                        + "if NO: it will remain the values.")) {
+                                        + "If YES: it will clear all values related fields.\n"
+                                        + "If NO: it will retain the values.")) {
+                                    // Clear relevant fields
                                     oTransInsProposal.getMasterModel().getMasterModel().setClientID("");
                                     oTransInsProposal.getMasterModel().getMasterModel().setAddress("");
                                     oTransInsProposal.getMasterModel().getMasterModel().setPlateNo("");
@@ -763,17 +827,18 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                                     oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("");
                                     comboBox27.setValue(null);
                                     clearVSPFields();
-                                    lsValuePolType = setPoliceType(lsPolType, comboBox18.getSelectionModel().getSelectedIndex());
-                                    pbIsOrig = false;
+
+                                    // Set the new policy type value
+                                    lsValuePolType = setPolicyType(lsPolType, selectedPolicyIndex);
                                 } else {
+                                    // If the user chooses "No", revert to the original policy type
                                     Platform.runLater(() -> {
                                         int orig = -1;
-                                        pbIsOrig = true;
                                         switch (originalPolicy) {
                                             case "y":
                                                 orig = 0;
                                                 break;
-                                            case "n":
+                                            case "c":
                                                 orig = 1;
                                                 break;
                                             case "b":
@@ -782,36 +847,46 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                                         }
                                         comboBox18.getSelectionModel().select(orig);
                                     });
-                                    return;
+                                    return;  // Exit the event handler without making changes
                                 }
+                            } else {
+                                // Set policy type without clearing fields if there's no original policy
+                                lsValuePolType = setPolicyType(lsPolType, selectedPolicyIndex);
                             }
                         } else {
-                            lsValuePolType = setPoliceType(lsPolType, comboBox18.getSelectionModel().getSelectedIndex());
+                            // Set policy type directly
+                            lsValuePolType = setPolicyType(lsPolType, selectedPolicyIndex);
                         }
-                    } else {
-                        lsValuePolType = setPoliceType(lsPolType, comboBox18.getSelectionModel().getSelectedIndex());
+
+                        // Set the new policy type in the model
                     }
                     if (!lsValuePolType.isEmpty()) {
                         oTransInsProposal.getMasterModel().getMasterModel().setInsTypID(lsValuePolType);
                     }
+
+                    // Reinitialize fields
                     initFields(pnEditMode);
+
+                    // Update comboBox18 selection based on new policy type
                     int lnPolicyType = -1;
                     switch (oTransInsProposal.getMasterModel().getMasterModel().getInsTypID()) {
                         case "y":
                             lnPolicyType = 0;
                             break;
-                        case "n":
+                        case "c":
                             lnPolicyType = 1;
                             break;
                         case "b":
                             lnPolicyType = 2;
                             break;
                     }
-                    comboBox18.getSelectionModel().select(lnPolicyType);
+                    if (lnPolicyType >= 0) {
+                        comboBox18.getSelectionModel().select(lnPolicyType);
+                    }
                 }
             }
-        }
-        );
+        });
+
         comboBox17.setOnAction(event
                 -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -859,10 +934,11 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         );
     }
 
-    private String setPoliceType(String fsValue, int fnSelectedIndex) {
+    private String setPolicyType(String fsValue, int fnSelectedIndex) {
         switch (fnSelectedIndex) {
             case 0:
                 fsValue = "y";
+                clearCoveragePremium();
                 oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("na");
                 int actNtr = -1;
                 if (oTransInsProposal.getMasterModel().getMasterModel().getAONCPayM() != null) {
@@ -879,28 +955,49 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     }
                 }
                 comboBox27.getSelectionModel().select(actNtr);
-                CustomCommonUtil.setText("0.00", txtField19, txtField20,
-                        txtField28, txtField21,
-                        txtField22, txtField29,
-                        txtField23, txtField30,
-                        txtField24, txtField31,
-                        txtField25, txtField32);
                 break;
             case 1:
-                fsValue = "n";
-                oTransInsProposal.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal("0.00"));
-                oTransInsProposal.getMasterModel().getMasterModel().setTPLPrem(new BigDecimal("0.00"));
-                CustomCommonUtil.setText("0.00", txtField26, txtField33);
-                oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("");
+                fsValue = "c";
+                clearCoveragePremium();
                 comboBox27.setValue(null);
                 break;
             case 2:
                 fsValue = "b";
-                oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("");
+                clearCoveragePremium();
                 comboBox27.setValue(null);
                 break;
         }
+        CustomCommonUtil.setText("0.00", txtField19, txtField20,
+                txtField28, txtField21,
+                txtField22, txtField29,
+                txtField23, txtField30,
+                txtField24, txtField31,
+                txtField25, txtField32,
+                txtField26, txtField33,
+                txtField34, txtField36, txtField37);
         return fsValue;
+    }
+
+    private void clearCoveragePremium() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (!txtField16.getText().trim().isEmpty()) {
+                oTransInsProposal.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setODTCRate(0.00);
+                oTransInsProposal.getMasterModel().getMasterModel().setODTCPrem(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setAONCAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setAONCRate(0.00);
+                oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("");
+                oTransInsProposal.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setBdyCAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setBdyCPrem(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setPrDCAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setPrDCPrem(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setPAcCAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setPAcCPrem(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal(0.00));
+                oTransInsProposal.getMasterModel().getMasterModel().setTPLPrem(new BigDecimal(0.00));
+            }
+        }
     }
 
     @Override
@@ -927,6 +1024,14 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         oTransInsProposal.getMasterModel().getMasterModel().setInsurNme("");
+                        clearCoveragePremium();
+                        CustomCommonUtil.setText("0.00", txtField19, txtField20,
+                                txtField28, txtField21,
+                                txtField22, txtField29,
+                                txtField23, txtField30,
+                                txtField24, txtField31,
+                                txtField25, txtField32,
+                                txtField26, txtField33);
                         initFields(pnEditMode);
                     }
                 }
@@ -968,7 +1073,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 txtField06, txtField07,
                 txtField08, txtField12,
                 txtField14, txtField16);
-
+        CustomCommonUtil.setText("", textArea13, textArea15, textArea03);
         CustomCommonUtil.setValue(null,
                 comboBox01, comboBox10,
                 comboBox17, comboBox18,
@@ -982,7 +1087,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         CustomCommonUtil.setDisable(true,
                 txtField02, comboBox10,
-                comboBox18,
+                comboBox18, textArea13,
                 txtField16, comboBox17,
                 txtField19, txtField20, txtField28,
                 txtField21, txtField22, comboBox27, txtField29,
@@ -991,15 +1096,16 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 txtField25, txtField32,
                 txtField26, txtField33
         );
-        CustomCommonUtil.setDisable(!lbShow, comboBox01, txtField35);
+        CustomCommonUtil.setDisable(!lbShow, comboBox01, textArea13, txtField35);
         if (lbShow) {
             if (lsClientSource == "1") {
                 if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
                     CustomCommonUtil.setDisable(!lbShow, txtField02, comboBox17, comboBox10);
                 }
             } else {
+                txtField02.setDisable(!lbShow);
                 if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
-                    CustomCommonUtil.setDisable(!lbShow, txtField02, comboBox10, txtField16, comboBox17);
+                    CustomCommonUtil.setDisable(!lbShow, comboBox10, txtField16, comboBox17);
                 }
             }
             switch (comboBox18.getSelectionModel().getSelectedIndex()) {
@@ -1029,6 +1135,21 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     break;
             }
 
+            if (!lblApprovalNo.getText().isEmpty()) {
+                CustomCommonUtil.setDisable(true,
+                        comboBox18, textArea13,
+                        txtField16, comboBox17,
+                        txtField19, txtField20,
+                        txtField28, txtField21,
+                        txtField22, comboBox27,
+                        txtField29, txtField23,
+                        txtField30, txtField24,
+                        txtField31, txtField25,
+                        txtField32, txtField26,
+                        txtField33, txtField35
+                );
+            }
+
         }
 
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
@@ -1039,7 +1160,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         btnAdd.setManaged(!lbShow);
         comboBox18.setDisable(!(lbShow && !comboBox01.getValue().isEmpty()));
         if (fnValue == EditMode.UPDATE) {
-            CustomCommonUtil.setDisable(true, comboBox01);
+            CustomCommonUtil.setDisable(true, comboBox01, txtField02);
         }
         if (fnValue == EditMode.READY) {
             if (!lblIPStatus.getText().equals("Cancelled")) {

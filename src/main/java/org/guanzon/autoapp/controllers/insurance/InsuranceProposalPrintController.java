@@ -135,14 +135,6 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
         return fsValue;
     }
 
-    private String getValueDate2Report(String fsValue, String fsCol) {
-        fsValue = "";
-        if (oTransPrint.getMaster(fsCol) != null) {
-            fsValue = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster(fsCol));
-        }
-        return fsValue;
-    }
-
     private String getValueDateReport(String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getMaster(fsCol) != null) {
@@ -152,13 +144,15 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     }
 
     private static String getValueNumberReport(String fsAmountString) {
-        DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
         String lsFormattedAmount = "";
-        if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
-            lsFormattedAmount = "";
-        } else {
-            double amount = Double.parseDouble(fsAmountString);
-            lsFormattedAmount = loNumFormat.format(amount);
+        DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
+        if (fsAmountString != null) {
+            if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
+                lsFormattedAmount = "";
+            } else {
+                double amount = Double.parseDouble(fsAmountString);
+                lsFormattedAmount = loNumFormat.format(amount);
+            }
         }
         return lsFormattedAmount;
     }
@@ -189,8 +183,8 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             params.put("branchName", oApp.getBranchName());
             params.put("transDate", getValueDateReport("transDate", "dTransact"));
             params.put("customerName", getValueReport("customerName", "sOwnrNmxx"));
-            params.put("vehicleDesc", getValueReport("vehicleDesc", "sVhclFDsc"));
-            params.put("color", "");
+            params.put("vehicleDesc", getValueReport("vehicleDesc", "sVhclDesc"));
+            params.put("color", getValueReport("color", "sColorDsc"));
             String lsPlateCSNo = "";
             if (oTransPrint.getMasterModel().getMasterModel().getPlateNo() != null) {
                 lsPlateCSNo = oTransPrint.getMasterModel().getMasterModel().getPlateNo() + " / " + oTransPrint.getMasterModel().getMasterModel().getCSNo();
@@ -214,8 +208,8 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
                     break;
             }
             params.put("policyType", lsPolicyType);
-            params.put("enteredBy", getValueReport("enteredBy", "sEntryByx"));
-            params.put("enteredDate", getValueDateReport("enteredDate", "dEntryDte"));
+            params.put("enteredBy", "");  //getValueReport("enteredBy", "sEntryByx")
+            params.put("enteredDate", ""); //getValueDateReport("enteredDate", "dEntryDte")
             params.put("ownDamageAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCAmt())));
             params.put("tplAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt())));
@@ -227,11 +221,12 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
                 lnTax = "(" + "Tax   " + getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTaxRate())) + "% )";
             }
             params.put("taxRate", lnTax);
+            params.put("taxAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTaxAmt())));
             params.put("ownDamagePremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCPrem())));
             params.put("aonPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCPrem())));
             params.put("tplPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem())));
             params.put("bodilyPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBdyCPrem())));
-            params.put("prptyPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPrDCPrem())));
+            params.put("prptyDmgPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPrDCPrem())));
             params.put("pasAccPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPAcCPrem())));
             params.put("totalPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTotalAmt())));
             double lnOwdtcPrem = Double.parseDouble(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCPrem()));
@@ -241,7 +236,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             double lnPacCPrem = Double.parseDouble(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPAcCPrem()));
             double lnTPLPrem = Double.parseDouble(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             double lnBasicPremium = lnOwdtcPrem + lnAoncPrem + lnBdyCPrem + lnPrdcPrem + lnPacCPrem + lnTPLPrem;
-            params.put("totalPremium", getValueNumberReport(String.valueOf(lnBasicPremium)));
+            params.put("basicPremium", getValueNumberReport(String.valueOf(lnBasicPremium)));
             String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/insproposal.jasper";
             String printFileName = null;
             try {

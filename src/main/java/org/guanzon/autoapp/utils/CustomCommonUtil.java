@@ -313,6 +313,26 @@ public class CustomCommonUtil {
     }
 
     /**
+     * Sets the provided text value to multiple {@link TextArea} elements.
+     *
+     * @param fsValue the text value to be set for each TextArea
+     * @param txtAreas one or more TextArea objects to set the text for
+     *
+     * Example usage:      <pre>
+     * {@code
+     * TextArea txtAreas1 = new TextArea();
+     * TextArea txtAreas2 = new TextArea();
+     * setText("Sample Text", txtAreas1, txtAreas2);
+     * }
+     * </pre>
+     */
+    public static void setText(String fsValue, TextArea... txtAreas) {
+        for (TextArea txtArea : txtAreas) {
+            txtArea.setText(fsValue);
+        }
+    }
+
+    /**
      * Sets the provided value to multiple {@link ComboBox} elements.
      *
      * @param fsValue the value to be set for each ComboBox

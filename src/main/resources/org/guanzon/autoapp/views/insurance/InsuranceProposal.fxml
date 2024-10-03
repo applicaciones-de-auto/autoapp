@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -305,20 +305,20 @@
                                                                                                         <ComboBox fx:id="comboBox27" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="6" />
                                                                                                         <Label id="LabelDesc" text="Bodily Injury" GridPane.rowIndex="7" />
                                                                                                         <TextField fx:id="txtField23" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                                                        <TextField fx:id="txtField30" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="7" />
                                                                                                         <Label id="LabelDesc" text="Property Damage" GridPane.rowIndex="8" />
                                                                                                         <Label id="LabelDesc" text="Passenger Accident" GridPane.rowIndex="9" />
                                                                                                         <Label id="LabelDesc" text="TPL" GridPane.rowIndex="10" />
                                                                                                         <TextField fx:id="txtField24" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                                                        <TextField fx:id="txtField31" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="8" />
                                                                                                         <TextField fx:id="txtField25" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                                                                        <TextField fx:id="txtField32" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="9" />
+                                                                                                        <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="10" />
                                                                                                         <TextField fx:id="txtField26" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                                                                                                         <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="18.0" text="\%" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                                                         <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="18.0" text="\%" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                                                                         <TextField fx:id="txtField28" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField29" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="6" />
-                                                                                                        <TextField fx:id="txtField30" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="7" />
-                                                                                                        <TextField fx:id="txtField31" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="8" />
-                                                                                                        <TextField fx:id="txtField32" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="9" />
-                                                                                                        <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="10" />
                                                                                                         <Label alignment="CENTER" prefHeight="17.0" prefWidth="205.0" text="Coverage" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4">
                                                                                                             <font>
                                                                                                                 <Font name="System Bold" size="12.0" />
@@ -362,7 +362,7 @@
                                                                                             <children>
                                                                                                 <TextField fx:id="txtField12" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                 <TextArea fx:id="textArea13" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" />
-                                                                                                <TextField fx:id="txtField14" promptText="Search: F3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                                                <TextField fx:id="txtField14" disable="true" editable="false" promptText="Search: F3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                 <TextArea fx:id="textArea15" disable="true" editable="false" prefHeight="66.0" prefWidth="288.0" GridPane.columnIndex="4" GridPane.rowIndex="3" GridPane.rowSpan="2">
                                                                                                     <GridPane.margin>
                                                                                                         <Insets top="5.0" />
