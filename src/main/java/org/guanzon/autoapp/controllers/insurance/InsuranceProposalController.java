@@ -134,7 +134,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         txtField06.setText(oTransInsProposal.getMasterModel().getMasterModel().getEngineNo());
         txtField07.setText(oTransInsProposal.getMasterModel().getMasterModel().getFrameNo());
         txtField08.setText(oTransInsProposal.getMasterModel().getMasterModel().getVhclFDsc());
-
         txtField09.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getUnitPrce()))));
         int lnNew = -1;
         if (oTransInsProposal.getMasterModel().getMasterModel().getVhclNew() != null) {
@@ -155,7 +154,13 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         textArea13.setText(oTransInsProposal.getMasterModel().getMasterModel().getRemarks());
         txtField14.setText("");
         textArea15.setText("");
-        txtField16.setText(oTransInsProposal.getMasterModel().getMasterModel().getBrInsNme());
+        String lsInsBranc = "";
+        if (oTransInsProposal.getMasterModel().getMasterModel().getInsurNme() != null && oTransInsProposal.getMasterModel().getMasterModel().getBrInsNme() != null) {
+            if (!oTransInsProposal.getMasterModel().getMasterModel().getInsurNme().isEmpty() && !oTransInsProposal.getMasterModel().getMasterModel().getBrInsNme().isEmpty()) {
+                lsInsBranc = oTransInsProposal.getMasterModel().getMasterModel().getInsurNme() + " " + oTransInsProposal.getMasterModel().getMasterModel().getBrInsNme();
+            }
+        }
+        txtField16.setText(lsInsBranc);
         int appType = -1;
         if (oTransInsProposal.getMasterModel().getMasterModel().getIsNew() != null) {
             switch (oTransInsProposal.getMasterModel().getMasterModel().getIsNew()) {
@@ -762,11 +767,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     oTransInsProposal.getMasterModel().getMasterModel().setEngineNo("");
                     oTransInsProposal.getMasterModel().getMasterModel().setFrameNo("");
                     oTransInsProposal.getMasterModel().getMasterModel().setVhclFDsc("");
-                    txtField02.setText("");
-                    comboBox17.setValue(null);
-                    comboBox18.setValue(null);
+                    oTransInsProposal.getMasterModel().getMasterModel().setInsTypID("");
                     oTransInsProposal.getMasterModel().getMasterModel().setAONCPayM("");
-                    comboBox27.setValue(null);
+                    txtField02.setText("");
+                    CustomCommonUtil.setValue(null, comboBox18, comboBox17, comboBox27);
                     clearVSPFields();
                     initFields(pnEditMode);
                 }
@@ -980,7 +984,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
 
     private void clearCoveragePremium() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            if (!txtField16.getText().trim().isEmpty()) {
+            if (txtField16.getText().trim().isEmpty()) {
                 oTransInsProposal.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(0.00));
                 oTransInsProposal.getMasterModel().getMasterModel().setODTCRate(0.00);
                 oTransInsProposal.getMasterModel().getMasterModel().setODTCPrem(new BigDecimal(0.00));
@@ -1006,13 +1010,16 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
+                        oTransInsProposal.getMasterModel().getMasterModel().setVSPTranNo("");
                         oTransInsProposal.getMasterModel().getMasterModel().setClientID("");
+                        oTransInsProposal.getMasterModel().getMasterModel().setOwnrNm("");
                         oTransInsProposal.getMasterModel().getMasterModel().setAddress("");
                         oTransInsProposal.getMasterModel().getMasterModel().setPlateNo("");
                         oTransInsProposal.getMasterModel().getMasterModel().setCSNo("");
                         oTransInsProposal.getMasterModel().getMasterModel().setEngineNo("");
                         oTransInsProposal.getMasterModel().getMasterModel().setFrameNo("");
                         oTransInsProposal.getMasterModel().getMasterModel().setVhclFDsc("");
+                        oTransInsProposal.getMasterModel().getMasterModel().setInsTypID("");
                         clearVSPFields();
                         initFields(pnEditMode);
                     }
@@ -1024,6 +1031,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         oTransInsProposal.getMasterModel().getMasterModel().setInsurNme("");
+                        oTransInsProposal.getMasterModel().getMasterModel().setBrInsNme("");
                         clearCoveragePremium();
                         CustomCommonUtil.setText("0.00", txtField19, txtField20,
                                 txtField28, txtField21,
@@ -1149,7 +1157,13 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                         txtField33, txtField35
                 );
             }
-
+            if (comboBox01.getValue().equals("VSP")) {
+                if (oTransInsProposal.getMasterModel().getMasterModel().getVSPTranNo() != null) {
+                    if (!oTransInsProposal.getMasterModel().getMasterModel().getVSPTranNo().isEmpty()) {
+                        comboBox17.setDisable(true);
+                    }
+                }
+            }
         }
 
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
