@@ -31,6 +31,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -74,7 +75,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
     @FXML
     private Button btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnIPCancel, btnClose;
     @FXML
-    private Label lblApprovalStatus, lblApprovalNo, lblIPStatus, lblIPNo, lblIPNoValue;
+    private Label lblIPStatus, lblIPNo, lblIPNoValue, lblApprNo;
     @FXML
     private TextArea textArea03, textArea13, textArea15;
     @FXML
@@ -85,6 +86,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
     private ComboBox<String> comboBox01, comboBox10, comboBox18, comboBox17, comboBox27;
     @FXML
     private DatePicker datePicker11;
+    @FXML
+    private ComboBox<?> comboBox38;
+    @FXML
+    private Rectangle rectangleOverlay;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -229,12 +234,11 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getTaxRate()))));
         txtField36.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getTaxAmt()))));
         txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsProposal.getMasterModel().getMasterModel().getTotalAmt()))));
-        String lsApStatus = "";
-        String lsAppNo = "";
+
         if (oTransInsProposal.getMasterModel().getMasterModel().getTranStat() != null) {
             switch (oTransInsProposal.getMasterModel().getMasterModel().getTranStat()) {
                 case TransactionStatus.STATE_OPEN:
-                    lblIPStatus.setText("Active");
+                    lblIPStatus.setText("For Approval");
                     break;
                 case TransactionStatus.STATE_CLOSED:
                     lblIPStatus.setText("Approved");
@@ -250,9 +254,12 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     break;
             }
         }
+        String lsAppNo = "";
+        if (oTransInsProposal.getMasterModel().getMasterModel().getInsAppNo() != null) {
+            lsAppNo = oTransInsProposal.getMasterModel().getMasterModel().getInsAppNo();
+        }
+        lblApprNo.setText(lsAppNo);
         String lsIPNoValue = "";
-        lblApprovalStatus.setText("");
-        lblApprovalNo.setText("");
         if (oTransInsProposal.getMasterModel().getMasterModel().getReferNo() != null) {
             lblIPNo.setText("Insurance Proposal No: ");
             lsIPNoValue = oTransInsProposal.getMasterModel().getMasterModel().getReferNo();
@@ -686,7 +693,9 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.YesNo(null, "Search Insurance Proposal Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                        pnEditMode = EditMode.READY;
                     } else {
+                        pnEditMode = oTransInsProposal.getEditMode();
                         return;
                     }
                 }
@@ -1026,6 +1035,16 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 }
             }
         });
+        rectangleOverlay.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (pnEditMode == EditMode.ADDNEW) {
+                if (comboBox01.getValue().equals("VSP")) {
+                    if (comboBox18.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "You've selected VSP. Please select policy type first.");
+                        return;
+                    }
+                }
+            }
+        });
         txtField16.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
@@ -1086,7 +1105,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 comboBox01, comboBox10,
                 comboBox17, comboBox18,
                 comboBox27);
-        CustomCommonUtil.setText("", lblApprovalStatus, lblApprovalNo, lblIPStatus, lblIPNo, lblIPNoValue, lblIPStatus);
+        CustomCommonUtil.setText("", lblApprNo, lblIPNo, lblIPNoValue, lblIPStatus);
         datePicker11.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oApp.getServerDate())));
     }
 
@@ -1102,13 +1121,21 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 txtField23, txtField30,
                 txtField24, txtField31,
                 txtField25, txtField32,
-                txtField26, txtField33
+                txtField26, txtField33,
+                rectangleOverlay
         );
+        rectangleOverlay.setVisible(false);
+        rectangleOverlay.setManaged(false);
         CustomCommonUtil.setDisable(!lbShow, comboBox01, textArea13, txtField35);
         if (lbShow) {
             if (lsClientSource == "1") {
+                rectangleOverlay.setDisable(!lbShow);
+                rectangleOverlay.setVisible(true);
+                rectangleOverlay.setManaged(true);
                 if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
                     CustomCommonUtil.setDisable(!lbShow, txtField02, comboBox17, comboBox10);
+                    rectangleOverlay.setVisible(false);
+                    rectangleOverlay.setManaged(false);
                 }
             } else {
                 txtField02.setDisable(!lbShow);
@@ -1143,7 +1170,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     break;
             }
 
-            if (!lblApprovalNo.getText().isEmpty()) {
+            if (!lblApprNo.getText().isEmpty()) {
                 CustomCommonUtil.setDisable(true,
                         comboBox18, textArea13,
                         txtField16, comboBox17,
@@ -1181,6 +1208,11 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnIPCancel);
                 CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnIPCancel);
             }
+            if (lblIPStatus.getText().equals("Approved")) {
+                CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel);
+                CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel);
+            }
+
         }
     }
 
