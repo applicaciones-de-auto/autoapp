@@ -1212,7 +1212,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel);
                 CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel);
             }
-
+            if (!lblIPStatus.getText().equals("Approved")) {
+                CustomCommonUtil.setVisible(false, btnPrint);
+                CustomCommonUtil.setManaged(false, btnPrint);
+            }
         }
     }
 
