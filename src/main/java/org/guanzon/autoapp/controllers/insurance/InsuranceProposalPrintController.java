@@ -194,7 +194,13 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             params.put("plateCSNo", lsPlateCSNo);
             params.put("frameNo", getValueReport("frameNo", "sFrameNox"));
             params.put("engineNo", getValueReport("engineNo", "sEngineNo"));
-            params.put("insCompany", getValueReport("insCompany", "sBrInsNme"));
+            String lsInsBranc = "";
+            if (oTransPrint.getMasterModel().getMasterModel().getInsurNme() != null && oTransPrint.getMasterModel().getMasterModel().getBrInsNme() != null) {
+                if (!oTransPrint.getMasterModel().getMasterModel().getInsurNme().isEmpty() && !oTransPrint.getMasterModel().getMasterModel().getBrInsNme().isEmpty()) {
+                    lsInsBranc = oTransPrint.getMasterModel().getMasterModel().getInsurNme() + " " + oTransPrint.getMasterModel().getMasterModel().getBrInsNme();
+                }
+            }
+            params.put("insCompany", lsInsBranc);
             String lsPolicyType = "";
             switch (oTransPrint.getMasterModel().getMasterModel().getInsTypID()) {
                 case "y":
@@ -207,12 +213,23 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
                     lsPolicyType = "TPL AND COMPREHENSIVE";
                     break;
             }
+            String lsTPLAmnt = "";
+            String lsTPLPrem = "";
+            if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM() != null) {
+                if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM().equals("na")) {
+                    lsTPLAmnt = "N/A";
+                    lsTPLPrem = "N/A";
+                } else {
+                    lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
+                    lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
+                }
+            }
             params.put("policyType", lsPolicyType);
             params.put("enteredBy", "");  //getValueReport("enteredBy", "sEntryByx")
             params.put("enteredDate", ""); //getValueDateReport("enteredDate", "dEntryDte")
             params.put("ownDamageAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCAmt())));
-            params.put("tplAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt())));
+            params.put("tplAmount", lsTPLAmnt);
             params.put("bodilyAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBdyCAmt())));
             params.put("prptyAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPrDCAmt())));
             params.put("pasAccAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPAcCAmt())));
@@ -224,7 +241,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             params.put("taxAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTaxAmt())));
             params.put("ownDamagePremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCPrem())));
             params.put("aonPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCPrem())));
-            params.put("tplPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem())));
+            params.put("tplPremium", lsTPLPrem);
             params.put("bodilyPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBdyCPrem())));
             params.put("prptyDmgPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPrDCPrem())));
             params.put("pasAccPremium", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getPAcCPrem())));

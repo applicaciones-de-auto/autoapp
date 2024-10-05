@@ -19,9 +19,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -112,27 +113,19 @@
                                         </Button>
                                     </children>
                                 </HBox>
-                                <GridPane layoutY="9.0" prefHeight="38.0" prefWidth="530.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="9.0">
+                                <GridPane layoutY="9.0" prefHeight="38.0" prefWidth="312.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="9.0">
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="lblApprovalStatus" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="3">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="17.0" prefWidth="87.0" text="Approval Status:" textFill="WHITE" GridPane.columnIndex="2" />
-                                        <Label text="Ins Apps No.:" textFill="WHITE" GridPane.columnIndex="4" />
-                                        <Label fx:id="lblApprovalNo" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="5">
+                                        <Label text="Ins Apps No.:" textFill="WHITE" GridPane.columnIndex="2" />
+                                        <Label fx:id="lblApprNo" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="3">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
@@ -214,6 +207,7 @@
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                                                                                         <ColumnConstraints />
+                                                                                                        <ColumnConstraints />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
                                                                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -251,6 +245,7 @@
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="Engine No" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="CS No." GridPane.rowIndex="5" />
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="Vehicle Description" GridPane.rowIndex="7" />
+                                                                                                        <Rectangle fx:id="rectangleOverlay" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="27.0" stroke="WHITE" strokeType="INSIDE" strokeWidth="0.0" width="520.0" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="2" />
                                                                                                     </children>
                                                                                                 </GridPane>
                                                                                             </children>
@@ -313,8 +308,8 @@
                                                                                                         <TextField fx:id="txtField31" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="8" />
                                                                                                         <TextField fx:id="txtField25" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                                                                                                         <TextField fx:id="txtField32" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="9" />
-                                                                                                        <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="10" />
                                                                                                         <TextField fx:id="txtField26" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                                                                        <TextField fx:id="txtField33" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="10" />
                                                                                                         <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="18.0" text="\%" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                                                         <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="18.0" text="\%" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                                                                         <TextField fx:id="txtField28" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="7" GridPane.rowIndex="5" />
@@ -331,8 +326,8 @@
                                                                                                         </Label>
                                                                                                         <Label id="LabelDesc" text="Policy Type" />
                                                                                                         <ComboBox fx:id="comboBox18" prefHeight="24.0" prefWidth="247.0" GridPane.columnIndex="1" GridPane.columnSpan="3" />
-                                                                              <Label id="LabelDesc" prefHeight="14.0" prefWidth="100.0" text="New Business" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                              <ComboBox fx:id="comboBox38" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="100.0" text="New Business" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                                                        <ComboBox fx:id="comboBox38" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                                     </children>
                                                                                                 </GridPane>
                                                                                             </children>

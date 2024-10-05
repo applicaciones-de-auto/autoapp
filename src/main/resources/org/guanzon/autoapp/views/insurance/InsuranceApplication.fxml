@@ -92,11 +92,13 @@
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
                                                                                             </rowConstraints>
                                                                                             <children>
+                                                                                                <TextField fx:id="txtField01" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                                <TextField fx:id="txtField08" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="7" />
+                                                                                                <TextField fx:id="txtField10" prefHeight="22.0" prefWidth="340.0" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="9" />
+                                                                                                <DatePicker fx:id="datePicker11" disable="true" editable="false" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                                 <Label id="LabelDesc" text="Date Created" wrapText="true" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                 <Label id="LabelDesc" text="Application Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                                                 <Label id="LabelDesc" text="Ins. Coordinator" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                                                                <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="7" />
-                                                                                                <DatePicker fx:id="datePicker11" disable="true" editable="false" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                                 <Label text="Application No" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="12.0" />
@@ -117,9 +119,7 @@
                                                                                                 <Label id="LabelDesc" text="Finance Type" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                                                                 <Label id="LabelDesc" text="Bank" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                                                                                                 <ComboBox fx:id="comboBox09" prefHeight="24.0" prefWidth="318.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="8" />
-                                                                                                <TextField fx:id="txtField10" prefHeight="22.0" prefWidth="340.0" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="9" />
                                                                                                 <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Proposal No" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                                <TextField fx:id="txtField01" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                             </children>
                                                                                         </GridPane>
                                                                                     </children>
@@ -155,6 +155,7 @@
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
                                                                                             </rowConstraints>
                                                                                             <children>
+                                                                                                <TextField fx:id="txtField17" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                                                                                 <Label id="LabelDesc" text="Plate No" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Frame No" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Vehicle Description" GridPane.columnIndex="1" GridPane.rowIndex="6" />
@@ -172,7 +173,6 @@
                                                                                                 <ComboBox fx:id="comboBox21" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="7" />
                                                                                                 <Label id="LabelDesc" text="Type of Body" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8" />
                                                                                                 <ComboBox fx:id="comboBox18" disable="true" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                                                                                                <TextField fx:id="txtField17" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                                                                                 <Label text="Customer Name" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="11.5" />
@@ -223,6 +223,7 @@
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                                             </rowConstraints>
                                                                                             <children>
+                                                                                                <TextField fx:id="txtField41" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="8" GridPane.rowIndex="9" />
                                                                                                 <Label id="LabelDesc" text="Own Damage/Theft" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                 <TextField fx:id="txtField23" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                 <Label id="LabelDesc" alignment="CENTER_RIGHT" prefHeight="14.0" prefWidth="150.0" text="Tax(%)" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="7" />
@@ -264,7 +265,6 @@
                                                                                                 <TextField fx:id="txtField32" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                                 <TextField fx:id="txtField34" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                                                                                                 <TextField fx:id="txtField40" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="8" GridPane.rowIndex="8" />
-                                                                                                <TextField fx:id="txtField41" alignment="CENTER_RIGHT" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="8" GridPane.rowIndex="9" />
                                                                                                 <TextField fx:id="txtField42" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="8" GridPane.rowIndex="10" />
                                                                                                 <TextField fx:id="txtField39" alignment="CENTER_RIGHT" disable="true" editable="false" prefHeight="22.0" prefWidth="340.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="8" GridPane.rowIndex="7" />
                                                                                                 <Label id="LabelDesc" alignment="CENTER" prefHeight="14.0" prefWidth="87.0" text="\%" textFill="WHITE" GridPane.columnIndex="5" GridPane.rowIndex="1" />
