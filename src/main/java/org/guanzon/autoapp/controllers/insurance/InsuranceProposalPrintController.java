@@ -144,7 +144,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     }
 
     private static String getValueNumberReport(String fsAmountString) {
-        String lsFormattedAmount = "";
+        String lsFormattedAmount = "0.00";
         DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
         if (fsAmountString != null) {
             if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
@@ -206,7 +206,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
                 case "y":
                     lsPolicyType = "TPL";
                     break;
-                case "n":
+                case "c":
                     lsPolicyType = "COMPREHENSIVE";
                     break;
                 case "b":
@@ -215,18 +215,16 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             }
             String lsTPLAmnt = "";
             String lsTPLPrem = "";
-            if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM() != null) {
-                if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM().equals("na")) {
-                    lsTPLAmnt = "N/A";
-                    lsTPLPrem = "N/A";
-                } else {
-                    lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
-                    lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
-                }
+            if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getInsTypID()).equals("c")) {
+                lsTPLAmnt = "N/A";
+                lsTPLPrem = "N/A";
+            } else {
+                lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
+                lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             }
             params.put("policyType", lsPolicyType);
-            params.put("enteredBy", "");  //getValueReport("enteredBy", "sEntryByx")
-            params.put("enteredDate", ""); //getValueDateReport("enteredDate", "dEntryDte")
+            params.put("enteredBy", System.getProperty("user.name"));
+            params.put("enteredDate", getValueDateReport("enteredDate", "dModified"));
             params.put("ownDamageAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCAmt())));
             params.put("tplAmount", lsTPLAmnt);
