@@ -48,13 +48,11 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Insurance Application Print";
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
     Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
-    private final int pnCtr = 0;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -186,7 +184,7 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("branchName", oApp.getBranchName());
             params.put("transDate", getValueDateReport("transDate", "dTransact"));
-            params.put("controlNo", "");
+            params.put("controlNo", getValueReport("controlNo", "sTransNox"));
             params.put("customerName", getValueReport("customerName", "sOwnrNmxx"));
             params.put("address", getValueReport("customerName", "sAddressx"));
             params.put("vehicleDesc", getValueReport("vehicleDesc", "sVhclDesc"));
@@ -218,7 +216,7 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
                 case "y":
                     lsPolicyType = "TPL";
                     break;
-                case "n":
+                case "c":
                     lsPolicyType = "COMPREHENSIVE";
                     break;
                 case "b":
@@ -235,15 +233,14 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
             params.put("mortgage", lsBank);
             String lsTPLAmnt = "";
             String lsTPLPrem = "";
-            if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM() != null) {
-                if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM().equals("na")) {
-                    lsTPLAmnt = "N/A";
-                    lsTPLPrem = "N/A";
-                } else {
-                    lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
-                    lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
-                }
+            if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getInsTypID()).equals("c")) {
+                lsTPLAmnt = "N/A";
+                lsTPLPrem = "N/A";
+            } else {
+                lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
+                lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             }
+
             params.put("ownDmgAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBdyCAmt())));
             params.put("tplAmount", lsTPLAmnt);

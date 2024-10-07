@@ -172,7 +172,7 @@
                                                                                                 <Label id="LabelDesc" text="Vehicle Type" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                                                                 <ComboBox fx:id="comboBox21" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="7" />
                                                                                                 <Label id="LabelDesc" text="Type of Body" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8" />
-                                                                                                <ComboBox fx:id="comboBox18" disable="true" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                                                                                                <ComboBox fx:id="comboBox18" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                                                                                 <Label text="Customer Name" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="11.5" />
