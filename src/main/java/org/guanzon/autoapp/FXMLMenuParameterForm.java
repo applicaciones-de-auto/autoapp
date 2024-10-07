@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 
 /**
  * FXMLMenuParameterForm is a class that represents a form window for displaying

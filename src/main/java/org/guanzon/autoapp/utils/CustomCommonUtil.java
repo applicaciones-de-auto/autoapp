@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.guanzon.autoapp.utils;
 
 import java.text.ParseException;
@@ -10,13 +6,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javafx.beans.value.ChangeListener;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 /**
  * Utility class providing various common methods for date formatting, text
@@ -25,12 +23,25 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 public class CustomCommonUtil {
 
     /**
-     * Converts a string representation of a date to a {@link LocalDate} object.
+     * Converts a string representing a date in "yyyy-MM-dd" format to a
+     * {@link LocalDate} object.
      *
-     * @param val The date in string format (yyyy-MM-dd).
-     * @return The {@link LocalDate} representation of the input string.
-     * @throws DateTimeParseException If the text cannot be parsed to a
-     * {@link LocalDate}.
+     * This method takes a date in string format (e.g., "2024-10-01") and
+     * converts it to a {@link LocalDate}. It expects the input string to follow
+     * the "yyyy-MM-dd" format. If the input cannot be parsed, a
+     * {@link DateTimeParseException} will be thrown.
+     *
+     * @param val The date string in "yyyy-MM-dd" format.
+     * @return A {@link LocalDate} object representing the date.
+     * @throws DateTimeParseException If the input string cannot be parsed into
+     * a valid {@link LocalDate}.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * String dateStr = "2024-10-01";
+     * LocalDate date = strToDate(dateStr);
+     * System.out.println(date); // Outputs: 2024-10-01
+     * }</pre>
      */
     public static LocalDate strToDate(String val) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -38,57 +49,91 @@ public class CustomCommonUtil {
     }
 
     /**
-     * Formats a {@link Date} object to a string in the format yyyy-MM-dd.
+     * Converts a {@link Date} object to a string in "yyyy-MM-dd" format.
+     *
+     * This method formats a {@link Date} object (e.g., from a timestamp) to a
+     * string in the "yyyy-MM-dd" format, commonly used for database entries or
+     * display.
      *
      * @param fdValue The {@link Date} object to be formatted.
-     * @return The formatted date string.
+     * @return A string representing the date in "yyyy-MM-dd" format.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * Date now = new Date();
+     * String formattedDate = xsDateShort(now);
+     * System.out.println(formattedDate); // Outputs: Current date in yyyy-MM-dd format
+     * }</pre>
      */
     public static String xsDateShort(Date fdValue) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String date = sdf.format(fdValue);
-        return date;
+        return sdf.format(fdValue);
     }
 
     /**
-     * Formats a {@link Date} object to a string with month name and day in the
-     * format "MMMM dd, yyyy".
+     * Converts a date string from the "MMMM dd, yyyy" format to "yyyy-MM-dd".
      *
-     * @param fdValue The {@link Date} object to be formatted.
-     * @return The formatted date string with month name.
-     */
-    public static String xsDateWMonthName(Date fdValue) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy");
-        String date = sdf.format(fdValue);
-        return date;
-    }
-
-    /**
-     * Converts a date string in the format "MMMM dd, yyyy" to a string in the
-     * format yyyy-MM-dd.
+     * This method takes a string formatted with the month name (e.g., "October
+     * 02, 2024") and converts it into the standard "yyyy-MM-dd" format. If the
+     * input string cannot be parsed, it throws a {@link ParseException}.
      *
-     * @param fsValue The date string to be converted.
-     * @return The converted date string in the format yyyy-MM-dd.
-     * @throws ParseException If the input string cannot be parsed.
+     * @param fsValue The date string in "MMMM dd, yyyy" format.
+     * @return A string representing the date in "yyyy-MM-dd" format.
+     * @throws ParseException If the input string cannot be parsed into a valid
+     * date.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * String dateStr = "October 02, 2024";
+     * String formattedDate = xsDateShort(dateStr);
+     * System.out.println(formattedDate); // Outputs: 2024-10-02
+     * }</pre>
      */
     public static String xsDateShort(String fsValue) throws ParseException {
         SimpleDateFormat fromUser = new SimpleDateFormat("MMMM dd, yyyy");
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String lsResult = "";
-        try {
-            lsResult = myFormat.format(fromUser.parse(fsValue));
-        } catch (ParseException e) {
-            ShowMessageFX.Error(e.getMessage(), "xsDateShort", "Please inform MIS Department.");
-            System.exit(1);
-        }
-        return lsResult;
+        return myFormat.format(fromUser.parse(fsValue));
     }
 
     /**
-     * Sets the behavior of a {@link TextField} to automatically convert text to
-     * uppercase as it is typed.
+     * Formats a {@link Date} object into a string with the month name and day
+     * in the "MMMM dd, yyyy" format.
      *
-     * @param textField The {@link TextField} to which the behavior will be
-     * applied.
+     * This method converts a {@link Date} object into a more human-readable
+     * format, where the month name is displayed in full, such as "October 02,
+     * 2024".
+     *
+     * @param fdValue The {@link Date} object to be formatted.
+     * @return A string representing the date in "MMMM dd, yyyy" format.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * Date now = new Date();
+     * String formattedDate = xsDateWMonthName(now);
+     * System.out.println(formattedDate); // Outputs: October 02, 2024 (or current date)
+     * }</pre>
+     */
+    public static String xsDateWMonthName(Date fdValue) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy");
+        return sdf.format(fdValue);
+    }
+
+    /**
+     * Sets the behavior of a {@link TextField} to automatically convert all
+     * text input to uppercase.
+     *
+     * This method listens to changes in the {@link TextField} and converts any
+     * typed input to uppercase in real-time.
+     *
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField = new TextField();
+     * setCapsLockBehavior(textField);
+     * textField.setText("hello");
+     * System.out.println(textField.getText()); // Outputs: HELLO
+     * }</pre>
      */
     public static void setCapsLockBehavior(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -99,11 +144,21 @@ public class CustomCommonUtil {
     }
 
     /**
-     * Sets the behavior of a {@link TextArea} to automatically convert text to
-     * uppercase as it is typed.
+     * Sets the behavior of a {@link TextArea} to automatically convert all text
+     * input to uppercase.
      *
-     * @param textArea The {@link TextArea} to which the behavior will be
-     * applied.
+     * This method listens to changes in the {@link TextArea} and converts any
+     * typed input to uppercase in real-time.
+     *
+     * @param textArea The {@link TextArea} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextArea textArea = new TextArea();
+     * setCapsLockBehavior(textArea);
+     * textArea.setText("hello world");
+     * System.out.println(textArea.getText()); // Outputs: HELLO WORLD
+     * }</pre>
      */
     public static void setCapsLockBehavior(TextArea textArea) {
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -164,4 +219,156 @@ public class CustomCommonUtil {
         return lsFNameInitial + ". " + lsLName;
     }
 
+    /**
+     * Sets the disabled state for the given nodes.
+     *
+     * <p>
+     * For example, to disable multiple nodes:</p>
+     * <pre>
+     * {@code
+     * Button button = new Button("Submit");
+     * TextField textField = new TextField();
+     * setDisable(true, button, textField);  // This will disable both the button and the text field
+     * }
+     * </pre>
+     *
+     * @param disable if {@code true}, disables the nodes; otherwise, enables
+     * them.
+     * @param nodes the nodes to be disabled or enabled.
+     */
+    public static void setDisable(boolean disable, Node... nodes) {
+        for (Node node : nodes) {
+            node.setDisable(disable);
+        }
+    }
+
+    /**
+     * Sets the visibility state for the given nodes.
+     *
+     * <p>
+     * For example, to hide or show multiple nodes:</p>
+     * <pre>
+     * {@code
+     * Label label = new Label("Hidden Label");
+     * Button button = new Button("Click Me");
+     * setVisible(false, label, button);  // This will hide both the label and the button
+     * }
+     * </pre>
+     *
+     * @param visible if {@code true}, makes the nodes visible; otherwise, hides
+     * them.
+     * @param nodes the nodes to be shown or hidden.
+     */
+    public static void setVisible(boolean visible, Node... nodes) {
+        for (Node node : nodes) {
+            node.setVisible(visible);
+        }
+    }
+
+    /**
+     * Sets the managed state for the given nodes. A managed node is included in
+     * the layout calculations, so setting it to {@code false} will exclude it
+     * from layout, but the node will still exist in the scene graph.
+     *
+     * <p>
+     * For example, to remove nodes from layout calculations:</p>
+     * <pre>
+     * {
+     * @code
+     * TextField textField = new TextField("Managed TextField");
+     * Label label = new Label("Managed Label");
+     * setManaged(false, textField, label);  // These nodes will no longer be part of the layout
+     * }
+     * </pre>
+     *
+     * @param managed if {@code true}, includes the nodes in layout; otherwise,
+     * excludes them.
+     * @param nodes the nodes to be included or excluded from the layout.
+     */
+    public static void setManaged(boolean managed, Node... nodes) {
+        for (Node node : nodes) {
+            node.setManaged(managed);
+        }
+    }
+
+    /**
+     * Sets the provided text value to multiple {@link TextField} elements.
+     *
+     * @param fsValue the text value to be set for each TextField
+     * @param txtFields one or more TextField objects to set the text for
+     *
+     * Example usage:      <pre>
+     * {@code
+     * TextField txtField1 = new TextField();
+     * TextField txtField2 = new TextField();
+     * setText("Sample Text", txtField1, txtField2);
+     * }
+     * </pre>
+     */
+    public static void setText(String fsValue, TextField... txtFields) {
+        for (TextField txtField : txtFields) {
+            txtField.setText(fsValue);
+        }
+    }
+
+    /**
+     * Sets the provided text value to multiple {@link TextArea} elements.
+     *
+     * @param fsValue the text value to be set for each TextArea
+     * @param txtAreas one or more TextArea objects to set the text for
+     *
+     * Example usage:      <pre>
+     * {@code
+     * TextArea txtAreas1 = new TextArea();
+     * TextArea txtAreas2 = new TextArea();
+     * setText("Sample Text", txtAreas1, txtAreas2);
+     * }
+     * </pre>
+     */
+    public static void setText(String fsValue, TextArea... txtAreas) {
+        for (TextArea txtArea : txtAreas) {
+            txtArea.setText(fsValue);
+        }
+    }
+
+    /**
+     * Sets the provided value to multiple {@link ComboBox} elements.
+     *
+     * @param fsValue the value to be set for each ComboBox
+     * @param comboBoxes one or more ComboBox objects to set the value for
+     *
+     * Example usage:      <pre>
+     * {@code
+     * ComboBox<String> comboBox1 = new ComboBox<>();
+     * ComboBox<String> comboBox2 = new ComboBox<>();
+     * setValue("Option1", comboBox1, comboBox2);
+     * }
+     * </pre>
+     */
+    @SuppressWarnings("unchecked")
+    public static void setValue(String fsValue, ComboBox... comboBoxes) {
+        for (ComboBox comboBox : comboBoxes) {
+            comboBox.setValue(fsValue);
+        }
+    }
+
+    /**
+     * Sets the provided text value to multiple {@link Label} elements.
+     *
+     * @param fsValue the text value to be set for each Label
+     * @param labels one or more Label objects to set the text for
+     *
+     * Example usage:      <pre>
+     * {@code
+     * Label label1 = new Label();
+     * Label label2 = new Label();
+     * setText("Sample Text", label1, label2);
+     * }
+     * </pre>
+     */
+    public static void setText(String fsValue, Label... labels) {
+        for (Label label : labels) {
+            label.setText(fsValue);
+        }
+    }
 }

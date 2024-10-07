@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXML2.java to edit this template
- */
 package org.guanzon.autoapp;
 
 import java.io.IOException;
@@ -21,7 +17,6 @@ import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
-import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -50,9 +45,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -61,6 +59,13 @@ import org.guanzon.autoapp.controllers.general.CustomerVehicleInfoController;
 import org.guanzon.autoapp.controllers.general.ReferralAgentController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.ServiceAdvisorController;
+import org.guanzon.autoapp.controllers.general.TechnicianController;
+import org.guanzon.autoapp.controllers.insurance.FollowUpController;
+import org.guanzon.autoapp.controllers.insurance.FollowUpSchedController;
+import org.guanzon.autoapp.controllers.insurance.InsuranceApplicationController;
+import org.guanzon.autoapp.controllers.insurance.InsurancePolicyController;
+import org.guanzon.autoapp.controllers.insurance.InsuranceProposalApprovalController;
+import org.guanzon.autoapp.controllers.insurance.InsuranceProposalController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
@@ -85,7 +90,6 @@ import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
 import org.guanzon.autoapp.controllers.sales.VehicleDeliveryReceiptController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
-import org.guanzon.autoapp.controllers.general.TechnicianController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
 /**
@@ -225,6 +229,16 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuServiceAdvisor;
     @FXML
     private MenuItem mnuServiceTech;
+    @FXML
+    private MenuItem mnuInsProposal;
+    @FXML
+    private MenuItem mnuInsPropApp;
+    @FXML
+    private MenuItem mnuInsApplication;
+    @FXML
+    private MenuItem mnuInsPolicy;
+    @FXML
+    private MenuItem mnuFollowUp;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -406,68 +420,21 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
     }
 
-//    private void closeAllTabs(TabPane tabPane, GRider oApp) {
-//        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
-//            tabName.clear();
-////            TabsStateManager.saveCurrentTab(tabName);
-//            // Close all tabs using your TabsStateManager
+    private void closeAllTabs(TabPane tabPane, GRider oApp) {
+        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
+            tabName.clear();
+//            TabsStateManager.saveCurrentTab(tabName);
+//             Close all tabs using your TabsStateManager
 //            for (Tab tab : tabPane.getTabs()) {
 //                String formName = tab.getText();
-////                TabsStateManager.closeTab(formName);
+//                TabsStateManager.closeTab(formName);
 //            }
-//            tabPane.getTabs().clear();
-//            UnloadForm unload = new UnloadForm();
-//            StackPane myBox = (StackPane) tabpane.getParent();
-//            myBox.getChildren().clear();
-//            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
-//
-//        }
-//    }
-    private void closeAllTabs(TabPane tabPane, GRider oApp) {
-        if (ShowMessageFX.YesNo(
-                null, "Close All Tabs", "Are you sure you want to close all tabs?")) {
-            tabName.clear();
-            ObservableList<Tab> tabs = tabPane.getTabs();
+            tabPane.getTabs().clear();
+            UnloadForm unload = new UnloadForm();
+            StackPane myBox = (StackPane) tabpane.getParent();
+            myBox.getChildren().clear();
+            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
 
-            // Create an array to track transitions for all tabs
-            FadeTransition[] fadeTransitions = new FadeTransition[tabs.size()];
-
-            // Apply fade out animation for each tab content
-            for (int i = 0; i < tabs.size(); i++) {
-                Tab tab = tabs.get(i);
-                Node content = tab.getContent();
-
-                if (content != null) {
-                    // Create a fade transition for the tab content
-                    FadeTransition fadeOut = new FadeTransition(Duration.millis(300), content);
-                    fadeOut.setFromValue(1.0);
-                    fadeOut.setToValue(0.0);
-
-                    // Remove the tab after the fade-out is finished
-                    int tabIndex = i;
-                    fadeOut.setOnFinished(event -> {
-                        // Remove the tab once the animation is complete
-                        tabPane.getTabs().remove(tabIndex);
-
-                        // If it’s the last tab, clear the stack pane and load the main screen
-                        if (tabPane.getTabs().isEmpty()) {
-                            UnloadForm unload = new UnloadForm();
-                            StackPane myBox = (StackPane) tabPane.getParent();
-                            myBox.getChildren().clear();
-                            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
-                        }
-                    });
-
-                    fadeTransitions[i] = fadeOut;  // Store the transition
-                }
-            }
-
-            // Play the fade-out animations for all tabs
-            for (FadeTransition fade : fadeTransitions) {
-                if (fade != null) {
-                    fade.play();
-                }
-            }
         }
     }
 
@@ -707,7 +674,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new SalesExecutiveController();
         } else if (fsValue.contains("ReferralAgent.fxml")) {
             return new ReferralAgentController();
-            //
         } else if (fsValue.contains("VehicleDescription.fxml")) {
             return new VehicleDescriptionController();
         } else if (fsValue.contains("VehicleMake.fxml")) {
@@ -766,6 +732,16 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new ServiceAdvisorController();
         } else if (fsValue.contains("Technician.fxml")) {
             return new TechnicianController();
+        } else if (fsValue.contains("InsuranceProposal.fxml")) {
+            return new InsuranceProposalController();
+        } else if (fsValue.contains("InsuranceProposalApproval.fxml")) {
+            return new InsuranceProposalApprovalController();
+        } else if (fsValue.contains("InsuranceApplication.fxml")) {
+            return new InsuranceApplicationController();
+        } else if (fsValue.contains("InsurancePolicy.fxml")) {
+            return new InsurancePolicyController();
+        } else if (fsValue.contains("FollowUp.fxml")) {
+            return new FollowUpController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -830,6 +806,17 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Service Advisor";
         } else if (menuaction.contains("Technician.fxml")) {
             return "Service Technician";
+            /*INSURANCE*/
+        } else if (menuaction.contains("InsuranceProposal.fxml")) {
+            return "Insurance Proposal";
+        } else if (menuaction.contains("InsuranceProposalApproval.fxml")) {
+            return "Insurance Proposal Approval";
+        } else if (menuaction.contains("InsuranceApplication.fxml")) {
+            return "Insurance Application";
+        } else if (menuaction.contains("InsurancePolicy.fxml")) {
+            return "Insurance Policy";
+        } else if (menuaction.contains("FollowUp.fxml")) {
+            return "Follow Up List";
         } else {
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
             return null;
@@ -1156,6 +1143,52 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         String sformname = "VehicleSalesInvoice.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psCashPath);
 
+    }
+
+    /*INSURANCE*/
+    @FXML
+    private void mnuInsProposalClick(ActionEvent event) {
+        String sformname = psInsurancePath + "InsuranceProposal.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuInsPropAppClick(ActionEvent event) {
+        String sformname = psInsurancePath + "InsuranceProposalApproval.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuInsApplicationClick(ActionEvent event) {
+        String sformname = psInsurancePath + "InsuranceApplication.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuInsPolicyClick(ActionEvent event) {
+        String sformname = psInsurancePath + "InsurancePolicy.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuFollowUpClick(ActionEvent event) {
+        String sformname = psInsurancePath + "FollowUp.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
     }
 
     /*ACTIVITY*/

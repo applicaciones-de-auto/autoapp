@@ -9,6 +9,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
@@ -65,7 +66,7 @@ import org.guanzon.autoapp.models.general.RefAgentRequirements;
 import org.guanzon.autoapp.models.general.RefAgentTrans;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -84,7 +85,6 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     private int pnEditMode;
     private double xOffset, yOffset = 0;
     private int pnRow = -1;
-    private int lnCtr;
     private int iTabIndex = 0; //Set tab index
     private String psFileName = "";
     private String psFileUrl = "";
@@ -161,6 +161,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     private Label lblStatus;
     @FXML
     private Tab tabReferral;
+    @FXML
+    private TextField txtField13;
+    @FXML
+    private TextField txtField14;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -208,12 +212,12 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     }
 
     private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
@@ -396,7 +400,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12);
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /*Set TextField Value to Master Class*/
@@ -432,6 +436,12 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 case 12:/*Profession */
                     oTransRef.getModel().getModel().setProfessn(lsValue);
                     break;
+                case 13:/*Company */
+                    oTransRef.getModel().getModel().setCompany(lsValue);
+                    break;
+                case 14:/*Position */
+                    oTransRef.getModel().getModel().setPosition(lsValue);
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -456,6 +466,8 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         comboBox10.setValue("");
         comboBox11.setValue("");
         txtField12.setText("");
+        txtField13.setText("");
+        txtField14.setText("");
     }
 
     private void clearTables() {
@@ -497,6 +509,8 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         comboBox10.setDisable(!lbShow);
         comboBox11.setDisable(!lbShow);
         txtField12.setDisable(!lbShow);
+        txtField13.setDisable(!lbShow);
+        txtField14.setDisable(!lbShow);
 //        btnUploadImage.setDisable(!lbShow);
 
 //        if (oTransClient.getModel().getModel().getImage() != null) {
@@ -1014,6 +1028,8 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
 //        }
 
         txtField12.setText(oTransRef.getModel().getModel().getProfessn());
+        txtField13.setText(oTransRef.getModel().getModel().getCompany());
+        txtField14.setText(oTransRef.getModel().getModel().getPosition());
     }
 
     @FXML
@@ -1176,7 +1192,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         String sAddress, sStatus, sPrimary, sCurrent, sProvincial, sOffice;
         addressdata.clear();
         /*Set Values to Class Address Master*/
-        for (lnCtr = 0; lnCtr <= oTransClient.getAddressList().size() - 1; lnCtr++) {
+        for (int lnCtr = 0; lnCtr <= oTransClient.getAddressList().size() - 1; lnCtr++) {
             sAddress = oTransClient.getAddress(lnCtr, "sAddressx").toString() + " " + oTransClient.getAddress(lnCtr, "sBrgyName").toString() + " " + oTransClient.getAddress(lnCtr, "sTownName").toString() + ", " + oTransClient.getAddress(lnCtr, "sProvName").toString();
             if (oTransClient.getAddress(lnCtr, "cPrimaryx").toString().equals("1")) {
                 sPrimary = "Y";
@@ -1285,7 +1301,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         String sOwnership, sPrimary, sType, sStatus;
         contactdata.clear();
         /*Set Values to Class Mobile Master*/
-        for (lnCtr = 0; lnCtr <= oTransClient.getMobileList().size() - 1; lnCtr++) {
+        for (int lnCtr = 0; lnCtr <= oTransClient.getMobileList().size() - 1; lnCtr++) {
             switch (oTransClient.getMobile(lnCtr, "cOwnerxxx").toString()) {
                 case "0":
                     sOwnership = "PERSONAL";
@@ -1423,7 +1439,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         String sOwnership, sPrimary, sStatus;
         emaildata.clear();
         /*Set Values to Class Mobile Master*/
-        for (lnCtr = 0; lnCtr <= oTransClient.getEmailList().size() - 1; lnCtr++) {
+        for (int lnCtr = 0; lnCtr <= oTransClient.getEmailList().size() - 1; lnCtr++) {
             switch (oTransClient.getEmail(lnCtr, "cOwnerxxx").toString()) {
                 case "0":
                     sOwnership = "PERSONAL";
@@ -1539,7 +1555,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         String sSocType, sStatus = "";
         socialmediadata.clear();
         /*Set Values to Class Mobile Master*/
-        for (lnCtr = 0; lnCtr <= oTransClient.getSocialMediaList().size() - 1; lnCtr++) {
+        for (int lnCtr = 0; lnCtr <= oTransClient.getSocialMediaList().size() - 1; lnCtr++) {
             switch (oTransClient.getSocialMed(lnCtr, "cSocialTp").toString()) {
                 case "0":
                     sSocType = "FACEBOOK";
@@ -1603,60 +1619,28 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
 
     }
 
-    private String getValue(String fsValue, Integer loRow, String fsCol) {
-        try {
-            fsValue = "";
-            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = String.valueOf(oTransRef.getVSPTransDetail(loRow, fsCol)).toUpperCase();
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        return fsValue;
-    }
-
-    private String getValueDate(String fsValue, Integer loRow, String fsCol) {
-        try {
-            fsValue = "";
-            if (oTransRef.getVSPTransDetail(loRow, fsCol) != null) {
-                fsValue = CustomCommonUtil.xsDateShort((Date) oTransRef.getVSPTransDetail(loRow, fsCol));
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        return fsValue;
-    }
-
     private void loadAgentTrans() {
         transData.clear();
-        JSONObject loJSON = new JSONObject();
-        try {
-            loJSON = oTransRef.loadTransaction();
-            if ("success".equals((String) loJSON.get("result"))) {
-                for (lnCtr = 0; lnCtr <= oTransRef.getVSPTransCount() - 1; lnCtr++) {
-                    String csPlate = String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sCSNoxxxx")).toUpperCase() + "/" + String.valueOf(oTransRef.getVSPTransDetail(lnCtr, "sPlateNox")).toUpperCase();
-                    transData.add(new RefAgentTrans(
-                            String.valueOf(lnCtr + 1), //ROW
-                            getValueDate("ldVSPDate", lnCtr, ""),
-                            getValue("lsVSPNo", lnCtr, "sVSPNOxxx"),
-                            getValue("lsCustomName", lnCtr, "sBuyCltNm"),
-                            csPlate,
-                            getValue("lsCSPlateNo", lnCtr, "sDescript"),
-                            getValueDate("ldDrDate", lnCtr, "dUDRDatex"),
-                            getValue("lsDrNo", lnCtr, "sUDRNoxxx"),
-                            getValue("lsSalesExe", lnCtr, "sSaleExNm  ")
-                    ));
-
-                }
+        String csPlate = "";
+        for (int lnCtr = 0; lnCtr <= oTransRef.getVSPModelList().size() - 1; lnCtr++) {
+            if (oTransRef.getModel().getVSPModel(lnCtr).getPlateNo() != null) {
+                csPlate = oTransRef.getModel().getVSPModel(lnCtr).getCSNo() + "/" + oTransRef.getModel().getVSPModel(lnCtr).getPlateNo();
+            } else {
+                csPlate = oTransRef.getModel().getVSPModel(lnCtr).getCSNo();
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SalesExecutiveController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            transData.add(new RefAgentTrans(
+                    String.valueOf(lnCtr + 1), //ROW
+                    CustomCommonUtil.xsDateShort(oTransRef.getModel().getVSPModel(lnCtr).getDelvryDt()),
+                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getVSPNO().toUpperCase()),
+                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getBuyCltNm().toUpperCase()),
+                    csPlate,
+                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getVhclFDsc().toUpperCase()),
+                    CustomCommonUtil.xsDateShort(oTransRef.getModel().getVSPModel(lnCtr).getUDRDate()),
+                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getUDRNo().toUpperCase()),
+                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getSEName())));
+            csPlate = "";
         }
+        tblTransaction.setItems(transData);
     }
 
     private void initAgentTransaction() {
@@ -1675,8 +1659,6 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 header.setReordering(false);
             });
         });
-        transData.clear();
-        tblTransaction.setItems(transData);
     }
 
 }

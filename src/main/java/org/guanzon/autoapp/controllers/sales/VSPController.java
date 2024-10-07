@@ -71,7 +71,7 @@ import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -195,7 +195,7 @@ public class VSPController implements Initializable, ScreenInterface {
         initComboBoxItems();
         initCmboxFieldAction();
         initTableKeyPressed();
-        intiPatternFields();
+        initPatternFields();
         initDatePropertyAction();
         initTextPropertyAction();
         initButtonClick();
@@ -229,7 +229,7 @@ public class VSPController implements Initializable, ScreenInterface {
 
     }
 
-    private void intiPatternFields() {
+    private void initPatternFields() {
         List<TextField> loTxtField = Arrays.asList(txtField30, txtField31, txtField33, txtField35, txtField39, txtField42,
                 txtField45, txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
                 txtField54, txtField55, txtField59, txtField60, txtField63, txtField68, txtField70, txtField74, txtField82, txtField84);
@@ -1051,7 +1051,7 @@ public class VSPController implements Initializable, ScreenInterface {
                     initFields(pnEditMode);
                     break;
                 case "txtField32":
-                    loJSON = oTransVSP.searchBankApp(lsValue.trim());
+                    loJSON = oTransVSP.searchBankApp(lsValue);
                     if (!"error".equals(loJSON.get("result"))) {
                         String lsBrBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + " " + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
                         txtField32.setText(lsBrBank);

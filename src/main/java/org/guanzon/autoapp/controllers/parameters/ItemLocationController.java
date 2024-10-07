@@ -25,7 +25,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_ItemLocation;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

@@ -60,7 +60,7 @@ import org.guanzon.autoapp.models.general.ActivityLocation;
 import org.guanzon.autoapp.models.general.ActivityVehicle;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 

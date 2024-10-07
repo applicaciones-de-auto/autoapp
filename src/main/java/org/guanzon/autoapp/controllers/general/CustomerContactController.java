@@ -33,7 +33,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 
 /**
  * FXML Controller class

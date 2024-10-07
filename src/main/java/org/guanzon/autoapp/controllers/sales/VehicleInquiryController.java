@@ -72,7 +72,7 @@ import org.guanzon.autoapp.models.sales.InquiryVehiclePriority;
 import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.models.sales.InquiryVehicleBankApplications;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -763,6 +763,14 @@ public class VehicleInquiryController implements Initializable, ScreenInterface 
                 oTransInquiry = new Inquiry(oApp, false, oApp.getBranchCode());
                 loJSON = oTransInquiry.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
+                    switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
+                        case 0:
+                            tabPinEditMode = 0;
+                            break;
+                        case 1:
+                            tabPinEditMode = 1;
+                            break;
+                    }
                     loadCustomerInquiryInformation();
                     pnEditMode = oTransInquiry.getEditMode();
                     initFields(pnEditMode);

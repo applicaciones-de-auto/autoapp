@@ -8,7 +8,7 @@ package org.guanzon.autoapp;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.base.GRider;
 
 /**

@@ -55,7 +55,7 @@ import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
 import org.guanzon.autoapp.models.parts.ItemInfoModelYear;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 

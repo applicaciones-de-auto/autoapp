@@ -42,7 +42,7 @@ import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.controllers.sales.VSPAccessoriesController;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**

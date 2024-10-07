@@ -37,7 +37,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.ScreenInterface;
+import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
 /**
