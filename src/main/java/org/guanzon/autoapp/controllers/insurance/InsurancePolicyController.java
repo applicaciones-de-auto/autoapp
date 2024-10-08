@@ -886,6 +886,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnPayHistory":
+                ShowMessageFX.Warning(null, pxeModuleName, "Button payment history is underdevelopment");
                 break;
             case "btnCustomer":
                 break;
