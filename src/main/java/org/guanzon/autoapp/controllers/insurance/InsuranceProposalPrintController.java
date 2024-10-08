@@ -44,7 +44,6 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Insurance Proposal Print";
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
     Map<String, Object> params = new HashMap<>();

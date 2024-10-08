@@ -780,7 +780,11 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                     break;
             }
         }
-        lblPolicyNo.setText("");
+        String lsPolicyNo = "";
+        if (oTrans.getMasterModel().getMasterModel().getPolicyNo() != null && !oTrans.getMasterModel().getMasterModel().getPolicyNo().isEmpty()) {
+            lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
+        }
+        lblPolicyNo.setText(lsPolicyNo);
         lblPrintDate.setText("");
         return true;
     }
