@@ -61,7 +61,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     private GRider oApp;
     private InsurancePolicyApplication oTrans;
-    private String pxeModuleName = "Insurance Proposal";
+    private String pxeModuleName = "Insurance Application";
     private UnloadForm poUnload = new UnloadForm();
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnEditMode = -1;
@@ -293,7 +293,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     @Override
     public void initButtonsClick() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnInsAppCancel, btnClose);
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPayment, btnPrint, btnInsAppCancel, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
@@ -408,6 +408,9 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         initFields(pnEditMode);
                     }
                 }
+                break;
+            case "btnPayment":
+                ShowMessageFX.Warning(null, pxeModuleName, "Button payment history is underdevelopment");
                 break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
