@@ -9,6 +9,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -370,5 +372,19 @@ public class CustomCommonUtil {
         for (Label label : labels) {
             label.setText(fsValue);
         }
+    }
+
+    /**
+     *
+     *
+     * @param foTab the tab from parent tabpane
+     * @param foTabPane this is the parent of tab<pre>
+     * Example usage:{@code
+     * switchToTab(tab1 , TabPane);
+     * }
+     * </pre>
+     */
+    public static void switchToTab(Tab foTab, TabPane foTabPane) {
+        foTabPane.getSelectionModel().select(foTab);
     }
 }

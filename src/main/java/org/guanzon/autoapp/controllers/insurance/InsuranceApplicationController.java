@@ -6,7 +6,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +81,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     private TextField txtField01, txtField02, txtField07, txtField08, txtField10, txtField13, txtField15, txtField16, txtField17,
             txtField19, txtField20, txtField23, txtField24, txtField25, txtField26, txtField27, txtField29,
             txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
-            txtField39, txtField40, txtField41, txtField42, txtField43, txtField45;
+            txtField39, txtField40, txtField41, txtField42, txtField43, txtField45, txtField47;
     @FXML
     private DatePicker datePicker05, datePicker06, datePicker11;
     @FXML
@@ -134,7 +133,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
                 txtField39, txtField40, txtField41, txtField42);
         Pattern loDecOnly = Pattern.compile("[0-9,.]*");
-        Pattern loNumOnly = Pattern.compile("[0-9,.]*");
+        Pattern loNumOnly = Pattern.compile("[0-9]*");
         loTxtField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(loDecOnly)));
         txtField17.setTextFormatter(new TextFormatterUtil(loNumOnly));
     }
@@ -552,7 +551,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
                 txtField39, txtField40, txtField41, txtField42);
         CustomCommonUtil.setText("", txtField07, txtField08, txtField10, txtField13, txtField15, txtField16, txtField17,
-                txtField19, txtField20, txtField43, txtField45);
+                txtField19, txtField20, txtField43, txtField45, txtField47);
         CustomCommonUtil.setText("", textArea14);
         List<DatePicker> loDatePicker = Arrays.asList(
                 datePicker05, datePicker06, datePicker11);
@@ -567,7 +566,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 txtField39, txtField40, txtField41, txtField42);
         txtField17.setText("0");
         CustomCommonUtil.setText("", txtField01, txtField02, txtField07, txtField08, txtField10, txtField13, txtField15, txtField16,
-                txtField19, txtField20, txtField43, txtField45);
+                txtField19, txtField20, txtField43, txtField45, txtField47);
         CustomCommonUtil.setText("", textArea14, textArea44, textArea46);
         List<DatePicker> loDatePicker = Arrays.asList(
                 datePicker05, datePicker06, datePicker11);
@@ -579,7 +578,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
         CustomCommonUtil.setDisable(true, datePicker05, datePicker06,
                 comboBox09, txtField10,
                 txtField17, comboBox21,
@@ -595,11 +593,11 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         CustomCommonUtil.setVisible(false, btnEdit, btnPrint, btnInsAppCancel, btnPayment);
         CustomCommonUtil.setManaged(false, btnEdit, btnPrint, btnInsAppCancel, btnPayment);
         if (lbShow) {
-            if (oTrans.getMasterModel().getMasterModel().getTotalAmt() != null) {
-                if (!oTrans.getMasterModel().getMasterModel().getTotalAmt().equals("0.00")) {
-                    txtField41.setDisable(!lbShow);
-                }
-            }
+//            if (oTrans.getMasterModel().getMasterModel().getTotalAmt() != null) {
+//                if (!oTrans.getMasterModel().getMasterModel().getTotalAmt().equals("0.00")) {
+//                    txtField41.setDisable(!lbShow);
+//                }
+//            }
             if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
                 comboBox09.setDisable(!lbShow);
             }
@@ -710,6 +708,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         textArea14.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField15.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
         txtField16.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+        txtField47.setText(oTrans.getMasterModel().getMasterModel().getVhclFDsc());
         txtField17.setText(String.valueOf("0"));
         if (oTrans.getMasterModel().getMasterModel().getUnitType() != null && !oTrans.getMasterModel().getMasterModel().getUnitType().trim().isEmpty()) {
             comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getUnitType()));
