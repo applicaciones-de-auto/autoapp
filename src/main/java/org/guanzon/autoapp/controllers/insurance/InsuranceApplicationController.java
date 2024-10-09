@@ -128,6 +128,160 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     }
 
     @Override
+    public boolean loadMasterFields() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.computeAmount();
+        /* POLICY INFORMATION */
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getPropslNo());
+        txtField02.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
+        int lnAppType = -1;
+        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
+                case "y":
+                    lnAppType = 0;
+                    break;
+                case "n":
+                    lnAppType = 1;
+                    break;
+            }
+        }
+        comboBox03.getSelectionModel().select(lnAppType);
+        int policeType = -1;
+        if (oTrans.getMasterModel().getMasterModel().getInsTypID() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getInsTypID()) {
+                case "y":
+                    policeType = 0;
+                    break;
+                case "c":
+                    policeType = 1;
+                    break;
+                case "b":
+                    policeType = 2;
+                    break;
+            }
+        }
+        comboBox04.getSelectionModel().select(policeType);
+        if (oTrans.getMasterModel().getMasterModel().getValidFrmDte() != null) {
+            datePicker05.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidFrmDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        if (oTrans.getMasterModel().getMasterModel().getValidTruDte() != null) {
+            datePicker06.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidTruDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        String lsInsBranc = "";
+        if (oTrans.getMasterModel().getMasterModel().getInsurNme() != null && oTrans.getMasterModel().getMasterModel().getBrInsNme() != null) {
+            lsInsBranc = oTrans.getMasterModel().getMasterModel().getInsurNme() + " " + oTrans.getMasterModel().getMasterModel().getBrInsNme();
+        }
+        txtField07.setText(lsInsBranc.trim());
+        txtField08.setText(oTrans.getMasterModel().getMasterModel().getEmpName());
+        if (oTrans.getMasterModel().getMasterModel().getFinType() != null && !oTrans.getMasterModel().getMasterModel().getFinType().trim().isEmpty()) {
+            comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getFinType()));
+        }
+        String lsBrBank = "";
+        if (oTrans.getMasterModel().getMasterModel().getBankName() != null && oTrans.getMasterModel().getMasterModel().getBrBankNm() != null) {
+            lsBrBank = oTrans.getMasterModel().getMasterModel().getBankName() + " " + oTrans.getMasterModel().getMasterModel().getBrBankNm();
+        }
+        txtField10.setText(lsBrBank.trim());
+        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null && !String.valueOf(oTrans.getMasterModel().getMasterModel().getTransactDte()).isEmpty()) {
+            datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        int lnNewBus = -1;
+        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
+                case "y":
+                    lnNewBus = 0;
+                    break;
+                case "n":
+                    lnNewBus = 1;
+                    break;
+            }
+        }
+        comboBox12.getSelectionModel().select(lnNewBus);
+        txtField13.setText(oTrans.getMasterModel().getMasterModel().getOwnrNm());
+        textArea14.setText(oTrans.getMasterModel().getMasterModel().getAddress());
+        txtField15.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+        txtField16.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+        txtField47.setText(oTrans.getMasterModel().getMasterModel().getVhclFDsc());
+        txtField17.setText(String.valueOf("0"));
+        if (oTrans.getMasterModel().getMasterModel().getUnitType() != null && !oTrans.getMasterModel().getMasterModel().getUnitType().trim().isEmpty()) {
+            comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getUnitType()));
+        }
+        txtField19.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
+        txtField20.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
+
+        if (oTrans.getMasterModel().getMasterModel().getVhclSize() != null && !oTrans.getMasterModel().getMasterModel().getVhclSize().trim().isEmpty()) {
+            comboBox21.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getVhclSize()));
+        }
+
+        if (oTrans.getMasterModel().getMasterModel().getBodyType() != null && !oTrans.getMasterModel().getMasterModel().getBodyType().trim().isEmpty()) {
+            comboBox22.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getBodyType()));
+        }
+
+        txtField23.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCAmt()))));
+        txtField24.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCRate()))));
+        txtField26.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCAmt()))));
+        txtField27.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCRate()))));
+        txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCAmt()))));
+        txtField32.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCAmt()))));
+        txtField34.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCAmt()))));
+        txtField36.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLAmt()))));
+        int actNtr = -1;
+        if (oTrans.getMasterModel().getMasterModel().getAONCPayM() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getAONCPayM()) {
+                case "cha":
+                    actNtr = 0;
+                    break;
+                case "foc":
+                    actNtr = 1;
+                    break;
+                case "na":
+                    actNtr = 2;
+                    break;
+            }
+        }
+        comboBox28.getSelectionModel().select(actNtr);
+        txtField25.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCPrem()))));
+        txtField29.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCPrem()))));
+        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCPrem()))));
+        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCPrem()))));
+        txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCPrem()))));
+        txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLPrem()))));
+        txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxRate()))));
+        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxAmt()))));
+        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTotalAmt()))));
+
+        txtField43.setText("");
+        textArea44.setText("");
+        txtField45.setText("");
+        textArea46.setText("");
+        if (oTrans.getMasterModel().getMasterModel().getTranStat() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
+                case TransactionStatus.STATE_OPEN:
+                    lblStatus.setText("Active");
+                    break;
+                case TransactionStatus.STATE_CLOSED:
+                    lblStatus.setText("Approved");
+                    break;
+                case TransactionStatus.STATE_CANCELLED:
+                    lblStatus.setText("Cancelled");
+                    break;
+                case TransactionStatus.STATE_POSTED:
+                    lblStatus.setText("Posted");
+                    break;
+                default:
+                    lblStatus.setText("");
+                    break;
+            }
+        }
+        String lsPolicyNo = "";
+        if (oTrans.getMasterModel().getMasterModel().getPolicyNo() != null && !oTrans.getMasterModel().getMasterModel().getPolicyNo().isEmpty()) {
+            lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
+        }
+        lblPolicyNo.setText(lsPolicyNo);
+        lblPrintDate.setText("");
+        return true;
+    }
+
+    @Override
     public void initPatternFields() {
         List<TextField> loTxtField = Arrays.asList(txtField23, txtField24, txtField25, txtField26, txtField27, txtField29,
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
@@ -237,6 +391,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 case "txtField01":
                     loJSON = oTrans.searchProposal(lsValue);
                     if (!"error".equals(loJSON.get("result"))) {
+                        System.out.println("bank name: " + oTrans.getMasterModel().getMasterModel().getBankName());
                         loadMasterFields();
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -254,7 +409,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                     }
                     break;
                 case "txtField10":
-                    loJSON = oTrans.searchbank(lsValue);
+                    loJSON = oTrans.searchbank(lsValue.trim());
                     if (!"error".equals(loJSON.get("result"))) {
                         loadMasterFields();
                     } else {
@@ -433,6 +588,28 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     @Override
     public void initFieldsAction() {
+        comboBox09.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
+                    if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
+                        switch (comboBox09.getSelectionModel().getSelectedIndex()) {
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                                oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                                oTrans.getMasterModel().getMasterModel().setBrBankNm("");
+                                oTrans.getMasterModel().getMasterModel().setBankName("");
+                                txtField10.setText("");
+                                break;
+                        }
+                    }
+                    oTrans.getMasterModel().getMasterModel().setFinType(String.valueOf(comboBox09.getSelectionModel().getSelectedIndex()));
+                    initFields(pnEditMode);
+                }
+            }
+        });
         datePicker05.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTrans.getMasterModel().getMasterModel().setValidFrmDte(SQLUtil.toDate(datePicker05.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -603,18 +780,14 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 //            }
             if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
                 comboBox09.setDisable(!lbShow);
-            }
-            switch (comboBox09.getSelectionModel().getSelectedIndex()) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo() != null) {
-                        if (!oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
-                            txtField10.setDisable(!lbShow);
-                        }
-                    }
-                    break;
+                switch (comboBox09.getSelectionModel().getSelectedIndex()) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        txtField10.setDisable(!lbShow);
+                        break;
+                }
             }
         }
         if (fnValue == EditMode.READY) {
@@ -632,164 +805,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         if (fnValue == EditMode.UPDATE) {
             txtField01.setDisable(true);
         }
-    }
-
-    @Override
-    public boolean loadMasterFields() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTrans.computeAmount();
-        /* POLICY INFORMATION */
-        txtField01.setText(oTrans.getMasterModel().getMasterModel().getPropslNo());
-        txtField02.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
-        int lnAppType = -1;
-        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
-            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
-                case "y":
-                    lnAppType = 0;
-                    break;
-                case "n":
-                    lnAppType = 1;
-                    break;
-            }
-        }
-        comboBox03.getSelectionModel().select(lnAppType);
-        int policeType = -1;
-        if (oTrans.getMasterModel().getMasterModel().getInsTypID() != null) {
-            switch (oTrans.getMasterModel().getMasterModel().getInsTypID()) {
-                case "y":
-                    policeType = 0;
-                    break;
-                case "c":
-                    policeType = 1;
-                    break;
-                case "b":
-                    policeType = 2;
-                    break;
-            }
-        }
-        comboBox04.getSelectionModel().select(policeType);
-        if (oTrans.getMasterModel().getMasterModel().getValidFrmDte() != null) {
-            datePicker05.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidFrmDte(), SQLUtil.FORMAT_SHORT_DATE)));
-        }
-        if (oTrans.getMasterModel().getMasterModel().getValidTruDte() != null) {
-            datePicker06.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidTruDte(), SQLUtil.FORMAT_SHORT_DATE)));
-        }
-        String lsInsBranc = "";
-        if (oTrans.getMasterModel().getMasterModel().getInsurNme() != null && oTrans.getMasterModel().getMasterModel().getBrInsNme() != null) {
-            if (!oTrans.getMasterModel().getMasterModel().getInsurNme().isEmpty() && !oTrans.getMasterModel().getMasterModel().getBrInsNme().isEmpty()) {
-                lsInsBranc = oTrans.getMasterModel().getMasterModel().getInsurNme() + " " + oTrans.getMasterModel().getMasterModel().getBrInsNme();
-            }
-        }
-        txtField07.setText(lsInsBranc);
-        txtField08.setText(oTrans.getMasterModel().getMasterModel().getEmpName());
-        if (oTrans.getMasterModel().getMasterModel().getFinType() != null && !oTrans.getMasterModel().getMasterModel().getFinType().trim().isEmpty()) {
-            comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getFinType()));
-        }
-        String lsBrBank = "";
-        if (oTrans.getMasterModel().getMasterModel().getBankName() != null && oTrans.getMasterModel().getMasterModel().getBrBankNm() != null) {
-            if (!oTrans.getMasterModel().getMasterModel().getBankName().isEmpty() && !oTrans.getMasterModel().getMasterModel().getBrBankNm().isEmpty()) {
-                lsBrBank = oTrans.getMasterModel().getMasterModel().getBankName() + " " + oTrans.getMasterModel().getMasterModel().getBrBankNm();
-            }
-        }
-        txtField10.setText(lsBrBank);
-        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null && !String.valueOf(oTrans.getMasterModel().getMasterModel().getTransactDte()).isEmpty()) {
-            datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
-        }
-        int lnNewBus = -1;
-        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
-            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
-                case "y":
-                    lnNewBus = 0;
-                    break;
-                case "n":
-                    lnNewBus = 1;
-                    break;
-            }
-        }
-        comboBox12.getSelectionModel().select(lnNewBus);
-        txtField13.setText(oTrans.getMasterModel().getMasterModel().getOwnrNm());
-        textArea14.setText(oTrans.getMasterModel().getMasterModel().getAddress());
-        txtField15.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-        txtField16.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
-        txtField47.setText(oTrans.getMasterModel().getMasterModel().getVhclFDsc());
-        txtField17.setText(String.valueOf("0"));
-        if (oTrans.getMasterModel().getMasterModel().getUnitType() != null && !oTrans.getMasterModel().getMasterModel().getUnitType().trim().isEmpty()) {
-            comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getUnitType()));
-        }
-        txtField19.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
-        txtField20.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
-
-        if (oTrans.getMasterModel().getMasterModel().getVhclSize() != null && !oTrans.getMasterModel().getMasterModel().getVhclSize().trim().isEmpty()) {
-            comboBox21.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getVhclSize()));
-        }
-
-        if (oTrans.getMasterModel().getMasterModel().getBodyType() != null && !oTrans.getMasterModel().getMasterModel().getBodyType().trim().isEmpty()) {
-            comboBox22.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getBodyType()));
-        }
-
-        txtField23.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCAmt()))));
-        txtField24.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCRate()))));
-        txtField26.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCAmt()))));
-        txtField27.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCRate()))));
-        txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCAmt()))));
-        txtField32.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCAmt()))));
-        txtField34.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCAmt()))));
-        txtField36.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLAmt()))));
-        int actNtr = -1;
-        if (oTrans.getMasterModel().getMasterModel().getAONCPayM() != null) {
-            switch (oTrans.getMasterModel().getMasterModel().getAONCPayM()) {
-                case "cha":
-                    actNtr = 0;
-                    break;
-                case "foc":
-                    actNtr = 1;
-                    break;
-                case "na":
-                    actNtr = 2;
-                    break;
-            }
-        }
-        comboBox28.getSelectionModel().select(actNtr);
-        txtField25.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCPrem()))));
-        txtField29.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCPrem()))));
-        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCPrem()))));
-        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCPrem()))));
-        txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCPrem()))));
-        txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLPrem()))));
-        txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxRate()))));
-        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxAmt()))));
-        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTotalAmt()))));
-
-        txtField43.setText("");
-        textArea44.setText("");
-        txtField45.setText("");
-        textArea46.setText("");
-        if (oTrans.getMasterModel().getMasterModel().getTranStat() != null) {
-            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
-                case TransactionStatus.STATE_OPEN:
-                    lblStatus.setText("Active");
-                    break;
-                case TransactionStatus.STATE_CLOSED:
-                    lblStatus.setText("Approved");
-                    break;
-                case TransactionStatus.STATE_CANCELLED:
-                    lblStatus.setText("Cancelled");
-                    break;
-                case TransactionStatus.STATE_POSTED:
-                    lblStatus.setText("Posted");
-                    break;
-                default:
-                    lblStatus.setText("");
-                    break;
-            }
-        }
-        String lsPolicyNo = "";
-        if (oTrans.getMasterModel().getMasterModel().getPolicyNo() != null && !oTrans.getMasterModel().getMasterModel().getPolicyNo().isEmpty()) {
-            lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
-        }
-        lblPolicyNo.setText(lsPolicyNo);
-        lblPrintDate.setText("");
-        return true;
     }
 
     private void loadInsProposalPrint() throws SQLException {

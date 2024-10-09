@@ -302,11 +302,9 @@ public class VSPController implements Initializable, ScreenInterface {
         txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDownPaym()))));
         String lsBranchBank = "";
         if (oTransVSP.getMasterModel().getMasterModel().getBankName() != null && oTransVSP.getMasterModel().getMasterModel().getBrBankNm() != null) {
-            if (!oTransVSP.getMasterModel().getMasterModel().getBankName().isEmpty() && !oTransVSP.getMasterModel().getMasterModel().getBrBankNm().isEmpty()) {
-                lsBranchBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + " " + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
-            }
+            lsBranchBank = oTransVSP.getMasterModel().getMasterModel().getBankName() + " " + oTransVSP.getMasterModel().getMasterModel().getBrBankNm();
         }
-        txtField32.setText(lsBranchBank);
+        txtField32.setText(lsBranchBank.trim());
         // Payment Information and Vehicle Charges
         if (!oTransVSP.getVSPFinanceList().isEmpty()) {
             switch (comboBox29.getSelectionModel().getSelectedIndex()) {
@@ -366,22 +364,18 @@ public class VSPController implements Initializable, ScreenInterface {
         }
         String lsBrTpl = "";
         if (oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() != null && oTransVSP.getMasterModel().getMasterModel().getTPLBrIns() != null) {
-            if (!oTransVSP.getMasterModel().getMasterModel().getTPLInsNm().isEmpty() && !oTransVSP.getMasterModel().getMasterModel().getTPLBrIns().isEmpty()) {
-                lsBrTpl = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + " " + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
-            }
+            lsBrTpl = oTransVSP.getMasterModel().getMasterModel().getTPLInsNm() + " " + oTransVSP.getMasterModel().getMasterModel().getTPLBrIns();
         }
-        txtField62.setText(lsBrTpl);
+        txtField62.setText(lsBrTpl.trim());
         txtField63.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getCompAmt()))));
         if (oTransVSP.getMasterModel().getMasterModel().getCompStat() != null && !oTransVSP.getMasterModel().getMasterModel().getCompStat().trim().isEmpty()) {
             comboBox64.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getCompStat()));
         }
         String lsBrCom = "";
         if (oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() != null && oTransVSP.getMasterModel().getMasterModel().getCOMBrIns() != null) {
-            if (!oTransVSP.getMasterModel().getMasterModel().getCOMInsNm().isEmpty() && !oTransVSP.getMasterModel().getMasterModel().getCOMBrIns().isEmpty()) {
-                lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + " " + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
-            }
+            lsBrCom = oTransVSP.getMasterModel().getMasterModel().getCOMInsNm() + " " + oTransVSP.getMasterModel().getMasterModel().getCOMBrIns();
         }
-        txtField65.setText(lsBrCom);
+        txtField65.setText(lsBrCom.trim());
         if (oTransVSP.getMasterModel().getMasterModel().getInsurTyp() != null && !oTransVSP.getMasterModel().getMasterModel().getInsurTyp().trim().isEmpty()) {
             comboBox66.getSelectionModel().select(Integer.parseInt(oTransVSP.getMasterModel().getMasterModel().getInsurTyp()));
         }

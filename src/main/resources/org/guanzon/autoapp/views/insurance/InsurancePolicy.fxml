@@ -309,9 +309,9 @@
                                                                                                         <TextField fx:id="txtField48" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField37" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                                                                                                         <TextField fx:id="txtField49" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                                                                                                        <TextField fx:id="txtField38" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-                                                                                                        <TextField fx:id="txtField39" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                                                                                                        <TextField fx:id="txtField40" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+                                                                                                        <TextField fx:id="txtField38" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                                                                        <TextField fx:id="txtField39" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+                                                                                                        <TextField fx:id="txtField40" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10" />
                                                                                                         <TextField fx:id="txtField54" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="11" />
                                                                                                         <TextField fx:id="txtField56" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="13" />
                                                                                                         <TextField fx:id="txtField59" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="16" />
@@ -353,9 +353,9 @@
                                                                                                             </font>
                                                                                                         </Label>
                                                                                                         <TextField fx:id="txtField50" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="7" />
-                                                                                                        <TextField fx:id="txtField51" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="8" />
-                                                                                                        <TextField fx:id="txtField52" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="9" />
-                                                                                                        <TextField fx:id="txtField53" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="10" />
+                                                                                                        <TextField fx:id="txtField51" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="8" />
+                                                                                                        <TextField fx:id="txtField52" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="9" />
+                                                                                                        <TextField fx:id="txtField53" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="10" />
                                                                                                         <TextField fx:id="txtField55" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="12" />
                                                                                                         <TextField fx:id="txtField57" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="14" />
                                                                                                         <TextField fx:id="txtField58" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="15" />
@@ -521,7 +521,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="lblInsPolicyStatus" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="103.0" text="Cancelled" textFill="WHITE" GridPane.columnIndex="1">
+                                        <Label fx:id="lblInsPolicyStatus" maxWidth="1.7976931348623157E308" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="1">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
                                             </font>

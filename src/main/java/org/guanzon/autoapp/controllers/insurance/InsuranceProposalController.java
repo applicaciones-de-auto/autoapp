@@ -945,8 +945,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             }
         }
         );
-        comboBox27.setOnAction(event
-                -> {
+        comboBox27.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox27.getSelectionModel().getSelectedIndex() >= 0) {
                     String lsActsType = "";
@@ -957,12 +956,15 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                         case 1:
                             lsActsType = "foc";
                             oTrans.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
-                            txtField29.setText("0.00");
                             oTrans.getMasterModel().getMasterModel().setAONCRate(0.00);
-                            txtField22.setText("0.00");
+                            CustomCommonUtil.setText("0.00", txtField22, txtField29);
                             break;
                         case 2:
                             lsActsType = "na";
+                            oTrans.getMasterModel().getMasterModel().setAONCAmt(new BigDecimal(0.00));
+                            oTrans.getMasterModel().getMasterModel().setAONCRate(0.00);
+                            oTrans.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
+                            CustomCommonUtil.setText("0.00", txtField21, txtField22, txtField29);
                             break;
                     }
                     oTrans.getMasterModel().getMasterModel().setAONCPayM(lsActsType);
@@ -1142,7 +1144,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 comboBox18, textArea13,
                 txtField16, comboBox17,
                 txtField19, txtField20, txtField28,
-                txtField21, txtField22, comboBox27, txtField29,
+                txtField21, txtField22, comboBox27,
                 txtField23, txtField30,
                 txtField24, txtField31,
                 txtField25, txtField32,
@@ -1159,14 +1161,14 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 rectangleOverlay.setVisible(true);
                 rectangleOverlay.setManaged(true);
                 if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
-                    CustomCommonUtil.setDisable(!lbShow, txtField02, comboBox17, comboBox10);
+                    CustomCommonUtil.setDisable(!lbShow, txtField02, comboBox17);
                     rectangleOverlay.setVisible(false);
                     rectangleOverlay.setManaged(false);
                 }
             } else {
                 txtField02.setDisable(!lbShow);
                 if (comboBox18.getSelectionModel().getSelectedIndex() >= 0) {
-                    CustomCommonUtil.setDisable(!lbShow, comboBox10, txtField16, comboBox17);
+                    CustomCommonUtil.setDisable(!lbShow, txtField16, comboBox17);
                 }
             }
             switch (comboBox18.getSelectionModel().getSelectedIndex()) {
@@ -1194,6 +1196,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 case 1:
                     CustomCommonUtil.setDisable(!lbShow, txtField21);
                     break;
+                case 2:
+                    CustomCommonUtil.setDisable(true, txtField21, txtField22);
+                    break;
+
             }
 
             if (!lblApprNo.getText().isEmpty()) {
@@ -1203,11 +1209,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                         txtField19, txtField20,
                         txtField28, txtField21,
                         txtField22, comboBox27,
-                        txtField29, txtField23,
-                        txtField30, txtField24,
-                        txtField31, txtField25,
-                        txtField32, txtField26,
-                        txtField33, txtField35
+                        txtField23, txtField30,
+                        txtField24, txtField31,
+                        txtField25, txtField32,
+                        txtField26, txtField33, txtField35
                 );
             }
             if (comboBox01.getValue().equals("VSP")) {

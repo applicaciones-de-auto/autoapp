@@ -325,7 +325,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     @Override
     public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField10, txtField11, txtField26, txtField27, txtField30, txtField31,
-                txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38, txtField39, txtField40, txtField41,
+                txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField51, txtField52, txtField53, txtField41,
                 txtField42, txtField46, txtField47, txtField48, txtField49,
                 txtField54, txtField56, txtField59);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
@@ -570,56 +570,56 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                     }
                     txtField49.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLPrem()))));
                     break;
-                case 38:
+                case 51:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    double lnValueDocTax = Double.parseDouble(lsValue.replace(",", ""));
+                    double lnValueDoc = Double.parseDouble(lsValue.replace(",", ""));
 
-                    if (lnValueDocTax > 100.00 || lnValueDocTax < 0.00) {
+                    if (lnValueDoc < 0.00) {
                         ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    oTrans.getMasterModel().getMasterModel().setDocRate(Double.parseDouble(lsValue.replace(",", "")));
+                    oTrans.getMasterModel().getMasterModel().setDocAmt(new BigDecimal(lsValue.replace(",", "")));
                     if (!loadMasterFields()) {
-                        txtField38.setText("0.00");
-                        oTrans.getMasterModel().getMasterModel().setDocRate(Double.parseDouble(txtField38.getText().replace(",", "")));
+                        txtField51.setText("0.00");
+                        oTrans.getMasterModel().getMasterModel().setDocAmt(new BigDecimal(txtField51.getText().replace(",", "")));
                     }
-                    txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getDocRate()))));
+                    txtField51.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getDocAmt()))));
                     break;
-                case 39:
+                case 52:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
                     double lnValueTax = Double.parseDouble(lsValue.replace(",", ""));
 
-                    if (lnValueTax > 100.00 || lnValueTax < 0.00) {
+                    if (lnValueTax < 0.00) {
                         ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    oTrans.getMasterModel().getMasterModel().setVATRate(Double.parseDouble(lsValue.replace(",", "")));
+                    oTrans.getMasterModel().getMasterModel().setVATAmt(new BigDecimal(lsValue.replace(",", "")));
                     if (!loadMasterFields()) {
-                        txtField39.setText("0.00");
-                        oTrans.getMasterModel().getMasterModel().setVATRate(Double.parseDouble(txtField39.getText().replace(",", "")));
+                        txtField52.setText("0.00");
+                        oTrans.getMasterModel().getMasterModel().setVATAmt(new BigDecimal(txtField52.getText().replace(",", "")));
                     }
-                    txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVATRate()))));
+                    txtField52.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVATAmt()))));
                     break;
-                case 40:
+                case 53:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    double lnValueLGUTax = Double.parseDouble(lsValue.replace(",", ""));
+                    double lnValueLGU = Double.parseDouble(lsValue.replace(",", ""));
 
-                    if (lnValueLGUTax > 100.00 || lnValueLGUTax < 0.00) {
+                    if (lnValueLGU < 0.00) {
                         ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    oTrans.getMasterModel().getMasterModel().setLGUTaxRt(Double.parseDouble(lsValue.replace(",", "")));
+                    oTrans.getMasterModel().getMasterModel().setLGUTaxAm(new BigDecimal(lsValue.replace(",", "")));
                     if (!loadMasterFields()) {
-                        txtField40.setText("0.00");
-                        oTrans.getMasterModel().getMasterModel().setLGUTaxRt(Double.parseDouble(txtField40.getText().replace(",", "")));
+                        txtField53.setText("0.00");
+                        oTrans.getMasterModel().getMasterModel().setLGUTaxAm(new BigDecimal(txtField53.getText().replace(",", "")));
                     }
-                    txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getLGUTaxRt()))));
+                    txtField53.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getLGUTaxAm()))));
                     break;
                 case 54:
                     if (lsValue.isEmpty()) {
@@ -717,7 +717,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     @Override
     public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField10, txtField11, txtField26, txtField27, txtField30, txtField31,
-                txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38, txtField39, txtField40, txtField41,
+                txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField51, txtField52, txtField53, txtField41,
                 txtField42, txtField46, txtField47, txtField48, txtField49,
                 txtField54, txtField56, txtField59);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -923,12 +923,15 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                         case 1:
                             lsActsType = "foc";
                             oTrans.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
-                            txtField45.setText("0.00");
                             oTrans.getMasterModel().getMasterModel().setAONCRate(0.00);
-                            txtField33.setText("0.00");
+                            CustomCommonUtil.setText("0.00", txtField33, txtField45);
                             break;
                         case 2:
                             lsActsType = "na";
+                            oTrans.getMasterModel().getMasterModel().setAONCAmt(new BigDecimal(0.00));
+                            oTrans.getMasterModel().getMasterModel().setAONCRate(0.00);
+                            oTrans.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
+                            CustomCommonUtil.setText("0.00", txtField32, txtField33, txtField45);
                             break;
                     }
                     oTrans.getMasterModel().getMasterModel().setAONCPayM(lsActsType);
@@ -1039,8 +1042,8 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 txtField32, txtField33,
                 txtField34, txtField35,
                 txtField36, txtField37,
-                txtField38, txtField39,
-                txtField40, txtField41,
+                txtField51, txtField52,
+                txtField53, txtField41,
                 txtField42, txtField46,
                 txtField47, txtField48,
                 txtField49, txtField50,
@@ -1051,7 +1054,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
         CustomCommonUtil.setDisable(!lbShow, txtField01, txtField02, datePicker12,
                 txtField03, txtField10, txtField11,
                 textArea16,
-                txtField38, txtField39, txtField40,
+                txtField51, txtField52, txtField53,
                 txtField54, txtField56, txtField59
         //                txtField41, txtField42
         );
@@ -1080,6 +1083,9 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                     break;
                 case 1:
                     CustomCommonUtil.setDisable(!lbShow, txtField32);
+                    break;
+                case 2:
+                    CustomCommonUtil.setDisable(true, txtField32, txtField33);
                     break;
             }
         }
