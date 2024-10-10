@@ -854,8 +854,10 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Policy Information Confirmation", (String) loJSON.get("message"));
+                    pnEditMode = oTrans.getEditMode();
                 }
                 break;
+
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {

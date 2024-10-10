@@ -7,8 +7,10 @@ package org.guanzon.autoapp.controllers.insurance;
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -88,10 +90,15 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
         timeline = new Timeline();
+        initButtonsClick();
         generateReport();
 
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
+    }
+
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     @Override
@@ -129,6 +136,24 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
         timeline.stop();
     }
 
+    @Override
+    public void generateReport() {
+        hideReport();
+        if (!running) {
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                timeSeconds--;
+                if (timeSeconds <= 0) {
+                    timeSeconds = 0;
+                }
+                if (timeSeconds == 0) {
+                    loadReport();
+                }
+            }));
+            timeline.playFromStart();
+        }
+    }
+
     private String getValueReport(String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getMaster(fsCol) != null) {
@@ -157,24 +182,6 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
             }
         }
         return lsFormattedAmount;
-    }
-
-    @Override
-    public void generateReport() {
-        hideReport();
-        if (!running) {
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
-                timeSeconds--;
-                if (timeSeconds <= 0) {
-                    timeSeconds = 0;
-                }
-                if (timeSeconds == 0) {
-                    loadReport();
-                }
-            }));
-            timeline.playFromStart();
-        }
     }
 
     @Override

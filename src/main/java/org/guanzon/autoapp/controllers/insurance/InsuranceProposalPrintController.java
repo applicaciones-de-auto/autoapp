@@ -3,8 +3,10 @@ package org.guanzon.autoapp.controllers.insurance;
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -86,9 +88,13 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
         btnPrint.setDisable(true);
         timeline = new Timeline();
         generateReport();
+        initButtonsClick();
+    }
 
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     @Override

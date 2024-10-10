@@ -2168,7 +2168,7 @@ public class VSPController implements Initializable, ScreenInterface {
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.YesNo(null, "Search Vehicle Sales Proposal Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
-                        pnEditMode = EditMode.UNKNOWN;
+                        pnEditMode = EditMode.READY;
                     } else {
                         pnEditMode = oTransVSP.getEditMode();
                         return;
@@ -2184,8 +2184,10 @@ public class VSPController implements Initializable, ScreenInterface {
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Sales Proposal Information", (String) loJSON.get("message"));
+                    pnEditMode = oTransVSP.getEditMode();
                 }
                 break;
+
             case "btnAdditionalLabor":
                 try {
                 oTransVSP.addVSPLabor();

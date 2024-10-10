@@ -18,6 +18,8 @@ public interface GPrintInterface {
 
     void setTransNo(String fsValue);
 
+    void initButtonsClick();
+
     void handleButtonAction(ActionEvent event);
 
     void hideReport();

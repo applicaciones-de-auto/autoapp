@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -371,6 +372,12 @@ public class CustomCommonUtil {
     public static void setText(String fsValue, Label... labels) {
         for (Label label : labels) {
             label.setText(fsValue);
+        }
+    }
+
+    public static void setSelected(boolean fbValue, CheckBox... checkBoxes) {
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setSelected(fbValue);
         }
     }
 
