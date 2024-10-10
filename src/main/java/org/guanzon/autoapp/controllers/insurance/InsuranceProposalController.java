@@ -728,6 +728,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Proposal Information Confirmation", (String) loJSON.get("message"));
+                    pnEditMode = oTrans.getEditMode();
                 }
                 break;
             case "btnClose":
