@@ -55,7 +55,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceApplicationController implements Initializable, ScreenInterface, GTransactionInterface {
 
@@ -386,49 +386,56 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             lsValue = lsTxtField.getText();
         }
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField01":
-                    loJSON = oTrans.searchProposal(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        System.out.println("bank name: " + oTrans.getMasterModel().getMasterModel().getBankName());
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField01":
+                            loJSON = oTrans.searchProposal(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {
+                                System.out.println("bank name: " + oTrans.getMasterModel().getMasterModel().getBankName());
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            initFields(pnEditMode);
+                            break;
+                        case "txtField08":
+                            loJSON = oTrans.searchInsuranceCoordinator(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {;
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            break;
+                        case "txtField10":
+                            loJSON = oTrans.searchbank(lsValue.trim());
+                            if (!"error".equals(loJSON.get("result"))) {
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            break;
                     }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
                     initFields(pnEditMode);
                     break;
-                case "txtField08":
-                    loJSON = oTrans.searchInsuranceCoordinator(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {;
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
-                    }
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
                     break;
-                case "txtField10":
-                    loJSON = oTrans.searchbank(lsValue.trim());
-                    if (!"error".equals(loJSON.get("result"))) {
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
-                    }
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-            initFields(pnEditMode);
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -621,23 +628,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             }
         });
     }
-    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
-
-    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = datePicker06.getValue();
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
 
     @Override
     public void initTextFieldsProperty() {
@@ -806,6 +796,23 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             txtField01.setDisable(true);
         }
     }
+    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+            setDisable(fbEmpty || foItem.isBefore(minDate));
+        }
+    };
+
+    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = datePicker05.getValue();
+            setDisable(fbEmpty || foItem.isBefore(minDate));
+        }
+    };
 
     private void loadInsProposalPrint() throws SQLException {
         try {
