@@ -37,7 +37,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceProposalPrintController implements Initializable, GPrintInterface {
 

@@ -52,7 +52,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceProposalController implements Initializable, ScreenInterface, GTransactionInterface {
 
@@ -1234,6 +1234,9 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         comboBox18.setDisable(!(lbShow && !comboBox01.getValue().isEmpty()));
         if (fnValue == EditMode.UPDATE) {
             CustomCommonUtil.setDisable(true, comboBox01, txtField02);
+            if (!oTrans.getMasterModel().getMasterModel().getVSPTranNo().isEmpty()) {
+                comboBox18.setDisable(true);
+            }
         }
         if (fnValue == EditMode.READY) {
             if (!lblIPStatus.getText().equals("Cancelled")) {

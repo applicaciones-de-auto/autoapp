@@ -22,7 +22,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -237,7 +237,7 @@
                                                                                                         <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="7" />
                                                                                                         <TextField fx:id="txtField09" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                                                                                         <ComboBox fx:id="comboBox10" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                                                                                        <DatePicker fx:id="datePicker11" disable="true" editable="false" maxWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="8" />
+                                                                                                        <DatePicker fx:id="datePicker11" disable="true" editable="false" maxWidth="120.0" GridPane.columnIndex="4" GridPane.rowIndex="8" />
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="Vehicle Type" GridPane.rowIndex="9" />
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="Vehicle SRP" GridPane.rowIndex="8" />
                                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="154.0" text="Plate No." GridPane.rowIndex="6" />

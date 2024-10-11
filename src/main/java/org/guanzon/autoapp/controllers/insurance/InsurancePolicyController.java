@@ -55,7 +55,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsurancePolicyController implements Initializable, ScreenInterface, GTransactionInterface {
 

@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="620.0" prefWidth="1376.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="620.0" prefWidth="1376.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -112,12 +112,12 @@
                                                                                                                                 <TextField fx:id="txtField10" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                                 <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                                                                                 <TextField fx:id="txtField11" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                                                                                <DatePicker fx:id="datePicker04" disable="true" editable="false" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                                                                                <DatePicker fx:id="datePicker12" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                                                                                <DatePicker fx:id="datePicker05" disable="true" editable="false" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                                                                                <DatePicker fx:id="datePicker13" disable="true" editable="false" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                                                                                <DatePicker fx:id="datePicker04" disable="true" editable="false" maxWidth="120.0" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                                                <DatePicker fx:id="datePicker12" maxWidth="120.0" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                                                                                <DatePicker fx:id="datePicker05" disable="true" editable="false" maxWidth="120.0" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                                                                                <DatePicker fx:id="datePicker13" disable="true" editable="false" maxWidth="120.0" prefHeight="24.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                                                                                                 <ComboBox fx:id="comboBox06" disable="true" maxWidth="211.0" prefHeight="24.0" prefWidth="211.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                                                                                <ComboBox fx:id="comboBox14" disable="true" maxWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                                                                                <ComboBox fx:id="comboBox14" disable="true" maxWidth="120.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                                                                                                 <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                                                                                                                                 <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                                                                                                                                 <Label id="LabelDesc" text="MV File No" GridPane.columnIndex="4" GridPane.rowIndex="2" />
