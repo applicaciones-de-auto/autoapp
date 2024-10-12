@@ -3,7 +3,6 @@ package org.guanzon.autoapp.controllers.general;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -135,7 +134,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
         initActLocationTable();
         initActMembersTable();
         initActivityVehicleTable();
-
+        dateFrom03.setDayCellFactory(DateFrom);
         initCapitalizationFields();
         initPatternFields();
         initLimiterFields();
@@ -147,7 +146,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
         initTextFieldsProperty();
         clearFields();
         clearTables();
-        dateFrom03.setDayCellFactory(DateFrom);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -840,7 +838,15 @@ public class ActivityInformationController implements Initializable, ScreenInter
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            setDisable(fbEmpty || foItem.isBefore(dateFrom03.getValue()));
+            switch (pnEditMode) {
+                case EditMode.ADDNEW:
+                    LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+                    setDisable(fbEmpty || foItem.isBefore(minDate));
+                    break;
+                case EditMode.UPDATE:
+                    setDisable(fbEmpty || foItem.isBefore(dateFrom03.getValue()));
+                    break;
+            }
         }
     };
 
