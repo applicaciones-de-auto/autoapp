@@ -172,10 +172,10 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
         txtField02.setText(oTrans.getModel().getModel().getActNo());
         if (oTrans.getModel().getModel().getDateFrom() != null && !oTrans.getModel().getModel().getDateFrom().toString().isEmpty()) {
-            dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getDateFrom())));
+            dateFrom03.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getDateFrom(), SQLUtil.FORMAT_SHORT_DATE)));
         }
         if (oTrans.getModel().getModel().getDateThru() != null && !oTrans.getModel().getModel().getDateThru().toString().isEmpty()) {
-            dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getDateThru())));
+            dateTo04.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getDateThru(), SQLUtil.FORMAT_SHORT_DATE)));
         }
         if (oTrans.getModel().getModel().getEventTyp() != null && !oTrans.getModel().getModel().getEventTyp().trim().isEmpty()) {
             switch (String.valueOf(oTrans.getModel().getModel().getEventTyp())) {
@@ -648,13 +648,13 @@ public class ActivityInformationController implements Initializable, ScreenInter
         });
         dateFrom03.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTrans.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getModel().getModel().setDateFrom(SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
                 checkExistingActivityInformation();
             }
         });
         dateTo04.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTrans.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getModel().getModel().setDateThru(SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
                 checkExistingActivityInformation();
             }
         });
