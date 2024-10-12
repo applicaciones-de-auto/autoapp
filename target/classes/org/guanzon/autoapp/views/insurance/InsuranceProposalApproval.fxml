@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="582.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane layoutX="10.0" layoutY="10.0" prefHeight="453.0" prefWidth="1220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane prefHeight="320.0" prefWidth="968.0">
+                    <StackPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </StackPane.margin>
+                    <top>
+                        <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="INSURANCE PROPOSAL APPROVAL" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <Separator style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <center>
+                        <AnchorPane BorderPane.alignment="CENTER">
+                            <children>
+                                <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                    <children>
+                                        <BorderPane>
+                                            <top>
+                                                <AnchorPane style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <GridPane prefHeight="30.0" prefWidth="279.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.3333282470703" minWidth="10.0" prefWidth="158.66665649414062" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1067.0" minWidth="-Infinity" prefWidth="1038.6666259765625" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="533.3333435058594" minWidth="-Infinity" prefWidth="28.3333740234375" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="533.3333435058594" minWidth="0.0" prefWidth="0.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <ComboBox fx:id="comboBoxFilter" prefWidth="150.0" promptText="Choose to Filter" GridPane.columnIndex="1">
+                                                                    <stylesheets>
+                                                                        <URL value="@../css/FrameStyle.css" />
+                                                                        <URL value="@../css/MainPanelStyle.css" />
+                                                                    </stylesheets>
+                                                                    <tooltip>
+                                                                        <Tooltip text="Please choose type to filter." />
+                                                                    </tooltip>
+                                                                </ComboBox>
+                                                                <Label text="FILTER">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <HBox prefHeight="34.0" prefWidth="935.0" spacing="1.0" GridPane.columnIndex="3">
+                                                                    <children>
+                                                                        <TextField fx:id="txtFieldSearch" prefHeight="24.0" prefWidth="297.0" promptText="Search:">
+                                                                            <HBox.margin>
+                                                                                <Insets />
+                                                                            </HBox.margin>
+                                                                            <tooltip>
+                                                                                <Tooltip text="Enter words to filter." />
+                                                                            </tooltip>
+                                                                        </TextField>
+                                                                        <Label fx:id="lblFrom" prefHeight="24.0" prefWidth="46.0" text="FROM">
+                                                                            <font>
+                                                                                <Font name="System Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <DatePicker fx:id="datePickerFrom" prefHeight="24.0" prefWidth="136.0">
+                                                                            <HBox.margin>
+                                                                                <Insets />
+                                                                            </HBox.margin>
+                                                                            <tooltip>
+                                                                                <Tooltip text="Pick Date From to filter." />
+                                                                            </tooltip>
+                                                                        </DatePicker>
+                                                                        <Label fx:id="lblTo" alignment="CENTER" prefHeight="24.0" prefWidth="33.0" text="TO">
+                                                                            <font>
+                                                                                <Font name="System Bold" size="12.0" />
+                                                                            </font>
+                                                                        </Label>
+                                                                        <DatePicker fx:id="datePickerTo" prefHeight="24.0" prefWidth="136.0">
+                                                                            <tooltip>
+                                                                                <Tooltip text="Pick Date To, to filter." />
+                                                                            </tooltip>
+                                                                        </DatePicker>
+                                                                        <Button fx:id="btnFilter" mnemonicParsing="false" prefHeight="24.0" prefWidth="49.0" text="Filter" />
+                                                                    </children>
+                                                                    <GridPane.margin>
+                                                                        <Insets />
+                                                                    </GridPane.margin>
+                                                                    <padding>
+                                                                        <Insets bottom="5.0" top="5.0" />
+                                                                    </padding>
+                                                                </HBox>
+                                                            </children>
+                                                        </GridPane>
+                                                        <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                            <graphic>
+                                                                <FontAwesomeIconView glyphName="REFRESH" />
+                                                            </graphic>
+                                                        </Button>
+                                                    </children>
+                                                    <BorderPane.margin>
+                                                        <Insets bottom="3.0" />
+                                                    </BorderPane.margin>
+                                                </AnchorPane>
+                                            </top>
+                                            <center>
+                                                <AnchorPane BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <TableView fx:id="tblInsProposApproval" prefWidth="550.0" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <columns>
+                                                                <TableColumn fx:id="tblindex01" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
+                                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false">
+                                                                    <graphic>
+                                                                        <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
+                                                                    </graphic>
+                                                                </TableColumn>
+                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Insurance Proposal Date" />
+                                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Insurance Proposal No" />
+                                                                <TableColumn fx:id="tblindex05" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Policy Type" />
+                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Application Type" />
+                                                                <TableColumn fx:id="tblindex07" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Insurance Company" />
+                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Amount" />
+                                                                <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
+                                                                <TableColumn fx:id="tblindex10" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Plate / CS No" />
+                                                            </columns>
+                                                        </TableView>
+                                                    </children>
+                                                </AnchorPane>
+                                            </center>
+                                        </BorderPane>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                    <bottom>
+                        <AnchorPane prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                            <children>
+                                <HBox spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Approve">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="THUMBS_UP" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnDisapprove" contentDisplay="TOP" mnemonicParsing="false" prefHeight="47.0" prefWidth="82.0" text="Disapprove">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="THUMBS_DOWN" size="20" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
+</AnchorPane>

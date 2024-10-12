@@ -25,6 +25,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Make;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -33,36 +34,20 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author Auto Group Programmers
+ * @author John Dave
  */
-public class VehicleMakeController implements Initializable, ScreenInterface {
+public class VehicleMakeController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Vehicle_Make oTransMake;
+    private Vehicle_Make oTrans;
     private final String pxeModuleName = "Vehicle Make";
     private int pnEditMode;
     @FXML
-    private Button btnAdd;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnActive, btnClose;
     @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnEdit;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnDeactivate;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
+    private TextField txtField01, txtField02;
     @FXML
     private CheckBox cboxActivate;
-    @FXML
-    private Button btnActive;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -78,60 +63,50 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTrans = new Vehicle_Make(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadMakeFields() {
-        txtField01.setText(oTransMake.getModel().getModel().getMakeID());
-        txtField02.setText(oTransMake.getModel().getModel().getMakeDesc());
-        if (oTransMake.getModel().getModel().getRecdStat().equals("1")) {
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getMakeID());
+        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern makePat;
         makePat = Pattern.compile("[A-Za-z ]*");
         txtField02.setTextFormatter(new TextFormatterUtil(makePat));
 
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    @Override
+    public void initLimiterFields() {
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        String txtFieldID = ((TextField) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        }
-    }
-
-    private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+    @Override
+    public void initTextFieldFocus() {
+        List<TextField> loTxtField = Arrays.asList(txtField02);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
     /*Set TextField Value to Master Class*/
@@ -146,7 +121,7 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    oTransMake.getModel().getModel().setMakeDesc(lsValue);
+                    oTrans.getModel().getModel().setMakeDesc(lsValue);
                     break;
             }
         } else {
@@ -154,31 +129,58 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
         }
     };
 
-    private void initButtons() {
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField02);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        String txtFieldID = ((TextField) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (txtFieldID) {
+            }
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+        }
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
-                loJSON = oTransMake.newRecord();
+                oTrans = new Vehicle_Make(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMakeFields();
-                    pnEditMode = oTransMake.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransMake.updateRecord();
-                pnEditMode = oTransMake.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -195,14 +197,14 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
                         txtField02.setText("");
                         return;
                     }
-                    loJSON = oTransMake.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
-                        loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMakeID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadMakeFields();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransMake.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
@@ -210,11 +212,10 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
                     }
                 }
                 break;
-
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransMake = new Vehicle_Make(oApp, false, oApp.getBranchCode());
+                    oTrans = new Vehicle_Make(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -225,49 +226,51 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransMake.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMakeFields();
-                    pnEditMode = oTransMake.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Make Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    loJSON = oTransMake.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getMakeID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMakeID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMakeFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMake.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMake.getModel().getModel().getMakeID();
-                    loJSON = oTransMake.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getMakeID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Make Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Make Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransMake.openRecord(oTransMake.getModel().getModel().getMakeID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMakeID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMakeFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMake.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -278,40 +281,49 @@ public class VehicleMakeController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        cboxActivate.setSelected(false);
-        txtField01.clear();
-        txtField02.clear();
+    @Override
+    public void initComboBoxItems() {
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField02);
+
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         txtField02.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            if (oTransMake.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }

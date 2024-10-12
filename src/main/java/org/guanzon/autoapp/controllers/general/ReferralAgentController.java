@@ -1,24 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import org.guanzon.autoapp.controllers.components.ViewPhotoController;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -44,7 +35,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -58,6 +48,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.auto.main.clients.Sales_Agent;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.models.general.CustomerAddress;
 import org.guanzon.autoapp.models.general.CustomerEmail;
 import org.guanzon.autoapp.models.general.CustomerMobile;
@@ -73,13 +64,13 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class ReferralAgentController implements Initializable, ScreenInterface {
+public class ReferralAgentController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private Client oTransClient;
-    private Sales_Agent oTransRef;
+    private Sales_Agent oTrans;
     private UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private final String pxeModuleName = "Referral Agent"; //Form Title
     private int pnEditMode;
@@ -107,9 +98,9 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     @FXML
     private Button btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage, btnTabAdd, btnTabRem;
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField12;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14;
     @FXML
-    private TabPane tabPaneMain;
+    private TabPane tabPaneMain, tabPCustCont;
     @FXML
     private DatePicker datePicker09;
     @FXML
@@ -117,28 +108,20 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     @FXML
     private ComboBox<String> comboBox06, comboBox07, comboBox08, comboBox10, comboBox11;
     @FXML
-    private TabPane tabPCustCont;
-    @FXML
-    private Tab tabAddrInf;
+    private Tab tabAddrInf, tabContNo, tabEmail, tabSocMed, tabReferral;
     @FXML
     private TableView<CustomerAddress> tblAddress;
     @FXML
     private TableColumn<CustomerAddress, String> addrindex01, addrindex02, addrindex03, addrindex04, addrindex05, addrindex06,
             addrindex07, addrindex08, addrindex09, addrindex10;
     @FXML
-    private Tab tabContNo;
-    @FXML
     private TableView<CustomerMobile> tblContact;
     @FXML
     private TableColumn<CustomerMobile, String> contindex01, contindex02, contindex03, contindex04, contindex05, contindex06, contindex07;
     @FXML
-    private Tab tabEmail;
-    @FXML
     private TableView<CustomerEmail> tblEmail;
     @FXML
     private TableColumn<CustomerEmail, String> emadindex01, emadindex02, emadindex03, emadindex04, emadindex05;
-    @FXML
-    private Tab tabSocMed;
     @FXML
     private TableView<CustomerSocialMedia> tblSocMed;
     @FXML
@@ -159,12 +142,6 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     private TableColumn<RefAgentTrans, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08, tblindex09;
     @FXML
     private Label lblStatus;
-    @FXML
-    private Tab tabReferral;
-    @FXML
-    private TextField txtField13;
-    @FXML
-    private TextField txtField14;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -180,226 +157,112 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initComboValueItems();
         oTransClient = new Client(oApp, false, oApp.getBranchCode());
-        oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+        oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
         initAddress();
         initContact();
         initEmail();
         initSocialMedia();
         initAgentRequirements();
         initAgentTransaction();
-        initTextFieldPattern();
+
         initCapitalizationFields();
+        initPatternFields();
         initTextKeyPressed();
-        initTextFieldFocus();
-        initCmboxFieldAction();
-        initButtons();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         clearFields();
         clearTables();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
+
     }
 
-    private void initTextFieldPattern() {
-        Pattern textOnly, suffOnly;
-        textOnly = Pattern.compile("[A-Za-z ]*");
-        suffOnly = Pattern.compile("[A-Za-z .]*");
-        txtField02.setTextFormatter(new TextFormatterUtil(textOnly)); //lastname
-        txtField03.setTextFormatter(new TextFormatterUtil(textOnly)); //firstname
-        txtField04.setTextFormatter(new TextFormatterUtil(textOnly)); //middlename
-        txtField05.setTextFormatter(new TextFormatterUtil(suffOnly));
-    }
-
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
-            } else {
-                lsValue = lsTxtField.getText();
-            }
-            JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField01":
-                        if (pnEditMode == EditMode.ADDNEW) {
-                            loJSON = oTransClient.searchClient(lsValue, true);
-                            if (!"error".equals(loJSON.get("result"))) {
-                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                                loJSON = oTransRef.newRecord();
-                                if (!"error".equals(loJSON.get("result"))) {
-                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-                                    loadReferralAgentInformation();
-                                    loadAddress();
-                                    loadContact();
-                                    loadEmail();
-                                    loadSocialMedia();
-                                    loadAgentTrans();
-                                    loadAgentRequirements();
-                                    pnEditMode = oTransRef.getEditMode();
-                                    initRefFields(pnEditMode);
-                                } else {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                    return;
-                                }
-                            } else {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                return;
-                            }
-                        }
-                        break;
-//                    case "txtField02":
-//                        if (pnEditMode == EditMode.ADDNEW) {
-//                            loJSON = oTransClient.searchClient(lsValue, false);
-//                            if (!"error".equals(loJSON.get("result"))) {
-//                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-//                                loJSON = oTransRef.newRecord();
-//                                if (!"error".equals(loJSON.get("result"))) {
-//                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-//                                    loadReferralAgentInformation();
-//                                    loadAddress();
-//                                    loadContact();
-//                                    loadEmail();
-//                                    loadSocialMedia();
-//                                    loadAgentTrans();
-//                                    loadAgentRequirements();
-//                                    pnEditMode = oTransClient.getEditMode();
-//                                } else {
-//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                                    return;
-//                                }
-//                            } else {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                                return;
-//                            }
-//                        }
-//                        break;
-//                    case "txtField03":
-//                        if (pnEditMode == EditMode.ADDNEW) {
-//                            loJSON = oTransClient.searchClient(lsValue, false);
-//                            if (!"error".equals(loJSON.get("result"))) {
-//                                oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-//                                loJSON = oTransRef.newRecord();
-//                                if (!"error".equals(loJSON.get("result"))) {
-//                                    oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-//                                    loadReferralAgentInformation();
-//                                    loadAddress();
-//                                    loadContact();
-//                                    loadEmail();
-//                                    loadSocialMedia();
-//                                    loadAgentTrans();
-//                                    loadAgentRequirements();
-//                                    pnEditMode = oTransClient.getEditMode();
-//                                } else {
-//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                                    return;
-//                                }
-//                            } else {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                                return;
-//                            }
-//                        }
-//                        break;
-                }
-
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.ENTER) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.TAB) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getClientID());
+        txtField02.setText(oTransClient.getModel().getModel().getLastName());
+        txtField03.setText(oTransClient.getModel().getModel().getFirstName());
+        txtField04.setText(oTransClient.getModel().getModel().getMiddleName());
+        txtField05.setText(oTransClient.getModel().getModel().getSuffixName());
+        if (oTransClient.getModel().getModel().getTitle() != null && !oTransClient.getModel().getModel().getTitle().trim().isEmpty()) {
+            comboBox06.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getTitle()));
+        }
+        if (oTransClient.getModel().getModel().getGender() != null && !oTransClient.getModel().getModel().getGender().trim().isEmpty()) {
+            comboBox07.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getGender()));
+        }
+        if (oTransClient.getModel().getModel().getCvilStat() != null && !oTransClient.getModel().getModel().getCvilStat().trim().isEmpty()) {
+            comboBox08.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getCvilStat()));
+        }
+        if (oTransClient.getModel().getModel().getBirthDte() != null && !oTransClient.getModel().getModel().getBirthDte().toString().isEmpty()) {
+            datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransClient.getModel().getModel().getBirthDte())));
+        }
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            switch (oTrans.getModel().getModel().getRecdStat()) {
+                case "1":
+                    lblStatus.setText("Approved");
+                    break;
+                case "2":
+                    lblStatus.setText("Disapproved");
+                    break;
+                default:
+                    lblStatus.setText("Inactive");
+                    break;
             }
         }
-    }
-
-    private boolean checkExistingReferralAgentInformation() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransClient.validateExistingClientInfo(true);
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTransClient.openRecord((String) loJSON.get("sClientID"));
-                if ("success".equals((String) loJSON.get("result"))) {
-                    oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                    loJSON = oTransRef.newRecord();
-                    if (!"error".equals(loJSON.get("result"))) {
-                        oTransRef.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
-                        loadReferralAgentInformation();
-                        loadAddress();
-                        loadContact();
-                        loadEmail();
-                        loadSocialMedia();
-                        loadAgentTrans();
-                        loadAgentRequirements();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return false;
-                    }
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    return false;
-                }
-            } else {
-                return false;
+        if (oTrans.getModel().getModel().getAgentTyp() != null && !oTrans.getModel().getModel().getAgentTyp().trim().isEmpty()) {
+            switch (String.valueOf(oTrans.getModel().getModel().getAgentTyp())) {
+                case "reg":
+                    comboBox10.setValue("AGENT");
+                    break;
+                case "bnk":
+                    comboBox10.setValue("BANK");
+                    break;
+                case "emp":
+                    comboBox10.setValue("EMPLOYEE");
+                    break;
+                case "stk":
+                    comboBox10.setValue("STOCKHOLDER");
+                    break;
+                default:
+                    comboBox10.setValue("");
+                    break;
             }
         }
+//        if (oTrans.getModel().getModel().getEducAttain!= null && !oTransferal.getModel().getModel().getgetEducAttain().trim().isEmpty()) {
+//            comboBox11.getSelectionModel().select(Integer.parseInt(oTransferal.getModel().getModel().getgetEducAttain()));
+//        }
 
-        loJSON = oTransRef.validateExistingRA();
-        String sClientID = (String) loJSON.get("sClientID");
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTransRef.openRecord(sClientID);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loJSON = oTransClient.openRecord(sClientID);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadReferralAgentInformation();
-                        loadAddress();
-                        loadContact();
-                        loadEmail();
-                        loadSocialMedia();
-                        loadAgentTrans();
-                        loadAgentRequirements();
-                        pnEditMode = oTransClient.getEditMode();
-                        initFields(pnEditMode);
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return false;
-                    }
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    return false;
-                }
-            } else {
-
-                return false;
-            }
-        } else {
-            return false;
-        }
+        txtField12.setText(oTrans.getModel().getModel().getProfessn());
+        txtField13.setText(oTrans.getModel().getModel().getCompany());
+        txtField14.setText(oTrans.getModel().getModel().getPosition());
         return true;
     }
 
-    private void initTextFieldFocus() {
+    @Override
+    public void initPatternFields() {
+        Pattern textOnly, suffOnly;
+        textOnly = Pattern.compile("[A-Za-z ]*");
+        suffOnly = Pattern.compile("[A-Za-z .]*");
+        List<TextField> loTextField = Arrays.asList(txtField02, txtField03, txtField04);
+        loTextField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(textOnly)));
+        txtField05.setTextFormatter(new TextFormatterUtil(suffOnly));
+    }
+
+    @Override
+    public void initLimiterFields() {
+    }
+
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
@@ -434,13 +297,13 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                     oTransClient.getModel().getModel().setSuffixName(lsValue);
                     break;
                 case 12:/*Profession */
-                    oTransRef.getModel().getModel().setProfessn(lsValue);
+                    oTrans.getModel().getModel().setProfessn(lsValue);
                     break;
                 case 13:/*Company */
-                    oTransRef.getModel().getModel().setCompany(lsValue);
+                    oTrans.getModel().getModel().setCompany(lsValue);
                     break;
                 case 14:/*Position */
-                    oTransRef.getModel().getModel().setPosition(lsValue);
+                    oTrans.getModel().getModel().setPosition(lsValue);
                     break;
             }
         } else {
@@ -449,200 +312,146 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         }
     };
 
-    private void clearFields() {
-        Image loImageError = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/defaultimage.png");
-        imageView.setImage(loImageError);
-        psFileUrl = "";
-        psFileName = "";
-        txtField01.setText("");
-        txtField02.setText("");
-        txtField03.setText("");
-        txtField04.setText("");
-        txtField05.setText("");
-        comboBox06.setValue("");
-        comboBox07.setValue("");
-        comboBox08.setValue("");
-        datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        comboBox10.setValue("");
-        comboBox11.setValue("");
-        txtField12.setText("");
-        txtField13.setText("");
-        txtField14.setText("");
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField12, txtField13, txtField14);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void clearTables() {
-        addressdata.clear();
-        contactdata.clear();
-        emaildata.clear();
-        socialmediadata.clear();
-        transData.clear();
-        agentReqData.clear();
-    }
-
-    private void initRefFields(int fnValue) {
-        if (fnValue == EditMode.ADDNEW) {
-            txtField01.setDisable(true);
-            txtField02.setDisable(true);
-            txtField03.setDisable(true);
-            txtField04.setDisable(true);
-            txtField05.setDisable(true);
-            comboBox06.setDisable(true);
-            comboBox07.setDisable(true);
-            comboBox08.setDisable(true);
-            datePicker09.setDisable(true);
-        }
-
-    }
-
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnUploadImage.setDisable(true);
-        txtField01.setDisable(!lbShow);
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        txtField04.setDisable(!lbShow);
-        txtField05.setDisable(!lbShow);
-        comboBox06.setDisable(!lbShow);
-        comboBox07.setDisable(!lbShow);
-        comboBox08.setDisable(!lbShow);
-        datePicker09.setDisable(!lbShow);
-        comboBox10.setDisable(!lbShow);
-        comboBox11.setDisable(!lbShow);
-        txtField12.setDisable(!lbShow);
-        txtField13.setDisable(!lbShow);
-        txtField14.setDisable(!lbShow);
-//        btnUploadImage.setDisable(!lbShow);
-
-//        if (oTransClient.getModel().getModel().getImage() != null) {
-//            btnRemoveImage.setDisable(false);
-//        }
-        btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-
-        btnTabAdd.setVisible(lbShow);
-        btnTabRem.setVisible(false);
-
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDisapprove.setVisible(false);
-        btnDisapprove.setManaged(false);
-        btnApprove.setVisible(false);
-        btnApprove.setManaged(false);
-        if (fnValue == EditMode.UPDATE) {
-            txtField01.setDisable(true);
-        }
-        if (fnValue == EditMode.READY) {
-            if (oTransRef.getModel().getModel().getRecdStat().equals("2")) {
-                btnDisapprove.setVisible(false);
-                btnDisapprove.setManaged(false);
-//                btnApprove.setVisible(true);
-//                btnApprove.setManaged(true);
-            } else if (oTransRef.getModel().getModel().getRecdStat().equals("1")) {
-                btnDisapprove.setVisible(true);
-                btnDisapprove.setManaged(true);
-                btnApprove.setVisible(false);
-                btnApprove.setManaged(false);
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            TextField lsTxtField = (TextField) event.getSource();
+            String txtFieldID = ((TextField) event.getSource()).getId();
+            String lsValue = "";
+            if (lsTxtField.getText() == null) {
+                lsValue = "";
             } else {
-                btnDisapprove.setVisible(true);
-                btnDisapprove.setManaged(true);
-                btnApprove.setVisible(true);
-                btnApprove.setManaged(true);
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
+                lsValue = lsTxtField.getText();
             }
-        }
-    }
-
-    private void initCmboxFieldAction() {
-        datePicker09.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransClient.setMaster(11, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                if (pnEditMode == EditMode.ADDNEW) {
-                    checkExistingReferralAgentInformation();
-                }
-            }
-        });
-        comboBox06.setOnAction(e -> {
-            int selectedComboBox06 = comboBox06.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox06 >= 0) {
-                    oTransClient.getModel().getModel().setTitle(String.valueOf(selectedComboBox06));
-                }
-            }
-        }
-        );
-        comboBox07.setOnAction(e -> {
-            int selectedComboBox07 = comboBox07.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox07 >= 0) {
-                    oTransClient.getModel().getModel().setGender(String.valueOf(selectedComboBox07));
-                }
-            }
-        }
-        );
-        comboBox08.setOnAction(e -> {
-            int selectedComboBox08 = comboBox08.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox08 >= 0) {
-                    oTransClient.getModel().getModel().setCvilStat(String.valueOf(selectedComboBox08));
-                }
-            }
-        }
-        );
-        comboBox10.setOnAction(e -> {
-            int selectedComboBox10 = comboBox10.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox10 >= 0) {
-                    switch (selectedComboBox10) {
-                        case 0:
-                            oTransRef.getModel().getModel().setAgentTyp("reg");
-                            break;
-                        case 1:
-                            oTransRef.getModel().getModel().setAgentTyp("bnk");
-                            break;
-                        case 2:
-                            oTransRef.getModel().getModel().setAgentTyp("emp");
-                            break;
-                        case 3:
-                            oTransRef.getModel().getModel().setAgentTyp("stk");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-        );
-        tabPCustCont.getSelectionModel()
-                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
-                    pnRow = 0;
-                    btnTabRem.setVisible(false);
-                }
-                );
-        txtField01.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransClient.getModel().getModel().setClientID("");
-                                oTransRef.getModel().getModel().setClientID("");
-                            }
+            JSONObject loJSON = new JSONObject();
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField01":
+                                if (pnEditMode == EditMode.ADDNEW) {
+                                    loJSON = oTransClient.searchClient(lsValue, true);
+                                    if (!"error".equals(loJSON.get("result"))) {
+                                        oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                                        loJSON = oTrans.newRecord();
+                                        if (!"error".equals(loJSON.get("result"))) {
+                                            oTrans.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+                                            loadMasterFields();
+                                            loadAddress();
+                                            loadContact();
+                                            loadEmail();
+                                            loadSocialMedia();
+                                            loadAgentTrans();
+                                            loadAgentRequirements();
+                                            pnEditMode = oTrans.getEditMode();
+                                            initRefFields(pnEditMode);
+                                        } else {
+                                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                            return;
+                                        }
+                                    } else {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                        return;
+                                    }
+                                }
+                                break;
+//                    case "txtField02":
+//                        if (pnEditMode == EditMode.ADDNEW) {
+//                            loJSON = oTransClient.searchClient(lsValue, false);
+//                            if (!"error".equals(loJSON.get("result"))) {
+//                                oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+//                                loJSON = oTrans.newRecord();
+//                                if (!"error".equals(loJSON.get("result"))) {
+//                                    oTrans.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+//                                    loadMasterFields();
+//                                    loadAddress();
+//                                    loadContact();
+//                                    loadEmail();
+//                                    loadSocialMedia();
+//                                    loadAgentTrans();
+//                                    loadAgentRequirements();
+//                                    pnEditMode = oTransClient.getEditMode();
+//                                } else {
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                    return;
+//                                }
+//                            } else {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                return;
+//                            }
+//                        }
+//                        break;
+//                    case "txtField03":
+//                        if (pnEditMode == EditMode.ADDNEW) {
+//                            loJSON = oTransClient.searchClient(lsValue, false);
+//                            if (!"error".equals(loJSON.get("result"))) {
+//                                oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+//                                loJSON = oTrans.newRecord();
+//                                if (!"error".equals(loJSON.get("result"))) {
+//                                    oTrans.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+//                                    loadMasterFields();
+//                                    loadAddress();
+//                                    loadContact();
+//                                    loadEmail();
+//                                    loadSocialMedia();
+//                                    loadAgentTrans();
+//                                    loadAgentRequirements();
+//                                    pnEditMode = oTransClient.getEditMode();
+//                                } else {
+//                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                    return;
+//                                }
+//                            } else {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                                return;
+//                            }
+//                        }
+//                        break;
                         }
-                    }
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        break;
+                    case ENTER:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case TAB:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    default:
+                        break;
                 }
-                );
+            }
+        }
     }
 
-    private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage, btnTabAdd, btnTabRem);
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
 
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnApprove, btnDisapprove, btnClose, btnUploadImage, btnRemoveImage, btnTabAdd, btnTabRem);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         iTabIndex = tabPCustCont.getSelectionModel().getSelectedIndex();
@@ -653,11 +462,11 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 oTransClient = new Client(oApp, false, oApp.getBranchCode());
                 loJSON = oTransClient.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                    loJSON = oTransRef.newRecord();
+                    oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                    loJSON = oTrans.newRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         pnEditMode = oTransClient.getEditMode();
-                        loadReferralAgentInformation();
+                        loadMasterFields();
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;
@@ -672,7 +481,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 } else {
-                    loJSON = oTransRef.updateRecord();
+                    loJSON = oTrans.updateRecord();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -754,15 +563,15 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                     String sClientID = String.valueOf(oTransClient.getModel().getModel().getClientID());
                     loJSON = oTransClient.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        oTransRef.getModel().getModel().setClientID(sClientID);
-                        loJSON = oTransRef.saveRecord();
+                        oTrans.getModel().getModel().setClientID(sClientID);
+                        loJSON = oTrans.saveRecord();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                             loJSON = oTransClient.openRecord(sClientID);
                             if ("success".equals((String) loJSON.get("result"))) {
-                                loJSON = oTransRef.openRecord(sClientID);
+                                loJSON = oTrans.openRecord(sClientID);
                                 if ("success".equals((String) loJSON.get("result"))) {
-                                    loadReferralAgentInformation();
+                                    loadMasterFields();
                                     loadAddress();
                                     loadContact();
                                     loadEmail();
@@ -788,7 +597,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to cancel?")) {
                     oTransClient = new Client(oApp, false, oApp.getBranchCode());
-                    oTransRef = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                    oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     clearTables();
@@ -801,11 +610,11 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransRef.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    oTransClient.openRecord(oTransRef.getModel().getModel().getClientID());
+                    oTransClient.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadReferralAgentInformation();
+                        loadMasterFields();
                         loadAddress();
                         loadContact();
                         loadEmail();
@@ -898,48 +707,56 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 btnTabRem.setVisible(false);
                 break;
             case "btnDisapprove":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransRef.getModel().getModel().getClientID();
-                    loJSON = oTransRef.deactivateRecord(fsValue);
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to cancel this activity?") == true) {
+                    String fsValue = oTrans.getModel().getModel().getClientID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
-                    loJSON = oTransClient.openRecord(oTransRef.getModel().getModel().getClientID());
+
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadReferralAgentInformation();
-                        loadAddress();
-                        loadContact();
-                        loadEmail();
-                        loadSocialMedia();
-                        loadAgentTrans();
-                        loadAgentRequirements();
-                        pnEditMode = oTransClient.getEditMode();
-                        initFields(pnEditMode);
+                        loJSON = oTransClient.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadAddress();
+                            loadContact();
+                            loadEmail();
+                            loadSocialMedia();
+                            loadAgentTrans();
+                            loadAgentRequirements();
+                            pnEditMode = oTransClient.getEditMode();
+                            initFields(pnEditMode);
+                        }
                     }
                 }
                 break;
             case "btnApprove":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransRef.getModel().getModel().getClientID();
-                    loJSON = oTransRef.activateRecord(fsValue);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to change status?")) {
+                    String fsValue = oTrans.getModel().getModel().getClientID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Sales Executive Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "Sales Executive Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
-                    loJSON = oTransClient.openRecord(oTransRef.getModel().getModel().getClientID());
+
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadReferralAgentInformation();
-                        loadAddress();
-                        loadContact();
-                        loadEmail();
-                        loadSocialMedia();
-                        loadAgentTrans();
-                        loadAgentRequirements();
-                        pnEditMode = oTransClient.getEditMode();
-                        initFields(pnEditMode);
+                        loJSON = oTransClient.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadAddress();
+                            loadContact();
+                            loadEmail();
+                            loadSocialMedia();
+                            loadAgentTrans();
+                            loadAgentRequirements();
+                            pnEditMode = oTransClient.getEditMode();
+                            initFields(pnEditMode);
+                        }
                     }
                 }
                 break;
@@ -950,6 +767,239 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
+    @Override
+    public void initComboBoxItems() {
+        comboBox06.setItems(cTitle);
+        comboBox07.setItems(cGender);
+        comboBox08.setItems(cCvlStat);
+        comboBox10.setItems(cReferTyp);
+        comboBox11.setItems(cEducAttain);
+    }
+
+    @Override
+    public void initFieldsAction() {
+        datePicker09.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTransClient.setMaster(11, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                if (pnEditMode == EditMode.ADDNEW) {
+                    checkExistingReferralAgentInformation();
+                }
+            }
+        });
+        comboBox06.setOnAction(e -> {
+            int selectedComboBox06 = comboBox06.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox06 >= 0) {
+                    oTransClient.getModel().getModel().setTitle(String.valueOf(selectedComboBox06));
+                }
+            }
+        }
+        );
+        comboBox07.setOnAction(e -> {
+            int selectedComboBox07 = comboBox07.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox07 >= 0) {
+                    oTransClient.getModel().getModel().setGender(String.valueOf(selectedComboBox07));
+                }
+            }
+        }
+        );
+        comboBox08.setOnAction(e -> {
+            int selectedComboBox08 = comboBox08.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox08 >= 0) {
+                    oTransClient.getModel().getModel().setCvilStat(String.valueOf(selectedComboBox08));
+                }
+            }
+        }
+        );
+        comboBox10.setOnAction(e -> {
+            int selectedComboBox10 = comboBox10.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox10 >= 0) {
+                    switch (selectedComboBox10) {
+                        case 0:
+                            oTrans.getModel().getModel().setAgentTyp("reg");
+                            break;
+                        case 1:
+                            oTrans.getModel().getModel().setAgentTyp("bnk");
+                            break;
+                        case 2:
+                            oTrans.getModel().getModel().setAgentTyp("emp");
+                            break;
+                        case 3:
+                            oTrans.getModel().getModel().setAgentTyp("stk");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        );
+        tabPCustCont.getSelectionModel()
+                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+                    pnRow = 0;
+                    btnTabRem.setVisible(false);
+                }
+                );
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField01.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTransClient.getModel().getModel().setClientID("");
+                                oTrans.getModel().getModel().setClientID("");
+                            }
+                        }
+                    }
+                }
+                );
+    }
+
+    @Override
+    public void clearTables() {
+        addressdata.clear();
+        contactdata.clear();
+        emaildata.clear();
+        socialmediadata.clear();
+        transData.clear();
+        agentReqData.clear();
+    }
+
+    @Override
+    public void clearFields() {
+        Image loImageError = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/defaultimage.png");
+        imageView.setImage(loImageError);
+        psFileUrl = "";
+        psFileName = "";
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03,
+                txtField04, txtField05, txtField12, txtField13, txtField14);
+
+        CustomCommonUtil.setValue(null, comboBox06, comboBox07, comboBox08,
+                comboBox10, comboBox11);
+        datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+    }
+
+    @Override
+    public void initFields(int fnValue
+    ) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        btnUploadImage.setDisable(true);
+        CustomCommonUtil.setDisable(!lbShow, txtField01, txtField02, txtField03,
+                txtField04, txtField05, comboBox06, comboBox07, comboBox08,
+                datePicker09, comboBox10, comboBox11, txtField12, txtField13,
+                txtField14);
+//        btnUploadImage.setDisable(!lbShow);
+//        if (oTransClient.getModel().getModel().getImage() != null) {
+//            btnRemoveImage.setDisable(false);
+//        }
+        btnAdd.setVisible(!lbShow);
+        btnAdd.setManaged(!lbShow);
+
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave, btnTabAdd);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave, btnTabAdd);
+        CustomCommonUtil.setVisible(false, btnEdit, btnTabRem, btnDisapprove, btnApprove);
+        CustomCommonUtil.setManaged(false, btnEdit, btnTabRem, btnDisapprove, btnApprove);
+        if (fnValue == EditMode.UPDATE) {
+            txtField01.setDisable(true);
+        }
+        if (fnValue == EditMode.READY) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("2")) {
+                btnDisapprove.setVisible(false);
+                btnDisapprove.setManaged(false);
+//                btnApprove.setVisible(true);
+//                btnApprove.setManaged(true);
+            } else if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                btnDisapprove.setVisible(true);
+                btnDisapprove.setManaged(true);
+            } else {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDisapprove, btnApprove);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDisapprove, btnApprove);
+            }
+        }
+    }
+
+    private void initRefFields(int fnValue) {
+        if (fnValue == EditMode.ADDNEW) {
+            CustomCommonUtil.setDisable(true, txtField01, txtField02, txtField03,
+                    txtField04, txtField05, comboBox06, comboBox07, comboBox08,
+                    datePicker09);
+        }
+
+    }
+
+    private boolean checkExistingReferralAgentInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransClient.validateExistingClientInfo(true);
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTransClient.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                    loJSON = oTrans.newRecord();
+                    if (!"error".equals(loJSON.get("result"))) {
+                        oTrans.getModel().getModel().setClientID(oTransClient.getModel().getModel().getClientID());
+                        loadMasterFields();
+                        loadAddress();
+                        loadContact();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadAgentTrans();
+                        loadAgentRequirements();
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return false;
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        loJSON = oTrans.validateExistingRA();
+        String sClientID = (String) loJSON.get("sClientID");
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord(sClientID);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loJSON = oTransClient.openRecord(sClientID);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        loadAddress();
+                        loadContact();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadAgentTrans();
+                        loadAgentRequirements();
+                        pnEditMode = oTransClient.getEditMode();
+                        initFields(pnEditMode);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return false;
+                    }
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    return false;
+                }
+            } else {
+
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean setSelection() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -957,7 +1007,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, "Referral Type", "Please select `Referral Type` value.");
                 return false;
             } else {
-                switch (String.valueOf(oTransRef.getModel().getModel().getAgentTyp())) {
+                switch (String.valueOf(oTrans.getModel().getModel().getAgentTyp())) {
                     case "reg":
                         comboBox10.setValue("AGENT");
                         break;
@@ -976,65 +1026,9 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
         return true;
     }
 
-    private void loadReferralAgentInformation() {
-        txtField01.setText(oTransRef.getModel().getModel().getClientID());
-        txtField02.setText(oTransClient.getModel().getModel().getLastName());
-        txtField03.setText(oTransClient.getModel().getModel().getFirstName());
-        txtField04.setText(oTransClient.getModel().getModel().getMiddleName());
-        txtField05.setText(oTransClient.getModel().getModel().getSuffixName());
-        if (oTransClient.getModel().getModel().getTitle() != null && !oTransClient.getModel().getModel().getTitle().trim().isEmpty()) {
-            comboBox06.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getTitle()));
-        }
-        if (oTransClient.getModel().getModel().getGender() != null && !oTransClient.getModel().getModel().getGender().trim().isEmpty()) {
-            comboBox07.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getGender()));
-        }
-        if (oTransClient.getModel().getModel().getCvilStat() != null && !oTransClient.getModel().getModel().getCvilStat().trim().isEmpty()) {
-            comboBox08.getSelectionModel().select(Integer.parseInt(oTransClient.getModel().getModel().getCvilStat()));
-        }
-        if (oTransClient.getModel().getModel().getBirthDte() != null && !oTransClient.getModel().getModel().getBirthDte().toString().isEmpty()) {
-            datePicker09.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransClient.getModel().getModel().getBirthDte())));
-        }
-        if (oTransRef.getModel().getModel().getRecdStat() != null) {
-            switch (oTransRef.getModel().getModel().getRecdStat()) {
-                case "1":
-                    lblStatus.setText("Approved");
-                    break;
-                case "2":
-                    lblStatus.setText("Disapproved");
-                    break;
-                default:
-                    lblStatus.setText("Inactive");
-                    break;
-            }
-        }
-        if (oTransRef.getModel().getModel().getAgentTyp() != null && !oTransRef.getModel().getModel().getAgentTyp().trim().isEmpty()) {
-            switch (String.valueOf(oTransRef.getModel().getModel().getAgentTyp())) {
-                case "reg":
-                    comboBox10.setValue("AGENT");
-                    break;
-                case "bnk":
-                    comboBox10.setValue("BANK");
-                    break;
-                case "emp":
-                    comboBox10.setValue("EMPLOYEE");
-                    break;
-                case "stk":
-                    comboBox10.setValue("STOCKHOLDER");
-                    break;
-            }
-        }
-//        if (oTransRef.getModel().getModel().getEducAttain!= null && !oTransRefferal.getModel().getModel().getgetEducAttain().trim().isEmpty()) {
-//            comboBox11.getSelectionModel().select(Integer.parseInt(oTransRefferal.getModel().getModel().getgetEducAttain()));
-//        }
-
-        txtField12.setText(oTransRef.getModel().getModel().getProfessn());
-        txtField13.setText(oTransRef.getModel().getModel().getCompany());
-        txtField14.setText(oTransRef.getModel().getModel().getPosition());
-    }
-
     @FXML
     private void ImageViewClicked(MouseEvent event) {
-//        if (!oTransRef.getModel().getModel().getImage().isEmpty()) {
+//        if (!oTrans.getModel().getModel().getImage().isEmpty()) {
         loadPhotoWindow();
 //        } else {
 //            psFileUrl = "";
@@ -1091,14 +1085,6 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
             System.exit(1);
         }
 
-    }
-
-    private void initComboValueItems() {
-        comboBox06.setItems(cTitle);
-        comboBox07.setItems(cGender);
-        comboBox08.setItems(cCvlStat);
-        comboBox10.setItems(cReferTyp);
-        comboBox11.setItems(cEducAttain);
     }
 
     @FXML
@@ -1622,22 +1608,22 @@ public class ReferralAgentController implements Initializable, ScreenInterface {
     private void loadAgentTrans() {
         transData.clear();
         String csPlate = "";
-        for (int lnCtr = 0; lnCtr <= oTransRef.getVSPModelList().size() - 1; lnCtr++) {
-            if (oTransRef.getModel().getVSPModel(lnCtr).getPlateNo() != null) {
-                csPlate = oTransRef.getModel().getVSPModel(lnCtr).getCSNo() + "/" + oTransRef.getModel().getVSPModel(lnCtr).getPlateNo();
+        for (int lnCtr = 0; lnCtr <= oTrans.getVSPModelList().size() - 1; lnCtr++) {
+            if (oTrans.getModel().getVSPModel(lnCtr).getPlateNo() != null) {
+                csPlate = oTrans.getModel().getVSPModel(lnCtr).getCSNo() + "/" + oTrans.getModel().getVSPModel(lnCtr).getPlateNo();
             } else {
-                csPlate = oTransRef.getModel().getVSPModel(lnCtr).getCSNo();
+                csPlate = oTrans.getModel().getVSPModel(lnCtr).getCSNo();
             }
             transData.add(new RefAgentTrans(
                     String.valueOf(lnCtr + 1), //ROW
-                    CustomCommonUtil.xsDateShort(oTransRef.getModel().getVSPModel(lnCtr).getDelvryDt()),
-                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getVSPNO().toUpperCase()),
-                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getBuyCltNm().toUpperCase()),
+                    CustomCommonUtil.xsDateShort(oTrans.getModel().getVSPModel(lnCtr).getDelvryDt()),
+                    String.valueOf(oTrans.getModel().getVSPModel(lnCtr).getVSPNO().toUpperCase()),
+                    String.valueOf(oTrans.getModel().getVSPModel(lnCtr).getBuyCltNm().toUpperCase()),
                     csPlate,
-                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getVhclFDsc().toUpperCase()),
-                    CustomCommonUtil.xsDateShort(oTransRef.getModel().getVSPModel(lnCtr).getUDRDate()),
-                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getUDRNo().toUpperCase()),
-                    String.valueOf(oTransRef.getModel().getVSPModel(lnCtr).getSEName())));
+                    String.valueOf(oTrans.getModel().getVSPModel(lnCtr).getVhclFDsc().toUpperCase()),
+                    CustomCommonUtil.xsDateShort(oTrans.getModel().getVSPModel(lnCtr).getUDRDate()),
+                    String.valueOf(oTrans.getModel().getVSPModel(lnCtr).getUDRNo().toUpperCase()),
+                    String.valueOf(oTrans.getModel().getVSPModel(lnCtr).getSEName())));
             csPlate = "";
         }
         tblTransaction.setItems(transData);

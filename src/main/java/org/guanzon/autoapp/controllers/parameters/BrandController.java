@@ -17,7 +17,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -25,6 +29,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_Brand;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -33,14 +38,14 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class BrandController implements Initializable, ScreenInterface {
+public class BrandController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
+    private Parts_Brand oTrans;
     private final String pxeModuleName = "Brand";
-    private int pnEditMode;//Modifying fields
-    private Parts_Brand oTransBrand;
+    private int pnEditMode;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
@@ -62,65 +67,47 @@ public class BrandController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransBrand = new Parts_Brand(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTrans = new Parts_Brand(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadBrandFields() {
-        txtField01.setText(oTransBrand.getModel().getModel().getBrandCde());
-        txtField02.setText(oTransBrand.getModel().getModel().getDescript());
-        if (oTransBrand.getModel().getModel().getRecdStat().equals("1")) {
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getBrandCde());
+        txtField02.setText(oTrans.getModel().getModel().getDescript());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    @Override
+    public void initLimiterFields() {
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        String textFieldID = ((TextField) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textFieldID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        }
-    }
-
-    private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField02);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    public void initTextFieldFocus() {
+        txtField02.focusedProperty().addListener(txtField_Focus);
     }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -135,7 +122,7 @@ public class BrandController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    loJSON = oTransBrand.getModel().getModel().setDescript(lsValue);
+                    loJSON = oTrans.getModel().getModel().setDescript(lsValue);
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
@@ -146,31 +133,68 @@ public class BrandController implements Initializable, ScreenInterface {
         }
     };
 
-    private void initButtons() {
+    public void initTextKeyPressed() {
+        txtField02.setOnKeyPressed(event -> txtField_KeyPressed(event));
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        String textFieldID = ((TextField) event.getSource()).getId();
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textFieldID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransBrand = new Parts_Brand(oApp, false, oApp.getBranchCode());
-                loJSON = oTransBrand.newRecord();
+                oTrans = new Parts_Brand(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadBrandFields();
-                    pnEditMode = oTransBrand.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransBrand.updateRecord();
-                pnEditMode = oTransBrand.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -178,18 +202,18 @@ public class BrandController implements Initializable, ScreenInterface {
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Brand Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Brand Information", "Please enter valid brand information.");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid brand information.");
                         txtField02.setText("");
                         return;
                     }
-                    loJSON = oTransBrand.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Brand Information", (String) loJSON.get("message"));
-                        loJSON = oTransBrand.openRecord(oTransBrand.getModel().getModel().getBrandCde());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrandCde());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadBrandFields();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransBrand.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -200,7 +224,7 @@ public class BrandController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransBrand = new Parts_Brand(oApp, false, oApp.getBranchCode());
+                    oTrans = new Parts_Brand(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -211,98 +235,106 @@ public class BrandController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransBrand.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadBrandFields();
-                    pnEditMode = oTransBrand.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Brand Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransBrand.getModel().getModel().getBrandCde();
-                    loJSON = oTransBrand.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getBrandCde();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Brand Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Brand Information", (String) loJSON.get("message"));
                         return;
                     }
-                    loJSON = oTransBrand.openRecord(oTransBrand.getModel().getModel().getBrandCde());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrandCde());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadBrandFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransBrand.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransBrand.getModel().getModel().getBrandCde();
-                    loJSON = oTransBrand.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getBrandCde();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Brand Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Brand Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransBrand.openRecord(oTransBrand.getModel().getModel().getBrandCde());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrandCde());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadBrandFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransBrand.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             default:
-                ShowMessageFX.Warning("Please contact admin to assist about no button available", "Integrated Automotive System", pxeModuleName);
+                ShowMessageFX.Warning(null, pxeModuleName, "Please contact admin to assist about no button available");
                 break;
         }
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        cboxActivate.setSelected(false);
-        txtField01.clear();
-        txtField02.clear();
+    @Override
+    public void initComboBoxItems() {
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField02);
+    }
+
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         txtField02.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
-            if (oTransBrand.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
+
 }

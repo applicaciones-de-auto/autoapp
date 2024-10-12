@@ -48,9 +48,6 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -60,11 +57,8 @@ import org.guanzon.autoapp.controllers.general.ReferralAgentController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.ServiceAdvisorController;
 import org.guanzon.autoapp.controllers.general.TechnicianController;
-import org.guanzon.autoapp.controllers.insurance.FollowUpController;
-import org.guanzon.autoapp.controllers.insurance.FollowUpSchedController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceApplicationController;
 import org.guanzon.autoapp.controllers.insurance.InsurancePolicyController;
-import org.guanzon.autoapp.controllers.insurance.InsuranceProposalApprovalController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceProposalController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
@@ -78,7 +72,9 @@ import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.ItemLocationController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
 import org.guanzon.autoapp.controllers.parameters.SectionController;
+import org.guanzon.autoapp.controllers.parameters.VehicleColorController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionController;
+import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
 import org.guanzon.autoapp.controllers.parameters.VehicleFrameFormatController;
 import org.guanzon.autoapp.controllers.parameters.VehicleMakeController;
 import org.guanzon.autoapp.controllers.parameters.VehicleModelController;
@@ -100,7 +96,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     private GRider oApp;
     private int targetTabIndex = -1;
-    private double tabsize;
     private String sSalesInvoiceType = "";
     private String sVehicleInfoType = "";
     private String sJobOrderType = "";
@@ -112,9 +107,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private final String psSalesPath = "/org/guanzon/autoapp/views/sales/";
     private final String psServicePath = "/org/guanzon/autoapp/views/service/";
     private final String psCashPath = "/org/guanzon/autoapp/views/cashiering/";
-    // Variables to track the window movement
-    private double xOffset = 0;
-    private double yOffset = 0;
     FXMLMenuParameterForm param = new FXMLMenuParameterForm();
     List<String> tabName = new ArrayList<>();
     @FXML
@@ -160,8 +152,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuItemEntry;
     @FXML
     private MenuItem mnuBinEntry;
-    @FXML
-    private MenuItem mnuInvLocEntry;
     @FXML
     private MenuItem mnuMeasureEntry;
     @FXML
@@ -239,6 +229,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInsPolicy;
     @FXML
     private MenuItem mnuFollowUp;
+    @FXML
+    private MenuItem mnuItemLocEntry;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -384,26 +376,19 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         return contextMenu;
     }
 
-    private void closeSelectTabs(TabPane tabPane, Tab tab) {
+    private void closeSelectTabs(TabPane tabPane, Tab currentTab) {
         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
-//            TabsStateManager.saveCurrentTab(tabName);
-//            TabsStateManager.closeTab(tab.getText());
-            if (tabpane.getTabs().size() == 1) {
-                // Fade out the last tab content before removing it
-                FadeTransition fadeOut = new FadeTransition(Duration.millis(300), tab.getContent());
-                fadeOut.setFromValue(1.0);
-                fadeOut.setToValue(0.0);
-                fadeOut.setOnFinished(e -> {
-                    Tabclose();
-                    tabName.remove(tab.getText());
-                    tabPane.getTabs().remove(tab);
-                });
-                fadeOut.play();
-            } else {
-                tabName.remove(tab.getText());
-                tabPane.getTabs().remove(tab);
+            // Remove the tab
+            if (tabPane.getTabs().removeIf(tab -> tab == currentTab)) {
+                if (tabPane.getTabs().isEmpty()) {
+                    UnloadForm unload = new UnloadForm();
+                    StackPane myBox = (StackPane) tabPane.getParent();
+                    myBox.getChildren().clear();
+                    myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
+                }
             }
-            Tabclose(tabPane);
+            // Remove the tab name from the tracking list
+            tabName.remove(currentTab.getText());
         }
     }
 
@@ -421,20 +406,33 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
+        // Check if tabPane or other components are null
+        if (tabPane == null) {
+            System.out.println("tabPane is null");
+            return;
+        }
+
         if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
-            tabName.clear();
-//            TabsStateManager.saveCurrentTab(tabName);
-//             Close all tabs using your TabsStateManager
-//            for (Tab tab : tabPane.getTabs()) {
-//                String formName = tab.getText();
-//                TabsStateManager.closeTab(formName);
-//            }
+            if (tabName != null) {
+                tabName.clear();  // Check if tabName is not null
+            } else {
+                System.out.println("tabName is null");
+            }
+
+            // Close all tabs
             tabPane.getTabs().clear();
+
             UnloadForm unload = new UnloadForm();
-            StackPane myBox = (StackPane) tabpane.getParent();
+
+            // Check if tabPane.getParent() returns a valid parent node
+            if (tabPane.getParent() == null) {
+                System.out.println("Parent of tabPane is null");
+                return;
+            }
+
+            StackPane myBox = (StackPane) tabPane.getParent();  // Make sure tabPane's parent is not null
             myBox.getChildren().clear();
             myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
-
         }
     }
 
@@ -575,10 +573,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         return null;
     }
 
-    /*SET SCENE FOR WORKPLACE - STACKPANE - ANCHORPANE*/
+//    public void setScene(AnchorPane foPane) {
+//        workingSpace.getChildren().clear();
+//        workingSpace.getChildren().add(foPane);
+//    }
     public void setScene(AnchorPane foPane) {
-        workingSpace.getChildren().clear();
-        workingSpace.getChildren().add(foPane);
+        // Ensure that the workingSpace is not null before clearing and adding new content
+        if (workingSpace != null) {
+            workingSpace.getChildren().clear(); // Clear existing content
+            workingSpace.getChildren().add(foPane); // Add the new content
+        } else {
+            ShowMessageFX.Warning(null, "Working space is not initialized. Cannot set scene.", "Error", null);
+        }
     }
 
     public TabPane loadAnimate(String fsFormName) {
@@ -613,27 +619,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
             // Handle close request with fade-out animation if it's the last tab
             newTab.setOnCloseRequest(event -> {
-                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this tab?")) {
-                    if (tabpane.getTabs().size() == 1) {
-                        // Fade out the last tab content before removing it
-                        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), newTab.getContent());
-                        fadeOut.setFromValue(1.0);
-                        fadeOut.setToValue(0.0);
-                        fadeOut.setOnFinished(e -> {
-                            Tabclose();
-                            tabName.remove(newTab.getText());
-                            tabpane.getTabs().remove(newTab);
-                        });
-                        fadeOut.play();
-                        event.consume();  // Prevent immediate removal to allow fade-out
-                    } else {
-                        // Regular removal for tabs when there are more than one
-                        Tabclose();
-                        tabName.remove(newTab.getText());
-                    }
+                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
+                    Tabclose();
+                    //tabIds.remove(newTab.getText());
+                    tabName.remove(newTab.getText());
+                    // Save the list of tab IDs to the JSON file
+//                    TabsStateManager.saveCurrentTab(tabName);
+//                    TabsStateManager.closeTab(newTab.getText());
                 } else {
-                    event.consume(); // Cancel the close request if the user selects "No"
+                    // Cancel the close request
+                    event.consume();
                 }
+
             });
 
             // Update tab order when selection changes
@@ -680,8 +677,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new VehicleMakeController();
         } else if (fsValue.contains("VehicleModel.fxml")) {
             return new VehicleModelController();
+        } else if (fsValue.contains("VehicleColor.fxml")) {
+            return new VehicleColorController();
         } else if (fsValue.contains("VehicleType.fxml")) {
             return new VehicleTypeController();
+        } else if (fsValue.contains("VehicleEngineFormat.fxml")) {
+            return new VehicleEngineFormatController();
         } else if (fsValue.contains("VehicleFrameFormat.fxml")) {
             return new VehicleFrameFormatController();
         } else if (fsValue.contains("SalesJobOrder.fxml")) {
@@ -734,14 +735,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new TechnicianController();
         } else if (fsValue.contains("InsuranceProposal.fxml")) {
             return new InsuranceProposalController();
-        } else if (fsValue.contains("InsuranceProposalApproval.fxml")) {
-            return new InsuranceProposalApprovalController();
+//        } else if (fsValue.contains("InsuranceProposalApproval.fxml")) {
+//            return new InsuranceProposalApprovalController();
         } else if (fsValue.contains("InsuranceApplication.fxml")) {
             return new InsuranceApplicationController();
         } else if (fsValue.contains("InsurancePolicy.fxml")) {
             return new InsurancePolicyController();
-        } else if (fsValue.contains("FollowUp.fxml")) {
-            return new FollowUpController();
+//        } else if (fsValue.contains("FollowUp.fxml")) {
+//            return new FollowUpController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -823,15 +824,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
     }
 
-    //Load Main Screen if no tab remain
     public void Tabclose() {
-        int tabsize = tabpane.getTabs().size();
-        if (tabsize == 1) {
-            setScene(loadAnimateAnchor("FXMLMainScreen.fxml"));
-        }
-    }
-
-    public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
             setScene(loadAnimateAnchor("FXMLMainScreen.fxml"));
@@ -895,16 +888,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuCustomerInfoClick(ActionEvent event
-    ) {
-        String sBigformname = psGeneralPath + "bigscreen/" + "Customer.fxml";
-        String sNormalformname = psGeneralPath + "Customer.fxml";
-        String sSmallFormName = psGeneralPath + "smallscreen/" + "Customer.fxml";
-
-        // Use the reusable function to get the correct form name based on screen size
-        String sformname = getFormName(sBigformname, sNormalformname, sSmallFormName);
-
-        // Check tab and load the form
+    private void mnuCustomerInfoClick(ActionEvent event) {
+        String sformname = psGeneralPath + "Customer.fxml";
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
@@ -1248,9 +1233,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
 
     @FXML
-    private void mnuInvLocEntryClicked(ActionEvent event) {
+    private void mnuItemLocEntryClicked(ActionEvent event) {
         String sformname = "ItemLocation.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+
     }
 
     @FXML

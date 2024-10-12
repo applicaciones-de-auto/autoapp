@@ -37,7 +37,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VehicleTestDriveController implements Initializable {
 
@@ -72,61 +72,10 @@ public class VehicleTestDriveController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnAdd.setOnAction(this::handleButtonAction);
         loadVhclTestModelTable();
         initVehicleTestModelTable();
-    }
+        initButtonsClick();
 
-    private void handleButtonAction(ActionEvent event) {
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnClose":
-                CommonUtils.closeStage(btnClose);
-                break;
-            case "btnAdd":
-                ObservableList<InquiryTestDrive> selectedItems = FXCollections.observableArrayList();
-                // Collect selected items from the TableView
-                for (InquiryTestDrive item : tblViewInquiryVhcl.getItems()) {
-                    if (item.getSelect().isSelected()) {
-                        selectedItems.add(item);
-                    }
-                }
-                if (selectedItems.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
-                    return;
-                }
-                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
-                    return;
-                }
-
-                int addedCount = 0;
-                StringBuilder fsModels = new StringBuilder();
-                for (InquiryTestDrive item : selectedItems) {
-                    try {
-                        String lsModelDesc = item.getTblindex05();
-
-                        if (fsModels.indexOf(lsModelDesc) == -1) {
-                            if (fsModels.length() > 0) {
-                                fsModels.append(", ");
-                            }
-                            fsModels.append(lsModelDesc);
-                        }
-                        addedCount++;
-                    } catch (Exception ex) {
-                        Logger.getLogger(VehicleTestDriveController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                oTransTestVhcl.getMasterModel().getMasterModel().setTestModl(fsModels.toString());
-                if (addedCount > 0) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Added test vehicle(s) successfully.");
-                } else {
-                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle(s).");
-                }
-                CommonUtils.closeStage(btnAdd);
-                break;
-
-        }
     }
 
     private void loadVhclTestModelTable() {
@@ -197,4 +146,61 @@ public class VehicleTestDriveController implements Initializable {
             });
         });
     }
+
+    private void initButtonsClick() {
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAdd.setOnAction(this::handleButtonAction);
+    }
+
+    private void handleButtonAction(ActionEvent event) {
+        String lsButton = ((Button) event.getSource()).getId();
+        switch (lsButton) {
+            case "btnClose":
+                CommonUtils.closeStage(btnClose);
+                break;
+            case "btnAdd":
+                ObservableList<InquiryTestDrive> selectedItems = FXCollections.observableArrayList();
+                // Collect selected items from the TableView
+                for (InquiryTestDrive item : tblViewInquiryVhcl.getItems()) {
+                    if (item.getSelect().isSelected()) {
+                        selectedItems.add(item);
+                    }
+                }
+                if (selectedItems.isEmpty()) {
+                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
+                    return;
+                }
+                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
+                    return;
+                }
+
+                int addedCount = 0;
+                StringBuilder fsModels = new StringBuilder();
+                for (InquiryTestDrive item : selectedItems) {
+                    try {
+                        String lsModelDesc = item.getTblindex05();
+
+                        if (fsModels.indexOf(lsModelDesc) == -1) {
+                            if (fsModels.length() > 0) {
+                                fsModels.append(", ");
+                            }
+                            fsModels.append(lsModelDesc);
+                        }
+                        addedCount++;
+                    } catch (Exception ex) {
+                        Logger.getLogger(VehicleTestDriveController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                oTransTestVhcl.getMasterModel().getMasterModel().setTestModl(fsModels.toString());
+                if (addedCount > 0) {
+                    ShowMessageFX.Information(null, pxeModuleName, "Added test vehicle(s) successfully.");
+                } else {
+                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add vehicle(s).");
+                }
+                CommonUtils.closeStage(btnAdd);
+                break;
+
+        }
+    }
+
 }

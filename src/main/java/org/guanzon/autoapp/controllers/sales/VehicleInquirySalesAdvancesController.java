@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.sales;
 
 import java.net.URL;
@@ -38,7 +34,7 @@ import org.guanzon.autoapp.utils.CustomCommonUtil;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VehicleInquirySalesAdvancesController implements Initializable {
 
@@ -47,7 +43,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     ObservableList<String> cSlipType = FXCollections.observableArrayList("RESERVATION", "DEPOSIT", "SAFEGUARD DUTY");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow = 0;
-    private Inquiry oTransAS;
+    private Inquiry oTrans;
     private int pnIinqStat;
     private int pnIEditMode;
     private boolean pbState = false;
@@ -65,7 +61,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     }
 
     public void setVSAObject(Inquiry foValue) {
-        oTransAS = foValue;
+        oTrans = foValue;
     }
 
     public void setTableRows(int row) {
@@ -89,16 +85,16 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        comboBox01.setItems(cSlipType); //Slipt Type
-        Pattern pattern = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
-        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
-        textArea05.setOnKeyPressed(this::txtArea_KeyPressed);
-        txtField04.focusedProperty().addListener(txtField_Focus);
-        btnClose.setOnAction(this::handleButtonAction);
-        btnApply.setOnAction(this::handleButtonAction);
+
+        loadMasterFields();
         initCapitalizationFields();
-        loadInquiryReservation();
+        initPatternFields();
+        initTextKeyPressed();
+        initTextFieldFocus();
+        initButtonsClick();
+        initComboBoxItems();
+        initCapitalizationFields();
+
     }
 
     private void initCapitalizationFields() {
@@ -106,6 +102,71 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         /*TextArea*/
         CustomCommonUtil.setCapsLockBehavior(textArea05);
+    }
+
+    private void loadMasterFields() {
+        comboBox01.getSelectionModel().select(Integer.parseInt(oTrans.getReservation(pnRow, "cResrvTyp").toString())); //VSA Type
+        txtField02.setText(oTrans.getReservation(pnRow, "sReferNox").toString());
+        if (pbState) { //Add
+            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+            txtField06.setText("FOR APPROVAL");
+        } else {
+            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dTransact")));
+            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
+            switch (oTrans.getReservation(pnRow, "cTranStat").toString()) {
+                case "0":
+                    txtField06.setText("CANCELLED");
+                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                            textArea05, btnApply);
+                    break;
+                case "1":
+                    txtField06.setText("FOR APPROVAL");
+                    switch (pnIinqStat) {
+                        case 0: //For Follow up
+                            CustomCommonUtil.setDisable(pbState, txtField04, comboBox01,
+                                    textArea05, btnApply);
+                            break;
+                        case 1: //On Process
+                        case 3: //VSP
+                            if ((pnIEditMode == EditMode.UPDATE)) {
+                                CustomCommonUtil.setDisable(pbState, txtField04, comboBox01,
+                                        textArea05, btnApply);
+                            } else {
+                                CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                                        textArea05, btnApply);
+                            }
+                            break;
+                        case 2: //Lost Sale
+                        case 4: //Sold
+                        case 5: //Cancelled
+                            CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                                    textArea05, btnApply);
+                            break;
+                    }
+                    break;
+                case "2":
+                    txtField06.setText("APPROVED");
+                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                            textArea05, btnApply);
+                    break;
+                default:
+                    txtField06.setText("");
+                    break;
+            }
+            txtField07.setText((String) oTrans.getReservation(pnRow, "sApproved"));
+            txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dApproved")));
+            textArea05.setText((String) oTrans.getReservation(pnRow, "sRemarksx"));
+        }
+    }
+
+    public void initPatternFields() {
+        Pattern pattern = Pattern.compile("[0-9,.]*");
+        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
+    }
+
+    private void initTextKeyPressed() {
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        textArea05.setOnKeyPressed(this::txtArea_KeyPressed);
     }
 
     /*TRIGGER FOCUS*/
@@ -129,6 +190,10 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             }
         }
     }
+
+    private void initTextFieldFocus() {
+        txtField04.focusedProperty().addListener(txtField_Focus);
+    }
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -145,8 +210,8 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                         lsValue = "0.00";
                     }
                     try {
-                        oTransAS.setReservation(pnRow, "nAmountxx", Double.valueOf(txtField04.getText().replace(",", "")));
-                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAS.getReservation(pnRow, "nAmountxx")))));
+                        oTrans.setReservation(pnRow, "nAmountxx", Double.valueOf(txtField04.getText().replace(",", "")));
+                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
                     } catch (NumberFormatException e) {
                         System.out.print(e);
                     }
@@ -180,19 +245,24 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         }
     }
 
+    private void initButtonsClick() {
+        btnClose.setOnAction(this::handleButtonAction);
+        btnApply.setOnAction(this::handleButtonAction);
+    }
+
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
                 if (pbState) {
-                    oTransAS.removeReservation(pnRow);
+                    oTrans.removeReservation(pnRow);
                 }
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnApply":
                 if (setSelection()) {
                     if (setToClass()) {
-                        CommonUtils.closeStage(btnClose);
+                        CommonUtils.closeStage(btnApply);
                     }
                 } else {
                     return;
@@ -204,6 +274,10 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         }
     }
 
+    private void initComboBoxItems() {
+        comboBox01.setItems(cSlipType);
+    }
+
     private boolean setToClass() {
         if (txtField04.getText().matches("[^0-9].*") || txtField04.getText().matches(".*\\.$")) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid amount.");
@@ -213,90 +287,22 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter value amount.");
             return false;
         }
-
         switch (txtField06.getText()) {
             case "CANCELLED":
-                oTransAS.setReservation(pnRow, "cTranStat", "0");
+                oTrans.setReservation(pnRow, "cTranStat", "0");
                 break;
             case "FOR APPROVAL":
-                oTransAS.setReservation(pnRow, "cTranStat", "1");
+                oTrans.setReservation(pnRow, "cTranStat", "1");
                 break;
             case "APPROVED":
-                oTransAS.setReservation(pnRow, "cTranStat", "2");
+                oTrans.setReservation(pnRow, "cTranStat", "2");
                 break;
         }
 
-        oTransAS.setReservation(pnRow, "dTransact", SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
-        oTransAS.setReservation(pnRow, "sRemarksx", textArea05.getText());
-        oTransAS.setReservation(pnRow, "cResrvTyp", String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
+        oTrans.setReservation(pnRow, "dTransact", SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
+        oTrans.setReservation(pnRow, "sRemarksx", textArea05.getText());
+        oTrans.setReservation(pnRow, "cResrvTyp", String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
         return true;
-    }
-
-    private void loadInquiryReservation() {
-        comboBox01.getSelectionModel().select(Integer.parseInt(oTransAS.getReservation(pnRow, "cResrvTyp").toString())); //VSA Type
-        txtField02.setText(oTransAS.getReservation(pnRow, "sReferNox").toString());
-        if (pbState) { //Add
-            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            txtField06.setText("FOR APPROVAL");
-        } else {
-            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dTransact")));
-            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransAS.getReservation(pnRow, "nAmountxx")))));
-            switch (oTransAS.getReservation(pnRow, "cTranStat").toString()) {
-                case "0":
-                    txtField06.setText("CANCELLED");
-                    txtField04.setDisable(!pbState);
-                    comboBox01.setDisable(!pbState);
-                    textArea05.setDisable(!pbState);
-                    btnApply.setDisable(!pbState);
-                    break;
-                case "1":
-                    txtField06.setText("FOR APPROVAL");
-                    switch (pnIinqStat) {
-                        case 0: //For Follow up
-                            txtField04.setDisable(pbState);
-                            comboBox01.setDisable(pbState);
-                            textArea05.setDisable(pbState);
-                            btnApply.setDisable(pbState);
-                            break;
-                        case 1: //On Process
-                        case 3: //VSP
-                            if ((pnIEditMode == EditMode.UPDATE)) {
-                                txtField04.setDisable(pbState);
-                                comboBox01.setDisable(pbState);
-                                textArea05.setDisable(pbState);
-                                btnApply.setDisable(pbState);
-                            } else {
-                                txtField04.setDisable(!pbState);
-                                comboBox01.setDisable(!pbState);
-                                textArea05.setDisable(!pbState);
-                                btnApply.setDisable(!pbState);
-                            }
-                            break;
-                        case 2: //Lost Sale
-                        case 4: //Sold
-                        case 5: //Cancelled
-                            txtField04.setDisable(!pbState);
-                            comboBox01.setDisable(!pbState);
-                            textArea05.setDisable(!pbState);
-                            btnApply.setDisable(!pbState);
-                            break;
-                    }
-                    break;
-                case "2":
-                    txtField06.setText("APPROVED");
-                    txtField04.setDisable(!pbState);
-                    comboBox01.setDisable(!pbState);
-                    textArea05.setDisable(!pbState);
-                    btnApply.setDisable(!pbState);
-                    break;
-                default:
-                    txtField06.setText("");
-                    break;
-            }
-            txtField07.setText((String) oTransAS.getReservation(pnRow, "sApproved"));
-            txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTransAS.getReservation(pnRow, "dApproved")));
-            textArea05.setText((String) oTransAS.getReservation(pnRow, "sRemarksx"));
-        }
     }
 
     /*Set ComboBox Value to Master Class*/

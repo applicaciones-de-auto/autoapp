@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.parts;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -53,6 +49,7 @@ import org.guanzon.autoapp.controllers.parameters.BrandController;
 import org.guanzon.autoapp.controllers.parameters.CategoryController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.models.parts.ItemInfoModelYear;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -62,12 +59,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class ItemInformationController implements Initializable, ScreenInterface {
+public class ItemInformationController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private InventoryInformation oTransInventory;
+    private InventoryInformation oTrans;
     private String pxeModuleName = "Item Information";
     private int pnEditMode;
     private double xOffset, yOffset = 0;
@@ -106,15 +103,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
     @FXML
     private TableView<ItemInfoModelYear> tblModelView;
     @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel01;
+    private TableColumn<ItemInfoModelYear, String> tblindexModel01, tblindexModel03, tblindexModel04, tblindexModel05;
     @FXML
     private TableColumn<ItemInfoModelYear, Boolean> tblindexModel02;
-    @FXML
-    private TableColumn<ItemInfoModelYear, ItemInfoModelYear> tblindexModel03;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel04;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel05;
     @FXML
     private CheckBox selectAllModelCheckBox;
     @FXML
@@ -132,32 +123,128 @@ public class ItemInformationController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransInventory = new InventoryInformation(oApp, false, oApp.getBranchCode());
-
+        oTrans = new InventoryInformation(oApp, false, oApp.getBranchCode());
         initModelTable();
-        initButtonClick();
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
+        initLimiterFields();
         initTextFieldFocus();
+        initTextKeyPressed();
+        initButtonsClick();
+        initTextFieldsProperty();
         clearFields();
         clearTables();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07, txtField08, txtField09, txtField10,
                 txtField11, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void initTextKeyPressed() {
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getStockID());
+        txtField02.setText(oTrans.getModel().getModel().getBarCode());
+        txtField03.setText(oTrans.getModel().getModel().getBrandNme());
+        txtField04.setText(oTrans.getModel().getModel().getDescript());
+        txtField05.setText(oTrans.getModel().getModel().getBriefDsc());
+        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getUnitPrce()))));
+        txtField07.setText(oTrans.getModel().getModel().getInvTypDs());
+        txtField08.setText(oTrans.getModel().getModel().getCatgeDs1());
+        txtField09.setText(""); //oTrans.getModel().getModel().getLocation()
+        txtField10.setText(oTrans.getModel().getModel().getMeasurNm());
+        txtField11.setText(""); //quantity applied of inventory // unit
+        txtField12.setText("");//quantity
+        txtField13.setText(""); //Equivalent Unit for Transferred Materials
+        txtField13.setText(""); // quantity
+
+        if (oTrans.getModel().getModel().getFileName() != null) {
+            String imageFilePath = String.valueOf(oTrans.getModel().getModel().getFileName());
+            String imageName = imageFilePath.substring(imageFilePath.lastIndexOf('/') + 1);
+            if (imageFilePath == null || imageFilePath.isEmpty()) {
+                Image loImage = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
+                imgPartsPic.setImage(loImage);
+            } else {
+                psFileUrl = imageFilePath;
+                psFileName = imageName;
+                poImage = new Image(imageFilePath);
+                Image image = new Image(imageFilePath);
+                imgPartsPic.setImage(image);
+            }
+        }
+        if (String.valueOf(oTrans.getModel().getModel().getRecdStat()).equals("1")) {
+            lblStatus.setText("Active");
+        } else {
+            lblStatus.setText("Deactivated");
+        }
+        return true;
+    }
+
+    @Override
+    public void initPatternFields() {
+
+    }
+
+    @Override
+    public void initLimiterFields() {
+
+    }
+
+    @Override
+    public void initTextFieldFocus() {
+        List<TextField> loTxtField = Arrays.asList(txtField02, txtField04, txtField05, txtField06, txtField09,
+                txtField11, txtField12, txtField14);
+        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    }
+
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
+        String lsValue = loTxtField.getText();
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 2:
+                    oTrans.getModel().getModel().setBarCode(lsValue);
+                    oTrans.getModel().getModel().setTrimBCde(lsValue);
+                    checkExistingItemInformation();
+                    break;
+                case 4:
+                    oTrans.getModel().getModel().setDescript(lsValue);
+                    break;
+                case 5:
+                    oTrans.getModel().getModel().setBriefDsc(lsValue);
+                    break;
+                case 6:
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    oTrans.getModel().getModel().setUnitPrce(Double.valueOf(lsValue.replace(",", "")));
+                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getUnitPrce()))));
+                    break;
+
+            }
+        } else {
+            loTxtField.selectAll();
+        }
+    };
+
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07, txtField08, txtField09, txtField10,
                 txtField11, txtField12, txtField13, txtField14);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
         String lsValue = "";
@@ -170,9 +257,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
         if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
                 case "txtField03":
-                    loJSON = oTransInventory.searchBrand(lsValue, true);
+                    loJSON = oTrans.searchBrand(lsValue, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField03.setText(oTransInventory.getModel().getModel().getBrandNme());
+                        txtField03.setText(oTrans.getModel().getModel().getBrandNme());
                     } else {
                         txtField03.clear();
                         txtField03.requestFocus();
@@ -180,9 +267,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
                     }
                     break;
                 case "txtField07":
-                    loJSON = oTransInventory.searchInvType(lsValue, true);
+                    loJSON = oTrans.searchInvType(lsValue, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField07.setText(oTransInventory.getModel().getModel().getInvTypDs());
+                        txtField07.setText(oTrans.getModel().getModel().getInvTypDs());
                     } else {
                         txtField07.clear();
                         txtField07.requestFocus();
@@ -190,9 +277,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
                     }
                     break;
                 case "txtField08":
-                    loJSON = oTransInventory.searchInvCategory(lsValue, true);
+                    loJSON = oTrans.searchInvCategory(lsValue, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField08.setText(oTransInventory.getModel().getModel().getCatgeDs1());
+                        txtField08.setText(oTrans.getModel().getModel().getCatgeDs1());
                     } else {
                         txtField08.clear();
                         txtField08.requestFocus();
@@ -200,9 +287,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
                     }
                     break;
                 case "txtField10":
-                    loJSON = oTransInventory.searchMeasure(lsValue, true);
+                    loJSON = oTrans.searchMeasure(lsValue, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField10.setText(oTransInventory.getModel().getModel().getMeasurNm());
+                        txtField10.setText(oTrans.getModel().getModel().getMeasurNm());
                     } else {
                         txtField10.clear();
                         txtField10.requestFocus();
@@ -224,69 +311,13 @@ public class ItemInformationController implements Initializable, ScreenInterface
         }
     }
 
-    private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField04, txtField05, txtField06, txtField09,
-                txtField11, txtField12, txtField14);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+
     }
 
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
-        String lsValue = loTxtField.getText();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 2:
-                    oTransInventory.getModel().getModel().setBarCode(lsValue);
-                    oTransInventory.getModel().getModel().setTrimBCde(lsValue);
-                    checkExistingItemInformation();
-                    break;
-                case 4:
-                    oTransInventory.getModel().getModel().setDescript(lsValue);
-                    break;
-                case 5:
-                    oTransInventory.getModel().getModel().setBriefDsc(lsValue);
-                    break;
-                case 6:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    oTransInventory.getModel().getModel().setUnitPrce(Double.valueOf(lsValue.replace(",", "")));
-                    txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInventory.getModel().getModel().getUnitPrce()))));
-                    break;
-
-            }
-        } else {
-            loTxtField.selectAll();
-        }
-    };
-
-    private boolean checkExistingItemInformation() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransInventory.checkExistingRecord();
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTransInventory.openRecord((String) loJSON.get("sStockIDx"));
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadInventoryFields();
-                    loadModelTable();
-                    pnEditMode = oTransInventory.getEditMode();
-                    initFields(pnEditMode);
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    private void initButtonClick() {
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnClose, btnSave, btnEdit, btnCancel, btnBrowse,
                 btnInvType, btnCategory, btnMeasurement, btnBrandName,
                 btnModelAdd, btnModelDel, btnModelExpand,
@@ -295,25 +326,26 @@ public class ItemInformationController implements Initializable, ScreenInterface
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 clearTables();
-                oTransInventory = new InventoryInformation(oApp, false, oApp.getBranchCode());
-                loJSON = oTransInventory.newRecord();
+                oTrans = new InventoryInformation(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadInventoryFields();
-                    pnEditMode = oTransInventory.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransInventory.updateRecord();
-                pnEditMode = oTransInventory.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -330,17 +362,17 @@ public class ItemInformationController implements Initializable, ScreenInterface
                         txtField02.setText("");
                         return;
                     }
-                    oTransInventory.getModel().getModel().setInvStat("0");
-                    oTransInventory.getModel().getModel().setGenuine("0");
-                    loJSON = oTransInventory.saveRecord();
+                    oTrans.getModel().getModel().setInvStat("0");
+                    oTrans.getModel().getModel().setGenuine("0");
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Inventory Information", (String) loJSON.get("message"));
-                        loJSON = oTransInventory.openRecord(oTransInventory.getModel().getModel().getStockID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getStockID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadInventoryFields();
+                            loadMasterFields();
                             loadModelTable();
                             initFields(pnEditMode);
-                            pnEditMode = oTransInventory.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -352,23 +384,23 @@ public class ItemInformationController implements Initializable, ScreenInterface
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
                     clearTables();
-                    oTransInventory = new InventoryInformation(oApp, false, oApp.getBranchCode());
+                    oTrans = new InventoryInformation(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
             case "btnBrowse":
-                oTransInventory.getModel().getModel().setFileName("");
+                oTrans.getModel().getModel().setFileName("");
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                     if (ShowMessageFX.YesNo(null, "Search Inventory Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
                 }
-                loJSON = oTransInventory.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadInventoryFields();
+                    loadMasterFields();
                     loadModelTable();
-                    pnEditMode = oTransInventory.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Inventory Information", (String) loJSON.get("message"));
@@ -387,38 +419,38 @@ public class ItemInformationController implements Initializable, ScreenInterface
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransInventory.getModel().getModel().getStockID();
-                    loJSON = oTransInventory.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getStockID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Inventory Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Inventory Information", (String) loJSON.get("message"));
                         return;
                     }
-                    loJSON = oTransInventory.openRecord(oTransInventory.getModel().getModel().getStockID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getStockID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadInventoryFields();
+                        loadMasterFields();
                         loadModelTable();
                         initFields(pnEditMode);
-                        pnEditMode = oTransInventory.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransInventory.getModel().getModel().getStockID();
-                    loJSON = oTransInventory.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getStockID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Inventory Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Inventory Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransInventory.openRecord(oTransInventory.getModel().getModel().getStockID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getStockID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadInventoryFields();
+                        loadMasterFields();
                         loadModelTable();
                         initFields(pnEditMode);
-                        pnEditMode = oTransInventory.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -476,7 +508,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
 
                         try {
                             // Call the removeModel method
-                            loJSON = oTransInventory.removeInvModel_Year(modelCode, lnModelYears);
+                            loJSON = oTrans.removeInvModel_Year(modelCode, lnModelYears);
                             if (!"error".equals((String) loJSON.get("result"))) {
                                 lsMessage = (String) loJSON.get("message");
                                 removeCount++;
@@ -520,7 +552,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
                         psFileUrl = selectedFile.toURI().toString();
                         psFileName = selectedFile.getName();
                         poImage = new Image(selectedFile.toURI().toString());
-                        oTransInventory.getModel().getModel().setFileName(psFileUrl);
+                        oTrans.getModel().getModel().setFileName(psFileUrl);
                     }
                 }
                 break;
@@ -536,6 +568,106 @@ public class ItemInformationController implements Initializable, ScreenInterface
         initFields(pnEditMode);
     }
 
+    @Override
+    public void initComboBoxItems() {
+
+    }
+
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setBrandCde("");
+                        oTrans.getModel().getModel().setBrandNme("");
+                    }
+                }
+            }
+        });
+        txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setMeasurID("");
+                        oTrans.getModel().getModel().setMeasurNm("");
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void clearTables() {
+        modelData.clear();
+    }
+
+    @Override
+    public void clearFields() {
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03, txtField04,
+                txtField05, txtField06, txtField07, txtField08, txtField09, txtField10,
+                txtField11, txtField12, txtField13, txtField14);
+        Image loImageError = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
+        imgPartsPic.setImage(loImageError);
+        selectAllModelCheckBox.setSelected(false);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        tblindexModel02.setVisible(lbShow);
+        CustomCommonUtil.setDisable(true, btnSupsAdd, btnSupsDel, txtField09);
+        btnLoadPhoto.setDisable(false);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03, txtField04, txtField05,
+                txtField06, txtField07, txtField08, txtField10, txtField13,
+                btnModelAdd, btnModelDel, btnModelExpand, btnRemoveImage, btnLoadCamera,
+                btnUpload);
+        btnAdd.setVisible(!lbShow);
+        btnAdd.setManaged(!lbShow);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnDeactivate, btnEdit, btnActive);
+        CustomCommonUtil.setManaged(false, btnDeactivate, btnEdit, btnActive);
+        if (fnValue == EditMode.UNKNOWN) {
+            btnLoadPhoto.setDisable(true);
+        }
+        if (fnValue == EditMode.READY) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnDeactivate, btnEdit);
+                CustomCommonUtil.setManaged(true, btnDeactivate, btnEdit);
+            } else {
+                btnActive.setVisible(true);
+                btnActive.setManaged(true);
+            }
+        }
+    }
+
+    private boolean checkExistingItemInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.checkExistingRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord((String) loJSON.get("sStockIDx"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    loadModelTable();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     /*OPEN PHOTO WINDOW*/
     private void loadPhotoWindow() {
         try {
@@ -546,7 +678,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
 
             ViewPhotoController loControl = new ViewPhotoController();
             loControl.setGRider(oApp);
-            if (!oTransInventory.getModel().getModel().getFileName().isEmpty()) {
+            if (!oTrans.getModel().getModel().getFileName().isEmpty()) {
                 loControl.setPicName(psFileName);
                 loControl.setPicUrl(psFileUrl);
             } else {
@@ -581,43 +713,6 @@ public class ItemInformationController implements Initializable, ScreenInterface
             System.exit(1);
         }
 
-    }
-
-    private void loadInventoryFields() {
-        txtField01.setText(oTransInventory.getModel().getModel().getStockID());
-        txtField02.setText(oTransInventory.getModel().getModel().getBarCode());
-        txtField03.setText(oTransInventory.getModel().getModel().getBrandNme());
-        txtField04.setText(oTransInventory.getModel().getModel().getDescript());
-        txtField05.setText(oTransInventory.getModel().getModel().getBriefDsc());
-        txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInventory.getModel().getModel().getUnitPrce()))));
-        txtField07.setText(oTransInventory.getModel().getModel().getInvTypDs());
-        txtField08.setText(oTransInventory.getModel().getModel().getCatgeDs1());
-        txtField09.setText(""); //oTransInventory.getModel().getModel().getLocation()
-        txtField10.setText(oTransInventory.getModel().getModel().getMeasurNm());
-        txtField11.setText(""); //quantity applied of inventory // unit
-        txtField12.setText("");//quantity
-        txtField13.setText(""); //Equivalent Unit for Transferred Materials
-        txtField13.setText(""); // quantity
-
-        if (oTransInventory.getModel().getModel().getFileName() != null) {
-            String imageFilePath = String.valueOf(oTransInventory.getModel().getModel().getFileName());
-            String imageName = imageFilePath.substring(imageFilePath.lastIndexOf('/') + 1);
-            if (imageFilePath == null || imageFilePath.isEmpty()) {
-                Image loImage = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
-                imgPartsPic.setImage(loImage);
-            } else {
-                psFileUrl = imageFilePath;
-                psFileName = imageName;
-                poImage = new Image(imageFilePath);
-                Image image = new Image(imageFilePath);
-                imgPartsPic.setImage(image);
-            }
-        }
-        if (String.valueOf(oTransInventory.getModel().getModel().getRecdStat()).equals("1")) {
-            lblStatus.setText("Active");
-        } else {
-            lblStatus.setText("Deactivated");
-        }
     }
 
     private void loadBrandNameWindow() {
@@ -772,7 +867,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parts/ItemInfoExpandModel.fxml"));
             ItemInfoExpandModelController loControl = new ItemInfoExpandModelController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransInventory);
+            loControl.setObject(oTrans);
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -810,7 +905,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parts/ItemInfoModel.fxml"));
             ItemInfoModelController loControl = new ItemInfoModelController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransInventory);
+            loControl.setObject(oTrans);
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -845,15 +940,15 @@ public class ItemInformationController implements Initializable, ScreenInterface
         String lsYearModl = "";
         String lsMakex = "";
         String lsModel = "";
-        for (int lnCtr = 0; lnCtr <= oTransInventory.getInventoryModelYearList().size() - 1; lnCtr++) {
-            if (!oTransInventory.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
-                lsYearModl = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "nYearModl"));
+        for (int lnCtr = 0; lnCtr <= oTrans.getInventoryModelYearList().size() - 1; lnCtr++) {
+            if (!oTrans.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
+                lsYearModl = String.valueOf(oTrans.getInventoryModelYear(lnCtr, "nYearModl"));
             }
-            if (oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc") != null) {
-                lsMakex = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sMakeDesc"));
+            if (oTrans.getInventoryModelYear(lnCtr, "sMakeDesc") != null) {
+                lsMakex = String.valueOf(oTrans.getInventoryModelYear(lnCtr, "sMakeDesc"));
             }
-            if (oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc") != null) {
-                lsModel = String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelDsc"));
+            if (oTrans.getInventoryModelYear(lnCtr, "sModelDsc") != null) {
+                lsModel = String.valueOf(oTrans.getInventoryModelYear(lnCtr, "sModelDsc"));
             }
             modelData.add(new ItemInfoModelYear(
                     String.valueOf(lnCtr + 1), // ROW
@@ -863,7 +958,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
                     lsModel,
                     lsYearModl,
                     String.valueOf(lnCtr),
-                    String.valueOf(oTransInventory.getInventoryModelYear(lnCtr, "sModelCde"))
+                    String.valueOf(oTrans.getInventoryModelYear(lnCtr, "sModelCde"))
             ));
             lsYearModl = "";
         }
@@ -900,83 +995,5 @@ public class ItemInformationController implements Initializable, ScreenInterface
         });
         modelData.clear();
         tblModelView.setItems(modelData);
-    }
-
-    private void clearFields() {
-        txtField01.setText("");
-        txtField02.setText("");
-        txtField03.setText("");
-        txtField04.setText("");
-        txtField05.setText("");
-        txtField06.setText("");
-        txtField07.setText("");
-        txtField08.setText("");
-        txtField09.setText("");
-        txtField10.setText("");
-        txtField11.setText("");
-        txtField12.setText("");
-        txtField13.setText("");
-        txtField14.setText("");
-        Image loImageError = new Image("file:D:/Integrated Automotive System/autoapp/src/main/resources/org/guanzon/autoapp/images/no-image-available.png");
-        imgPartsPic.setImage(loImageError);
-        selectAllModelCheckBox.setSelected(false);
-    }
-
-    private void clearTables() {
-        modelData.clear();
-    }
-
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        tblindexModel02.setVisible(lbShow);
-        btnSupsAdd.setDisable(true);
-        btnSupsDel.setDisable(true);
-        btnLoadPhoto.setDisable(false);
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        txtField04.setDisable(!lbShow);
-        txtField05.setDisable(!lbShow);
-        txtField06.setDisable(!lbShow);
-        txtField07.setDisable(!lbShow);
-        txtField08.setDisable(!lbShow);
-        txtField09.setDisable(true);
-        txtField10.setDisable(!lbShow);
-        txtField13.setDisable(!lbShow);
-        btnModelAdd.setDisable(!lbShow);
-        btnModelDel.setDisable(!lbShow);
-        btnModelExpand.setDisable(!lbShow);
-        btnRemoveImage.setDisable(!lbShow);
-        btnLoadCamera.setDisable(!lbShow);
-        btnUpload.setDisable(!lbShow);
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
-        if (fnValue == EditMode.UNKNOWN) {
-            btnLoadPhoto.setDisable(true);
-        }
-        if (fnValue == EditMode.READY) {
-            if (oTransInventory.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
-            } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
-                btnActive.setVisible(true);
-                btnActive.setManaged(true);
-            }
-        }
     }
 }

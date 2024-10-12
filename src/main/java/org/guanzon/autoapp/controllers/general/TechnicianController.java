@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import java.net.URL;
@@ -23,6 +19,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.clients.Service_Mechanic;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -30,12 +27,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoApp Programmers
+ * @author John Dave
  */
-public class TechnicianController implements Initializable, ScreenInterface {
+public class TechnicianController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Service_Mechanic oTransTechnician;
+    private Service_Mechanic oTrans;
     private String pxeModuleName = "Technician";
     private int pnEditMode = -1;
     @FXML
@@ -58,125 +55,74 @@ public class TechnicianController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransTechnician = new Service_Mechanic(oApp, false, oApp.getBranchCode());
-        initFieldAction();
-        initButtons();
-        initTextKeyPressed();
+        oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
+        initTextKeyPressed();
+        initButtonsClick();
+        initFieldsAction();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void initFieldAction() {
-        cboxMecha.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (cboxMecha.isSelected()) {
-                    oTransTechnician.getModel().getModel().setTchSkill("y");
-                } else {
-                    oTransTechnician.getModel().getModel().setTchSkill("n");
-                }
-            }
-        });
-        cboxBRP.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (cboxBRP.isSelected()) {
-                    oTransTechnician.getModel().getModel().setBrpSkill("y");
-                } else {
-                    oTransTechnician.getModel().getModel().setBrpSkill("n");
-                }
-            }
-        });
-        txtField01.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransTechnician.getModel().getModel().setClientID("");
-                                txtField02.setText("");
-                                textArea03.setText("");
-                            }
-                        }
-                    }
-                }
-                );
-        txtField02.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransTechnician.getModel().getModel().setCompnyNm("");
-                                txtField01.setText("");
-                                textArea03.setText("");
-                            }
-                        }
-                    }
-                }
-                );
-    }
-
-    private void loadTechFields() {
-        txtField01.setText(oTransTechnician.getModel().getModel().getClientID());
-        txtField02.setText(oTransTechnician.getModel().getModel().getCompnyNm());
-        textArea03.setText(oTransTechnician.getModel().getModel().getAddress());
-        if (oTransTechnician.getModel()
-                .getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
-        }
-        if (oTransTechnician.getModel().getModel().getTchSkill() != null) {
-            if (oTransTechnician.getModel().getModel().getTchSkill().equals("y")) {
-                cboxMecha.setSelected(true);
-            } else {
-                cboxMecha.setSelected(false);
-            }
-        }
-
-        if (oTransTechnician.getModel().getModel().getBrpSkill() != null) {
-            if (oTransTechnician.getModel().getModel().getBrpSkill().equals("y")) {
-                cboxBRP.setSelected(true);
-            } else {
-                cboxBRP.setSelected(false);
-            }
-        }
-    }
-
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         /*TextArea*/
         CustomCommonUtil.setCapsLockBehavior(textArea03);
     }
 
-    private boolean checkExistingTechInformation() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransTechnician.validateExistingSM();
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTransTechnician.openRecord((String) loJSON.get("sClientID"));
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadTechFields();
-                    pnEditMode = EditMode.READY;
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                }
-            } else {
-                return false;
-            }
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getClientID());
+        txtField02.setText(oTrans.getModel().getModel().getCompnyNm());
+        textArea03.setText(oTrans.getModel().getModel().getAddress());
+        if (oTrans.getModel()
+                .getModel().getRecdStat().equals("1")) {
+            cboxActivate.setSelected(true);
         } else {
-            return false;
+            cboxActivate.setSelected(false);
+        }
+        if (oTrans.getModel().getModel().getTchSkill() != null) {
+            if (oTrans.getModel().getModel().getTchSkill().equals("y")) {
+                cboxMecha.setSelected(true);
+            } else {
+                cboxMecha.setSelected(false);
+            }
+        }
+
+        if (oTrans.getModel().getModel().getBrpSkill() != null) {
+            if (oTrans.getModel().getModel().getBrpSkill().equals("y")) {
+                cboxBRP.setSelected(true);
+            } else {
+                cboxBRP.setSelected(false);
+            }
         }
         return true;
     }
 
-    private void initTextKeyPressed() {
+    @Override
+    public void initPatternFields() {
+
+    }
+
+    @Override
+    public void initLimiterFields() {
+    }
+
+    @Override
+    public void initTextFieldFocus() {
+    }
+
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             TextField lsTxtField = (TextField) event.getSource();
             String txtFieldID = ((TextField) event.getSource()).getId();
@@ -190,26 +136,24 @@ public class TechnicianController implements Initializable, ScreenInterface {
             if (event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField01":
-                        loJSON = oTransTechnician.searchEmployee(lsValue, true);
+                        loJSON = oTrans.searchEmployee(lsValue, true);
                         if (!"error".equals(loJSON.get("result"))) {
-                            loadTechFields();
+                            loadMasterFields();
                             checkExistingTechInformation();
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField01.setText("");
-                            txtField01.requestFocus();
                             return;
                         }
                         break;
                     case "txtField02":
-                        loJSON = oTransTechnician.searchEmployee(lsValue, false);
+                        loJSON = oTrans.searchEmployee(lsValue, false);
                         if (!"error".equals(loJSON.get("result"))) {
-                            loadTechFields();
+                            loadMasterFields();
                             checkExistingTechInformation();
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField02.setText("");
-                            txtField02.requestFocus();
                             return;
                         }
                         break;
@@ -234,24 +178,29 @@ public class TechnicianController implements Initializable, ScreenInterface {
         }
     }
 
-    private void initButtons() {
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnSave, btnBrowse, btnCancel,
                 btnClose, btnActive, btnDeactivate, btnEdit);
-
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransTechnician = new Service_Mechanic(oApp, false, oApp.getBranchCode());
-                loJSON = oTransTechnician.newRecord();
+                oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadTechFields();
-                    pnEditMode = oTransTechnician.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -262,12 +211,12 @@ public class TechnicianController implements Initializable, ScreenInterface {
                     return;
                 }
 
-                loJSON = oTransTechnician.saveRecord();
+                loJSON = oTrans.saveRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Information(null, "Technician Information", (String) loJSON.get("message"));
-                    loJSON = oTransTechnician.openRecord(oTransTechnician.getModel().getModel().getClientID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadTechFields();
+                        loadMasterFields();
                         pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
                     }
@@ -284,7 +233,7 @@ public class TechnicianController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransTechnician = new Service_Mechanic(oApp, false, oApp.getBranchCode());
+                    oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -295,9 +244,9 @@ public class TechnicianController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransTechnician.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadTechFields();
+                    loadMasterFields();
                     pnEditMode = EditMode.READY;
                     initFields(pnEditMode);
                 } else {
@@ -305,27 +254,29 @@ public class TechnicianController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnEdit":
-                loJSON = oTransTechnician.updateRecord();
-                pnEditMode = oTransTechnician.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransTechnician.getModel().getModel().getClientID();
-                    loJSON = oTransTechnician.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getClientID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Technician Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Technician Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransTechnician.openRecord(oTransTechnician.getModel().getModel().getClientID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadTechFields();
+                        loadMasterFields();
                         pnEditMode = pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
                     }
@@ -333,16 +284,16 @@ public class TechnicianController implements Initializable, ScreenInterface {
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransTechnician.getModel().getModel().getClientID();
-                    loJSON = oTransTechnician.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getClientID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Technician Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Technician Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransTechnician.openRecord(oTransTechnician.getModel().getModel().getClientID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadTechFields();
+                        loadMasterFields();
                         pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
                     }
@@ -355,51 +306,119 @@ public class TechnicianController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        txtField01.setText("");
-        txtField02.setText("");
-        textArea03.setText("");
-        cboxActivate.setSelected(false);
-        cboxMecha.setSelected(false);
-        cboxBRP.setSelected(false);
+    @Override
+    public void initComboBoxItems() {
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+        cboxMecha.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (cboxMecha.isSelected()) {
+                    oTrans.getModel().getModel().setTchSkill("y");
+                } else {
+                    oTrans.getModel().getModel().setTchSkill("n");
+                }
+            }
+        });
+        cboxBRP.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (cboxBRP.isSelected()) {
+                    oTrans.getModel().getModel().setBrpSkill("y");
+                } else {
+                    oTrans.getModel().getModel().setBrpSkill("n");
+                }
+            }
+        });
+        txtField01.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setClientID("");
+                                txtField02.setText("");
+                                textArea03.setText("");
+                            }
+                        }
+                    }
+                }
+                );
+        txtField02.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setCompnyNm("");
+                                txtField01.setText("");
+                                textArea03.setText("");
+                            }
+                        }
+                    }
+                }
+                );
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        CustomCommonUtil.setText("", txtField01, txtField02);
+        textArea03.setText("");
+        CustomCommonUtil.setSelected(false, cboxActivate, cboxMecha, cboxBRP);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(!lbShow);
-        txtField02.setDisable(!lbShow);
-        cboxMecha.setDisable(!lbShow);
-        cboxBRP.setDisable(!lbShow);
+        CustomCommonUtil.setDisable(!lbShow, txtField01, txtField02, cboxMecha,
+                cboxBRP);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            if (oTransTechnician.getModel().getModel().getRecdStat().equals("1")) {
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
         if (fnValue == EditMode.UPDATE) {
-            txtField01.setDisable(true);
-            txtField02.setDisable(true);
+            CustomCommonUtil.setDisable(true, txtField01, txtField02);
         }
+    }
+
+    private boolean checkExistingTechInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.validateExistingSM();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    pnEditMode = EditMode.READY;
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 }

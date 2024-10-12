@@ -228,7 +228,7 @@
                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                                                <TextArea fx:id="textArea16" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+                                                                                <TextArea fx:id="textArea16" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                                                                 <Label id="LabelDesc" alignment="CENTER_RIGHT" text="Remarks" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                     <font>
                                                                                         <Font name="Arial" size="12.0" />

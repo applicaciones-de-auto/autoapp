@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="328.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="328.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane prefHeight="317.0" prefWidth="490.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -72,7 +72,7 @@
                                                 <TextField fx:id="txtField01" promptText="Search Receipt No:" visible="false" GridPane.columnIndex="3" />
                                                 <TextField fx:id="txtField03" promptText="Search Customer Name:" visible="false" GridPane.columnIndex="3" />
                                                 <ComboBox fx:id="comboBoxFilter" prefWidth="180.0" GridPane.columnIndex="1" />
-                                    <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" GridPane.columnIndex="4" />
+                                                <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" GridPane.columnIndex="4" />
                                             </children>
                                         </GridPane>
                                         <AnchorPane maxHeight="10.0" minHeight="10.0" />

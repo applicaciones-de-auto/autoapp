@@ -18,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -35,7 +34,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class JOAccessoriesController implements Initializable {
 
@@ -48,7 +47,7 @@ public class JOAccessoriesController implements Initializable {
     private final String pxeModuleName = "Sales JO Accessories";
     private boolean pbRequest = false;
     private String psOrigDsc = "";
-    private JobOrder oTransAccessories;
+    private JobOrder oTrans;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
     @FXML
@@ -71,7 +70,7 @@ public class JOAccessoriesController implements Initializable {
     }
 
     public void setObject(JobOrder foValue) {
-        oTransAccessories = foValue;
+        oTrans = foValue;
     }
 
     public void setRow(int fnRow) {
@@ -99,23 +98,16 @@ public class JOAccessoriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        loadMasterFields();
         initCapitalizationFields();
-        comboBox03.setItems(cChargeType);
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initCmboxFieldAction();
-        initTextPropertyAction();
+        initTextKeyPressed();
         initButtonsClick();
-        initFielPattern();
-        loadAccessoriesFields();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         initFields();
-    }
-
-    private void initFielPattern() {
-        Pattern patternInt = Pattern.compile("[0-9]*");
-        txtField05.setTextFormatter(new TextFormatterUtil(patternInt));
-        Pattern patternDec = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new TextFormatterUtil(patternDec));
     }
 
     private void initCapitalizationFields() {
@@ -123,25 +115,31 @@ public class JOAccessoriesController implements Initializable {
         CustomCommonUtil.setCapsLockBehavior(txtField02);
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(
-                txtField01, txtField02, txtField04, txtField05);
-        //Detail & AddOns TextField Tab);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    private void loadMasterFields() {
+        if (oTrans.getJOPartsModel().getJOParts(pnRow).getBarCode() != null) {
+            txtField01.setText(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getBarCode()));
+        }
+        txtField02.setText(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getDescript()));
+        if (oTrans.getJOPartsModel().getJOParts(pnRow).getPayChrge() != null && !oTrans.getJOPartsModel().getJOParts(pnRow).getPayChrge().isEmpty()) {
+            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getPayChrge())));
+        }
+        //compute depends if charge or free
+        double lnAccesAmnt = Double.parseDouble(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getUnitPrce()));;
+        int lnAccQuan = Integer.parseInt(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getQtyEstmt()));
+        double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
+        txtField04.setText(poGetDecimalFormat.format(lnAccesAmnt));
+        txtField05.setText(String.valueOf(lnAccQuan));
+        txtField06.setText(poGetDecimalFormat.format(lnTotalAmnt));
+        if (oTrans.getJOPartsModel().getJOParts(pnRow).getEntryNo() > 0) {
+            txtField02.setDisable(true);
+        }
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        String lsTxtFieldID = ((TextField) event.getSource()).getId();
-        JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            initFields();
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        }
+    private void initPatternFields() {
+        Pattern patternInt = Pattern.compile("[0-9]*");
+        txtField05.setTextFormatter(new TextFormatterUtil(patternInt));
+        Pattern patternDec = Pattern.compile("[0-9,.]*");
+        txtField04.setTextFormatter(new TextFormatterUtil(patternDec));
     }
 
     private void initTextFieldFocus() {
@@ -165,7 +163,7 @@ public class JOAccessoriesController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "";
                     }
-                    oTransAccessories.getJOPartsModel().getJOParts(pnRow).setDescript(lsValue);
+                    oTrans.getJOPartsModel().getJOParts(pnRow).setDescript(lsValue);
                     break;
                 case 4:
 
@@ -173,7 +171,7 @@ public class JOAccessoriesController implements Initializable {
                         lsValue = "0.00";
                     }
 
-                    oTransAccessories.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
+                    oTrans.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 5:
                     String lsOrigQuan = "0";
@@ -181,61 +179,39 @@ public class JOAccessoriesController implements Initializable {
                         lsValue = "0";
                     }
                     if (!pbRequest) {
-                        lsOrigQuan = String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getQtyEstmt());
+                        lsOrigQuan = String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getQtyEstmt());
                     }
-                    loJSON = oTransAccessories.checkVSPJOParts(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getStockID(), Integer.parseInt(lsValue), pnRow, pbState);
+                    loJSON = oTrans.checkVSPJOParts(oTrans.getJOPartsModel().getJOParts(pnRow).getStockID(), Integer.parseInt(lsValue), pnRow, pbState);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        oTransAccessories.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsValue));
+                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsValue));
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        oTransAccessories.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsOrigQuan));
+                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsOrigQuan));
                     }
                     break;
             }
-            loadAccessoriesFields();
+            loadMasterFields();
         }
     };
 
-    private void initCmboxFieldAction() {
-        comboBox03.setOnAction(event -> {
-            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransAccessories.getJOPartsModel().getJOParts(pnRow).setPayChrge(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
-                loadAccessoriesFields();
-                initFields();
-            }
-        }
-        );
+    private void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(
+                txtField01, txtField02, txtField04, txtField05);
+        //Detail & AddOns TextField Tab);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void loadAccessoriesFields() {
-        if (oTransAccessories.getJOPartsModel().getJOParts(pnRow).getBarCode() != null) {
-            txtField01.setText(String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getBarCode()));
+    private void txtField_KeyPressed(KeyEvent event) {
+        String lsTxtFieldID = ((TextField) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            initFields();
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
-        txtField02.setText(String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getDescript()));
-        if (oTransAccessories.getJOPartsModel().getJOParts(pnRow).getPayChrge() != null && !oTransAccessories.getJOPartsModel().getJOParts(pnRow).getPayChrge().isEmpty()) {
-            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getPayChrge())));
-        }
-        //compute depends if charge or free
-        double lnAccesAmnt = Double.parseDouble(String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getUnitPrce()));;
-        int lnAccQuan = Integer.parseInt(String.valueOf(oTransAccessories.getJOPartsModel().getJOParts(pnRow).getQtyEstmt()));
-        double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
-        txtField04.setText(poGetDecimalFormat.format(lnAccesAmnt));
-        txtField05.setText(String.valueOf(lnAccQuan));
-        txtField06.setText(poGetDecimalFormat.format(lnTotalAmnt));
-        if (oTransAccessories.getJOPartsModel().getJOParts(pnRow).getEntryNo() > 0) {
-            txtField02.setDisable(true);
-        }
-    }
-
-    private void initTextPropertyAction() {
-        txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransAccessories.getJOPartsModel().getJOParts(pnRow).setStockID("");
-                    oTransAccessories.getJOPartsModel().getJOParts(pnRow).setBarCode("");
-                }
-            }
-        });
     }
 
     private void initButtonsClick() {
@@ -257,7 +233,7 @@ public class JOAccessoriesController implements Initializable {
                 break;
             case "btnClose":
                 if (pbState) {
-                    oTransAccessories.removeJOParts(pnRow);
+                    oTrans.removeJOParts(pnRow);
                 }
                 CommonUtils.closeStage(btnClose);
                 break;
@@ -266,6 +242,70 @@ public class JOAccessoriesController implements Initializable {
                 break;
         }
 
+    }
+
+    private void initComboBoxItems() {
+        comboBox03.setItems(cChargeType);
+    }
+
+    private void initFieldsAction() {
+        comboBox03.setOnAction(event -> {
+            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
+                oTrans.getJOPartsModel().getJOParts(pnRow).setPayChrge(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+                loadMasterFields();
+                initFields();
+            }
+        }
+        );
+    }
+
+    private void initTextFieldsProperty() {
+        txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTrans.getJOPartsModel().getJOParts(pnRow).setStockID("");
+                    oTrans.getJOPartsModel().getJOParts(pnRow).setBarCode("");
+                }
+            }
+        });
+    }
+
+    private void initFields() {
+        if (pbState) {
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+            if (!txtField01.getText().isEmpty()) {
+                txtField02.setDisable(true);
+            }
+        }
+        if (pbRequest) {
+            txtField01.setDisable(false);
+            CustomCommonUtil.setDisable(true, txtField02, comboBox03, txtField04, txtField05);
+        } else {
+            txtField01.setDisable(true);
+            CustomCommonUtil.setDisable(false, txtField02, comboBox03, txtField04, txtField05);
+            switch (comboBox03.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                case 1:
+                    txtField04.setDisable(false);
+                    txtField05.setDisable(txtField04.getText().isEmpty());
+                    break;
+                default:
+                    CustomCommonUtil.setDisable(true, txtField04, txtField05);
+                    break;
+            }
+        }
+        if (pbIsVSPJo) {
+            CustomCommonUtil.setDisable(false, txtField05);
+            CustomCommonUtil.setDisable(true, txtField01, txtField02, comboBox03, txtField04);
+        }
     }
 
     private boolean isValidEntry() {
@@ -291,49 +331,5 @@ public class JOAccessoriesController implements Initializable {
             }
         }
         return true;
-    }
-
-    private void setDisable(boolean disable, Node... nodes) {
-        for (Node node : nodes) {
-            node.setDisable(disable);
-        }
-    }
-
-    private void initFields() {
-        if (pbState) {
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-            if (!txtField01.getText().isEmpty()) {
-                txtField02.setDisable(true);
-            }
-        }
-        if (pbRequest) {
-            txtField01.setDisable(false);
-            setDisable(true, txtField02, comboBox03, txtField04, txtField05);
-        } else {
-            txtField01.setDisable(true);
-            setDisable(false, txtField02, comboBox03, txtField04, txtField05);
-            switch (comboBox03.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                case 1:
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(txtField04.getText().isEmpty());
-                    break;
-                default:
-                    setDisable(true, txtField04, txtField05);
-                    break;
-            }
-        }
-        if (pbIsVSPJo) {
-            setDisable(false, txtField05);
-            setDisable(true, txtField01, txtField02, comboBox03, txtField04);
-        }
     }
 }

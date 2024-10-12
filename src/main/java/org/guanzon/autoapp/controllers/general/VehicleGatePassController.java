@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -10,6 +6,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -32,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -43,6 +41,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.clients.Vehicle_Gatepass;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.models.general.JobDone;
 import org.guanzon.autoapp.models.general.VehicleComponents;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
@@ -52,12 +51,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class VehicleGatePassController implements Initializable, ScreenInterface {
+public class VehicleGatePassController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Vehicle_Gatepass oTransVGP;
+    private Vehicle_Gatepass oTrans;
     private String pxeModuleName = "Vehicle Gate Pass";
     private boolean pbIsVSP = true;
     private String psVSPTransNo = "";
@@ -93,11 +92,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
     @FXML
     private TableColumn<VehicleComponents, String> tblIndex02_VComp;
     @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnSave, btnEdit, btnCancel, btnPrint, btnClose, btnVGPCancel;
+    private Button btnAdd, btnBrowse, btnSave, btnEdit, btnCancel, btnPrint, btnClose, btnVGPCancel;
     @FXML
     private Label lblStatus;
 
@@ -128,27 +123,28 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransVGP = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
-        initCapitalizationFields();
+        oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
+
         initJobDoneTable();
         initVehicleComponentsTable();
-        clearFields();
-        clearTables();
+
+        initCapitalizationFields();
         initFieldAction();
         initButtonsClick();
-        comboBox03.setItems(cVhclSrc);
-        comboBox04.setItems(cPurpose);
+        clearTables();
+        clearFields();
         initFields(pnEditMode);
+
         Platform.runLater(() -> {
             JSONObject loJSON = new JSONObject();
             if (!pbIsClicked) {
                 if (pbIsVSP) {
                     btnAdd.fire();
-                    loJSON = oTransVGP.searchVSP(psVSPTransNo, true);
+                    loJSON = oTrans.searchVSP(psVSPTransNo, true);
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadVGPFields();
+                        loadMasterFields();
                         loadJobDoneTable();
-                        pnEditMode = oTransVGP.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     } else {
                         clearFields();
@@ -156,11 +152,11 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     }
                 }
             } else {
-                loJSON = oTransVGP.openTransaction(psVGPTransNo);
+                loJSON = oTrans.openTransaction(psVGPTransNo);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadVGPFields();
+                    loadMasterFields();
                     loadJobDoneTable();
-                    pnEditMode = oTransVGP.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("result"));
@@ -169,7 +165,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         });
     }
 
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
@@ -177,132 +174,17 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
     }
 
-    private void initFieldAction() {
-        comboBox03.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransVGP.getMasterModel().getMasterModel().setSourceGr(String.valueOf(comboBox03.getValue()));
-            }
+    @Override
+    public boolean loadMasterFields() {
+        if (oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
+            txtField01.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
         }
-        );
-        datePicker02.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransVGP.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-            }
-        });
-    }
-
-    private void initButtonsClick() {
-        List<Button> loButtons = Arrays.asList(btnAdd, btnBrowse, btnEdit, btnCancel, btnSave, btnPrint, btnClose, btnVGPCancel);
-        loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
-    }
-
-    private void handleButtonAction(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnAdd":
-                clearFields();
-                clearTables();
-                oTransVGP = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
-                loJSON = oTransVGP.newTransaction();
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadVGPFields();
-                    loadJobDoneTable();
-                    pnEditMode = oTransVGP.getEditMode();
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                }
-                break;
-            case "btnEdit":
-                loJSON = oTransVGP.updateTransaction();
-                pnEditMode = oTransVGP.getEditMode();
-                if ("error".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
-                }
-                break;
-            case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
-                    loJSON = oTransVGP.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
-                        CommonUtils.closeStage(btnSave);
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    }
-                }
-                break;
-            case "btnCancel":
-                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTransVGP = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
-                }
-                break;
-            case "btnBrowse":
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.YesNo(null, "Search Vehicle Gate Pass Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
-                        pnEditMode = EditMode.UNKNOWN;
-                    } else {
-                        pnEditMode = oTransVGP.getEditMode();
-                        return;
-                    }
-                }
-                loJSON = oTransVGP.searchTransaction("", false);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadVGPFields();
-                    pnEditMode = oTransVGP.getEditMode();
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Gate Pass Information", (String) loJSON.get("message"));
-                }
-                break;
-            case "btnClose":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form")) {
-                    CommonUtils.closeStage(btnClose);
-                } else {
-                    return;
-                }
-                break;
-            case "btnPrint":
-                loadVGPPrint();
-                break;
-            case "btnVGPCancel":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VGP?")) {
-                    loJSON = oTransVGP.cancelTransaction(oTransVGP.getMasterModel().getMasterModel().getTransNo());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "VGP Information", (String) loJSON.get("message"));
-                    } else {
-                        ShowMessageFX.Warning(null, "VGP Information", (String) loJSON.get("message"));
-                    }
-                    loJSON = oTransVGP.openTransaction(oTransVGP.getMasterModel().getMasterModel().getTransNo());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadVGPFields();
-                        loadJobDoneTable();
-                        pnEditMode = oTransVGP.getEditMode();
-                        initFields(pnEditMode);
-                        CommonUtils.closeStage(btnVGPCancel);
-                    }
-                }
-                break;
-            default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
-                break;
-        }
-        initFields(pnEditMode);
-    }
-
-    private void loadVGPFields() {
-        if (oTransVGP.getMasterModel().getMasterModel().getTransNo() != null) {
-            txtField01.setText(oTransVGP.getMasterModel().getMasterModel().getTransNo());
-        }
-        if (oTransVGP.getMasterModel().getMasterModel().getTransactDte() != null && !String.valueOf(oTransVGP.getMasterModel().getMasterModel().getTransactDte()).isEmpty()) {
-            datePicker02.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransVGP.getMasterModel().getMasterModel().getTransactDte())));
+        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null && !String.valueOf(oTrans.getMasterModel().getMasterModel().getTransactDte()).isEmpty()) {
+            datePicker02.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
         }
         int lsVhclSource = -1;
-        if (oTransVGP.getMasterModel().getMasterModel().getSourceGr() != null && !String.valueOf(oTransVGP.getMasterModel().getMasterModel().getSourceGr()).isEmpty()) {
-            switch (oTransVGP.getMasterModel().getMasterModel().getSourceGr()) {
+        if (oTrans.getMasterModel().getMasterModel().getSourceGr() != null && !String.valueOf(oTrans.getMasterModel().getMasterModel().getSourceGr()).isEmpty()) {
+            switch (oTrans.getMasterModel().getMasterModel().getSourceGr()) {
                 case "VEHICLE SALES":
                     lsVhclSource = 0;
                     break;
@@ -310,15 +192,15 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             comboBox03.getSelectionModel().select(lsVhclSource);
         }
         comboBox04.setValue(null);
-        txtField05.setText(oTransVGP.getVSPModel().getMasterModel().getUDRNo());
-        txtField06.setText(oTransVGP.getVSPModel().getMasterModel().getBuyCltNm());
-        textArea07.setText(oTransVGP.getVSPModel().getMasterModel().getAddress());
-        txtField08.setText(oTransVGP.getVSPModel().getMasterModel().getCSNo());
-        txtField09.setText(oTransVGP.getVSPModel().getMasterModel().getPlateNo());
-        txtField10.setText(oTransVGP.getVSPModel().getMasterModel().getFrameNo());
-        txtField11.setText(oTransVGP.getVSPModel().getMasterModel().getEngineNo());
-        textArea12.setText(oTransVGP.getVSPModel().getMasterModel().getVhclFDsc());
-        switch (oTransVGP.getMasterModel().getMasterModel().getTranStat()) {
+        txtField05.setText(oTrans.getVSPModel().getMasterModel().getUDRNo());
+        txtField06.setText(oTrans.getVSPModel().getMasterModel().getBuyCltNm());
+        textArea07.setText(oTrans.getVSPModel().getMasterModel().getAddress());
+        txtField08.setText(oTrans.getVSPModel().getMasterModel().getCSNo());
+        txtField09.setText(oTrans.getVSPModel().getMasterModel().getPlateNo());
+        txtField10.setText(oTrans.getVSPModel().getMasterModel().getFrameNo());
+        txtField11.setText(oTrans.getVSPModel().getMasterModel().getEngineNo());
+        textArea12.setText(oTrans.getVSPModel().getMasterModel().getVhclFDsc());
+        switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lblStatus.setText("Active");
                 break;
@@ -335,75 +217,267 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 lblStatus.setText("");
                 break;
         }
+        return true;
     }
 
-    private void clearFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11);
-        loTxtField.forEach(tf -> tf.setText(""));
-        datePicker02.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        textArea07.setText("");
-        textArea12.setText("");
-        comboBox03.setValue(null);
-        comboBox04.setValue(null);
-        lblStatus.setText("");
+    @Override
+    public void initPatternFields() {
 
     }
 
-    private void clearTables() {
+    @Override
+    public void initLimiterFields() {
+    }
+
+    @Override
+    public void initTextFieldFocus() {
+    }
+
+    private void initFieldAction() {
+        comboBox03.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getMasterModel().getMasterModel().setSourceGr(String.valueOf(comboBox03.getValue()));
+            }
+        }
+        );
+        datePicker02.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            }
+        });
+    }
+
+    @Override
+    public void initTextKeyPressed() {
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+
+    }
+
+    @Override
+    public void initButtonsClick() {
+        List<Button> loButtons = Arrays.asList(btnAdd, btnBrowse, btnEdit, btnCancel, btnSave, btnPrint, btnClose, btnVGPCancel);
+        loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
+        String lsButton = ((Button) event.getSource()).getId();
+        switch (lsButton) {
+            case "btnAdd":
+                clearFields();
+                clearTables();
+                oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newTransaction();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    loadJobDoneTable();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+                break;
+            case "btnEdit":
+                loJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
+                    loJSON = oTrans.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
+                        CommonUtils.closeStage(btnSave);
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                }
+                break;
+            case "btnCancel":
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
+                    clearFields();
+                    clearTables();
+                    oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
+                    pnEditMode = EditMode.UNKNOWN;
+                }
+                break;
+            case "btnBrowse":
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.YesNo(null, "Search Vehicle Gate Pass Information Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        pnEditMode = oTrans.getEditMode();
+                        return;
+                    }
+                }
+                loJSON = oTrans.searchTransaction("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Vehicle Gate Pass Information", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnClose":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form")) {
+                    CommonUtils.closeStage(btnClose);
+                }
+                break;
+            case "btnPrint":
+                loadVGPPrint();
+                break;
+            case "btnVGPCancel":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VGP?")) {
+                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "VGP Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "VGP Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        loadJobDoneTable();
+                        pnEditMode = oTrans.getEditMode();
+                        initFields(pnEditMode);
+                        CommonUtils.closeStage(btnVGPCancel);
+                    }
+                }
+                break;
+            default:
+                ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                break;
+        }
+        initFields(pnEditMode);
+    }
+
+    @Override
+    public void initComboBoxItems() {
+
+    }
+
+    @Override
+    public void initFieldsAction() {
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+    }
+
+    @Override
+    public void clearTables() {
         jobDoneData.clear();
         compoData.clear();
     }
 
+    @Override
+    public void clearFields() {
+        CustomCommonUtil.setText("", txtField01, txtField05, txtField06, txtField08,
+                txtField09, txtField10, txtField11);
+        datePicker02.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        CustomCommonUtil.setText("", textArea07, textArea12);
+        CustomCommonUtil.setValue(null, comboBox03, comboBox04);
+        lblStatus.setText("");
+    }
+
+    @Override
+    public void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        CustomCommonUtil.setVisible(false, btnPrint, btnVGPCancel, btnEdit);
+        CustomCommonUtil.setManaged(false, btnPrint, btnVGPCancel, btnEdit);
+        if (pbOpenEvent) {
+            btnSave.setManaged(lbShow);
+            btnSave.setVisible(lbShow);
+            CustomCommonUtil.setVisible(false, btnCancel, btnAdd, btnBrowse);
+            CustomCommonUtil.setManaged(false, btnCancel, btnAdd, btnBrowse);
+            CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05);
+            if (fnValue == EditMode.READY) {
+                if (!lblStatus.getText().equals("Cancelled")) {
+                    CustomCommonUtil.setVisible(true, btnPrint, btnVGPCancel);
+                    CustomCommonUtil.setManaged(true, btnPrint, btnVGPCancel);
+                }
+            }
+        } else {
+            btnAdd.setVisible(!lbShow);
+            btnAdd.setManaged(!lbShow);
+            CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+            CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+            CustomCommonUtil.setVisible(false, btnEdit, btnPrint);
+            CustomCommonUtil.setManaged(false, btnEdit, btnPrint);
+            if (fnValue == EditMode.READY) {
+                if (!lblStatus.getText().equals("Cancelled")) {
+                    btnPrint.setManaged(true);
+                    btnPrint.setVisible(true);
+                    if (!pbOpenEvent) {
+                        btnEdit.setVisible(true);
+                        btnEdit.setManaged(true);
+                    }
+                    btnVGPCancel.setManaged(true);
+                    btnVGPCancel.setVisible(true);
+                }
+            }
+        }
+
+        if (pbIsClicked) {
+            btnSave.setManaged(false);
+            btnSave.setVisible(false);
+            CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05, datePicker02);
+        }
+    }
+
     private void loadJobDoneTable() {
         jobDoneData.clear();
-
-        // First, add labor data to the jobDoneData list
-        String lsLaborJONo = "";
-        int lnRow = 1;
-
-        // Iterate over labor data
-        for (int lnLaborRow = 0; lnLaborRow <= oTransVGP.getVSPLaborList().size() - 1; lnLaborRow++) {
-            lsLaborJONo = oTransVGP.getVSPLaborModel().getDetailModel(lnLaborRow).getDSNo();
-
-            // Add only if DSNo is not null
-            if (lsLaborJONo != null && !lsLaborJONo.isEmpty()) {
-                jobDoneData.add(new JobDone(
-                        String.valueOf(lnRow),
-                        "LABOR",
-                        String.valueOf(oTransVGP.getVSPLaborModel().getDetailModel(lnLaborRow).getLaborCde()),
-                        String.valueOf(oTransVGP.getVSPLaborModel().getDetailModel(lnLaborRow).getLaborDsc()),
-                        "1", // Assuming 1 as a placeholder
-                        lsLaborJONo,
-                        "",
-                        String.valueOf(oTransVGP.getVSPLaborModel().getDetailModel(lnLaborRow).getRemarks()))
-                );
-                lnRow++;
+        String lsItem = "";
+        String lsDescID = "";
+        String lsDesc = "";
+        String lsJoNo = "";
+        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
+            switch (String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType())) {
+                case "l":
+                    lsItem = "LABOR";
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborCde());
+                    lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
+                    break;
+                case "p":
+                    lsItem = "PARTS";
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockID());
+                    lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
+                    break;
             }
-        }
-
-        String lsPartsJONo = "";
-
-        // Iterate over parts data
-        for (int lnPartsRow = 0; lnPartsRow <= oTransVGP.getVSPPartsList().size() - 1; lnPartsRow++) {
-            lsPartsJONo = oTransVGP.getVSPPartsModel().getDetailModel(lnPartsRow).getDSNo();
-
-            // Add only if DSNo is not null
-            if (lsPartsJONo != null && !lsPartsJONo.isEmpty()) {
-                jobDoneData.add(new JobDone(
-                        String.valueOf(lnRow),
-                        "PARTS",
-                        String.valueOf(oTransVGP.getVSPPartsModel().getDetailModel(lnPartsRow).getBarCode()),
-                        String.valueOf(oTransVGP.getVSPPartsModel().getDetailModel(lnPartsRow).getPartDesc()),
-                        String.valueOf(oTransVGP.getVSPPartsModel().getDetailModel(lnPartsRow).getQuantity()),
-                        lsPartsJONo,
-                        "",
-                        "")
-                );
-                lnRow++;
+            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
+                lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
             }
-        }
+            jobDoneData.add(new JobDone(
+                    String.valueOf(lnCtr + 1),
+                    lsItem,
+                    lsDescID,
+                    lsDesc,
+                    String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getQuantity()), // Assuming 1 as a placeholder
+                    lsJoNo,
+                    String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getReleased()),
+                    ""
+            ));
+            lsItem = "";
+            lsDescID = "";
+            lsDesc = "";
 
+        }
         tblViewJobDone.setItems(jobDoneData);
+        jobDoneData.stream()
+                .filter(jd -> jd.getTblindex04_done().startsWith("s"))
+                .forEach(e -> System.out.println("Job Done Value: " + e));
     }
 
     private void initJobDoneTable() {
@@ -411,7 +485,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         tblindex02_done.setCellValueFactory(new PropertyValueFactory<>("tblindex02_done"));
         tblindex03_done.setCellValueFactory(new PropertyValueFactory<>("tblindex04_done"));
         tblindex04_done.setCellValueFactory(new PropertyValueFactory<>("tblindex05_done"));
-        tblindex05_done.setCellValueFactory(new PropertyValueFactory<>(""));
+        tblindex05_done.setCellValueFactory(new PropertyValueFactory<>("tblindex07_done"));
         tblindex06_done.setCellValueFactory(new PropertyValueFactory<>("tblindex06_done"));
         tblindex07_done.setCellValueFactory(new PropertyValueFactory<>("tblindex08_done"));
         tblViewJobDone.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
@@ -434,69 +508,6 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         });
     }
 
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnPrint.setManaged(false);
-        btnPrint.setVisible(false);
-        btnVGPCancel.setManaged(false);
-        btnVGPCancel.setVisible(false);
-        btnEdit.setManaged(false);
-        btnEdit.setVisible(false);
-        if (pbOpenEvent) {
-            btnSave.setManaged(lbShow);
-            btnSave.setVisible(lbShow);
-            btnCancel.setManaged(false);
-            btnCancel.setVisible(false);
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnBrowse.setVisible(false);
-            btnBrowse.setManaged(false);
-            comboBox03.setDisable(true);
-            comboBox04.setDisable(true);
-            txtField05.setDisable(true);
-            if (fnValue == EditMode.READY) {
-                if (!lblStatus.getText().equals("Cancelled")) {
-                    btnPrint.setManaged(true);
-                    btnPrint.setVisible(true);
-                    btnVGPCancel.setManaged(true);
-                    btnVGPCancel.setVisible(true);
-                }
-            }
-        } else {
-            btnAdd.setVisible(!lbShow);
-            btnAdd.setManaged(!lbShow);
-            btnCancel.setVisible(lbShow);
-            btnCancel.setManaged(lbShow);
-            btnSave.setVisible(lbShow);
-            btnSave.setManaged(lbShow);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-            btnPrint.setManaged(false);
-            btnPrint.setVisible(false);
-            if (fnValue == EditMode.READY) {
-                if (!lblStatus.getText().equals("Cancelled")) {
-                    btnPrint.setManaged(true);
-                    btnPrint.setVisible(true);
-                    if (!pbOpenEvent) {
-                        btnEdit.setVisible(true);
-                        btnEdit.setManaged(true);
-                    }
-                    btnVGPCancel.setManaged(true);
-                    btnVGPCancel.setVisible(true);
-                }
-            }
-        }
-
-        if (pbIsClicked) {
-            btnSave.setManaged(false);
-            btnSave.setVisible(false);
-            comboBox03.setDisable(true);
-            comboBox04.setDisable(true);
-            txtField05.setDisable(true);
-            datePicker02.setDisable(true);
-        }
-    }
-
     public void loadVGPPrint() {
         try {
             Stage stage = new Stage();
@@ -505,8 +516,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/VGPPrint.fxml"));
             VGPPrintController loControl = new VGPPrintController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransVGP);
-            loControl.setTransNo(oTransVGP.getMasterModel().getMasterModel().getTransNo());
+            loControl.setObject(oTrans);
+            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
 
             //load the main interface

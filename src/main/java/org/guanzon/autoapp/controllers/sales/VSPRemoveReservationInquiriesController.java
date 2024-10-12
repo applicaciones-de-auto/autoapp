@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VSPRemoveReservationInquiriesController implements Initializable {
 
@@ -71,7 +71,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initButtonClick();
+        initButtonsClick();
         initReservationTable();
         loadReservationTable();
         if (oTransReserve.getEditMode() == 1) {
@@ -81,7 +81,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         }
     }
 
-    private void initButtonClick() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnClose, btnRemove);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -114,7 +114,9 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
                 break;
 
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             default:
                 ShowMessageFX.Information(null, pxeModuleName, "Please inform admin for the unregistered " + lsButton + "button.");

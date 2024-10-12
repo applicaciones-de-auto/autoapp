@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.parts;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -48,7 +44,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VSPAccessoriesRequestController implements Initializable, ScreenInterface {
 
@@ -85,7 +81,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTransVSPRequest = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
-        initAccessoriesTable();
+        initMasterTable();
         initCapitalizationFields();
         initButtonsClick();
         tblViewAccessories.setOnMouseClicked(this::tblAccessories_Click);
@@ -96,84 +92,11 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField04, txtField03, txtField06, txtField07);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
-
         List<TextArea> loTxtArea = Arrays.asList(textArea05);
-
         loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
     }
 
-    private void initButtonsClick() {
-        List<Button> loButtons = Arrays.asList(btnClose, btnSave, btnCancel, btnBrowse, btnEdit);
-        loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
-    }
-
-    private void handleButtonAction(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnCancel":
-                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearAccessoriesFields();
-                    clearTables();
-                    oTransVSPRequest = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
-                }
-                break;
-            case "btnBrowse":
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.YesNo(null, "Search Vehicle Sales Accessories Request Information Confirmation", "Are you sure you want to browse a new record?")) {
-                    } else {
-                        return;
-                    }
-                }
-                loJSON = oTransVSPRequest.searchTransaction("", false, true);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadAccessoriesFields();
-                    loadAccessoriesTable();
-                    pnEditMode = oTransVSPRequest.getEditMode();
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Sales Accessories Request Information Confirmation", (String) loJSON.get("message"));
-                }
-                break;
-            case "btnEdit":
-                loJSON = oTransVSPRequest.updateTransaction();
-                pnEditMode = oTransVSPRequest.getEditMode();
-                if ("error".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
-                }
-                break;
-            case "btnSave":
-                if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
-                    loJSON = oTransVSPRequest.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "VSP Parts Request Information", (String) loJSON.get("message"));
-                        loJSON = oTransVSPRequest.openTransaction(oTransVSPRequest.getMasterModel().getMasterModel().getTransNo());
-                        if ("success".equals((String) loJSON.get("result"))) {
-                            loadAccessoriesFields();
-                            loadAccessoriesTable();
-                            pnEditMode = oTransVSPRequest.getEditMode();
-                            initFields(pnEditMode);
-                        }
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    }
-                } else {
-                    return;
-                }
-                break;
-            case "btnClose":
-                CommonUtils.closeStage(btnClose);
-                break;
-            default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
-                break;
-        }
-        initFields(pnEditMode);
-
-    }
-
-    private void loadAccessoriesFields() {
+    private void loadMasterFields() {
         txtField01.setText(oTransVSPRequest.getMasterModel().getMasterModel().getBuyCltNm());
         txtField02.setText(oTransVSPRequest.getMasterModel().getMasterModel().getCoCltNm());
         txtField03.setText(oTransVSPRequest.getMasterModel().getMasterModel().getSEName());
@@ -183,7 +106,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         txtField07.setText(oTransVSPRequest.getMasterModel().getMasterModel().getPlateNo());
     }
 
-    private void loadAccessoriesTable() {
+    private void loadMasterTable() {
         accessoriesData.clear();
         boolean lbChargeType = false;
         String lsGrsAmount = "";
@@ -248,7 +171,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         tblViewAccessories.setItems(accessoriesData);
     }
 
-    private void initAccessoriesTable() {
+    private void initMasterTable() {
         if (pnEditMode == EditMode.UPDATE) {
             tblViewAccessories.setEditable(true);
         } else {
@@ -267,6 +190,99 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 header.setReordering(false);
             });
         });
+    }
+
+    private void initButtonsClick() {
+        List<Button> loButtons = Arrays.asList(btnClose, btnSave, btnCancel, btnBrowse, btnEdit);
+        loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    private void handleButtonAction(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
+        String lsButton = ((Button) event.getSource()).getId();
+        switch (lsButton) {
+            case "btnCancel":
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
+                    clearFields();
+                    clearTables();
+                    oTransVSPRequest = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
+                    pnEditMode = EditMode.UNKNOWN;
+                }
+                break;
+            case "btnBrowse":
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.YesNo(null, "Search Vehicle Sales Accessories Request Information Confirmation", "Are you sure you want to browse a new record?")) {
+                    } else {
+                        return;
+                    }
+                }
+                loJSON = oTransVSPRequest.searchTransaction("", false, true);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    loadMasterTable();
+                    pnEditMode = oTransVSPRequest.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Vehicle Sales Accessories Request Information Confirmation", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnEdit":
+                loJSON = oTransVSPRequest.updateTransaction();
+                pnEditMode = oTransVSPRequest.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
+                    loJSON = oTransVSPRequest.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "VSP Parts Request Information", (String) loJSON.get("message"));
+                        loJSON = oTransVSPRequest.openTransaction(oTransVSPRequest.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadMasterTable();
+                            pnEditMode = oTransVSPRequest.getEditMode();
+                            initFields(pnEditMode);
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                } else {
+                    return;
+                }
+                break;
+            case "btnClose":
+                CommonUtils.closeStage(btnClose);
+                break;
+            default:
+                ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                break;
+        }
+        initFields(pnEditMode);
+
+    }
+
+    private void clearTables() {
+        accessoriesData.clear();
+    }
+
+    private void clearFields() {
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03, txtField04,
+                txtField06, txtField07);
+        textArea05.setText("");
+    }
+
+    private void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.UPDATE);
+        btnEdit.setVisible(false);
+        btnEdit.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        if (fnValue == EditMode.READY) {
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
     }
 
     private void loadAccessoriesWindowDialog(Integer fnRow, boolean fbIsAdd) throws IOException {
@@ -313,8 +329,8 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 //                ShowMessageFX.Information(null, pxeModuleName, "Successfully updated parts request information!");
 //                loJSON = oTransVSPRequest.openTransaction(oTransVSPRequest.getMasterModel().getMasterModel().getTransNo());
 //                if ("success".equals((String) loJSON.get("result"))) {
-            loadAccessoriesFields();
-            loadAccessoriesTable();
+            loadMasterFields();
+            loadMasterTable();
 //                    pnEditMode = EditMode.UPDATE;
 //                    initFields(pnEditMode);
 //                } else {
@@ -331,20 +347,6 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     }
 
-    private void clearAccessoriesFields() {
-        txtField01.setText("");
-        txtField02.setText("");
-        txtField04.setText("");
-        txtField03.setText("");
-        txtField06.setText("");
-        txtField07.setText("");
-        textArea05.setText("");
-    }
-
-    private void clearTables() {
-        accessoriesData.clear();
-    }
-
     @FXML
     private void tblAccessories_Click(MouseEvent event) {
         if (pnEditMode == EditMode.UPDATE) {
@@ -356,7 +358,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             if (event.getClickCount() == 2) {
                 try {
                     loadAccessoriesWindowDialog(pnRow, false);
-                    loadAccessoriesTable();
+                    loadMasterTable();
 
                 } catch (IOException ex) {
                     Logger.getLogger(VSPAccessoriesRequestController.class
@@ -367,18 +369,4 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
         }
     }
 
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.UPDATE);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        if (fnValue == EditMode.READY) {
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
-
-    }
 }

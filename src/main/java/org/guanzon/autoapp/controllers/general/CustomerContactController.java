@@ -92,63 +92,50 @@ public class CustomerContactController implements Initializable, ScreenInterface
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
-        Pattern loPattern = Pattern.compile("[0-9]*");
-        txtField03Cont.setTextFormatter(new TextFormatterUtil(loPattern)); //Mobile No
-        initComboBoxItems();
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
             lblFormTitle.setText(pxeRefModuleName);
         }
-        initFieldAction();
         initCapitalizationFields();
+        initPatternFields();
         initTextKeyPressed();
+        initComboBoxItems();
+        initFieldAction();
         initButtonsClick();
         initFields();
-    }
-
-    private void showWarning(String formStateName, String warningTitle, String message) {
-        if (formStateName.equals("Referral Agent Information")) {
-            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
-        } else {
-            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initComboBoxItems() {
-        comboBox05Cont.setItems(cOwnCont); // Contact Ownership
-        comboBox04Cont.setItems(cTypCont); // Mobile Type
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initFieldAction() {
-        comboBox04Cont.setOnAction(event -> {
-            if (txtField03Cont != null) {
-                txtField03Cont.clear();
-            }
-            int selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
-            if (selectedIndex >= 0) {
-                switch (selectedIndex) {
-                    case 0:
-                        if (txtField03Cont != null) {
-                            CustomCommonUtil.addTextLimiter(txtField03Cont, 11); // CONTACT NO
-                        }
-                        break;
-                    case 1:
-                    case 2:
-                        if (txtField03Cont != null) {
-                            CustomCommonUtil.addTextLimiter(txtField03Cont, 10); // TELE & FAX NO
-                        }
-                        break;
-                }
-            }
-        });
     }
 
     private void initCapitalizationFields() {
         CustomCommonUtil.setCapsLockBehavior(txtField03Cont);
         CustomCommonUtil.setCapsLockBehavior(textArea13Cont);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadMasterFields() {
+        txtField03Cont.setText((String) oTransMobile.getMobile(pnRow, "sMobileNo"));
+        textArea13Cont.setText((String) oTransMobile.getMobile(pnRow, "sRemarksx"));
+        comboBox05Cont.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransMobile.getMobile(pnRow, "cOwnerxxx"))));
+        comboBox04Cont.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransMobile.getMobile(pnRow, "cMobileTp"))));
+        if (oTransMobile.getMobile(pnRow, "cRecdStat").toString().equals("1")) {
+            radiobtn14CntY.setSelected(true);
+            radiobtn14CntN.setSelected(false);
+        } else {
+            radiobtn14CntY.setSelected(false);
+            radiobtn14CntN.setSelected(true);
+        }
+        if (oTransMobile.getMobile(pnRow, "cPrimaryx").toString().equals("1")) {
+            radiobtn11CntY.setSelected(true);
+            radiobtn11CntN.setSelected(false);
+        } else {
+            radiobtn11CntY.setSelected(false);
+            radiobtn11CntN.setSelected(true);
+        }
+    }
+
+    private void initPatternFields() {
+        Pattern loPattern = Pattern.compile("[0-9]*");
+        txtField03Cont.setTextFormatter(new TextFormatterUtil(loPattern)); //Mobile No
     }
 
     private void initTextKeyPressed() {
@@ -207,6 +194,56 @@ public class CustomerContactController implements Initializable, ScreenInterface
                 showWarning(psFormStateName, "Information", "Button with name " + lsButton + " not registered.");
                 break;
 
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initComboBoxItems() {
+        comboBox05Cont.setItems(cOwnCont); // Contact Ownership
+        comboBox04Cont.setItems(cTypCont); // Mobile Type
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initFieldAction() {
+        comboBox04Cont.setOnAction(event -> {
+            if (txtField03Cont != null) {
+                txtField03Cont.clear();
+            }
+            int selectedIndex = comboBox04Cont.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                switch (selectedIndex) {
+                    case 0:
+                        if (txtField03Cont != null) {
+                            CustomCommonUtil.addTextLimiter(txtField03Cont, 11); // CONTACT NO
+                        }
+                        break;
+                    case 1:
+                    case 2:
+                        if (txtField03Cont != null) {
+                            CustomCommonUtil.addTextLimiter(txtField03Cont, 10); // TELE & FAX NO
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransMobile.getMobileList().size() - 1;
+            if (lnSize == 0) {
+                radiobtn11CntY.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadMasterFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
         }
     }
 
@@ -292,44 +329,11 @@ public class CustomerContactController implements Initializable, ScreenInterface
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadFields() {
-        txtField03Cont.setText((String) oTransMobile.getMobile(pnRow, "sMobileNo"));
-        textArea13Cont.setText((String) oTransMobile.getMobile(pnRow, "sRemarksx"));
-        comboBox05Cont.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransMobile.getMobile(pnRow, "cOwnerxxx"))));
-        comboBox04Cont.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransMobile.getMobile(pnRow, "cMobileTp"))));
-        if (oTransMobile.getMobile(pnRow, "cRecdStat").toString().equals("1")) {
-            radiobtn14CntY.setSelected(true);
-            radiobtn14CntN.setSelected(false);
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
         } else {
-            radiobtn14CntY.setSelected(false);
-            radiobtn14CntN.setSelected(true);
-        }
-        if (oTransMobile.getMobile(pnRow, "cPrimaryx").toString().equals("1")) {
-            radiobtn11CntY.setSelected(true);
-            radiobtn11CntN.setSelected(false);
-        } else {
-            radiobtn11CntY.setSelected(false);
-            radiobtn11CntN.setSelected(true);
-        }
-    }
-
-    private void initFields() {
-        if (pbState) {
-            int lnSize = oTransMobile.getMobileList().size() - 1;
-            if (lnSize == 0) {
-                radiobtn11CntY.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 

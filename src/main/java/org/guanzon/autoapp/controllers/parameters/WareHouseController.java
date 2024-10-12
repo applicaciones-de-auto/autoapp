@@ -193,7 +193,7 @@ public class WareHouseController implements Initializable, ScreenInterface, GRec
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Warehouse Information Saving....", "Are you sure, do you want to save?")) {
                     if (txtField02.getText().matches("[^a-zA-Z].*")) {
-                        ShowMessageFX.Warning(null, "Warehouse Information", "Please enter valid warehouse information.");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid warehouse information.");
                         txtField02.setText("");
                         return;
                     }
@@ -318,7 +318,6 @@ public class WareHouseController implements Initializable, ScreenInterface, GRec
         CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
         CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
             if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
                 CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
                 CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);

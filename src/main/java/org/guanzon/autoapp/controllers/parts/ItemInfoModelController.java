@@ -42,7 +42,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class ItemInfoModelController implements Initializable {
 
@@ -57,23 +57,17 @@ public class ItemInfoModelController implements Initializable {
     @FXML
     private TableView<ItemInfoModelYear> tblVModelList;
     @FXML
-    private CheckBox selectModelAll;
+    private CheckBox selectModelAll, chckNoYear, selectYearAll;
     @FXML
     private TableView<ItemInfoModelYear> tblVYear;
-    @FXML
-    private CheckBox selectYearAll;
     @FXML
     private TextField txtSeeks01, txtSeeks02;
     @FXML
     private ComboBox<String> comboFilter;
     @FXML
-    private CheckBox chckNoYear;
-    @FXML
     private TableColumn<ItemInfoModelYear, CheckBox> tblindexModel01Select;
     @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel02;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel03;
+    private TableColumn<ItemInfoModelYear, String> tblindexModel02, tblindexModel03;
     @FXML
     private TableColumn<ItemInfoModelYear, Boolean> tblindexModelYr01;
     @FXML
@@ -97,16 +91,120 @@ public class ItemInfoModelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboFilter.setItems(cItems);
+        loadItemModelTable();
         initItemModelTable();
         initItemModelYearTable();
-        CheckNoYear();
+        loadItemModelYearTable();
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonClick();
-        initComboFields();
-        loadItemModelTable();
-        loadItemModelYearTable();
+        initFieldsAction();
+        CheckNoYear();
+    }
 
+    private void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtSeeks01, txtSeeks02);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    private void loadItemModelTable() {
+        itemModeldata.clear(); // Clear the previous data in the list
+        JSONObject loJSON = oTransInventoryModel.loadModel();
+        if ("success".equals((String) loJSON.get("result"))) {
+            try {
+                String lsMakeName = "";
+                for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getModelCount(); lnCtr++) {
+                    if (!oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc").equals("COMMON")) {
+                        if (oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc") != null) {
+                            lsMakeName = String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc"));
+                        }
+                    }
+                    itemModeldata.add(new ItemInfoModelYear(
+                            String.valueOf(lnCtr), // ROW
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeIDxx")),
+                            lsMakeName,
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelIDx")),
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc")),
+                            "",
+                            "",
+                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelCde"))
+                    )
+                    );
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ItemInfoModelController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        tblVModelList.setItems(itemModeldata);
+    }
+
+    private void initItemModelTable() {
+        tblindexModel01Select.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSelect()));
+        tblindexModel01Select.setCellFactory(column -> new TableCell<ItemInfoModelYear, CheckBox>() {
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(item);
+
+                    // Add action listener to checkbox
+                    item.setOnAction(event -> {
+                        ItemInfoModelYear modelItem = getTableView().getItems().get(getIndex());
+
+                        if (modelItem.getTblindexModel05().equals("COMMON")) {
+                            // If "COMMON" is selected, unselect all other checkboxes and deselect "Select All"
+                            tblVModelList.getItems().forEach(otherItem -> {
+                                if (!otherItem.getTblindexModel05().equals("COMMON")) {
+                                    otherItem.getSelect().setSelected(false);
+                                }
+                            });
+                            selectModelAll.setSelected(false);
+                        } else {
+                            // If a non-COMMON item is selected, unselect the "COMMON" checkbox
+                            tblVModelList.getItems().stream()
+                                    .filter(otherItem -> otherItem.getTblindexModel05().equals("COMMON"))
+                                    .forEach(commonItem -> commonItem.getSelect().setSelected(false));
+                        }
+
+                        updateYearAndCheckNoYearVisibility();
+                    });
+                }
+            }
+        });
+
+        tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
+        tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
+
+        selectModelAll.setOnAction(event -> {
+            boolean selectAll = selectModelAll.isSelected();
+
+            tblVModelList.getItems().forEach(item -> {
+                if (!item.getTblindexModel05().equals("COMMON")) {
+                    item.getSelect().setSelected(selectAll);
+                }
+            });
+
+            updateYearAndCheckNoYearVisibility();
+        });
+
+        tblVModelList.getItems().forEach(item -> {
+            item.getSelect().setOnAction(event -> {
+                if (!item.getTblindexModel05().equals("COMMON")) {
+                    updateYearAndCheckNoYearVisibility();
+                }
+            });
+        });
+
+        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
     }
 
     private void loadItemModelYearTable() {
@@ -168,21 +266,6 @@ public class ItemInfoModelController implements Initializable {
                 header.setReordering(false);
             });
         });
-    }
-
-    private void CheckNoYear() {
-        chckNoYear.setOnAction(event -> {
-            if (chckNoYear.isSelected()) {
-                tblVYear.setDisable(true);
-            } else {
-                tblVYear.setDisable(false);
-            }
-        });
-    }
-
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtSeeks01, txtSeeks02);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
     private void initTextKeyPressed() {
@@ -322,130 +405,32 @@ public class ItemInfoModelController implements Initializable {
 
     }
 
-    private void loadItemModelTable() {
-        itemModeldata.clear(); // Clear the previous data in the list
-        JSONObject loJSON = oTransInventoryModel.loadModel();
-        if ("success".equals((String) loJSON.get("result"))) {
-            try {
-                String lsMakeName = "";
-                for (int lnCtr = 1; lnCtr <= oTransInventoryModel.getModelCount(); lnCtr++) {
-                    if (!oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc").equals("COMMON")) {
-                        if (oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc") != null) {
-                            lsMakeName = String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeDesc"));
-                        }
-                    }
-                    itemModeldata.add(new ItemInfoModelYear(
-                            String.valueOf(lnCtr), // ROW
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sMakeIDxx")),
-                            lsMakeName,
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelIDx")),
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelDsc")),
-                            "",
-                            "",
-                            String.valueOf(oTransInventoryModel.getModelDetail(lnCtr, "sModelCde"))
-                    )
-                    );
-
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(ItemInfoModelController.class
-                        .getName()).log(Level.SEVERE, null, ex);
+    private void CheckNoYear() {
+        chckNoYear.setOnAction(event -> {
+            if (chckNoYear.isSelected()) {
+                tblVYear.setDisable(true);
+            } else {
+                tblVYear.setDisable(false);
             }
-        }
-        tblVModelList.setItems(itemModeldata);
-    }
-
-    private void initItemModelTable() {
-        tblindexModel01Select.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSelect()));
-        tblindexModel01Select.setCellFactory(column -> new TableCell<ItemInfoModelYear, CheckBox>() {
-            @Override
-            protected void updateItem(CheckBox item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(item);
-
-                    // Add action listener to checkbox
-                    item.setOnAction(event -> {
-                        ItemInfoModelYear modelItem = getTableView().getItems().get(getIndex());
-
-                        if (modelItem.getTblindexModel05().equals("COMMON")) {
-                            // If "COMMON" is selected, unselect all other checkboxes and deselect "Select All"
-                            tblVModelList.getItems().forEach(otherItem -> {
-                                if (!otherItem.getTblindexModel05().equals("COMMON")) {
-                                    otherItem.getSelect().setSelected(false);
-                                }
-                            });
-                            selectModelAll.setSelected(false);
-                        } else {
-                            // If a non-COMMON item is selected, unselect the "COMMON" checkbox
-                            tblVModelList.getItems().stream()
-                                    .filter(otherItem -> otherItem.getTblindexModel05().equals("COMMON"))
-                                    .forEach(commonItem -> commonItem.getSelect().setSelected(false));
-                        }
-
-                        updateYearAndCheckNoYearVisibility();
-                    });
-                }
-            }
-        });
-
-        tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
-        tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
-
-        // Listener for "Select All" checkbox
-        selectModelAll.setOnAction(event -> {
-            boolean selectAll = selectModelAll.isSelected();
-
-            tblVModelList.getItems().forEach(item -> {
-                if (!item.getTblindexModel05().equals("COMMON")) {
-                    item.getSelect().setSelected(selectAll);
-                }
-            });
-
-            updateYearAndCheckNoYearVisibility();
-        });
-
-        // Add listener to each CheckBox in the table
-        tblVModelList.getItems().forEach(item -> {
-            item.getSelect().setOnAction(event -> {
-                if (!item.getTblindexModel05().equals("COMMON")) {
-                    updateYearAndCheckNoYearVisibility();
-                }
-            });
-        });
-
-        // Prevent column reordering
-        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
         });
     }
 
-// Method to update tblVYear and chckNoYear visibility
     private void updateYearAndCheckNoYearVisibility() {
         boolean isAnySelected = tblVModelList.getItems().stream()
                 .anyMatch(item -> item.getSelect().isSelected() && !item.getTblindexModel05().equals("COMMON"));
-
         tblVYear.setDisable(!isAnySelected);
         chckNoYear.setVisible(isAnySelected);
         chckNoYear.setSelected(!isAnySelected);
     }
 
-    public void initComboFields() {
+    public void initFieldsAction() {
         tblVYear.setDisable(true);
         chckNoYear.setSelected(true);
         chckNoYear.setVisible(false);
         comboFilter.setOnAction(e -> {
             String lsSelectedFilter = comboFilter.getSelectionModel().getSelectedItem();
-            txtSeeks01.setVisible(false);
-            txtSeeks01.setManaged(false);
-            txtSeeks02.setVisible(false);
-            txtSeeks02.setManaged(false);
-            // Show relevant controls based on selected filter
+            CustomCommonUtil.setVisible(false, txtSeeks01, txtSeeks02);
+            CustomCommonUtil.setManaged(false, txtSeeks01, txtSeeks02);
             switch (lsSelectedFilter) {
                 case "MAKE":
                     txtSeeks01.setText("");

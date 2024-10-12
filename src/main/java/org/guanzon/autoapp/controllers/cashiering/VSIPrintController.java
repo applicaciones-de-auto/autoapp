@@ -1,19 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.cashiering;
 
 import java.awt.Component;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingNode;
@@ -35,6 +30,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.VehicleSalesInvoice;
+import org.guanzon.autoapp.interfaces.GPrintInterface;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -42,9 +38,9 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class VSIPrintController implements Initializable, ScreenInterface {
+public class VSIPrintController implements Initializable, ScreenInterface, GPrintInterface {
 
     private VehicleSalesInvoice oTransPrint;
     private GRider oApp;
@@ -59,9 +55,7 @@ public class VSIPrintController implements Initializable, ScreenInterface {
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnClose;
+    private Button btnPrint, btnClose;
     @FXML
     private VBox vbProgress;
     @FXML
@@ -76,7 +70,7 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         oTransPrint = foValue;
     }
 
-    public void setTransNox(String fsValue) {
+    public void setTransNo(String fsValue) {
         psTransNox = fsValue;
     }
 
@@ -89,13 +83,18 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
         timeline = new Timeline();
+        initButtonsClick();
         generateReport();
-
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
@@ -119,7 +118,8 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         }
     }
 
-    private void hideReport() {
+    @Override
+    public void hideReport() {
         poJrViewer = new JRViewer(null);
         reportPane.getChildren().clear();
         poJrViewer.setVisible(false);
@@ -128,7 +128,8 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         timeline.stop();
     }
 
-    private void generateReport() {
+    @Override
+    public void generateReport() {
         hideReport();
         if (!running) {
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -138,34 +139,10 @@ public class VSIPrintController implements Initializable, ScreenInterface {
                     timeSeconds = 0;
                 }
                 if (timeSeconds == 0) {
-                    try {
-                        loadReport();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(VSIPrintController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    loadReport();
                 }
             }));
             timeline.playFromStart();
-        }
-    }
-
-    private void findAndHideButton(Component foComponent, String fsButtonText) {
-        if (foComponent instanceof AbstractButton) {
-            AbstractButton button = (AbstractButton) foComponent;
-            if (button.getToolTipText() != null) {
-                if (button.getToolTipText().equals(fsButtonText)) {
-                    button.setVisible(false);
-                    return;
-                }
-            }
-        }
-
-        if (foComponent instanceof java.awt.Container) {
-            java.awt.Container container = (java.awt.Container) foComponent;
-            Component[] loComponents = container.getComponents();
-            for (Component childComponent : loComponents) {
-                findAndHideButton(childComponent, fsButtonText);
-            }
         }
     }
 
@@ -197,7 +174,8 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         return lsFormattedAmount;
     }
 
-    private boolean loadReport() throws SQLException {
+    @Override
+    public boolean loadReport() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
@@ -312,7 +290,8 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         return false;
     }
 
-    private void showReport() {
+    @Override
+    public void showReport() {
         vbProgress.setVisible(false);
         btnPrint.setVisible(true);
         btnPrint.setDisable(false);
@@ -335,5 +314,26 @@ public class VSIPrintController implements Initializable, ScreenInterface {
         running = true;
         reportPane.setVisible(true);
         timeline.stop();
+    }
+
+    @Override
+    public void findAndHideButton(Component foComponent, String fsButtonText) {
+        if (foComponent instanceof AbstractButton) {
+            AbstractButton button = (AbstractButton) foComponent;
+            if (button.getToolTipText() != null) {
+                if (button.getToolTipText().equals(fsButtonText)) {
+                    button.setVisible(false);
+                    return;
+                }
+            }
+        }
+
+        if (foComponent instanceof java.awt.Container) {
+            java.awt.Container container = (java.awt.Container) foComponent;
+            Component[] loComponents = container.getComponents();
+            for (Component childComponent : loComponents) {
+                findAndHideButton(childComponent, fsButtonText);
+            }
+        }
     }
 }

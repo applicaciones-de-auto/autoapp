@@ -28,6 +28,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Bank;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -36,27 +37,21 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class BankController implements Initializable, ScreenInterface {
+public class BankController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private final String pxeModuleName = "Bank";
     private int pnEditMode;//Modifying fields
-    private Bank oTransBank;
+    private Bank oTrans;
     @FXML
-    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnActive, btnBrowse, btnClose;
     ObservableList<String> cBankType = FXCollections.observableArrayList("BANK", "CREDIT UNION", "INSURANCE COMPANY", "INVESTMENT COMPANIES");
     @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField03;
+    private TextField txtField01, txtField03, txtField04;
     @FXML
     private CheckBox cboxActivate;
-    @FXML
-    private Button btnActive;
-    @FXML
-    private TextField txtField04;
     @FXML
     private ComboBox<String> comboBox02;
 
@@ -74,51 +69,100 @@ public class BankController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        oTransBank = new Bank(oApp, false, oApp.getBranchCode());
-        CustomCommonUtil.addTextLimiter(txtField03, 30);
-        CustomCommonUtil.addTextLimiter(txtField04, 10);
-
-        initTextKeyPressed();
-        comboBox02.setItems(cBankType);
-        comboBox02.setOnAction(e -> {
-            int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox02 >= 0) {
-                    switch (selectedComboBox02) {
-                        case 0:
-                            oTransBank.getModel().getModel().setBankType("bank");
-                            break;
-                        case 1:
-                            oTransBank.getModel().getModel().setBankType("cred");
-                            break;
-                        case 2:
-                            oTransBank.getModel().getModel().setBankType("insc");
-                            break;
-                        case 3:
-                            oTransBank.getModel().getModel().setBankType("invc");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                initFields(pnEditMode);
-            }
-        });
-        initTextFieldPattern();
+        oTrans = new Bank(oApp, false, oApp.getBranchCode());
 
         initCapitalizationFields();
-
+        initPatternFields();
+        initLimiterFields();
         initTextFieldFocus();
-
-        initButtons();
-
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
         clearFields();
-
         pnEditMode = EditMode.UNKNOWN;
-
         initFields(pnEditMode);
     }
+
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField04);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getBankID());
+        if (oTrans.getModel().getModel().getBankType() != null && !oTrans.getModel().getModel().getBankType().trim().isEmpty()) {
+            switch ((String.valueOf(oTrans.getModel().getModel().getBankType()))) {
+                case "bank":
+                    comboBox02.setValue("BANK");
+                    break;
+                case "cred":
+                    comboBox02.setValue("CREDIT UNION");
+                    break;
+                case "insc":
+                    comboBox02.setValue("INSURANCE COMPANY");
+                    break;
+                case "invc":
+                    comboBox02.setValue("INVESTMENT COMPANIES");
+                    break;
+                default:
+                    break;
+            }
+        }
+        txtField03.setText(oTrans.getModel().getModel().getBankName());
+        txtField04.setText(oTrans.getModel().getModel().getBankCode());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+            cboxActivate.setSelected(true);
+        } else {
+            cboxActivate.setSelected(false);
+        }
+        return true;
+    }
+
+    @Override
+    public void initPatternFields() {
+        Pattern Bank;
+        Bank = Pattern.compile("[A-Za-z 0-9]*");
+        txtField03.setTextFormatter(new TextFormatterUtil(Bank));
+        txtField04.setTextFormatter(new TextFormatterUtil(Bank));
+
+    }
+
+    @Override
+    public void initLimiterFields() {
+        CustomCommonUtil.addTextLimiter(txtField03, 30);
+        CustomCommonUtil.addTextLimiter(txtField04, 10);
+    }
+
+    @Override
+    public void initTextFieldFocus() {
+        List<TextField> loTxtField = Arrays.asList(txtField03, txtField04);
+        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    }
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
+        String lsValue = loTxtField.getText().toUpperCase();
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /* Lost Focus */
+            switch (lnIndex) {
+                case 3:
+                    oTrans.getModel().getModel().setBankName(lsValue);
+                    break;
+                case 4:
+                    oTrans.getModel().getModel().setBankCode(lsValue);
+                    break;
+            }
+        } else {
+            loTxtField.selectAll();
+
+        }
+    };
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean setSelection() {
@@ -129,16 +173,16 @@ public class BankController implements Initializable, ScreenInterface {
             } else {
                 switch (comboBox02.getSelectionModel().getSelectedIndex()) {
                     case 0:
-                        oTransBank.getModel().getModel().setBankType("bank");
+                        oTrans.getModel().getModel().setBankType("bank");
                         break;
                     case 1:
-                        oTransBank.getModel().getModel().setBankType("cred");
+                        oTrans.getModel().getModel().setBankType("cred");
                         break;
                     case 2:
-                        oTransBank.getModel().getModel().setBankType("insc");
+                        oTrans.getModel().getModel().setBankType("insc");
                         break;
                     case 3:
-                        oTransBank.getModel().getModel().setBankType("invc");
+                        oTrans.getModel().getModel().setBankType("invc");
                         break;
                     default:
                         break;
@@ -148,21 +192,15 @@ public class BankController implements Initializable, ScreenInterface {
         return true;
     }
 
-    private void initTextFieldPattern() {
-        Pattern Bank;
-        Bank = Pattern.compile("[A-Za-z 0-9]*");
-        txtField03.setTextFormatter(new TextFormatterUtil(Bank));
-        txtField04.setTextFormatter(new TextFormatterUtil(Bank));
-
-    }
-
-    private void initTextKeyPressed() {
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField03, txtField04);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         String txtFieldID = ((TextField) event.getSource()).getId();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
@@ -178,54 +216,28 @@ public class BankController implements Initializable, ScreenInterface {
         }
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03, txtField04);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
     }
 
-    private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField03, txtField04);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
-    }
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
-        String lsValue = loTxtField.getText().toUpperCase();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /* Lost Focus */
-            switch (lnIndex) {
-                case 3:
-                    oTransBank.getModel().getModel().setBankName(lsValue);
-                    break;
-                case 4:
-                    oTransBank.getModel().getModel().setBankCode(lsValue);
-                    break;
-            }
-        } else {
-            loTxtField.selectAll();
-
-        }
-    };
-
-    private void initButtons() {
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnActive, btnBrowse, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransBank = new Bank(oApp, false, oApp.getBranchCode());
-                loJSON = oTransBank.newRecord();
+                oTrans = new Bank(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadBankField();
-                    pnEditMode = oTransBank.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
 
@@ -256,14 +268,14 @@ public class BankController implements Initializable, ScreenInterface {
                         txtField04.setText("");
                         return;
                     }
-                    loJSON = oTransBank.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Bank Information", (String) loJSON.get("message"));
-                        loJSON = oTransBank.openRecord(oTransBank.getModel().getModel().getBankID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBankID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadBankField();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransBank.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, "Bank Information", (String) loJSON.get("message"));
@@ -272,8 +284,8 @@ public class BankController implements Initializable, ScreenInterface {
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransBank.updateRecord();
-                pnEditMode = oTransBank.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -281,42 +293,8 @@ public class BankController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransBank = new Bank(oApp, false, oApp.getBranchCode());
+                    oTrans = new Bank(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
-                }
-                break;
-            case "btnDeactivate":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransBank.getModel().getModel().getBankID();
-                    loJSON = oTransBank.deactivateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Bank Information", (String) loJSON.get("message"));
-                    } else {
-                        ShowMessageFX.Warning(null, "Bank Information", (String) loJSON.get("message"));
-                    }
-                    loJSON = oTransBank.openRecord(oTransBank.getModel().getModel().getBankID());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadBankField();
-                        initFields(pnEditMode);
-                        pnEditMode = oTransBank.getEditMode();
-                    }
-                }
-                break;
-            case "btnActive":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransBank.getModel().getModel().getBankID();
-                    loJSON = oTransBank.activateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Bank Information", (String) loJSON.get("message"));
-                    } else {
-                        ShowMessageFX.Warning(null, "Bank Information", (String) loJSON.get("message"));
-                    }
-                    loJSON = oTransBank.openRecord(oTransBank.getModel().getModel().getBankID());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadBankField();
-                        initFields(pnEditMode);
-                        pnEditMode = oTransBank.getEditMode();
-                    }
                 }
                 break;
             case "btnBrowse":
@@ -326,18 +304,55 @@ public class BankController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransBank.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadBankField();
-                    pnEditMode = oTransBank.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Bank Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
+            case "btnDeactivate":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTrans.getModel().getModel().getBankID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Bank Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Bank Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBankID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTrans.getEditMode();
+                    }
+                }
+                break;
+            case "btnActive":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTrans.getModel().getModel().getBankID();
+                    loJSON = oTrans.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Bank Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Bank Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBankID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTrans.getEditMode();
+                    }
+                }
+                break;
+
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
@@ -345,77 +360,77 @@ public class BankController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initComboBoxItems() {
+        comboBox02.setItems(cBankType);
+    }
+
+    @Override
+    public void initFieldsAction() {
+        comboBox02.setOnAction(e -> {
+            int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox02 >= 0) {
+                    switch (selectedComboBox02) {
+                        case 0:
+                            oTrans.getModel().getModel().setBankType("bank");
+                            break;
+                        case 1:
+                            oTrans.getModel().getModel().setBankType("cred");
+                            break;
+                        case 2:
+                            oTrans.getModel().getModel().setBankType("insc");
+                            break;
+                        case 3:
+                            oTrans.getModel().getModel().setBankType("invc");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                initFields(pnEditMode);
+            }
+        });
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        comboBox02.setValue("");
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField03, txtField04);
+
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         comboBox02.setDisable(!lbShow);
-        txtField03.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()));
-        txtField04.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()));
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()), txtField03, txtField04);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
-
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            if (oTransBank.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
 
-    private void loadBankField() {
-        txtField01.setText(oTransBank.getModel().getModel().getBankID());
-        if (oTransBank.getModel().getModel().getBankType() != null && !oTransBank.getModel().getModel().getBankType().trim().isEmpty()) {
-            switch ((String.valueOf(oTransBank.getModel().getModel().getBankType()))) {
-                case "bank":
-                    comboBox02.setValue("BANK");
-                    break;
-                case "cred":
-                    comboBox02.setValue("CREDIT UNION");
-                    break;
-                case "insc":
-                    comboBox02.setValue("INSURANCE COMPANY");
-                    break;
-                case "invc":
-                    comboBox02.setValue("INVESTMENT COMPANIES");
-                    break;
-                default:
-                    break;
-            }
-        }
-        txtField03.setText(oTransBank.getModel().getModel().getBankName());
-        txtField04.setText(oTransBank.getModel().getModel().getBankCode());
-        if (oTransBank.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
-        }
-    }
-
-    private void clearFields() {
-        txtField01.clear();
-        comboBox02.setValue("");
-        txtField03.clear();
-        txtField04.clear();
-        cboxActivate.setSelected(false);
-    }
 }

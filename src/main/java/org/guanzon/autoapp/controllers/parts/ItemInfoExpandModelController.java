@@ -33,7 +33,7 @@ import org.guanzon.autoapp.models.parts.ItemInfoModelYear;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class ItemInfoExpandModelController implements Initializable {
 
@@ -48,15 +48,9 @@ public class ItemInfoExpandModelController implements Initializable {
     @FXML
     private CheckBox selectModelAll;
     @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel01;
+    private TableColumn<ItemInfoModelYear, String> tblindexModel01, tblindexModel03, tblindexModel04, tblindexModel05;
     @FXML
     private TableColumn<ItemInfoModelYear, Boolean> tblindexModel02;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel03;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel04;
-    @FXML
-    private TableColumn<ItemInfoModelYear, String> tblindexModel05;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -75,14 +69,66 @@ public class ItemInfoExpandModelController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         initModelYearTable();
         loadModelYearTable();
-        initButtonClick();
+        initButtonsClick();
 
     }
 
-    private void initButtonClick() {
+    private void loadModelYearTable() {
+        modelData.clear();
+        String lsYearModl = "";
+        for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
+            if (!oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
+                lsYearModl = String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl"));
+            }
+            modelData.add(new ItemInfoModelYear(
+                    String.valueOf(lnCtr + 1), // ROW
+                    "",
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeDesc")),
+                    "",
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelDsc")),
+                    lsYearModl,
+                    String.valueOf(lnCtr),
+                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelCde"))
+            ));
+            lsYearModl = "";
+        }
+        tblVModelList.setItems(modelData);
+    }
+
+    private void initModelYearTable() {
+        tblindexModel01.setCellValueFactory(new PropertyValueFactory<>("tblindexModel01"));
+        tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblVModelList.getItems().forEach(item -> {
+            CheckBox loSelectCheckBox = item.getSelect();
+            loSelectCheckBox.setOnAction(event -> {
+                if (tblVModelList.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                    selectModelAll.setSelected(true);
+                } else {
+                    selectModelAll.setSelected(false);
+                }
+            });
+        });
+        selectModelAll.setOnAction(event -> {
+            boolean newValue = selectModelAll.isSelected();
+            if (!tblVModelList.getItems().isEmpty()) {
+                tblVModelList.getItems().forEach(item -> item.getSelect().setSelected(newValue));
+            }
+        });
+        tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
+        tblindexModel04.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
+        tblindexModel05.setCellValueFactory(new PropertyValueFactory<>("tblindexModel06"));
+        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+    }
+
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnClose, btnRemove);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -154,56 +200,4 @@ public class ItemInfoExpandModelController implements Initializable {
         }
     }
 
-    private void loadModelYearTable() {
-        modelData.clear();
-        String lsYearModl = "";
-        for (int lnCtr = 0; lnCtr <= oTransInventoryModel.getInventoryModelYearList().size() - 1; lnCtr++) {
-            if (!oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl").equals(0)) {
-                lsYearModl = String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "nYearModl"));
-            }
-            modelData.add(new ItemInfoModelYear(
-                    String.valueOf(lnCtr + 1), // ROW
-                    "",
-                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sMakeDesc")),
-                    "",
-                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelDsc")),
-                    lsYearModl,
-                    String.valueOf(lnCtr),
-                    String.valueOf(oTransInventoryModel.getInventoryModelYear(lnCtr, "sModelCde"))
-            ));
-            lsYearModl = "";
-        }
-        tblVModelList.setItems(modelData);
-    }
-
-    private void initModelYearTable() {
-        tblindexModel01.setCellValueFactory(new PropertyValueFactory<>("tblindexModel01"));
-        tblindexModel02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblVModelList.getItems().forEach(item -> {
-            CheckBox loSelectCheckBox = item.getSelect();
-            loSelectCheckBox.setOnAction(event -> {
-                if (tblVModelList.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
-                    selectModelAll.setSelected(true);
-                } else {
-                    selectModelAll.setSelected(false);
-                }
-            });
-        });
-        selectModelAll.setOnAction(event -> {
-            boolean newValue = selectModelAll.isSelected();
-            if (!tblVModelList.getItems().isEmpty()) {
-                tblVModelList.getItems().forEach(item -> item.getSelect().setSelected(newValue));
-            }
-        });
-        tblindexModel03.setCellValueFactory(new PropertyValueFactory<>("tblindexModel03"));
-        tblindexModel04.setCellValueFactory(new PropertyValueFactory<>("tblindexModel05"));
-        tblindexModel05.setCellValueFactory(new PropertyValueFactory<>("tblindexModel06"));
-        tblVModelList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVModelList.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-    }
 }

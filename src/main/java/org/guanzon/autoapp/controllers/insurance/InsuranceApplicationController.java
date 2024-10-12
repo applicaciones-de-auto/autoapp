@@ -800,8 +800,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            setDisable(fbEmpty || foItem.isBefore(minDate));
+            setDisable(fbEmpty || foItem.isBefore(datePicker05.getValue()));
         }
     };
 

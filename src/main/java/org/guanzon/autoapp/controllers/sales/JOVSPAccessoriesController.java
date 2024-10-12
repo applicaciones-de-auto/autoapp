@@ -31,7 +31,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class JOVSPAccessoriesController implements Initializable, ScreenInterface {
 
@@ -76,10 +76,9 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnAdd.setOnAction(this::handleButtonAction);
         initAccessoriesTable();
         loadAccessoriesTable();
+        initButtonsClick();
     }
 
     private void loadAccessoriesTable() {
@@ -195,6 +194,11 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
                 header.setReordering(false);
             });
         });
+    }
+
+    private void initButtonsClick() {
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAdd.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {

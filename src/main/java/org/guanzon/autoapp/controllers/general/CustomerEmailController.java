@@ -90,9 +90,8 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
-        comboBox04EmAd.setItems(cOwnEmAd); // Email Ownership
-        //CLIENT Email
-        txtField03EmAd.setOnKeyPressed(this::txtField_KeyPressed); // Email Address
+        comboBox04EmAd.setItems(cOwnEmAd);
+        txtField03EmAd.setOnKeyPressed(this::txtField_KeyPressed);
         initButtonsClick();
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
@@ -100,6 +99,25 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
             lblFormTitle.setText(pxeRefModuleName);
         }
         initFields();
+    }
+
+    private void loadMasterFields() {
+        txtField03EmAd.setText((String) oTransEmail.getEmail(pnRow, "sEmailAdd"));
+        comboBox04EmAd.getSelectionModel().select(Integer.parseInt(String.valueOf((oTransEmail.getEmail(pnRow, "cOwnerxxx")))));
+        if (oTransEmail.getEmail(pnRow, "cRecdStat").toString().equals("1")) {
+            radiobtn06EmaY.setSelected(true);
+            radiobtn06EmaN.setSelected(false);
+        } else {
+            radiobtn06EmaY.setSelected(false);
+            radiobtn06EmaN.setSelected(true);
+        }
+        if (oTransEmail.getEmail(pnRow, "cPrimaryx").toString().equals("1")) {
+            radiobtn05EmaY.setSelected(true);
+            radiobtn05EmaN.setSelected(false);
+        } else {
+            radiobtn05EmaY.setSelected(false);
+            radiobtn05EmaN.setSelected(true);
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -111,14 +129,6 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
                 break;
             case UP:
                 CommonUtils.SetPreviousFocus(txtField);
-        }
-    }
-
-    private void showWarning(String formStateName, String warningTitle, String message) {
-        if (formStateName.equals("Referral Agent Information")) {
-            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
-        } else {
-            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 
@@ -152,6 +162,25 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
         }
     }
 
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransEmail.getEmailList().size() - 1;
+            if (lnSize == 0) {
+                radiobtn05EmaY.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadMasterFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+    }
+
     private boolean settoClass() {
         for (int lnCtr = 0; lnCtr <= oTransEmail.getEmailList().size() - 1; lnCtr++) {
             if (String.valueOf(oTransEmail.getEmail(lnCtr, "cPrimaryx")).equals("1") && (lnCtr != pnRow)) {
@@ -168,12 +197,10 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
             }
 
         }
-        //User cannot set primary that is inactive
         if (radiobtn05EmaY.isSelected() && radiobtn06EmaN.isSelected()) {
             showWarning(psFormStateName, "Email Warning", "Please note that you cannot set primary email that is inactive.");
             return false;
         }
-        //Validate Before adding to tables
         if (txtField03EmAd.getText().isEmpty() || txtField03EmAd.getText().trim().equals("")) {
             showWarning(psFormStateName, "Email Warning", "Invalid Email. Insert to table Aborted!");
             return false;
@@ -209,41 +236,12 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
         return true;
     }
 
-    private void loadFields() {
-        txtField03EmAd.setText((String) oTransEmail.getEmail(pnRow, "sEmailAdd"));
-        comboBox04EmAd.getSelectionModel().select(Integer.parseInt(String.valueOf((oTransEmail.getEmail(pnRow, "cOwnerxxx")))));
-        if (oTransEmail.getEmail(pnRow, "cRecdStat").toString().equals("1")) {
-            radiobtn06EmaY.setSelected(true);
-            radiobtn06EmaN.setSelected(false);
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
         } else {
-            radiobtn06EmaY.setSelected(false);
-            radiobtn06EmaN.setSelected(true);
-        }
-        if (oTransEmail.getEmail(pnRow, "cPrimaryx").toString().equals("1")) {
-            radiobtn05EmaY.setSelected(true);
-            radiobtn05EmaN.setSelected(false);
-        } else {
-            radiobtn05EmaY.setSelected(false);
-            radiobtn05EmaN.setSelected(true);
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
     }
 
-    private void initFields() {
-        if (pbState) {
-            int lnSize = oTransEmail.getEmailList().size() - 1;
-            if (lnSize == 0) {
-                radiobtn05EmaY.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
-    }
 }

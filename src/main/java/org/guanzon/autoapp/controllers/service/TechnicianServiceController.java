@@ -16,11 +16,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Labor;
 import org.guanzon.autoapp.models.service.TechnicianLabor;
@@ -31,7 +32,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class TechnicianServiceController implements Initializable, ScreenInterface {
 
@@ -75,10 +76,10 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnEdit.setOnAction(this::handleButtonAction);
-        txtField03.setOnKeyPressed(event -> txtField_KeyPressed(event));
+
         initCapitalizationFields();
+        initTextKeyPressed();
+        initButtonsClick();
         loadTechServiceFields();
         txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -88,6 +89,22 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
                 }
             }
         });
+    }
+
+    private void loadTechServiceFields() {
+        txtField01.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getTechID());
+        txtField02.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getTechName());
+        txtField03.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getLaborDsc());
+    }
+
+    private void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    private void initButtonsClick() {
+        btnClose.setOnAction(this::handleButtonAction);
+        btnEdit.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -112,9 +129,8 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
         }
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    private void initTextKeyPressed() {
+        txtField03.setOnKeyPressed(event -> txtField_KeyPressed(event));
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -150,9 +166,4 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
         }
     }
 
-    private void loadTechServiceFields() {
-        txtField01.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getTechID());
-        txtField02.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getTechName());
-        txtField03.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getLaborDsc());
-    }
 }

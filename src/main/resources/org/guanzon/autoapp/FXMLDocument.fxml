@@ -121,7 +121,7 @@
                                                                         <MenuItem fx:id="mnuWarehsEntry" mnemonicParsing="false" onAction="#mnuWarehsEntryClicked" text="Warehouse" />
                                                                         <MenuItem fx:id="mnuBinEntry" mnemonicParsing="false" onAction="#mnuBinEntryClicked" text="Bin" />
                                                                         <MenuItem fx:id="mnuSectionEntry" mnemonicParsing="false" onAction="#mnuSectionEntryClicked" text="Section" />
-                                                                        <MenuItem fx:id="mnuInvLocEntry" mnemonicParsing="false" onAction="#mnuInvLocEntryClicked" text="Inventory Location" />
+                                                                        <MenuItem fx:id="mnuItemLocEntry" mnemonicParsing="false" onAction="#mnuItemLocEntryClicked" text="Item Location" />
                                                                     </items>
                                                                 </Menu>
                                                                 <Menu mnemonicParsing="false" text="Vehicle Description">
