@@ -97,7 +97,7 @@ public class VSPLaborController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadMasterFields();
+
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();
@@ -106,6 +106,7 @@ public class VSPLaborController implements Initializable {
         initComboBoxItems();
         initFieldsAction();
         initTextFieldsProperty();
+        loadMasterFields();
         initFields();
     }
 
@@ -271,6 +272,13 @@ public class VSPLaborController implements Initializable {
     }
 
     private void initFieldsAction() {
+        if (pbState) {
+            if (pbLbrDsc) {
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
+            } else {
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
+            }
+        }
         comboBox03.setOnAction(event -> {
             if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
                 oTrans.getVSPLaborModel().getVSPLabor(pnRow).setChrgeTyp(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
@@ -295,13 +303,6 @@ public class VSPLaborController implements Initializable {
     }
 
     private void initFields() {
-        if (pbState) {
-            if (pbLbrDsc) {
-                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
-            } else {
-                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
-            }
-        }
         switch (comboBox03.getSelectionModel().getSelectedIndex()) {
             case 0:
                 txtField04.setDisable(false);

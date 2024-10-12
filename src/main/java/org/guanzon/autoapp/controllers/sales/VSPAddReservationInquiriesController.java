@@ -89,8 +89,6 @@ public class VSPAddReservationInquiriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initReservationTable();
-        loadReservationTable();
 
         initCapitalizationFields();
         initTextKeyPressed();
@@ -98,6 +96,9 @@ public class VSPAddReservationInquiriesController implements Initializable {
         initComboBoxItems();
         initFieldsAction();
         initTextFieldsProperty();
+        initReservationTable();
+        loadReservationTable();
+
     }
 
     private void initCapitalizationFields() {

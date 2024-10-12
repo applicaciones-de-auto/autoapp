@@ -98,7 +98,6 @@ public class VehicleInquiryFollowUpController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         datePicker03.setDayCellFactory(callDate);
-        loadMasterFields();
         initCapitalizationFields();
         initTextKeyPressed();
         initTextFieldFocus();
@@ -106,6 +105,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
         initComboBoxItems();
         initFieldsAction();
         initTextFieldsProperty();
+        loadMasterFields();
         initFields();
     }
 

@@ -98,7 +98,7 @@ public class JOAccessoriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadMasterFields();
+
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();
@@ -107,6 +107,7 @@ public class JOAccessoriesController implements Initializable {
         initComboBoxItems();
         initFieldsAction();
         initTextFieldsProperty();
+        loadMasterFields();
         initFields();
     }
 

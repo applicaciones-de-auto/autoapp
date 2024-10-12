@@ -85,8 +85,6 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        loadMasterFields();
         initCapitalizationFields();
         initPatternFields();
         initTextKeyPressed();
@@ -94,7 +92,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         initButtonsClick();
         initComboBoxItems();
         initCapitalizationFields();
-
+        loadMasterFields();
     }
 
     private void initCapitalizationFields() {
