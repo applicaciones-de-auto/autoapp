@@ -45,6 +45,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -1918,7 +1922,9 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 loControl.setOrigDsc(String.valueOf(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getLaborDsc()));
             }
             loControl.setState(fbIsAdd);
-            loControl.setJO(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getDSNo());
+            if (oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getDSNo() != null) {
+                loControl.setJO(oTransVSP.getVSPLaborModel().getVSPLabor(fnRow).getDSNo());
+            }
             loControl.setRow(fnRow);
             fxmlLoader.setController(loControl);
 

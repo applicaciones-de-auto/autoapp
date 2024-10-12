@@ -102,7 +102,6 @@ org\guanzon\autoapp\models\general\CustomerMobile.class
 org\guanzon\autoapp\controllers\sales\JOAccessoriesController.class
 org\guanzon\autoapp\FXMLMenuParameterForm$1.class
 org\guanzon\autoapp\controllers\service\TechnicianServiceController$1.class
-org\guanzon\autoapp\models\insurance\FollowUpList.class
 org\guanzon\autoapp\controllers\sales\SalesJobOrderController.class
 org\guanzon\autoapp\FXMLMainScreenController.class
 org\guanzon\autoapp\controllers\insurance\InsuranceApplicationController$3.class

@@ -47,7 +47,7 @@ public class VSPLaborController implements Initializable {
     private final String pxeModuleName = "VSP Labor";
     private String psJO = "";
     private String psOrigDsc = "";
-    private VehicleSalesProposal oTransVSPLabor;
+    private VehicleSalesProposal oTrans;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
 
@@ -69,7 +69,7 @@ public class VSPLaborController implements Initializable {
     }
 
     public void setObject(VehicleSalesProposal foValue) {
-        oTransVSPLabor = foValue;
+        oTrans = foValue;
     }
 
     public void setRow(int fnRow) {
@@ -116,34 +116,34 @@ public class VSPLaborController implements Initializable {
 
     private void loadMasterFields() {
         if (!psLbrDsc.isEmpty()) {
-            oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc(psLbrDsc);
+            oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc(psLbrDsc);
         }
-        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
-        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp() != null && !oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp().equals("")) {
-            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp())));
+        txtField01.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
+        txtField02.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp() != null && !oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp().equals("")) {
+            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp())));
         }
 
-        double lnLaborAmnt = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()));
-        double lnLaborDsc = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
-        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()))));
+        double lnLaborAmnt = Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()));
+        double lnLaborDsc = Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
+        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()))));
         switch (comboBox03.getSelectionModel().getSelectedIndex()) {
             case 0:
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lnLaborAmnt));
-                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lnLaborAmnt));
+                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
                 double lnNetPriceFree = lnLaborAmnt - lnLaborAmnt;
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceFree));
-                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceFree));
+                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
                 break;
             case 1:
                 if (lnLaborDsc > lnLaborAmnt) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Amount cannot be less than Discount.");
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
                 }
-                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
-                double lnNetPriceCharge = lnLaborAmnt - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceCharge));
-                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
+                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
+                double lnNetPriceCharge = lnLaborAmnt - Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceCharge));
+                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
                 break;
             default:
                 txtField04.setText("0.00");
@@ -151,13 +151,13 @@ public class VSPLaborController implements Initializable {
                 txtField06.setText("0.00");
                 break;
         }
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getAddtl().equals("0")) {
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getAddtl().equals("0")) {
             checkBoxIsAdd.setSelected(false);
             txtField02.setDisable(true);
         } else {
             checkBoxIsAdd.setSelected(true);
         }
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getEntryNo() > 0) {
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getEntryNo() > 0) {
             txtField02.setDisable(true);
         }
     }
@@ -189,13 +189,13 @@ public class VSPLaborController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborAmt(new BigDecimal(lsValue.replace(",", "")));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborAmt(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lsValue.replace(",", "")));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lsValue.replace(",", "")));
                     break;
             }
             loadMasterFields();
@@ -215,10 +215,10 @@ public class VSPLaborController implements Initializable {
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (lsTxtFieldID) {
                 case "txtField02":
-                    loJSON = oTransVSPLabor.searchLabor("", pnRow, true);
+                    loJSON = oTrans.searchLabor("", pnRow, true);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
-                        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
+                        txtField01.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
+                        txtField02.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
                     } else {
                         ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                         txtField02.clear();
@@ -255,7 +255,7 @@ public class VSPLaborController implements Initializable {
                 break;
             case "btnCloseLabor":
                 if (pbState) {
-                    oTransVSPLabor.removeVSPLabor(pnRow);
+                    oTrans.removeVSPLabor(pnRow);
                 }
                 CommonUtils.closeStage(btnCloseLabor);
                 break;
@@ -273,9 +273,9 @@ public class VSPLaborController implements Initializable {
     private void initFieldsAction() {
         comboBox03.setOnAction(event -> {
             if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setChrgeTyp(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setChrgeTyp(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
                 if (comboBox03.getSelectionModel().getSelectedIndex() == 1) {
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
                 }
                 loadMasterFields();
                 initFields();
@@ -288,7 +288,7 @@ public class VSPLaborController implements Initializable {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc("");
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc("");
                 }
             }
         });
@@ -297,9 +297,9 @@ public class VSPLaborController implements Initializable {
     private void initFields() {
         if (pbState) {
             if (pbLbrDsc) {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
             } else {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
             }
         }
         switch (comboBox03.getSelectionModel().getSelectedIndex()) {
