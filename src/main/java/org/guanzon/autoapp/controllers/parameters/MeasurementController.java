@@ -17,7 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -25,6 +24,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_Measure;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -33,14 +33,14 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class MeasurementController implements Initializable, ScreenInterface {
+public class MeasurementController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private final String pxeModuleName = "Measurement";
     private int pnEditMode;//Modifying fields
-    private Parts_Measure oTransMeasure;
+    private Parts_Measure oTrans;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
@@ -62,65 +62,51 @@ public class MeasurementController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTrans = new Parts_Measure(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadMeasurementFields() {
-        txtField01.setText(oTransMeasure.getModel().getModel().getMeasurID());
-        txtField02.setText(oTransMeasure.getModel().getModel().getMeasurNm());
-        txtField03.setText(oTransMeasure.getModel().getModel().getShortDsc());
-        if (oTransMeasure.getModel().getModel().getRecdStat().equals("1")) {
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getMeasurID());
+        txtField02.setText(oTrans.getModel().getModel().getMeasurNm());
+        txtField03.setText(oTrans.getModel().getModel().getShortDsc());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z ]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
         txtField03.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
-    }
-
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    @Override
+    public void initLimiterFields() {
 
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        String textFieldID = ((TextField) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textFieldID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        }
-    }
-
-    private void initTextFieldFocus() {
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
@@ -137,13 +123,13 @@ public class MeasurementController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    loJSON = oTransMeasure.getModel().getModel().setMeasurNm(lsValue);
+                    loJSON = oTrans.getModel().getModel().setMeasurNm(lsValue);
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
                     break;
                 case 3:
-                    loJSON = oTransMeasure.getModel().getModel().setShortDsc(lsValue);
+                    loJSON = oTrans.getModel().getModel().setShortDsc(lsValue);
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
@@ -154,31 +140,71 @@ public class MeasurementController implements Initializable, ScreenInterface {
         }
     };
 
-    private void initButtons() {
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        String textFieldID = ((TextField) event.getSource()).getId();
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textFieldID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
-                loJSON = oTransMeasure.newRecord();
+                oTrans = new Parts_Measure(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMeasurementFields();
-                    pnEditMode = oTransMeasure.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransMeasure.updateRecord();
-                pnEditMode = oTransMeasure.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -195,14 +221,14 @@ public class MeasurementController implements Initializable, ScreenInterface {
                         txtField03.setText("");
                         return;
                     }
-                    loJSON = oTransMeasure.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
-                        loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMeasurID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadMeasurementFields();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransMeasure.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -213,7 +239,7 @@ public class MeasurementController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransMeasure = new Parts_Measure(oApp, false, oApp.getBranchCode());
+                    oTrans = new Parts_Measure(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -224,50 +250,52 @@ public class MeasurementController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransMeasure.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadMeasurementFields();
-                    pnEditMode = oTransMeasure.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Measurement Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMeasure.getModel().getModel().getMeasurID();
-                    loJSON = oTransMeasure.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getMeasurID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Measurement Information", (String) loJSON.get("message"));
                         return;
                     }
-                    loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMeasurID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMeasurementFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMeasure.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransMeasure.getModel().getModel().getMeasurID();
-                    loJSON = oTransMeasure.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getMeasurID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Measurement Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Measurement Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransMeasure.openRecord(oTransMeasure.getModel().getModel().getMeasurID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getMeasurID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadMeasurementFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransMeasure.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -278,46 +306,52 @@ public class MeasurementController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        cboxActivate.setSelected(false);
-        txtField01.clear();
-        txtField02.clear();
-        txtField03.clear();
+    @Override
+    public void initComboBoxItems() {
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
-            if (oTransMeasure.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
+
 }

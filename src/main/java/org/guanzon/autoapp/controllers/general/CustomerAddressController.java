@@ -1,8 +1,3 @@
-///*
-// * To change this license header, choose License Headers in Project Properties.
-// * To change this template file, choose Tools | Templates
-// * and open the template in the editor.
-// */
 package org.guanzon.autoapp.controllers.general;
 
 import java.net.URL;
@@ -53,11 +48,9 @@ public class CustomerAddressController implements Initializable, ScreenInterface
     @FXML
     private TextField txtField03Addr, txtField04Addr, txtField05Addr, txtField06Addr, txtField07Addr, txtField23Addr;
     @FXML
-    private RadioButton radiobtn18AddY;
+    private RadioButton radiobtn18AddY, radiobtn18AddN;
     @FXML
     private ToggleGroup add_active;
-    @FXML
-    private RadioButton radiobtn18AddN;
     @FXML
     private CheckBox checkBox14Addr, checkBox17Addr, checkBox12Addr, checkBox13Addr;
     @FXML
@@ -110,31 +103,20 @@ public class CustomerAddressController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        CustomCommonUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
-        Pattern loPattern = Pattern.compile("[0-9]*");
-        Pattern loHsNo = Pattern.compile("[0-9a-zA-Z]*");
-        txtField03Addr.setTextFormatter(new TextFormatterUtil(loHsNo)); //House No
-        txtField07Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //Zip code
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
             lblFormTitle.setText(pxeRefModuleName);
         }
         initCapitalizationFields();
+        initPatternFields();
+        initLimiterFields();
         initTextKeyPressed();
-        initButtons();
-        initCmboxFieldAction();
-        initTextFieldListener();
+        initButtonsClick();
+        initChckBoxFieldAction();
+        initTextFieldsProperty();
         initFields();
 
-    }
-
-    private void showWarning(String formStateName, String warningTitle, String message) {
-        if (formStateName.equals("Referral Agent Information")) {
-            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
-        } else {
-            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
-        }
     }
 
     private void initCapitalizationFields() {
@@ -143,13 +125,72 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         CustomCommonUtil.setCapsLockBehavior(textArea11Addr);
     }
 
+    private void loadMasterFields() {
+        txtField03Addr.setText((String) oTransAddress.getAddress(pnRow, "sHouseNox"));
+        txtField04Addr.setText((String) oTransAddress.getAddress(pnRow, "sAddressx"));
+        txtField23Addr.setText((String) oTransAddress.getAddress(pnRow, "sProvName"));
+        txtField05Addr.setText((String) oTransAddress.getAddress(pnRow, "sTownName"));
+        txtField06Addr.setText((String) oTransAddress.getAddress(pnRow, "sBrgyName"));
+        txtField07Addr.setText((String) oTransAddress.getAddress(pnRow, "sZippCode"));
+        textArea11Addr.setText((String) oTransAddress.getAddress(pnRow, "sRemarksx"));
+        if (!((String) oTransAddress.getAddress(pnRow, "sProvIDxx")).isEmpty()) {
+            txtField05Addr.setDisable(false);
+        } else {
+            txtField05Addr.setDisable(true);
+        }
+        if (!((String) oTransAddress.getAddress(pnRow, "sTownIDxx")).isEmpty()) {
+            txtField06Addr.setDisable(false);
+        } else {
+            txtField06Addr.setDisable(true);
+        }
+        if (oTransAddress.getAddress(pnRow, "cRecdStat").toString().equals("1")) {
+            radiobtn18AddY.setSelected(true);
+            radiobtn18AddN.setSelected(false);
+        } else {
+            radiobtn18AddY.setSelected(false);
+            radiobtn18AddN.setSelected(true);
+        }
+        if (oTransAddress.getAddress(pnRow, "cOfficexx").toString().equals("1")) {
+            checkBox12Addr.setSelected(true);
+        } else {
+            checkBox12Addr.setSelected(false);
+        }
+        if (oTransAddress.getAddress(pnRow, "cProvince").toString().equals("1")) {
+            checkBox13Addr.setSelected(true);
+        } else {
+            checkBox13Addr.setSelected(false);
+        }
+        if (oTransAddress.getAddress(pnRow, "cPrimaryx").toString().equals("1")) {
+            checkBox14Addr.setSelected(true);
+        } else {
+            checkBox14Addr.setSelected(false);
+        }
+        if (oTransAddress.getAddress(pnRow, "cCurrentx").toString().equals("1")) {
+            checkBox17Addr.setSelected(true);
+        } else {
+            checkBox17Addr.setSelected(false);
+        }
+        if ((String) oTransAddress.getAddress(pnRow, 1) != null) {
+            txtField23Addr.setDisable(true);
+            txtField05Addr.setDisable(true);
+            txtField06Addr.setDisable(true);
+        }
+    }
+
+    private void initPatternFields() {
+        Pattern loPattern = Pattern.compile("[0-9]*");
+        Pattern loHsNo = Pattern.compile("[0-9a-zA-Z]*");
+        txtField03Addr.setTextFormatter(new TextFormatterUtil(loHsNo)); //House No
+        txtField07Addr.setTextFormatter(new TextFormatterUtil(loPattern)); //Zip code
+    }
+
+    private void initLimiterFields() {
+        CustomCommonUtil.addTextLimiter(txtField03Addr, 14); //HOUSE NO
+    }
+
     private void initTextKeyPressed() {
-        txtField03Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField04Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField05Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField06Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField07Addr.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField23Addr.setOnKeyPressed(this::txtField_KeyPressed);
+        List<TextField> poTxtFieldList = Arrays.asList(txtField03Addr, txtField04Addr, txtField05Addr, txtField06Addr, txtField07Addr, txtField23Addr);
+        poTxtFieldList.forEach(tf -> tf.setOnKeyPressed(this::txtField_KeyPressed));
         textArea11Addr.setOnKeyPressed(this::txtArea_KeyPressed);
     }
 
@@ -171,9 +212,7 @@ public class CustomerAddressController implements Initializable, ScreenInterface
                         txtField23Addr.focusedProperty();
                         return;
                     }
-                    txtField06Addr.clear(); // Brgy
-                    txtField05Addr.clear(); // Town
-                    txtField07Addr.clear(); //Zip code
+                    CustomCommonUtil.setText("", txtField05Addr, txtField06Addr, txtField07Addr);
                     break;
                 case "txtField05Addr":  //Search by Town Address
                     loJSON = oTransAddress.searchTown(lsTxtField.getText(), pnRow, false);
@@ -183,8 +222,7 @@ public class CustomerAddressController implements Initializable, ScreenInterface
                         txtField06Addr.setDisable(false);
                     } else {
                         showWarning(psFormStateName, "Address Warning", (String) loJSON.get("message"));
-                        txtField05Addr.clear(); // Town
-                        txtField07Addr.clear(); //Zip code
+                        CustomCommonUtil.setText("", txtField05Addr, txtField07Addr);
                         txtField06Addr.setDisable(true);
                         txtField05Addr.focusedProperty();
                         return;
@@ -222,10 +260,9 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         }
     }
 
-    private void initButtons() {
-        btnAdd.setOnAction(this::handleButtonAction);
-        btnEdit.setOnAction(this::handleButtonAction);
-        btnClose.setOnAction(this::handleButtonAction);
+    private void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnClose);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -312,18 +349,85 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         }
     }
 
-    //Set CheckBox Action
-    private void initCmboxFieldAction() {
+    private void initTextFieldsProperty() {
+        txtField23Addr.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (oTransAddress != null && pnRow >= 0) {
+                if (newValue.isEmpty() || newValue == null) {
+                    oTransAddress.setAddress(pnRow, 25, ""); //province id
+                    oTransAddress.setAddress(pnRow, 24, ""); //province
+                    oTransAddress.setAddress(pnRow, 16, ""); //town id
+                    oTransAddress.setAddress(pnRow, 23, ""); //town
+                    oTransAddress.setAddress(pnRow, 17, ""); //zip
+                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
+                    CustomCommonUtil.setText("", txtField05Addr, txtField06Addr, txtField07Addr, txtField23Addr);
+                    CustomCommonUtil.setDisable(true, txtField05Addr, txtField06Addr);
+                }
+            } else {
+                System.err.println("oTransAddress is null or pnRow is invalid.");
+            }
+        }
+        );
+
+        txtField05Addr.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (oTransAddress != null && pnRow >= 0) {
+                if (newValue.isEmpty() || newValue == null) {
+                    oTransAddress.setAddress(pnRow, 16, ""); //town id
+                    oTransAddress.setAddress(pnRow, 23, ""); //town
+                    oTransAddress.setAddress(pnRow, 17, ""); //zip
+                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
+                    CustomCommonUtil.setText("", txtField05Addr, txtField06Addr, txtField07Addr);
+                    txtField06Addr.setDisable(true);// Brgy
+
+                } else {
+                    System.err.println("oTransAddress is null or pnRow is invalid.");
+                }
+            }
+        }
+        );
+
+        txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (oTransAddress != null && pnRow >= 0) {
+                if (newValue == null || newValue.isEmpty()) {
+                    oTransAddress.setAddress(pnRow, 6, ""); // brgy id
+                    oTransAddress.setAddress(pnRow, 22, ""); // brgy
+                }
+            } else {
+                System.err.println("oTransAddress is null or pnRow is invalid.");
+            }
+        });
+
+    }
+
+    private void initFields() {
+        if (pbState) {
+            int lnSize = oTransAddress.getAddressList().size() - 1;
+            if (lnSize == 0) {
+                checkBox14Addr.setSelected(true);
+            }
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadMasterFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+    }
+
+    private void initChckBoxFieldAction() {
         checkBox17Addr.setOnAction(this::comboBoxAction);
         checkBox13Addr.setOnAction(this::comboBoxAction);
         checkBox12Addr.setOnAction(this::comboBoxAction);
     }
 
-    //Set CheckBox Action
     private void comboBoxAction(ActionEvent event) {
         String lsCbSel = ((CheckBox) event.getSource()).getId();
         switch (lsCbSel) {
-            /*client_address*/
             case "checkBox17Addr": // Current
                 if (checkBox17Addr.isSelected()) {
                     checkBox12Addr.setSelected(false);
@@ -343,63 +447,12 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         }
     }
 
-    private void initTextFieldListener() {
-        txtField23Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (oTransAddress != null && pnRow >= 0) {
-                if (newValue.isEmpty() || newValue == null) {
-                    oTransAddress.setAddress(pnRow, 25, ""); //province id
-                    oTransAddress.setAddress(pnRow, 24, ""); //province
-                    oTransAddress.setAddress(pnRow, 16, ""); //town id
-                    oTransAddress.setAddress(pnRow, 23, ""); //town
-                    oTransAddress.setAddress(pnRow, 17, ""); //zip
-                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
-                    txtField23Addr.clear(); // Province
-                    txtField05Addr.clear(); // Town
-                    txtField07Addr.clear(); //Zip code
-                    txtField06Addr.clear(); // Brgy
-                    txtField05Addr.setDisable(true);// Town
-                    txtField06Addr.setDisable(true);// Brgy
-                }
-            } else {
-                System.err.println("oTransAddress is null or pnRow is invalid.");
-            }
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
         }
-        );
-
-        txtField05Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (oTransAddress != null && pnRow >= 0) {
-                if (newValue.isEmpty() || newValue == null) {
-                    oTransAddress.setAddress(pnRow, 16, ""); //town id
-                    oTransAddress.setAddress(pnRow, 23, ""); //town
-                    oTransAddress.setAddress(pnRow, 17, ""); //zip
-                    oTransAddress.setAddress(pnRow, 6, ""); //brgy id
-                    oTransAddress.setAddress(pnRow, 22, ""); //brgy
-                    txtField05Addr.clear(); // Town
-                    txtField07Addr.clear(); //Zip code
-                    txtField06Addr.clear(); // Brgy
-                    txtField06Addr.setDisable(true);// Brgy
-
-                } else {
-                    System.err.println("oTransAddress is null or pnRow is invalid.");
-                }
-            }
-        }
-        );
-
-        txtField06Addr.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Ensure oTransAddress and pnRow are not null
-            if (oTransAddress != null && pnRow >= 0) {
-                // Check if the new value is empty or null
-                if (newValue == null || newValue.isEmpty()) {
-                    oTransAddress.setAddress(pnRow, 6, ""); // brgy id
-                    oTransAddress.setAddress(pnRow, 22, ""); // brgy
-                }
-            } else {
-                System.err.println("oTransAddress is null or pnRow is invalid.");
-            }
-        });
-
     }
 
     private boolean settoClass() {
@@ -475,77 +528,6 @@ public class CustomerAddressController implements Initializable, ScreenInterface
         }
 
         return true;
-    }
-
-    private void loadFields() {
-        txtField03Addr.setText((String) oTransAddress.getAddress(pnRow, "sHouseNox"));
-        txtField04Addr.setText((String) oTransAddress.getAddress(pnRow, "sAddressx"));
-        txtField23Addr.setText((String) oTransAddress.getAddress(pnRow, "sProvName"));
-        txtField05Addr.setText((String) oTransAddress.getAddress(pnRow, "sTownName"));
-        txtField06Addr.setText((String) oTransAddress.getAddress(pnRow, "sBrgyName"));
-        txtField07Addr.setText((String) oTransAddress.getAddress(pnRow, "sZippCode"));
-        textArea11Addr.setText((String) oTransAddress.getAddress(pnRow, "sRemarksx"));
-        if (!((String) oTransAddress.getAddress(pnRow, "sProvIDxx")).isEmpty()) {
-            txtField05Addr.setDisable(false);
-        } else {
-            txtField05Addr.setDisable(true);
-        }
-        if (!((String) oTransAddress.getAddress(pnRow, "sTownIDxx")).isEmpty()) {
-            txtField06Addr.setDisable(false);
-        } else {
-            txtField06Addr.setDisable(true);
-        }
-        if (oTransAddress.getAddress(pnRow, "cRecdStat").toString().equals("1")) {
-            radiobtn18AddY.setSelected(true);
-            radiobtn18AddN.setSelected(false);
-        } else {
-            radiobtn18AddY.setSelected(false);
-            radiobtn18AddN.setSelected(true);
-        }
-        if (oTransAddress.getAddress(pnRow, "cOfficexx").toString().equals("1")) {
-            checkBox12Addr.setSelected(true);
-        } else {
-            checkBox12Addr.setSelected(false);
-        }
-        if (oTransAddress.getAddress(pnRow, "cProvince").toString().equals("1")) {
-            checkBox13Addr.setSelected(true);
-        } else {
-            checkBox13Addr.setSelected(false);
-        }
-        if (oTransAddress.getAddress(pnRow, "cPrimaryx").toString().equals("1")) {
-            checkBox14Addr.setSelected(true);
-        } else {
-            checkBox14Addr.setSelected(false);
-        }
-        if (oTransAddress.getAddress(pnRow, "cCurrentx").toString().equals("1")) {
-            checkBox17Addr.setSelected(true);
-        } else {
-            checkBox17Addr.setSelected(false);
-        }
-        if ((String) oTransAddress.getAddress(pnRow, 1) != null) {
-            txtField23Addr.setDisable(true);
-            txtField05Addr.setDisable(true);
-            txtField06Addr.setDisable(true);
-        }
-    }
-
-    private void initFields() {
-        if (pbState) {
-            int lnSize = oTransAddress.getAddressList().size() - 1;
-            if (lnSize == 0) {
-                checkBox14Addr.setSelected(true);
-            }
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
     }
 
 }

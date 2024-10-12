@@ -171,7 +171,7 @@
                                                                                                                                         <Insets />
                                                                                                                                     </GridPane.margin>
                                                                                                                                 </TextField>
-                                                                                                                                <TextField fx:id="txtField14" disable="true" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="14" />
+                                                                                                                                <TextField fx:id="txtField14" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="14" />
                                                                                                                                 <TextField fx:id="txtField16" disable="true" editable="false" maxWidth="200.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="16" />
                                                                                                                                 <TextField fx:id="txtField18" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="16" />
                                                                                                                                 <Label id="LabelDesc" text="Event" GridPane.columnIndex="1" GridPane.rowIndex="12">

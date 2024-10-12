@@ -1,11 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -29,7 +27,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
 public class ActivityVehicleController implements Initializable, ScreenInterface {
 
@@ -38,29 +36,23 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
     private Activity oTransActVehicle;
     ObservableList<ActivityVehicle> actVhclModelData = FXCollections.observableArrayList();
     @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnClose;
+    private Button btnAdd, btnClose;
     @FXML
     private CheckBox selectAllCheckBox;
     @FXML
-    private TableColumn<ActivityVehicle, String> tblindexVehicle01;
-    @FXML
-    private TableColumn<ActivityVehicle, Boolean> tblindexVehicle02;
-    @FXML
-    private TableColumn<ActivityVehicle, String> tblindexVehicle03;
-    @FXML
     private TableView<ActivityVehicle> tblViewActVhcl;
     @FXML
-    private TableColumn<ActivityVehicle, String> tblindexVehicle04;
-
-    public void setObject(Activity foValue) {
-        oTransActVehicle = foValue;
-    }
+    private TableColumn<ActivityVehicle, String> tblindexVehicle01, tblindexVehicle03, tblindexVehicle04;
+    @FXML
+    private TableColumn<ActivityVehicle, Boolean> tblindexVehicle02;
 
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public void setObject(Activity foValue) {
+        oTransActVehicle = foValue;
     }
 
     /**
@@ -68,11 +60,62 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnAdd.setOnAction(this::handleButtonAction);
         initVehicleTable();
         loadActVhclModelTable();
+        initButtonsClick();
 
+    }
+
+    private void loadActVhclModelTable() {
+        /*Populate table*/
+        actVhclModelData.clear();
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActVehicle.loadVehicle();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTransActVehicle.getVehicleList().size() - 1; lnCtr++) {
+
+                actVhclModelData.add(new ActivityVehicle(
+                        String.valueOf(lnCtr + 1), //ROW
+                        oTransActVehicle.getSerialID(lnCtr, lnCtr).toString(),
+                        oTransActVehicle.getVehicleCSNo(lnCtr, lnCtr).toString(),
+                        oTransActVehicle.getVehicleDesc(lnCtr, lnCtr).toString()
+                ));
+            }
+            initVehicleTable();
+        }
+    }
+
+    private void initVehicleTable() {
+        tblViewActVhcl.setItems(actVhclModelData);
+        tblindexVehicle01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));  //Row
+        tblindexVehicle02.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblViewActVhcl.getItems().forEach(item -> {
+            CheckBox loSelectCheckBox = item.getSelect();
+            loSelectCheckBox.setOnAction(event -> {
+                if (tblViewActVhcl.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                    selectAllCheckBox.setSelected(true);
+                } else {
+                    selectAllCheckBox.setSelected(false);
+                }
+            });
+        });
+        selectAllCheckBox.setOnAction(event -> {
+            boolean lbNewValue = selectAllCheckBox.isSelected();
+            tblViewActVhcl.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
+        });
+        tblindexVehicle03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        tblindexVehicle04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
+        tblViewActVhcl.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewActVhcl.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
+    private void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnAdd, btnClose);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -126,53 +169,6 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
                 CommonUtils.closeStage(btnAdd);
                 break;
         }
-    }
-
-    private void loadActVhclModelTable() {
-        /*Populate table*/
-        actVhclModelData.clear();
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransActVehicle.loadVehicle();
-        if ("success".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 0; lnCtr <= oTransActVehicle.getVehicleList().size() - 1; lnCtr++) {
-
-                actVhclModelData.add(new ActivityVehicle(
-                        String.valueOf(lnCtr + 1), //ROW
-                        oTransActVehicle.getSerialID(lnCtr, lnCtr).toString(),
-                        oTransActVehicle.getVehicleCSNo(lnCtr, lnCtr).toString(),
-                        oTransActVehicle.getVehicleDesc(lnCtr, lnCtr).toString()
-                ));
-            }
-            initVehicleTable();
-        }
-    }
-
-    private void initVehicleTable() {
-        tblViewActVhcl.setItems(actVhclModelData);
-        tblindexVehicle01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));  //Row
-        tblindexVehicle02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblViewActVhcl.getItems().forEach(item -> {
-            CheckBox loSelectCheckBox = item.getSelect();
-            loSelectCheckBox.setOnAction(event -> {
-                if (tblViewActVhcl.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
-                    selectAllCheckBox.setSelected(true);
-                } else {
-                    selectAllCheckBox.setSelected(false);
-                }
-            });
-        });
-        selectAllCheckBox.setOnAction(event -> {
-            boolean lbNewValue = selectAllCheckBox.isSelected();
-            tblViewActVhcl.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
-        });
-        tblindexVehicle03.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
-        tblindexVehicle04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
-        tblViewActVhcl.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewActVhcl.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
     }
 
 }

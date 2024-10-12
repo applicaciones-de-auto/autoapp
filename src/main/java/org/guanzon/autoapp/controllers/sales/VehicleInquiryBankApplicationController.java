@@ -157,7 +157,9 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnEdit":
                 loJSON = oTransBankApp.updateTransaction();
@@ -199,7 +201,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, "Bank Application save sucessfully.");
                             }
-                            CommonUtils.closeStage(btnClose);
+                            CommonUtils.closeStage(btnSave);
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             return;

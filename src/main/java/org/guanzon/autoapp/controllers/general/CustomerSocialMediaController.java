@@ -29,13 +29,12 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
-//
-///**
-// * FXML Controller class
-// *
-// * @author Auto Group Programmers
-// */
 
+/**
+ * FXML Controller class
+ *
+ * @author John Dave
+ */
 public class CustomerSocialMediaController implements Initializable, ScreenInterface {
 
     private GRider oApp;
@@ -83,9 +82,10 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
      * Initializes the controller class.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
-        txtField03Socm.setOnKeyPressed(this::txtField_KeyPressed); // SocMed Account
-        comboBox04Socm.setItems(cSocType); // SocMed Type
+        txtField03Socm.setOnKeyPressed(this::txtField_KeyPressed);
+        comboBox04Socm.setItems(cSocType);
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
@@ -95,11 +95,15 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
         initFields();
     }
 
-    private void showWarning(String formStateName, String warningTitle, String message) {
-        if (formStateName.equals("Referral Agent Information")) {
-            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+    private void loadMasterFields() {
+        txtField03Socm.setText((String) oTransSocMed.getSocialMed(pnRow, "sAccountx"));
+        comboBox04Socm.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransSocMed.getSocialMed(pnRow, "cSocialTp"))));
+        if (oTransSocMed.getSocialMed(pnRow, "cRecdStat").toString().equals("1")) {
+            radiobtn05SocY.setSelected(true);
+            radiobtn05SocN.setSelected(false);
         } else {
-            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
+            radiobtn05SocY.setSelected(false);
+            radiobtn05SocN.setSelected(true);
         }
     }
 
@@ -145,6 +149,29 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
         }
     }
 
+    private void initFields() {
+        if (pbState) {
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadMasterFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+    }
+
+    private void showWarning(String formStateName, String warningTitle, String message) {
+        if (formStateName.equals("Referral Agent Information")) {
+            ShowMessageFX.Warning(null, "Referral Agent " + warningTitle, message);
+        } else {
+            ShowMessageFX.Warning(null, "Customer " + warningTitle, message);
+        }
+    }
+
     private boolean settoClass() {
         for (int lnCtr = 0; lnCtr <= oTransSocMed.getSocialMediaList().size() - 1; lnCtr++) {
             if (oTransSocMed.getSocialMed(lnCtr, "cSocialTp") != null) {
@@ -180,33 +207,6 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
             oTransSocMed.setSocialMed(pnRow, "cRecdStat", 0);
         }
         return true;
-    }
-
-    private void loadSocialFields() {
-        txtField03Socm.setText((String) oTransSocMed.getSocialMed(pnRow, "sAccountx"));
-        comboBox04Socm.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransSocMed.getSocialMed(pnRow, "cSocialTp"))));
-        if (oTransSocMed.getSocialMed(pnRow, "cRecdStat").toString().equals("1")) {
-            radiobtn05SocY.setSelected(true);
-            radiobtn05SocN.setSelected(false);
-        } else {
-            radiobtn05SocY.setSelected(false);
-            radiobtn05SocN.setSelected(true);
-        }
-    }
-
-    private void initFields() {
-        if (pbState) {
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadSocialFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
     }
 
 }

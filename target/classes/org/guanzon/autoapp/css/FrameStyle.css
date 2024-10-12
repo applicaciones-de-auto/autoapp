@@ -7,12 +7,20 @@ and open the template in the editor.
     Created on : Feb 1, 2023, 10:24:41 AM
     Author     : Arsiela
 */
+
+/* Style the header of the column */
+
 #LabelDesc {
     -fx-text-fill: black;
     -fx-font-family: "Arial";
     -fx-font-size: 11.5px;
 }
-
+#LabelFormTitle{
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
 .glyph-icon {
     -fx-fill: black;
 }
@@ -168,7 +176,6 @@ and open the template in the editor.
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
 }
-
 .table-view .column-header-background{
     -fx-background-color: #4d5656;
 }
@@ -242,4 +249,10 @@ and open the template in the editor.
 /* Unity Delivery Receipt*/
 .unity-container{
     -fx-effect: dropshadow(gaussian, #c5c5c5, 0, 0, 0, 2);
+}
+
+.table-view .column-header {
+    -fx-background-color: #4d5656; /* Example: tomato color */
+    -fx-text-fill: white;           /* Set text color */
+    -fx-font-weight: bold;          /* Optional: Bold text */
 }

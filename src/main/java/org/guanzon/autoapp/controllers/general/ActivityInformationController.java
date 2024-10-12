@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -55,6 +50,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.models.general.ActivityMember;
 import org.guanzon.autoapp.models.general.ActivityLocation;
 import org.guanzon.autoapp.models.general.ActivityVehicle;
@@ -67,12 +63,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
-public class ActivityInformationController implements Initializable, ScreenInterface {
+public class ActivityInformationController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Activity oTransActivity;
+    private Activity oTrans;
     private ObservableList<ActivityLocation> locationData = FXCollections.observableArrayList();
     private ObservableList<ActivityMember> actMembersData = FXCollections.observableArrayList();
     private ObservableList<ActivityVehicle> actVhclModelData = FXCollections.observableArrayList();
@@ -105,7 +101,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
     @FXML
     private TabPane tabPCustCont;
     @FXML
-    private Tab tabLocationInfo, tabMembersInfo, tabVehicleInfo;
+    private Tab tabLocationInfo, tabMembersInfo, tabVehicleInfo, tabActivityInfo, tabDetails;
     @FXML
     private TableView<ActivityLocation> tblLocationAddress;
     @FXML
@@ -118,10 +114,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
     private TableView<ActivityVehicle> tblViewVhclModels;
     @FXML
     private TableColumn<ActivityVehicle, String> tblVhclIndex01, tblVhclIndex02, tblVhclIndex03;
-    @FXML
-    private Tab tabActivityInfo;
-    @FXML
-    private Tab tabDetails;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -137,77 +129,29 @@ public class ActivityInformationController implements Initializable, ScreenInter
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
+        oTrans = new Activity(oApp, false, oApp.getBranchCode());
 
         initActLocationTable();
         initActMembersTable();
         initActivityVehicleTable();
-        initTextFieldPattern();
         dateFrom03.setDayCellFactory(DateFrom);
-        comboBox05.setItems(cType);
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
+        initLimiterFields();
         initTextFieldFocus();
-        initCmboxFieldAction();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         clearFields();
         clearTables();
-        CustomCommonUtil.addTextLimiter(txtField15, 4);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private boolean checkExistingActivityInformation() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransActivity.validateExistingRecord();
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTransActivity.openRecord((String) loJSON.get("sActvtyID"));
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadActivityLocationTable();
-                    loadActMembersTable();
-                    loadActivityVehicleTable();
-                    loadActivityInformation();
-                    pnEditMode = EditMode.READY;
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    private void initTextFieldPattern() {
-        Pattern numOnly = Pattern.compile("[0-9]*");
-        Pattern decOnly = Pattern.compile("[0-9,.]*");
-        txtField15.setTextFormatter(new TextFormatterUtil(numOnly));  //nTrgtClnt
-        txtField16.setTextFormatter(new TextFormatterUtil(decOnly));  //nRcvdBdgt
-    }
-
-    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
-
-    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = dateFrom03.getValue();
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
-
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField06, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
@@ -215,102 +159,89 @@ public class ActivityInformationController implements Initializable, ScreenInter
         loTxtArea.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField06, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        /*TextArea*/
-        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea08, textArea09, textArea10);
-        loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
-
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
-            } else {
-                lsValue = lsTxtField.getText();
-            }
-            JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField06":
-                        loJSON = oTransActivity.searchEventType(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField06.setText(oTransActivity.getModel().getModel().getActTypDs());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField06.setText("");
-                            txtField06.requestFocus();
-                            return;
-                        }
-                        break;
-                    case "txtField11":
-                        loJSON = oTransActivity.searchDepartment(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField11.setText(oTransActivity.getModel().getModel().getDeptName());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField11.setText("");
-                            txtField11.requestFocus();
-                            return;
-                        }
-                        break;
-                    case "txtField12":
-                        loJSON = oTransActivity.searchEmployee(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField12.setText(oTransActivity.getModel().getModel().getEmpInCharge());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField12.setText("");
-                            txtField12.requestFocus();
-                            return;
-                        }
-                        break;
-                    case "txtField13":
-                        loJSON = oTransActivity.searchBranch(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField13.setText(oTransActivity.getModel().getModel().getBranchNm());
-                            txtField14.setText(oTransActivity.getModel().getModel().getLocation());
-                            checkExistingActivityInformation();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField13.setText("");
-                            txtField13.requestFocus();
-                            return;
-                        }
-                        break;
-                }
-                initFields(pnEditMode);
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
+    @Override
+    public boolean loadMasterFields() {
+        if (oTrans.getModel().getModel().getActvtyID() != null) {
+            lblActivityID.setText("ACTIVITY ID: ");
+            lblActivityIDValue.setText(oTrans.getModel().getModel().getActvtyID());
+        } else {
+            lblActivityIDValue.setText("");
+            lblActivityID.setText("");
+        }
+        txtField02.setText(oTrans.getModel().getModel().getActNo());
+        if (oTrans.getModel().getModel().getDateFrom() != null && !oTrans.getModel().getModel().getDateFrom().toString().isEmpty()) {
+            dateFrom03.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getDateFrom(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        if (oTrans.getModel().getModel().getDateThru() != null && !oTrans.getModel().getModel().getDateThru().toString().isEmpty()) {
+            dateTo04.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getDateThru(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        if (oTrans.getModel().getModel().getEventTyp() != null && !oTrans.getModel().getModel().getEventTyp().trim().isEmpty()) {
+            switch (String.valueOf(oTrans.getModel().getModel().getEventTyp())) {
+                case "eve":
+                    comboBox05.setValue("EVENT");
+                    break;
+                case "sal":
+                    comboBox05.setValue("SALES CALL");
+                    break;
+                case "pro":
+                    comboBox05.setValue("PROMO");
+                    break;
             }
         }
-    }
+        txtField06.setText(oTrans.getModel().getModel().getActTypDs());
+        textArea07.setText(oTrans.getModel().getModel().getActTitle());
+        textArea08.setText(oTrans.getModel().getModel().getActDesc());
+        textArea09.setText(oTrans.getModel().getModel().getLogRemrk());
+        textArea10.setText(oTrans.getModel().getModel().getRemarks());
+        txtField11.setText(oTrans.getModel().getModel().getDeptName());
+        txtField12.setText(oTrans.getModel().getModel().getEmpInCharge());
+        txtField13.setText(oTrans.getModel().getModel().getBranchNm());
+        txtField14.setText(oTrans.getModel().getModel().getLocation());
+        txtField15.setText(String.valueOf(oTrans.getModel().getModel().getTrgtClnt()));
+        txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
 
-    private void textArea_KeyPressed(KeyEvent event) {
-        String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+//        if (oTrans.getModel().getModel().getApproved() != null) {
+//            lblApprovedBy.setText(oTrans.getModel().getModel().getApproved());
+//            if (oTrans.getModel().getModel().getApprovedDte() != null && !oTrans.getModel().getModel().getApprovedDte().toString().isEmpty()) {
+//                lblApprovedDate.setText(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApprovedDte()));//dApproved
+//            }
+//        } else {
+//            lblApprovedBy.setText("");
+//            lblApprovedDate.setText("");//dApproved
+//        }
+        switch (oTrans.getModel().getModel().getTranStat()) {
+            case "1":
+                lblCancelStatus.setText("Active");
+                break;
+            case "2":
+                lblCancelStatus.setText("Cancelled");
+                break;
+            case "3":
+                lblCancelStatus.setText("Approved");
+                break;
+            default:
+                lblCancelStatus.setText("");
+                break;
         }
+
+        return true;
     }
 
-    private void initTextFieldFocus() {
+    @Override
+    public void initPatternFields() {
+        Pattern numOnly = Pattern.compile("[0-9]*");
+        Pattern decOnly = Pattern.compile("[0-9,.]*");
+        txtField15.setTextFormatter(new TextFormatterUtil(numOnly));  //nTrgtClnt
+        txtField16.setTextFormatter(new TextFormatterUtil(decOnly));  //nRcvdBdgt
+    }
+
+    @Override
+    public void initLimiterFields() {
+        CustomCommonUtil.addTextLimiter(txtField15, 4);
+    }
+
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField15, txtField16);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
         /*TextArea*/
@@ -329,14 +260,14 @@ public class ActivityInformationController implements Initializable, ScreenInter
             /*Lost Focus*/
             switch (lnIndex) {
                 case 15:/*No of Target Client*/
-                    oTransActivity.getModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
+                    oTrans.getModel().getModel().setTrgtClnt(Integer.valueOf(lsValue));
                     break;
                 case 16:/*Total Event Budget*/
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransActivity.getModel().getModel().setRcvdBdgt(Double.valueOf(lsValue.replace(",", "")));
-                    txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getModel().getModel().getRcvdBdgt()))));
+                    oTrans.getModel().getModel().setRcvdBdgt(Double.valueOf(lsValue.replace(",", "")));
+                    txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
                     break;
             }
         } else {
@@ -355,17 +286,17 @@ public class ActivityInformationController implements Initializable, ScreenInter
             /*Lost Focus*/
             switch (lnIndex) {
                 case 7:
-                    oTransActivity.getModel().getModel().setActTitle(lsValue);
+                    oTrans.getModel().getModel().setActTitle(lsValue);
                     checkExistingActivityInformation();
                     break;
                 case 8:
-                    oTransActivity.getModel().getModel().setActDesc(lsValue);
+                    oTrans.getModel().getModel().setActDesc(lsValue);
                     break;
                 case 9:
-                    oTransActivity.getModel().getModel().setLogRemrk(lsValue);
+                    oTrans.getModel().getModel().setLogRemrk(lsValue);
                     break;
                 case 10:
-                    oTransActivity.getModel().getModel().setRemarks(lsValue);
+                    oTrans.getModel().getModel().setRemarks(lsValue);
                     break;
             }
         } else {
@@ -373,149 +304,109 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
     };
 
-    private void initCmboxFieldAction() {
-        dateFrom03.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (pnEditMode == EditMode.ADDNEW) {
-                    dateTo04.setDayCellFactory(DateTo);
-                    dateTo04.setValue(newValue.plusDays(1));
-                }
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField06, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+        /*TextArea*/
+        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea08, textArea09, textArea10);
+        loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
+
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            TextField lsTxtField = (TextField) event.getSource();
+            String txtFieldID = ((TextField) event.getSource()).getId();
+            String lsValue = "";
+            if (lsTxtField.getText() == null) {
+                lsValue = "";
+            } else {
+                lsValue = lsTxtField.getText();
             }
-        });
-        dateFrom03.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransActivity.setMaster(7, SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                checkExistingActivityInformation();
-            }
-        });
-        dateTo04.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransActivity.setMaster(8, SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                checkExistingActivityInformation();
-            }
-        });
-        comboBox05.setOnAction(e -> {
-            int selectedComboBox05 = comboBox05.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox05 >= 0) {
-                    switch (selectedComboBox05) {
-                        case 0:
-                            oTransActivity.getModel().getModel().setEventTyp("eve");
-                            oTransActivity.getModel().getModel().setActTypDs("");
-                            oTransActivity.getModel().getModel().setActSrce("");
+            JSONObject loJSON = new JSONObject();
+            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+                switch (txtFieldID) {
+                    case "txtField06":
+                        loJSON = oTrans.searchEventType(lsValue);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField06.setText(oTrans.getModel().getModel().getActTypDs());
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField06.setText("");
-                            break;
-                        case 1:
-                            oTransActivity.getModel().getModel().setEventTyp("sal");
-                            oTransActivity.getModel().getModel().setActTypDs("");
-                            oTransActivity.getModel().getModel().setActSrce("");
-                            txtField06.setText("");
-                            break;
-                        case 2:
-                            oTransActivity.getModel().getModel().setEventTyp("pro");
-                            oTransActivity.getModel().getModel().setActTypDs("");
-                            oTransActivity.getModel().getModel().setActSrce("");
-                            txtField06.setText("");
-                            break;
-                        default:
-                            break;
-                    }
-                    checkExistingActivityInformation();
+                            return;
+                        }
+                        break;
+                    case "txtField11":
+                        loJSON = oTrans.searchDepartment(lsValue);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField11.setText(oTrans.getModel().getModel().getDeptName());
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField11.setText("");
+                            return;
+                        }
+                        break;
+                    case "txtField12":
+                        loJSON = oTrans.searchEmployee(lsValue);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField12.setText(oTrans.getModel().getModel().getEmpInCharge());
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField12.setText("");
+                            return;
+                        }
+                        break;
+                    case "txtField13":
+                        loJSON = oTrans.searchBranch(lsValue);
+                        if (!"error".equals(loJSON.get("result"))) {
+                            txtField13.setText(oTrans.getModel().getModel().getBranchNm());
+                            txtField14.setText(oTrans.getModel().getModel().getLocation());
+                            checkExistingActivityInformation();
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                            txtField13.setText("");
+                            return;
+                        }
+                        break;
                 }
                 initFields(pnEditMode);
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.UP) {
+                event.consume();
+                CommonUtils.SetPreviousFocus((TextField) event.getSource());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                event.consume();
+                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
-        );
-        txtField06.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransActivity.getModel().getModel().setActTypDs("");
-                                oTransActivity.getModel().getModel().setActSrce("");
-                            }
-                        }
-                    }
-                }
-                );
-        txtField11.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransActivity.getModel().getModel().setDeptID("");
-                                oTransActivity.getModel().getModel().setEmployID("");
-                                txtField12.setText("");
-                                initFields(pnEditMode);
-                            }
-                        }
-                    }
-                }
-                );
-        txtField12.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransActivity.getModel().getModel().setEmployID("");
-                                initFields(pnEditMode);
-                            }
-                        }
-                    }
-                }
-                );
-        txtField13.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransActivity.getModel().getModel().setBranchNm("");
-                                oTransActivity.getModel().getModel().setLocation("");
-                                txtField14.setText("");
-                                initFields(pnEditMode);
-                            }
-                        }
-                    }
-                }
-                );
-        tabPCustCont.getSelectionModel()
-                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
-                    pnRow = 0;
-                    btnTabRem.setVisible(false);
-                }
-                );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private boolean setSelection() {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
-                return false;
-            } else {
-                switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
-                    case "eve":
-                        comboBox05.setValue("EVENT");
-                        break;
-                    case "sal":
-                        comboBox05.setValue("SALES CALL");
-                        break;
-                    case "pro":
-                        comboBox05.setValue("PROMO");
-                        break;
-                }
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+        String textAreaID = ((TextArea) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (textAreaID) {
             }
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
         }
-        return true;
     }
 
-    private void initButtons() {
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnPrint, btnActivityHistory,
                 btnActCancel, btnClose, btnAddSource, btnAddRowTasks, btnRemoveTasks, btnAddRowBudget, btnRemoveBudget, btnTabAdd, btnTabRem);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         try {
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
@@ -524,19 +415,19 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 case "btnAdd":
                     clearFields();
                     clearTables();
-                    oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
-                    loJSON = oTransActivity.newRecord();
+                    oTrans = new Activity(oApp, false, oApp.getBranchCode());
+                    loJSON = oTrans.newRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadActivityInformation();
-                        pnEditMode = oTransActivity.getEditMode();
+                        loadMasterFields();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
                     break;
                 case "btnEdit":
-                    loJSON = oTransActivity.updateRecord();
-                    pnEditMode = oTransActivity.getEditMode();
+                    loJSON = oTrans.updateRecord();
+                    pnEditMode = oTrans.getEditMode();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -590,17 +481,17 @@ public class ActivityInformationController implements Initializable, ScreenInter
                         if (!setSelection()) {
                             return;
                         }
-                        loJSON = oTransActivity.saveRecord();
+                        loJSON = oTrans.saveRecord();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, "Activity Information", (String) loJSON.get("message"));
-                            loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActvtyID());
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActvtyID());
                             if ("success".equals((String) loJSON.get("result"))) {
                                 loadActivityLocationTable();
                                 loadActMembersTable();
                                 loadActivityVehicleTable();
-                                loadActivityInformation();
+                                loadMasterFields();
                                 initFields(pnEditMode);
-                                pnEditMode = oTransActivity.getEditMode();
+                                pnEditMode = oTrans.getEditMode();
                             }
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -612,7 +503,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         clearFields();
                         clearTables();
-                        oTransActivity = new Activity(oApp, false, oApp.getBranchCode());
+                        oTrans = new Activity(oApp, false, oApp.getBranchCode());
                         pnEditMode = EditMode.UNKNOWN;
                     }
                     break;
@@ -623,13 +514,13 @@ public class ActivityInformationController implements Initializable, ScreenInter
                             return;
                         }
                     }
-                    loJSON = oTransActivity.searchRecord("", false);
+                    loJSON = oTrans.searchRecord("", false);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadActivityLocationTable();
                         loadActMembersTable();
                         loadActivityVehicleTable();
-                        loadActivityInformation();
-                        pnEditMode = oTransActivity.getEditMode();
+                        loadMasterFields();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     } else {
                         ShowMessageFX.Warning(null, "Search Activity Information Confirmation", (String) loJSON.get("message"));
@@ -650,16 +541,16 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 case "btnTabAdd":
                     switch (iTabIndex) {
                         case 0: // Address
-                            oTransActivity.addActLocation();
-                            loadActLocationDialog(oTransActivity.getActLocationList().size() - 1, true);
+                            oTrans.addActLocation();
+                            loadActLocationDialog(oTrans.getActLocationList().size() - 1, true);
                             loadActivityLocationTable();
                             break;
                         case 1: //Members
-                            if (oTransActivity.getModel().getModel().getEmployID() == null) {
+                            if (oTrans.getModel().getModel().getEmployID() == null) {
                                 ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
                                 return;
                             } else {
-                                if (oTransActivity.getModel().getModel().getEmployID().isEmpty()) {
+                                if (oTrans.getModel().getModel().getEmployID().isEmpty()) {
                                     ShowMessageFX.Warning(null, "Warning", "Please enter value in Person in charge.");
                                     return;
                                 }
@@ -684,12 +575,12 @@ public class ActivityInformationController implements Initializable, ScreenInter
                             } else {
                                 return;
                             }
-                            oTransActivity.removeActLocation(pnRow);
+                            oTrans.removeActLocation(pnRow);
                             pnRow = 0;
                             loadActivityLocationTable();
                             break;
                         case 1:
-                            oTransActivity.removeActMember(pnRow);
+                            oTrans.removeActMember(pnRow);
                             pnRow = 0;
                             loadActMembersTable();
                             break;
@@ -698,7 +589,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
                             } else {
                                 return;
                             }
-                            oTransActivity.removeActVehicle(pnRow);
+                            oTrans.removeActVehicle(pnRow);
                             pnRow = 0;
                             loadActivityVehicleTable();
                             break;
@@ -706,32 +597,25 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     btnTabRem.setVisible(false);
                     break;
                 case "btnPrint":
-                    String lsTransNox = oTransActivity.getModel().getModel().getActvtyID();
-                     {
-                        try {
-                            loadActivityPrint(lsTransNox);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ActivityInformationController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    loadActivityPrint();
                     break;
                 case "btnActCancel":
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to cancel this activity?") == true) {
-                        String fsValue = oTransActivity.getModel().getModel().getActvtyID();
-                        loJSON = oTransActivity.cancelRecord(fsValue);
+                        String fsValue = oTrans.getModel().getModel().getActvtyID();
+                        loJSON = oTrans.cancelRecord(fsValue);
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, "Activity Information", (String) loJSON.get("message"));
                         } else {
                             ShowMessageFX.Warning(null, "Activity Information", (String) loJSON.get("message"));
                         }
-                        loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActvtyID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActvtyID());
                         if ("success".equals((String) loJSON.get("result"))) {
                             loadActivityLocationTable();
                             loadActMembersTable();
                             loadActivityVehicleTable();
-                            loadActivityInformation();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransActivity.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     }
                     break;
@@ -745,7 +629,260 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
     }
 
-    private void loadActivityPrint(String sTransNo) throws SQLException {
+    @Override
+    public void initComboBoxItems() {
+        comboBox05.setItems(cType);
+    }
+
+    @Override
+    public void initFieldsAction() {
+        dateFrom03.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (pnEditMode == EditMode.ADDNEW) {
+                    dateTo04.setDayCellFactory(DateTo);
+                    dateTo04.setValue(newValue.plusDays(1));
+                }
+            }
+        });
+        dateFrom03.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getModel().getModel().setDateFrom(SQLUtil.toDate(dateFrom03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                checkExistingActivityInformation();
+            }
+        });
+        dateTo04.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getModel().getModel().setDateThru(SQLUtil.toDate(dateTo04.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                checkExistingActivityInformation();
+            }
+        });
+        comboBox05.setOnAction(e -> {
+            int selectedComboBox05 = comboBox05.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox05 >= 0) {
+                    switch (selectedComboBox05) {
+                        case 0:
+                            oTrans.getModel().getModel().setEventTyp("eve");
+                            oTrans.getModel().getModel().setActTypDs("");
+                            oTrans.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
+                            break;
+                        case 1:
+                            oTrans.getModel().getModel().setEventTyp("sal");
+                            oTrans.getModel().getModel().setActTypDs("");
+                            oTrans.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
+                            break;
+                        case 2:
+                            oTrans.getModel().getModel().setEventTyp("pro");
+                            oTrans.getModel().getModel().setActTypDs("");
+                            oTrans.getModel().getModel().setActSrce("");
+                            txtField06.setText("");
+                            break;
+                        default:
+                            break;
+                    }
+                    checkExistingActivityInformation();
+                }
+                initFields(pnEditMode);
+            }
+        }
+        );
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField06.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setActTypDs("");
+                                oTrans.getModel().getModel().setActSrce("");
+                            }
+                        }
+                    }
+                }
+                );
+        txtField11.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setDeptID("");
+                                oTrans.getModel().getModel().setEmployID("");
+                                txtField12.setText("");
+                                initFields(pnEditMode);
+                            }
+                        }
+                    }
+                }
+                );
+        txtField12.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setEmployID("");
+                                initFields(pnEditMode);
+                            }
+                        }
+                    }
+                }
+                );
+        txtField13.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setBranchNm("");
+                                oTrans.getModel().getModel().setLocation("");
+                                txtField14.setText("");
+                                initFields(pnEditMode);
+                            }
+                        }
+                    }
+                }
+                );
+        tabPCustCont.getSelectionModel()
+                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+                    pnRow = 0;
+                    btnTabRem.setVisible(false);
+                }
+                );
+    }
+
+    @Override
+    public void clearTables() {
+        locationData.clear();
+        actMembersData.clear();
+        actVhclModelData.clear();
+    }
+
+    @Override
+    public void clearFields() {
+        lblActivityID.setText("");
+        lblActivityIDValue.setText("");
+        CustomCommonUtil.setText("", txtField02, txtField06,
+                txtField11, txtField12, txtField13, txtField14);
+        CustomCommonUtil.setText("", textArea07, textArea08,
+                textArea09, textArea10);
+        CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate, lblApprovedBy);
+        dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
+        dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
+        comboBox05.setValue("");
+        txtField15.setText("0");
+        txtField16.setText("0.00");
+    }
+
+    @Override
+    public void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+
+        CustomCommonUtil.setDisable(!lbShow, dateFrom03, dateTo04, comboBox05, textArea07, textArea08,
+                textArea09, textArea10, txtField11, txtField13, txtField15, txtField16);
+        txtField06.setDisable(!(lbShow && !comboBox05.getValue().isEmpty()));
+        txtField12.setDisable(!(lbShow && !txtField11.getText().isEmpty()));
+
+        CustomCommonUtil.setVisible(false, btnActCancel, btnTabRem, btnEdit, btnPrint);
+        CustomCommonUtil.setManaged(false, btnActCancel, btnTabRem, btnEdit, btnPrint);
+        CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel, btnTabAdd);
+        CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel, btnTabAdd);
+        btnAdd.setVisible(!lbShow);
+        btnAdd.setManaged(!lbShow);
+        btnTabAdd.setDisable(!lbShow);
+//        btnActivityHistory.setVisible(false);
+//        btnActivityHistory.setManaged(false);
+        if (fnValue == EditMode.READY) {
+            if (lblCancelStatus.getText().equals("Cancelled")) {
+                CustomCommonUtil.setVisible(false, btnActCancel, btnEdit, btnPrint);
+                CustomCommonUtil.setManaged(false, btnActCancel, btnEdit, btnPrint);
+//                btnActivityHistory.setVisible(true);
+//                btnActivityHistory.setManaged(true);
+            } else {
+                CustomCommonUtil.setVisible(true, btnActCancel, btnEdit, btnPrint);
+                CustomCommonUtil.setManaged(true, btnActCancel, btnEdit, btnPrint);
+//                btnActivityHistory.setVisible(true);
+//                btnActivityHistory.setManaged(true);
+            }
+        }
+
+    }
+
+    private boolean checkExistingActivityInformation() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.validateExistingRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord((String) loJSON.get("sActvtyID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadActivityLocationTable();
+                    loadActMembersTable();
+                    loadActivityVehicleTable();
+                    loadMasterFields();
+                    pnEditMode = EditMode.READY;
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            switch (pnEditMode) {
+                case EditMode.ADDNEW:
+                    LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+                    setDisable(fbEmpty || foItem.isBefore(minDate));
+                    break;
+                case EditMode.UPDATE:
+                    setDisable(fbEmpty || foItem.isBefore(dateFrom03.getValue()));
+                    break;
+            }
+        }
+    };
+
+    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = dateFrom03.getValue();
+            setDisable(fbEmpty || foItem.isBefore(minDate));
+        }
+    };
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
+                return false;
+            } else {
+                switch (String.valueOf(oTrans.getModel().getModel().getEventTyp())) {
+                    case "eve":
+                        comboBox05.setValue("EVENT");
+                        break;
+                    case "sal":
+                        comboBox05.setValue("SALES CALL");
+                        break;
+                    case "pro":
+                        comboBox05.setValue("PROMO");
+                        break;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void loadActivityPrint() {
         try {
             Stage stage = new Stage();
 
@@ -754,9 +891,9 @@ public class ActivityInformationController implements Initializable, ScreenInter
 
             ActivityPrintController loControl = new ActivityPrintController();
             loControl.setGRider(oApp);
-            loControl.setTransNox(sTransNo);
+            loControl.setObject(oTrans);
+            loControl.setTransNo(oTrans.getModel().getModel().getActvtyID());
             fxmlLoader.setController(loControl);
-            //load the main interface
             Parent parent = fxmlLoader.load();
 
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -769,7 +906,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 stage.setY(event.getScreenY() - yOffset);
             });
 
-            //set the main interface as the scene
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
@@ -793,7 +929,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
 
-            //load the main interface
             Parent parent = fxmlLoader.load();
 
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -806,7 +941,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 stage.setY(event.getScreenY() - yOffset);
             });
 
-            //set the main interface as the scene/*
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
@@ -820,75 +954,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
     }
 
-    private void loadActivityInformation() {
-        if (oTransActivity.getModel().getModel().getActvtyID() != null) {
-            lblActivityID.setText("ACTIVITY ID: ");
-            lblActivityIDValue.setText(oTransActivity.getModel().getModel().getActvtyID());
-        } else {
-            lblActivityIDValue.setText("");
-            lblActivityID.setText("");
-        }
-        txtField02.setText(oTransActivity.getModel().getModel().getActNo());
-        if (oTransActivity.getModel().getModel().getDateFrom() != null && !oTransActivity.getModel().getModel().getDateFrom().toString().isEmpty()) {
-            dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getDateFrom())));
-        }
-        if (oTransActivity.getModel().getModel().getDateThru() != null && !oTransActivity.getModel().getModel().getDateThru().toString().isEmpty()) {
-            dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getDateThru())));
-        }
-        if (oTransActivity.getModel().getModel().getEventTyp() != null && !oTransActivity.getModel().getModel().getEventTyp().trim().isEmpty()) {
-            switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
-                case "eve":
-                    comboBox05.setValue("EVENT");
-                    break;
-                case "sal":
-                    comboBox05.setValue("SALES CALL");
-                    break;
-                case "pro":
-                    comboBox05.setValue("PROMO");
-                    break;
-            }
-        }
-        txtField06.setText(oTransActivity.getModel().getModel().getActTypDs());
-        textArea07.setText(oTransActivity.getModel().getModel().getActTitle());
-        textArea08.setText(oTransActivity.getModel().getModel().getActDesc());
-        textArea09.setText(oTransActivity.getModel().getModel().getLogRemrk());
-        textArea10.setText(oTransActivity.getModel().getModel().getRemarks());
-        txtField11.setText(oTransActivity.getModel().getModel().getDeptName());
-        txtField12.setText(oTransActivity.getModel().getModel().getEmpInCharge());
-        txtField13.setText(oTransActivity.getModel().getModel().getBranchNm());
-        txtField14.setText(oTransActivity.getModel().getModel().getLocation());
-        txtField15.setText(String.valueOf(oTransActivity.getModel().getModel().getTrgtClnt()));
-        txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransActivity.getModel().getModel().getRcvdBdgt()))));
-
-//        if (oTransActivity.getModel().getModel().getApproved() != null) {
-//            lblApprovedBy.setText(oTransActivity.getModel().getModel().getApproved());
-//            if (oTransActivity.getModel().getModel().getApprovedDte() != null && !oTransActivity.getModel().getModel().getApprovedDte().toString().isEmpty()) {
-//                lblApprovedDate.setText(CustomCommonUtil.xsDateShort(oTransActivity.getModel().getModel().getApprovedDte()));//dApproved
-//            }
-//        } else {
-//            lblApprovedBy.setText("");
-//            lblApprovedDate.setText("");//dApproved
-//        }
-        switch (oTransActivity.getModel().getModel().getTranStat()) {
-            case "1":
-                lblCancelStatus.setText("Active");
-                break;
-            case "2":
-                lblCancelStatus.setText("Cancelled");
-                break;
-            case "3":
-                lblCancelStatus.setText("Approved");
-                break;
-            default:
-                lblCancelStatus.setText("");
-                break;
-        }
-    }
-
     private void loadActLocationDialog(Integer fnRow, boolean isAdd) {
-        /**
-         * if state = true : ADD else if state = false : UPDATE *
-         */
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -897,11 +963,11 @@ public class ActivityInformationController implements Initializable, ScreenInter
             loControl.setGRider(oApp);
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
-            loControl.setObject(oTransActivity);
-            loControl.setProvID(String.valueOf(oTransActivity.getActLocation(0, "sProvIDxx").toString()));
-            loControl.setProvName(String.valueOf(oTransActivity.getActLocation(0, "sProvName")));
+            loControl.setObject(oTrans);
+            loControl.setProvID(String.valueOf(oTrans.getActLocation(0, "sProvIDxx").toString()));
+            loControl.setProvName(String.valueOf(oTrans.getActLocation(0, "sProvName")));
             fxmlLoader.setController(loControl);
-            //load the main interface
+
             Parent parent = fxmlLoader.load();
 
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -914,7 +980,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 stage.setY(event.getScreenY() - yOffset);
             });
 
-            //set the main interface as the scene/*
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
@@ -946,19 +1011,19 @@ public class ActivityInformationController implements Initializable, ScreenInter
     private void loadActivityLocationTable() {
         locationData.clear();
         String sAddress = "";
-        for (lnCtr = 0; lnCtr <= oTransActivity.getActLocationList().size() - 1; lnCtr++) {
-            sAddress = oTransActivity.getActLocation(lnCtr, "sAddressx").toString().toUpperCase() + " " + oTransActivity.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase() + " " + oTransActivity.getActLocation(lnCtr, "sTownName").toString().toUpperCase() + ", " + oTransActivity.getActLocation(lnCtr, "sProvName").toString().toUpperCase();
+        for (lnCtr = 0; lnCtr <= oTrans.getActLocationList().size() - 1; lnCtr++) {
+            sAddress = oTrans.getActLocation(lnCtr, "sAddressx").toString().toUpperCase() + " " + oTrans.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase() + " " + oTrans.getActLocation(lnCtr, "sTownName").toString().toUpperCase() + ", " + oTrans.getActLocation(lnCtr, "sProvName").toString().toUpperCase();
             locationData.add(new ActivityLocation(
                     String.valueOf(lnCtr + 1), //ROW
                     sAddress,
-                    oTransActivity.getActLocation(lnCtr, "sTownIDxx").toString().toUpperCase(),
-                    oTransActivity.getActLocation(lnCtr, "sTownName").toString().toUpperCase(),
-                    oTransActivity.getActLocation(lnCtr, "sCompnynx").toString().toUpperCase(),
-                    oTransActivity.getActLocation(lnCtr, "sZippCode").toString(),
-                    oTransActivity.getActLocation(lnCtr, "sProvIDxx").toString(),
-                    oTransActivity.getActLocation(lnCtr, "sProvName").toString().toUpperCase(),
-                    oTransActivity.getActLocation(lnCtr, "sBrgyIDxx").toString(),
-                    oTransActivity.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase()
+                    oTrans.getActLocation(lnCtr, "sTownIDxx").toString().toUpperCase(),
+                    oTrans.getActLocation(lnCtr, "sTownName").toString().toUpperCase(),
+                    oTrans.getActLocation(lnCtr, "sCompnynx").toString().toUpperCase(),
+                    oTrans.getActLocation(lnCtr, "sZippCode").toString(),
+                    oTrans.getActLocation(lnCtr, "sProvIDxx").toString(),
+                    oTrans.getActLocation(lnCtr, "sProvName").toString().toUpperCase(),
+                    oTrans.getActLocation(lnCtr, "sBrgyIDxx").toString(),
+                    oTrans.getActLocation(lnCtr, "sBrgyName").toString().toUpperCase()
             ));
         }
     }
@@ -980,19 +1045,15 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
         }
     }
-    //Activity Members Entry Dialog
 
     private void loadActivityMemberDialog() throws IOException {
-        /**
-         * if state = true : ADD else if state = false : UPDATE *
-         */
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/ActivityMember.fxml"));
             ActivityMemberController loControl = new ActivityMemberController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransActivity);
+            loControl.setObject(oTrans);
             fxmlLoader.setController(loControl);
 
             //load the main interface
@@ -1025,14 +1086,14 @@ public class ActivityInformationController implements Initializable, ScreenInter
     private void loadActMembersTable() {
         actMembersData.clear();
         int lnRow = 1;
-        for (lnCtr = 0; lnCtr <= oTransActivity.getActMemberList().size() - 1; lnCtr++) {
-            if (oTransActivity.getActMember(lnCtr, "cOriginal").equals("1")) {
+        for (lnCtr = 0; lnCtr <= oTrans.getActMemberList().size() - 1; lnCtr++) {
+            if (oTrans.getActMember(lnCtr, "cOriginal").equals("1")) {
                 actMembersData.add(new ActivityMember(
                         String.valueOf(lnRow), //ROW
                         String.valueOf(lnCtr + 1),
-                        String.valueOf(oTransActivity.getActMember(lnCtr, "sDeptName")).toUpperCase(),
-                        String.valueOf(oTransActivity.getActMember(lnCtr, "sEmployID")).toUpperCase(),
-                        String.valueOf(oTransActivity.getActMember(lnCtr, "sCompnyNm")).toUpperCase()
+                        String.valueOf(oTrans.getActMember(lnCtr, "sDeptName")).toUpperCase(),
+                        String.valueOf(oTrans.getActMember(lnCtr, "sEmployID")).toUpperCase(),
+                        String.valueOf(oTrans.getActMember(lnCtr, "sCompnyNm")).toUpperCase()
                 ));
                 lnRow++;
             }
@@ -1068,11 +1129,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
     }
 
-    //Activity Vehicle Entry Dialog
     private void loadActivityVehicleDialog() throws IOException {
-        /**
-         * if state = true : ADD else if state = false : UPDATE *
-         */
         try {
             Stage stage = new Stage();
 
@@ -1080,10 +1137,9 @@ public class ActivityInformationController implements Initializable, ScreenInter
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/ActivityVehicle.fxml"));
             ActivityVehicleController loControl = new ActivityVehicleController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransActivity);
+            loControl.setObject(oTrans);
             fxmlLoader.setController(loControl);
 
-            //load the main interface
             Parent parent = fxmlLoader.load();
 
             parent.setOnMousePressed((MouseEvent event) -> {
@@ -1096,7 +1152,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 stage.setY(event.getScreenY() - yOffset);
             });
 
-            //set the main interface as the scene/*
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
@@ -1112,13 +1167,13 @@ public class ActivityInformationController implements Initializable, ScreenInter
 
     private void loadActivityVehicleTable() {
         actVhclModelData.clear();
-        if (oTransActivity.getActVehicleList() != null) {
-            for (lnCtr = 0; lnCtr <= oTransActivity.getActVehicleList().size() - 1; lnCtr++) {
+        if (oTrans.getActVehicleList() != null) {
+            for (lnCtr = 0; lnCtr <= oTrans.getActVehicleList().size() - 1; lnCtr++) {
                 actVhclModelData.add(new ActivityVehicle(
                         String.valueOf(lnCtr + 1), //ROW
-                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sSerialID")).toUpperCase(),
-                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sCSNoxxxx")).toUpperCase(),
-                        String.valueOf(oTransActivity.getActVehicle(lnCtr, "sDescript")).toString().toUpperCase()
+                        String.valueOf(oTrans.getActVehicle(lnCtr, "sSerialID")).toUpperCase(),
+                        String.valueOf(oTrans.getActVehicle(lnCtr, "sCSNoxxxx")).toUpperCase(),
+                        String.valueOf(oTrans.getActVehicle(lnCtr, "sDescript")).toUpperCase()
                 ));
             }
         }
@@ -1153,89 +1208,4 @@ public class ActivityInformationController implements Initializable, ScreenInter
         }
     }
 
-    private void clearTables() {
-        locationData.clear();
-        actMembersData.clear();
-        actVhclModelData.clear();
-    }
-
-    private void clearFields() {
-        lblActivityID.setText("");
-        lblActivityIDValue.setText("");
-        txtField02.setText("");
-        dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
-        dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
-        comboBox05.setValue("");
-        txtField06.setText("");
-        textArea07.setText("");
-        textArea08.setText("");
-        textArea09.setText("");
-        textArea10.setText("");
-        txtField11.setText("");
-        txtField12.setText("");
-        txtField13.setText("");
-        txtField14.setText("");
-        txtField15.setText("0");
-        txtField16.setText("0.00");
-        lblCancelStatus.setText("");
-        lblApprovedDate.setText("");
-        lblApprovedBy.setText("");
-    }
-
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        dateFrom03.setDisable(!lbShow);
-        dateTo04.setDisable(!lbShow);
-        comboBox05.setDisable(!lbShow);
-        txtField06.setDisable(!(lbShow && !comboBox05.getValue().isEmpty()));
-        textArea07.setDisable(!lbShow);
-        textArea08.setDisable(!lbShow);
-        textArea09.setDisable(!lbShow);
-        textArea10.setDisable(!lbShow);
-        txtField11.setDisable(!lbShow);
-        txtField12.setDisable(!(lbShow && !txtField11.getText().isEmpty()));
-        txtField13.setDisable(!lbShow);
-        txtField15.setDisable(!lbShow);
-        txtField16.setDisable(!lbShow);
-        btnActCancel.setVisible(false);
-        btnActCancel.setManaged(false);
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
-        btnTabAdd.setVisible(lbShow);
-        btnTabAdd.setDisable(!lbShow);
-        btnTabRem.setVisible(false);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-//        btnActivityHistory.setVisible(false);
-//        btnActivityHistory.setManaged(false);
-        btnPrint.setVisible(false);
-        btnPrint.setManaged(false);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-
-        if (fnValue == EditMode.READY) {
-            if (lblCancelStatus.getText().equals("Cancelled")) {
-                btnActCancel.setVisible(false);
-                btnActCancel.setManaged(false);
-                btnEdit.setVisible(false);
-                btnEdit.setManaged(false);
-                btnPrint.setVisible(false);
-                btnPrint.setManaged(false);
-//                btnActivityHistory.setVisible(true);
-//                btnActivityHistory.setManaged(true);
-            } else {
-                btnActCancel.setVisible(true);
-                btnActCancel.setManaged(true);
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnPrint.setVisible(true);
-                btnPrint.setManaged(true);
-//                btnActivityHistory.setVisible(true);
-//                btnActivityHistory.setManaged(true);
-            }
-        }
-
-    }
 }

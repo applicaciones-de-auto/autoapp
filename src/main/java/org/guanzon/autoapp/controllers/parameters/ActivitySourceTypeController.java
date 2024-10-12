@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.parameters;
 
 import java.net.URL;
@@ -28,6 +24,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Activity_Source;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -36,37 +33,21 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
-public class ActivitySourceTypeController implements Initializable, ScreenInterface {
+public class ActivitySourceTypeController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Activity_Source oTransActivity;
+    private Activity_Source oTrans;
     private final String pxeModuleName = "Activity Source";
     private int pnEditMode;
     ObservableList<String> cType = FXCollections.observableArrayList("EVENT", "SALES CALL", "PROMO");
     @FXML
-    private Button btnAdd;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnActive, btnBrowse, btnClose;
     @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnEdit;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnDeactivate;
-    @FXML
-    private Button btnActive;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private TextField txtField01;
+    private TextField txtField01, txtField03;
     @FXML
     private CheckBox cboxActivate;
-    @FXML
-    private TextField txtField03;
     @FXML
     private ComboBox<String> comboBox02;
 
@@ -84,48 +65,31 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
+
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
         clearFields();
-        initComboBoxAction();
-        comboBox02.setItems(cType);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void initComboBoxAction() {
-        comboBox02.setOnAction(e
-                -> {
-            int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (selectedComboBox02 >= 0) {
-                    switch (selectedComboBox02) {
-                        case 0:
-                            oTransActivity.getModel().getModel().setEventTyp("eve");
-                            break;
-                        case 1:
-                            oTransActivity.getModel().getModel().setEventTyp("sal");
-                            break;
-                        case 2:
-                            oTransActivity.getModel().getModel().setEventTyp("pro");
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-        );
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    private void loadActivitySource() {
-        txtField01.setText(oTransActivity.getModel().getModel().getActTypID());
-        if (oTransActivity.getModel().getModel().getEventTyp() != null && !oTransActivity.getModel().getModel().getEventTyp().trim().isEmpty()) {
-            switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getActTypID());
+        if (oTrans.getModel().getModel().getEventTyp() != null && !oTrans.getModel().getModel().getEventTyp().trim().isEmpty()) {
+            switch (String.valueOf(oTrans.getModel().getModel().getEventTyp())) {
                 case "eve":
                     comboBox02.setValue("EVENT");
                     break;
@@ -137,48 +101,33 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
                     break;
             }
         }
-        txtField03.setText(oTransActivity.getModel().getModel().getActTypDs());
-        if (oTransActivity.getModel().getModel().getRecdStat().equals("1")) {
+        txtField03.setText(oTrans.getModel().getModel().getActTypDs());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern actPat;
         actPat = Pattern.compile("[A-Za-z0-9 ,/'.]*");
         txtField03.setTextFormatter(new TextFormatterUtil(actPat));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
-    }
-
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    @Override
+    public void initLimiterFields() {
 
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        String txtFieldID = ((TextField) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        }
-    }
-
-    private void initTextFieldFocus() {
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField03);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
+
     /*Set TextField Value to Master Class*/
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -191,7 +140,7 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
             /*Lost Focus*/
             switch (lnIndex) {
                 case 3:
-                    oTransActivity.getModel().getModel().setActTypDs(lsValue);
+                    oTrans.getModel().getModel().setActTypDs(lsValue);
                     break;
             }
         } else {
@@ -199,31 +148,58 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
         }
     };
 
-    private void initButtons() {
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField03);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+
+    }
+
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        String txtFieldID = ((TextField) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (txtFieldID) {
+            }
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+        }
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
-                loJSON = oTransActivity.newRecord();
+                oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadActivitySource();
-                    pnEditMode = oTransActivity.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransActivity.updateRecord();
-                pnEditMode = oTransActivity.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -243,14 +219,14 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
                     if (!setSelection()) {
                         return;
                     }
-                    loJSON = oTransActivity.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Activity Source Information", (String) loJSON.get("message"));
-                        loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActTypID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadActivitySource();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransActivity.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, "Activity Source Information", (String) loJSON.get("message"));
@@ -262,7 +238,7 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransActivity = new Activity_Source(oApp, false, oApp.getBranchCode());
+                    oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -274,50 +250,52 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
                         return;
                     }
                 }
-                poJSon = oTransActivity.searchRecord("", false);
+                poJSon = oTrans.searchRecord("", false);
                 if ("success".equals((String) poJSon.get("result"))) {
-                    loadActivitySource();
-                    pnEditMode = oTransActivity.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search  Activity Source Information", (String) poJSon.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransActivity.getModel().getModel().getActTypID();
-                    poJSon = oTransActivity.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getActTypID();
+                    poJSon = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, " Activity Source Information", (String) poJSon.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, " Activity Source Information", (String) poJSon.get("message"));
                     }
-                    loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID()
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActTypID()
                     );
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadActivitySource();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransActivity.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransActivity.getModel().getModel().getActTypID();
-                    poJSon = oTransActivity.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getActTypID();
+                    poJSon = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) poJSon.get("result"))) {
                         ShowMessageFX.Information(null, " Activity Source Information", (String) poJSon.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, " Activity Source Information", (String) poJSon.get("message"));
                     }
-                    loJSON = oTransActivity.openRecord(oTransActivity.getModel().getModel().getActTypID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActTypID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadActivitySource();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransActivity.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -335,7 +313,7 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
                 ShowMessageFX.Warning(null, "Activity Source Type", "Please select `Activity Source Type` value.");
                 return false;
             } else {
-                switch (String.valueOf(oTransActivity.getModel().getModel().getEventTyp())) {
+                switch (String.valueOf(oTrans.getModel().getModel().getEventTyp())) {
                     case "eve":
                         comboBox02.setValue("EVENT");
                         break;
@@ -351,45 +329,73 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
         return true;
     }
 
-    private void clearFields() {
-        cboxActivate.setSelected(false);
-        txtField01.clear();
-        comboBox02.setValue("");
-        txtField03.clear();
+    @Override
+    public void initComboBoxItems() {
+        comboBox02.setItems(cType);
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+        comboBox02.setOnAction(e
+                -> {
+            int selectedComboBox02 = comboBox02.getSelectionModel().getSelectedIndex();
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (selectedComboBox02 >= 0) {
+                    switch (selectedComboBox02) {
+                        case 0:
+                            oTrans.getModel().getModel().setEventTyp("eve");
+                            break;
+                        case 1:
+                            oTrans.getModel().getModel().setEventTyp("sal");
+                            break;
+                        case 2:
+                            oTrans.getModel().getModel().setEventTyp("pro");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        );
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        comboBox02.setValue("");
+        CustomCommonUtil.setText("", txtField01, txtField03);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
-        comboBox02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
+        CustomCommonUtil.setDisable(!lbShow, comboBox02, txtField03);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            if (oTransActivity.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
+
 }

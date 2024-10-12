@@ -39,12 +39,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VehicleInquiryFollowUpController implements Initializable {
 
     private GRider oApp;
-    private FollowUp oTransFollow;
+    private FollowUp oTrans;
     private Inquiry oTransInquiry;
     private int pnRow = 0;
     private boolean pbState = false;
@@ -72,7 +72,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
     }
 
     public void setObject(FollowUp foValue) {
-        oTransFollow = foValue;
+        oTrans = foValue;
     }
 
     public void setTableRows(int row) {
@@ -97,55 +97,15 @@ public class VehicleInquiryFollowUpController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        comboBox02.setItems(cMedium);
         datePicker03.setDayCellFactory(callDate);
-
-        comboBox02.setOnAction(event -> {
-            if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                txtField04.setText("");
-                oTransFollow.getMasterModel().getMasterModel().setPlatform("");
-                String lsMethod = "";
-                switch (comboBox02.getSelectionModel().getSelectedIndex()) {
-                    case 0:
-                        lsMethod = "TEXT";
-                        break;
-                    case 1:
-                        lsMethod = "CALL";
-                        break;
-                    case 2:
-                        lsMethod = "SOCIAL MEDIA";
-                        break;
-                    case 3:
-                        lsMethod = "EMAIL";
-                        break;
-                    case 4:
-                        lsMethod = "VIBER";
-                        break;
-                }
-                oTransFollow.getMasterModel().getMasterModel().setMethodCd(lsMethod);
-            }
-            initFields();
-        }
-        );
-        datePicker03.setOnAction(e -> {
-            oTransFollow.setMaster(8, SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-        }
-        );
-        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransFollow.getMasterModel().getMasterModel().setSclMedia("");
-                    oTransFollow.getMasterModel().getMasterModel().setPlatform("");
-                }
-            }
-        }
-        );
         initCapitalizationFields();
         initTextKeyPressed();
-        initTextAreaFocus();
-        initButtonClick();
-        loadFollowUpField();
+        initTextFieldFocus();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
+        loadMasterFields();
         initFields();
     }
 
@@ -154,6 +114,51 @@ public class VehicleInquiryFollowUpController implements Initializable {
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         CustomCommonUtil.setCapsLockBehavior(textArea05);
         CustomCommonUtil.setCapsLockBehavior(textArea06);
+    }
+
+    private void loadMasterFields() {
+        JSONObject loJSON = pbState ? null : oTrans.openTransaction(psRefNox);
+        if (pbState || "success".equals(loJSON.get("result"))) {
+            Model_Inquiry_FollowUp master = oTrans.getMasterModel().getMasterModel();
+
+            txtFieldRef.setText(master.getReferNo());
+            txtField01.setText(CustomCommonUtil.xsDateShort(master.getTransactDte()));
+
+            if (master.getMethodCd() != null) {
+                String lnMethod = "";
+                switch (master.getMethodCd()) {
+                    case "TEXT":
+                        lnMethod = "0";
+                        break;
+                    case "CALL":
+                        lnMethod = "1";
+                        break;
+                    case "SOCIAL MEDIA":
+                        lnMethod = "2";
+                        break;
+                    case "EMAIL":
+                        lnMethod = "3";
+                        break;
+                    case "VIBER":
+                        lnMethod = "4";
+                        break;
+                    default:
+                        lnMethod = "-1";
+                        break;
+                }
+                comboBox02.getSelectionModel().select(Integer.parseInt(lnMethod));
+            }
+
+            if (master.getFollowUpDte() != null) {
+                datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(master.getFollowUpDte())));
+            }
+
+            txtField04.setText(master.getPlatform());
+            txtField07.setText(String.valueOf(master.getFollowUpTme()));
+            textArea05.setText(master.getMessage());
+            textArea06.setText(master.getRemarks());
+
+        }
     }
 
     private void initTextKeyPressed() {
@@ -174,28 +179,38 @@ public class VehicleInquiryFollowUpController implements Initializable {
         } else {
             lsValue = lsTxtField.getText();
         }
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField04":
-                    loJSON = oTransFollow.searchOnlinePlatform(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        txtField04.setText(oTransFollow.getMasterModel().getMasterModel().getPlatform());
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField04.setText("");
-                        txtField04.requestFocus();
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField04":
+                            loJSON = oTrans.searchOnlinePlatform(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {
+                                txtField04.setText(oTrans.getMasterModel().getMasterModel().getPlatform());
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField04.setText("");
+                                txtField04.requestFocus();
+                                return;
+                            }
+                            break;
                     }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -215,13 +230,54 @@ public class VehicleInquiryFollowUpController implements Initializable {
         }
     }
 
-    private void initTextAreaFocus() {
+    private void initTextFieldFocus() {
         textArea05.focusedProperty().addListener(txtArea_Focus);
         textArea06.focusedProperty().addListener(txtArea_Focus);
         txtField07.focusedProperty().addListener(txtField_Focus);
     }
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(loTextField.getId().substring(8, 10));
+        String lsValue = loTextField.getText();
 
-    private void initButtonClick() {
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 7:
+                    oTrans.getMasterModel().getMasterModel().setFollowUpTme(Time.valueOf(lsValue));
+                    break;
+            }
+        } else {
+            loTextField.selectAll();
+        }
+    };
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
+        String lsValue = loTextArea.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 5:
+                    oTrans.getMasterModel().getMasterModel().setMessage(lsValue);
+                    break;
+                case 6:
+                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    break;
+            }
+        } else {
+            loTextArea.selectAll();
+        }
+    };
+
+    private void initButtonsClick() {
         btnClose.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
     }
@@ -231,7 +287,9 @@ public class VehicleInquiryFollowUpController implements Initializable {
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnSave":
                 LocalDate followUp = datePicker03.getValue();
@@ -310,13 +368,13 @@ public class VehicleInquiryFollowUpController implements Initializable {
                         return;
                     }
                     if (setSelection()) {
-                        oTransFollow.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
-                        oTransFollow.getMasterModel().getMasterModel().setTransNo(psSourceNo);
-                        oTransFollow.getMasterModel().setTargetBranchCd(psBranchCd);
-                        loJSON = oTransFollow.saveTransaction();
+                        oTrans.getMasterModel().getMasterModel().setEmployID(oApp.getUserID());
+                        oTrans.getMasterModel().getMasterModel().setTransNo(psSourceNo);
+                        oTrans.getMasterModel().setTargetBranchCd(psBranchCd);
+                        loJSON = oTrans.saveTransaction();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-                            CommonUtils.closeStage(btnClose);
+                            CommonUtils.closeStage(btnSave);
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             return;
@@ -333,6 +391,89 @@ public class VehicleInquiryFollowUpController implements Initializable {
                 break;
         }
         initFields();
+    }
+
+    private void initComboBoxItems() {
+        comboBox02.setItems(cMedium);
+    }
+
+    private void initFieldsAction() {
+        comboBox02.setOnAction(event -> {
+            if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
+                txtField04.setText("");
+                oTrans.getMasterModel().getMasterModel().setPlatform("");
+                String lsMethod = "";
+                switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        lsMethod = "TEXT";
+                        break;
+                    case 1:
+                        lsMethod = "CALL";
+                        break;
+                    case 2:
+                        lsMethod = "SOCIAL MEDIA";
+                        break;
+                    case 3:
+                        lsMethod = "EMAIL";
+                        break;
+                    case 4:
+                        lsMethod = "VIBER";
+                        break;
+                }
+                oTrans.getMasterModel().getMasterModel().setMethodCd(lsMethod);
+            }
+            initFields();
+        }
+        );
+        datePicker03.setOnAction(e -> {
+            oTrans.setMaster(8, SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+        }
+        );
+    }
+
+    private void initTextFieldsProperty() {
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTrans.getMasterModel().getMasterModel().setSclMedia("");
+                    oTrans.getMasterModel().getMasterModel().setPlatform("");
+                }
+            }
+        }
+        );
+    }
+
+    private Callback<DatePicker, DateCell> callDate = new Callback<DatePicker, DateCell>() {
+        @Override
+        public DateCell call(final DatePicker param) {
+            return new DateCell() {
+                @Override
+                public void updateItem(LocalDate fbItem, boolean fbEmpty) {
+                    super.updateItem(fbItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
+                    LocalDate today = LocalDate.now();
+                    setDisable(fbEmpty || fbItem.compareTo(today) < 0);
+                }
+            };
+        }
+    };
+
+    private void initFields() {
+        if (pbState) {
+            CustomCommonUtil.setDisable(false, datePicker03, txtField07,
+                    comboBox02, textArea05, textArea06);
+            btnSave.setVisible(true);
+            btnSave.setManaged(true);
+            if (comboBox02.getSelectionModel().getSelectedIndex() == 2) {
+                txtField04.setDisable(false);
+            } else {
+                txtField04.setDisable(true);
+            }
+        } else {
+            CustomCommonUtil.setDisable(true, datePicker03, txtField07,
+                    comboBox02, textArea05, textArea06);
+            btnSave.setVisible(false);
+            btnSave.setManaged(false);
+        }
     }
 
     /*Set ComboBox Value to Master Class*/
@@ -361,135 +502,8 @@ public class VehicleInquiryFollowUpController implements Initializable {
                     lsMethod = "VIBER";
                     break;
             }
-            oTransFollow.getMasterModel().getMasterModel().setMethodCd(lsMethod);
+            oTrans.getMasterModel().getMasterModel().setMethodCd(lsMethod);
         }
         return true;
-    }
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTextField.getId().substring(8, 10));
-        String lsValue = loTextField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 7:
-                    oTransFollow.getMasterModel().getMasterModel().setFollowUpTme(Time.valueOf(lsValue));
-                    break;
-            }
-        } else {
-            loTextField.selectAll();
-        }
-    };
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
-        String lsValue = loTextArea.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 5:
-                    oTransFollow.getMasterModel().getMasterModel().setMessage(lsValue);
-                    break;
-                case 6:
-                    oTransFollow.getMasterModel().getMasterModel().setRemarks(lsValue);
-                    break;
-            }
-        } else {
-            loTextArea.selectAll();
-        }
-    };
-
-    private Callback<DatePicker, DateCell> callDate = new Callback<DatePicker, DateCell>() {
-        @Override
-        public DateCell call(final DatePicker param) {
-            return new DateCell() {
-                @Override
-                public void updateItem(LocalDate fbItem, boolean fbEmpty) {
-                    super.updateItem(fbItem, fbEmpty); //To change body of generated methods, choose Tools | Templates.
-                    LocalDate today = LocalDate.now();
-                    setDisable(fbEmpty || fbItem.compareTo(today) < 0);
-                }
-            };
-        }
-    };
-
-    private void loadFollowUpField() {
-        JSONObject loJSON = pbState ? null : oTransFollow.openTransaction(psRefNox);
-
-        if (pbState || "success".equals(loJSON.get("result"))) {
-            Model_Inquiry_FollowUp master = oTransFollow.getMasterModel().getMasterModel();
-
-            txtFieldRef.setText(master.getReferNo());
-            txtField01.setText(CustomCommonUtil.xsDateShort(master.getTransactDte()));
-
-            if (master.getMethodCd() != null) {
-                String lnMethod = "";
-                switch (master.getMethodCd()) {
-                    case "TEXT":
-                        lnMethod = "0";
-                        break;
-                    case "CALL":
-                        lnMethod = "1";
-                        break;
-                    case "SOCIAL MEDIA":
-                        lnMethod = "2";
-                        break;
-                    case "EMAIL":
-                        lnMethod = "3";
-                        break;
-                    case "VIBER":
-                        lnMethod = "4";
-                        break;
-                    default:
-                        lnMethod = "-1";
-                        break;
-                }
-                comboBox02.getSelectionModel().select(Integer.parseInt(lnMethod));
-            }
-
-            if (master.getFollowUpDte() != null) {
-                datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(master.getFollowUpDte())));
-            }
-
-            txtField04.setText(master.getPlatform());
-            txtField07.setText(String.valueOf(master.getFollowUpTme()));
-            textArea05.setText(master.getMessage());
-            textArea06.setText(master.getRemarks());
-
-        }
-    }
-
-    private void initFields() {
-        if (pbState) {
-            datePicker03.setDisable(false);
-            txtField07.setDisable(false);
-            comboBox02.setDisable(false);
-            textArea05.setDisable(false);
-            textArea06.setDisable(false);
-            btnSave.setVisible(true);
-            btnSave.setManaged(true);
-            if (comboBox02.getSelectionModel().getSelectedIndex() == 2) {
-                txtField04.setDisable(false);
-            } else {
-                txtField04.setDisable(true);
-            }
-        } else {
-            datePicker03.setDisable(true);
-            txtField07.setDisable(true);
-            btnSave.setVisible(false);
-            btnSave.setManaged(false);
-            txtField04.setDisable(true);
-            comboBox02.setDisable(true);
-            textArea05.setDisable(true);
-            textArea06.setDisable(true);
-        }
     }
 }

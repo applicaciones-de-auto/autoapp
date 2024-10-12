@@ -122,11 +122,11 @@
                                                                         <TableColumn fx:id="tblindex02" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="VSP Date" />
                                                                         <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="VSP No." />
                                                                         <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
-                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="CS / Plate No." />
+                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="CS / Plate No." />
                                                                         <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Vehicle Description" />
                                                                         <TableColumn fx:id="tblindex07" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="DR Date" />
                                                                         <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="DR No." />
-                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Executive" />
+                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Agent" />
                                                                     </columns>
                                                                 </TableView>
                                                             </children>

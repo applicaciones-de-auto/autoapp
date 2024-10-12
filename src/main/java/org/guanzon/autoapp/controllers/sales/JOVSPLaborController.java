@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -31,7 +27,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class JOVSPLaborController implements Initializable, ScreenInterface {
 
@@ -43,9 +39,7 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
     private int pnRow = 0;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     @FXML
-    private Button btnAdd;
-    @FXML
-    private Button btnClose;
+    private Button btnAdd, btnClose;
     @FXML
     private TableView<Labor> tblViewLabor;
     @FXML
@@ -78,87 +72,10 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnAdd.setOnAction(this::handleButtonAction);
+
         initLaborTable();
         loadLaborTable();
-    }
-
-    private void handleButtonAction(ActionEvent event) {
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnClose":
-                CommonUtils.closeStage(btnClose);
-                break;
-            case "btnAdd":
-                ObservableList<Labor> selectedItems = FXCollections.observableArrayList();
-
-                // Collect selected items from the table
-                for (Labor item : tblViewLabor.getItems()) {
-                    if (item.getSelect().isSelected()) {
-                        selectedItems.add(item);
-                    }
-                }
-
-                // Check if no items are selected
-                if (selectedItems.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
-                    return;
-                }
-
-                // Confirmation before adding labor
-                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
-                    return;
-                }
-
-                int addedCount = 0;
-
-                // Iterate through selected items
-                for (Labor item : selectedItems) {
-                    String lsLaborID = item.getTblindex03_labor();
-                    String lsLaborDesc = item.getTblindex07_labor();
-                    String lsAmnt = item.getTblindex04_labor();
-                    String lsChargeType = item.getTblindex08_labor();
-                    String lsJO = item.getTblindex10_labor();
-
-                    // Skip adding if labor already has a job order
-                    if (!lsJO.isEmpty()) {
-                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already has a job order.");
-                        continue; // Skip this item and move to the next
-                    }
-
-                    // Check if the labor description already exists
-                    boolean isLaborExist = false;
-                    for (int lnCtr = 0; lnCtr <= oTransLabor.getJOLaborList().size() - 1; lnCtr++) {
-                        if (oTransLabor.getJOLaborModel().getDetailModel(lnCtr).getLaborDsc().equals(lsLaborDesc)) {
-                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already exists.");
-                            isLaborExist = true;
-                            break;
-                        }
-                    }
-
-                    // Add labor if it doesn't already exist
-                    if (!isLaborExist) {
-                        oTransLabor.addJOLabor();
-                        int lnRow = oTransLabor.getJOLaborList().size() - 1;
-                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborCde(lsLaborID);
-                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborDsc(lsLaborDesc);
-                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
-                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setPayChrge(lsChargeType);
-                        addedCount++;
-                    }
-                }
-
-                // Show result messages based on the number of added items
-                if (addedCount > 0) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Added labor successfully.");
-                } else {
-                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add labor");
-                }
-                CommonUtils.closeStage(btnAdd);
-                break;
-
-        }
+        initButtonsClick();
     }
 
     private void loadLaborTable() {
@@ -257,4 +174,87 @@ public class JOVSPLaborController implements Initializable, ScreenInterface {
         });
 
     }
+
+    private void initButtonsClick() {
+        btnClose.setOnAction(this::handleButtonAction);
+        btnAdd.setOnAction(this::handleButtonAction);
+    }
+
+    private void handleButtonAction(ActionEvent event) {
+        String lsButton = ((Button) event.getSource()).getId();
+        switch (lsButton) {
+            case "btnClose":
+                CommonUtils.closeStage(btnClose);
+                break;
+            case "btnAdd":
+                ObservableList<Labor> selectedItems = FXCollections.observableArrayList();
+
+                // Collect selected items from the table
+                for (Labor item : tblViewLabor.getItems()) {
+                    if (item.getSelect().isSelected()) {
+                        selectedItems.add(item);
+                    }
+                }
+
+                // Check if no items are selected
+                if (selectedItems.isEmpty()) {
+                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to add.");
+                    return;
+                }
+
+                // Confirmation before adding labor
+                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to add?")) {
+                    return;
+                }
+
+                int addedCount = 0;
+
+                // Iterate through selected items
+                for (Labor item : selectedItems) {
+                    String lsLaborID = item.getTblindex03_labor();
+                    String lsLaborDesc = item.getTblindex07_labor();
+                    String lsAmnt = item.getTblindex04_labor();
+                    String lsChargeType = item.getTblindex08_labor();
+                    String lsJO = item.getTblindex10_labor();
+
+                    // Skip adding if labor already has a job order
+                    if (!lsJO.isEmpty()) {
+                        ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already has a job order.");
+                        continue; // Skip this item and move to the next
+                    }
+
+                    // Check if the labor description already exists
+                    boolean isLaborExist = false;
+                    for (int lnCtr = 0; lnCtr <= oTransLabor.getJOLaborList().size() - 1; lnCtr++) {
+                        if (oTransLabor.getJOLaborModel().getDetailModel(lnCtr).getLaborDsc().equals(lsLaborDesc)) {
+                            ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add labor, " + lsLaborDesc + " already exists.");
+                            isLaborExist = true;
+                            break;
+                        }
+                    }
+
+                    // Add labor if it doesn't already exist
+                    if (!isLaborExist) {
+                        oTransLabor.addJOLabor();
+                        int lnRow = oTransLabor.getJOLaborList().size() - 1;
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborCde(lsLaborID);
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setLaborDsc(lsLaborDesc);
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setUnitPrce(new BigDecimal(lsAmnt.replace(",", "")));
+                        oTransLabor.getJOLaborModel().getDetailModel(lnRow).setPayChrge(lsChargeType);
+                        addedCount++;
+                    }
+                }
+
+                // Show result messages based on the number of added items
+                if (addedCount > 0) {
+                    ShowMessageFX.Information(null, pxeModuleName, "Added labor successfully.");
+                } else {
+                    ShowMessageFX.Error(null, pxeModuleName, "Failed to add labor");
+                }
+                CommonUtils.closeStage(btnAdd);
+                break;
+
+        }
+    }
+
 }

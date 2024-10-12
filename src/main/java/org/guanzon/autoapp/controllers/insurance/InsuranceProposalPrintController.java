@@ -3,8 +3,10 @@ package org.guanzon.autoapp.controllers.insurance;
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -35,7 +37,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceProposalPrintController implements Initializable, GPrintInterface {
 
@@ -44,7 +46,6 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Insurance Proposal Print";
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
     Map<String, Object> params = new HashMap<>();
@@ -87,9 +88,13 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
         btnPrint.setDisable(true);
         timeline = new Timeline();
         generateReport();
+        initButtonsClick();
+    }
 
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     @Override
@@ -144,7 +149,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     }
 
     private static String getValueNumberReport(String fsAmountString) {
-        String lsFormattedAmount = "";
+        String lsFormattedAmount = "0.00";
         DecimalFormat loNumFormat = new DecimalFormat("#,##0.00");
         if (fsAmountString != null) {
             if (fsAmountString.equals("0.00") || fsAmountString.isEmpty()) {
@@ -206,7 +211,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
                 case "y":
                     lsPolicyType = "TPL";
                     break;
-                case "n":
+                case "c":
                     lsPolicyType = "COMPREHENSIVE";
                     break;
                 case "b":
@@ -215,18 +220,16 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             }
             String lsTPLAmnt = "";
             String lsTPLPrem = "";
-            if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM() != null) {
-                if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM().equals("na")) {
-                    lsTPLAmnt = "N/A";
-                    lsTPLPrem = "N/A";
-                } else {
-                    lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
-                    lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
-                }
+            if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getInsTypID()).equals("c")) {
+                lsTPLAmnt = "N/A";
+                lsTPLPrem = "N/A";
+            } else {
+                lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
+                lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             }
             params.put("policyType", lsPolicyType);
-            params.put("enteredBy", "");  //getValueReport("enteredBy", "sEntryByx")
-            params.put("enteredDate", ""); //getValueDateReport("enteredDate", "dEntryDte")
+            params.put("enteredBy", System.getProperty("user.name"));
+            params.put("enteredDate", getValueDateReport("enteredDate", "dModified"));
             params.put("ownDamageAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getAONCAmt())));
             params.put("tplAmount", lsTPLAmnt);

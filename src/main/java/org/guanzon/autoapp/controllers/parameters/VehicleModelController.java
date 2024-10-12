@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.parameters;
 
 import java.net.URL;
@@ -20,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -28,6 +23,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Model;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -36,12 +32,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author Auto Group Programmers
+ * @author John Dave
  */
-public class VehicleModelController implements Initializable, ScreenInterface {
+public class VehicleModelController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
-    private Vehicle_Model oTransModel;
+    private Vehicle_Model oTrans;
     private final String pxeModuleName = "Vehicle Model";
     private int pnEditMode;
 
@@ -53,23 +49,13 @@ public class VehicleModelController implements Initializable, ScreenInterface {
     ObservableList<String> cBodyType = FXCollections.observableArrayList("SEDAN", "SUV", "HATCHBACK", "MPV", "MOTORCYCLE", "TRUCK");
     ObservableList<String> cUnitSize = FXCollections.observableArrayList("BANTAM", "SMALL", "MEDIUM", "LARGE");
     @FXML
-    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose;
+    private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose, btnActive;
     @FXML
-    private TextField txtField03;
+    private TextField txtField01, txtField02, txtField03;
     @FXML
     private CheckBox cboxActivate;
     @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private ComboBox<String> comboBox05;
-    @FXML
-    private ComboBox<String> comboBox06;
-    @FXML
-    private ComboBox<String> comboBox04;
-    @FXML
-    private Button btnActive;
+    private ComboBox<String> comboBox04, comboBox05, comboBox06;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -98,100 +84,63 @@ public class VehicleModelController implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransModel = new Vehicle_Model(oApp, false, oApp.getBranchCode());
-        initTextFieldPattern();
+        oTrans = new Vehicle_Model(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initCmboxFieldAction();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         clearFields();
-        comboBox04.setItems(cUnitType);
-        comboBox05.setItems(cBodyType);
-        comboBox06.setItems(cUnitSize);
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadModelFields() {
-        txtField01.setText(oTransModel.getModel().getModel().getModelID());
-        txtField02.setText(oTransModel.getModel().getModel().getMakeDesc());
-        txtField03.setText(oTransModel.getModel().getModel().getModelDsc());
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
 
-        if (oTransModel.getModel().getModel().getUnitType() != null && !oTransModel.getModel().getModel().getUnitType().trim().isEmpty()) {
-            comboBox04.getSelectionModel().select(Integer.parseInt(oTransModel.getModel().getModel().getUnitType()));
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getModelID());
+        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
+        txtField03.setText(oTrans.getModel().getModel().getModelDsc());
+
+        if (oTrans.getModel().getModel().getUnitType() != null && !oTrans.getModel().getModel().getUnitType().trim().isEmpty()) {
+            comboBox04.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getUnitType()));
         }
-        if (oTransModel.getModel().getModel().getBodyType() != null && !oTransModel.getModel().getModel().getBodyType().trim().isEmpty()) {
-            comboBox05.getSelectionModel().select(Integer.parseInt(oTransModel.getModel().getModel().getBodyType()));
+        if (oTrans.getModel().getModel().getBodyType() != null && !oTrans.getModel().getModel().getBodyType().trim().isEmpty()) {
+            comboBox05.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getBodyType()));
         }
-        if (oTransModel.getModel().getModel().getVhclSize() != null && !oTransModel.getModel().getModel().getVhclSize().trim().isEmpty()) {
-            comboBox06.getSelectionModel().select(Integer.parseInt(oTransModel.getModel().getModel().getVhclSize()));
+        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
+            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
         }
-        if (oTransModel.getModel().getModel().getRecdStat().equals("1")) {
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z -]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
         txtField03.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    @Override
+    public void initLimiterFields() {
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
-            } else {
-                lsValue = lsTxtField.getText();
-            }
-            JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField02":
-                        loJSON = oTransModel.searchMake(lsValue, true);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField02.setText(oTransModel.getModel().getModel().getMakeDesc());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField02.setText("");
-                            txtField02.requestFocus();
-                            return;
-                        }
-                        break;
-                }
-
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            }
-        }
-
-    }
-
-    private void initTextFieldFocus() {
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField03);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
     }
@@ -207,7 +156,7 @@ public class VehicleModelController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 3:
-                    oTransModel.getModel().getModel().setModelDsc(lsValue);
+                    oTrans.getModel().getModel().setModelDsc(lsValue);
                     break;
             }
         } else {
@@ -215,98 +164,99 @@ public class VehicleModelController implements Initializable, ScreenInterface {
         }
     };
 
-    private void initCmboxFieldAction() {
-        comboBox04.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox04.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransModel.getModel().getModel().setUnitType(String.valueOf((comboBox04.getSelectionModel().getSelectedIndex())));
-                }
-            }
-        });
-        comboBox05.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox05.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransModel.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
-                }
-            }
-        });
-        comboBox06.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransModel.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
-                }
-            }
-        });
-        txtField02.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransModel.getModel().getModel().setMakeID("");
-                            }
-                        }
-                    }
-                }
-                );
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+
     }
 
-    /*Set ComboBox Value to Master Class*/
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private boolean setSelection() {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            if (comboBox04.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Vehicle Type", "Please select `Vehicle Type` value.");
-                return false;
+            TextField lsTxtField = (TextField) event.getSource();
+            String txtFieldID = ((TextField) event.getSource()).getId();
+            String lsValue = "";
+            if (lsTxtField.getText() == null) {
+                lsValue = "";
             } else {
-                oTransModel.getModel().getModel().setUnitType(String.valueOf((comboBox04.getSelectionModel().getSelectedIndex())));
+                lsValue = lsTxtField.getText();
             }
-            if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Vehicle Body Type", "Please select `Vehicle Body Type` value.");
-                return false;
-            } else {
-                oTransModel.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
-            }
-            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
-                return false;
-            } else {
-                oTransModel.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+            JSONObject loJSON = new JSONObject();
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField02":
+                                loJSON = oTrans.searchMake(lsValue, true);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField02.setText("");
+                                    txtField02.requestFocus();
+                                    return;
+                                }
+                                break;
+                        }
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        break;
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    default:
+                        break;
+                }
             }
         }
-        return true;
+
     }
 
-    private void initButtons() {
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransModel = new Vehicle_Model(oApp, false, oApp.getBranchCode());
-                loJSON = oTransModel.newRecord();
+                oTrans = new Vehicle_Model(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
                     if (pbOpenEvent) {
                         txtField02.setText(sMakeDesc);
-                        oTransModel.getModel().getModel().setMakeID(sMakeID);
-                        oTransModel.getModel().getModel().setMakeDesc(sMakeDesc);
+                        oTrans.getModel().getModel().setMakeID(sMakeID);
+                        oTrans.getModel().getModel().setMakeDesc(sMakeDesc);
                     }
-                    loadModelFields();
-                    pnEditMode = oTransModel.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransModel.updateRecord();
-                pnEditMode = oTransModel.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -327,14 +277,14 @@ public class VehicleModelController implements Initializable, ScreenInterface {
                         return;
                     }
                     if (setSelection()) {
-                        loJSON = oTransModel.saveRecord();
+                        loJSON = oTrans.saveRecord();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, "Vehicle Model Information", (String) loJSON.get("message"));
-                            loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getModelID());
                             if ("success".equals((String) loJSON.get("result"))) {
-                                loadModelFields();
+                                loadMasterFields();
                                 initFields(pnEditMode);
-                                pnEditMode = oTransModel.getEditMode();
+                                pnEditMode = oTrans.getEditMode();
                             }
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -346,7 +296,7 @@ public class VehicleModelController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransModel = new Vehicle_Model(oApp, false, oApp.getBranchCode());
+                    oTrans = new Vehicle_Model(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -357,49 +307,51 @@ public class VehicleModelController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransModel.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadModelFields();
-                    pnEditMode = oTransModel.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Model Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransModel.getModel().getModel().getModelID();
-                    loJSON = oTransModel.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getModelID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Model Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Model Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getModelID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadModelFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransModel.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransModel.getModel().getModel().getModelID();
-                    loJSON = oTransModel.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getModelID();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Model Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Vehicle Model Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransModel.openRecord(oTransModel.getModel().getModel().getModelID());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getModelID());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadModelFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransModel.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -410,54 +362,87 @@ public class VehicleModelController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        txtField01.clear();
-        txtField02.clear();
-        txtField03.clear();
-        comboBox04.setValue(null);
-        comboBox05.setValue(null);
-        comboBox06.setValue(null);
-        cboxActivate.setSelected(false);
+    @Override
+    public void initComboBoxItems() {
+        comboBox04.setItems(cUnitType);
+        comboBox05.setItems(cBodyType);
+        comboBox06.setItems(cUnitSize);
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+        comboBox04.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox04.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTrans.getModel().getModel().setUnitType(String.valueOf((comboBox04.getSelectionModel().getSelectedIndex())));
+                }
+            }
+        });
+        comboBox05.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox05.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTrans.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
+                }
+            }
+        });
+        comboBox06.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+                }
+            }
+        });
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField02.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setMakeID("");
+                            }
+                        }
+                    }
+                }
+                );
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03);
+        CustomCommonUtil.setValue(null, comboBox04, comboBox05, comboBox06);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         if (pbOpenEvent) {
             txtField03.setDisable(true);
         } else {
             txtField03.setDisable(!(fnValue == EditMode.ADDNEW));
         }
-        txtField01.setDisable(true);
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        comboBox04.setDisable(!lbShow);
-        comboBox05.setDisable(!lbShow);
-        comboBox06.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03,
+                comboBox04, comboBox05, comboBox06);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
-            if (oTransModel.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
@@ -465,5 +450,31 @@ public class VehicleModelController implements Initializable, ScreenInterface {
         if (fnValue == EditMode.UPDATE) {
             txtField02.setDisable(true);
         }
+    }
+
+    /*Set ComboBox Value to Master Class*/
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean setSelection() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (comboBox04.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Vehicle Type", "Please select `Vehicle Type` value.");
+                return false;
+            } else {
+                oTrans.getModel().getModel().setUnitType(String.valueOf((comboBox04.getSelectionModel().getSelectedIndex())));
+            }
+            if (comboBox05.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Vehicle Body Type", "Please select `Vehicle Body Type` value.");
+                return false;
+            } else {
+                oTrans.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
+            }
+            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
+                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
+                return false;
+            } else {
+                oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+            }
+        }
+        return true;
     }
 }

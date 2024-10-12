@@ -6,6 +6,8 @@ package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -30,7 +32,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
 public class ActivityMemberController implements Initializable, ScreenInterface {
 
@@ -54,13 +56,13 @@ public class ActivityMemberController implements Initializable, ScreenInterface 
     @FXML
     private CheckBox selectAllEmployee;
 
-    public void setObject(Activity foValue) {
-        oTransActMembers = foValue;
-    }
-
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public void setObject(Activity foValue) {
+        oTransActMembers = foValue;
     }
 
     /**
@@ -68,8 +70,7 @@ public class ActivityMemberController implements Initializable, ScreenInterface 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        btnClose.setOnAction(this::handleButtonAction);
-        btnAdd.setOnAction(this::handleButtonAction);
+        initButtonsClick();
         loadDepartTable();
         initDepartTable();
         initEmployeeTable();
@@ -80,6 +81,84 @@ public class ActivityMemberController implements Initializable, ScreenInterface 
                 loadEmployeeTable(departmentID);
             }
         });
+    }
+
+    private void loadDepartTable() {
+        departData.clear();
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActMembers.loadDepartment();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 1; lnCtr <= oTransActMembers.getDepartmentList().size() - 1; lnCtr++) {
+                departData.add(new ActivityMember(
+                        String.valueOf(lnCtr), //ROW
+                        oTransActMembers.getDepartmentID(lnCtr, lnCtr).toString(),
+                        oTransActMembers.getDepartmentNm(lnCtr, lnCtr).toString(),
+                        "",
+                        ""
+                ));
+            }
+        }
+        tblViewDepart.setItems(departData);
+    }
+
+    private void initDepartTable() {
+        tblDprtmntndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem03"));
+        tblViewDepart.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewDepart.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
+    private void loadEmployeeTable(String departmentID) {
+        employeeData.clear();
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTransActMembers.loadEmployee(departmentID);
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTransActMembers.getEmployeeList().size() - 1; lnCtr++) {
+                employeeData.add(new ActivityMember(
+                        String.valueOf(lnCtr + 1), // ROW
+                        "",
+                        oTransActMembers.getEmpDeptNm(lnCtr, lnCtr).toString(),
+                        oTransActMembers.getEmployeeID(lnCtr, lnCtr).toString(),
+                        oTransActMembers.getEmployeeNm(lnCtr, lnCtr).toString()
+                ));
+            }
+            tblViewEmployee.setItems(employeeData);
+            initEmployeeTable();
+        }
+    }
+
+    private void initEmployeeTable() {
+        tblEmplyIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
+        tblEmplyIndex02.setCellValueFactory(new PropertyValueFactory<>("select"));
+        tblViewEmployee.getItems().forEach(item -> {
+            CheckBox selectCheckBox = item.getSelect();
+            selectCheckBox.setOnAction(event -> {
+                if (tblViewEmployee.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
+                    selectAllEmployee.setSelected(true);
+                } else {
+                    selectAllEmployee.setSelected(false);
+                }
+            });
+        });
+        selectAllEmployee.setOnAction(event -> {
+            boolean newValue = selectAllEmployee.isSelected();
+            tblViewEmployee.getItems().forEach(item -> item.getSelect().setSelected(newValue));
+        });
+        tblEmplyIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem05"));
+        tblViewEmployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewEmployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
+    private void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnAdd, btnClose);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -144,79 +223,4 @@ public class ActivityMemberController implements Initializable, ScreenInterface 
                 break;
         }
     }
-    //storing values on bankentrydata
-
-    private void loadEmployeeTable(String departmentID) {
-        employeeData.clear();
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransActMembers.loadEmployee(departmentID);
-        if ("success".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 0; lnCtr <= oTransActMembers.getEmployeeList().size() - 1; lnCtr++) {
-                employeeData.add(new ActivityMember(
-                        String.valueOf(lnCtr + 1), // ROW
-                        "",
-                        oTransActMembers.getEmpDeptNm(lnCtr, lnCtr).toString(),
-                        oTransActMembers.getEmployeeID(lnCtr, lnCtr).toString(),
-                        oTransActMembers.getEmployeeNm(lnCtr, lnCtr).toString()
-                ));
-            }
-            tblViewEmployee.setItems(employeeData);
-            initEmployeeTable();
-        }
-    }
-
-    private void initEmployeeTable() {
-        tblEmplyIndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem01"));
-        tblEmplyIndex02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblViewEmployee.getItems().forEach(item -> {
-            CheckBox selectCheckBox = item.getSelect();
-            selectCheckBox.setOnAction(event -> {
-                if (tblViewEmployee.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
-                    selectAllEmployee.setSelected(true);
-                } else {
-                    selectAllEmployee.setSelected(false);
-                }
-            });
-        });
-        selectAllEmployee.setOnAction(event -> {
-            boolean newValue = selectAllEmployee.isSelected();
-            tblViewEmployee.getItems().forEach(item -> item.getSelect().setSelected(newValue));
-        });
-        tblEmplyIndex03.setCellValueFactory(new PropertyValueFactory<>("tblindexMem05"));
-        tblViewEmployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewEmployee.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-    }
-
-    private void loadDepartTable() {
-        departData.clear();
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransActMembers.loadDepartment();
-        if ("success".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 1; lnCtr <= oTransActMembers.getDepartmentList().size() - 1; lnCtr++) {
-                departData.add(new ActivityMember(
-                        String.valueOf(lnCtr), //ROW
-                        oTransActMembers.getDepartmentID(lnCtr, lnCtr).toString(),
-                        oTransActMembers.getDepartmentNm(lnCtr, lnCtr).toString(),
-                        "",
-                        ""
-                ));
-            }
-        }
-        tblViewDepart.setItems(departData);
-    }
-
-    private void initDepartTable() {
-        tblDprtmntndex01.setCellValueFactory(new PropertyValueFactory<>("tblindexMem03"));
-        tblViewDepart.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewDepart.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-    }
-
 }

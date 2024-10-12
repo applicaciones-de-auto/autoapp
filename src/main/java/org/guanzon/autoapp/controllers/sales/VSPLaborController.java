@@ -18,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -36,7 +35,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VSPLaborController implements Initializable {
 
@@ -48,7 +47,7 @@ public class VSPLaborController implements Initializable {
     private final String pxeModuleName = "VSP Labor";
     private String psJO = "";
     private String psOrigDsc = "";
-    private VehicleSalesProposal oTransVSPLabor;
+    private VehicleSalesProposal oTrans;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
 
@@ -70,7 +69,7 @@ public class VSPLaborController implements Initializable {
     }
 
     public void setObject(VehicleSalesProposal foValue) {
-        oTransVSPLabor = foValue;
+        oTrans = foValue;
     }
 
     public void setRow(int fnRow) {
@@ -98,30 +97,17 @@ public class VSPLaborController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         initCapitalizationFields();
-        comboBox03.setItems(cChargeType);
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initCmboxFieldAction();
-        initTextPropertyAction();
+        initTextKeyPressed();
         initButtonsClick();
-        initFielPattern();
-        if (pbState) {
-            if (pbLbrDsc) {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
-            } else {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
-            }
-        }
-
-        loadLaborFields();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
+        loadMasterFields();
         initFields();
-    }
-
-    private void initFielPattern() {
-        Pattern pattern = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
-        txtField05.setTextFormatter(new TextFormatterUtil(pattern));
     }
 
     private void initCapitalizationFields() {
@@ -129,38 +115,58 @@ public class VSPLaborController implements Initializable {
         CustomCommonUtil.setCapsLockBehavior(txtField02);
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(
-                txtField01, txtField02, txtField04, txtField05, txtField06);
-        //Detail & AddOns TextField Tab);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    private void loadMasterFields() {
+        if (!psLbrDsc.isEmpty()) {
+            oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc(psLbrDsc);
+        }
+        txtField01.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
+        txtField02.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp() != null && !oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp().equals("")) {
+            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp())));
+        }
+
+        double lnLaborAmnt = Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()));
+        double lnLaborDsc = Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
+        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()))));
+        switch (comboBox03.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lnLaborAmnt));
+                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
+                double lnNetPriceFree = lnLaborAmnt - lnLaborAmnt;
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceFree));
+                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
+                break;
+            case 1:
+                if (lnLaborDsc > lnLaborAmnt) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Amount cannot be less than Discount.");
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
+                }
+                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
+                double lnNetPriceCharge = lnLaborAmnt - Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceCharge));
+                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
+                break;
+            default:
+                txtField04.setText("0.00");
+                txtField05.setText("0.00");
+                txtField06.setText("0.00");
+                break;
+        }
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getAddtl().equals("0")) {
+            checkBoxIsAdd.setSelected(false);
+            txtField02.setDisable(true);
+        } else {
+            checkBoxIsAdd.setSelected(true);
+        }
+        if (oTrans.getVSPLaborModel().getVSPLabor(pnRow).getEntryNo() > 0) {
+            txtField02.setDisable(true);
+        }
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        String lsTxtFieldID = ((TextField) event.getSource()).getId();
-        JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (lsTxtFieldID) {
-                case "txtField02":
-                    loJSON = oTransVSPLabor.searchLabor("", pnRow, true);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
-                        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
-                    } else {
-                        ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
-                        txtField02.clear();
-                        return;
-                    }
-                    break;
-            }
-            initFields();
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        }
+    private void initPatternFields() {
+        Pattern pattern = Pattern.compile("[0-9,.]*");
+        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
+        txtField05.setTextFormatter(new TextFormatterUtil(pattern));
     }
 
     private void initTextFieldFocus() {
@@ -184,88 +190,50 @@ public class VSPLaborController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborAmt(new BigDecimal(lsValue.replace(",", "")));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborAmt(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lsValue.replace(",", "")));
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lsValue.replace(",", "")));
                     break;
             }
-            loadLaborFields();
+            loadMasterFields();
         }
     };
 
-    private void initCmboxFieldAction() {
-        comboBox03.setOnAction(event -> {
-            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setChrgeTyp(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
-                if (comboBox03.getSelectionModel().getSelectedIndex() == 1) {
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
-                }
-                loadLaborFields();
-                initFields();
-            }
-        }
-        );
+    private void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(
+                txtField01, txtField02, txtField04, txtField05, txtField06);
+        //Detail & AddOns TextField Tab);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void initTextPropertyAction() {
-        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc("");
-                }
+    private void txtField_KeyPressed(KeyEvent event) {
+        String lsTxtFieldID = ((TextField) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (lsTxtFieldID) {
+                case "txtField02":
+                    loJSON = oTrans.searchLabor("", pnRow, true);
+                    if (!"error".equals((String) loJSON.get("result"))) {
+                        txtField01.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
+                        txtField02.setText(String.valueOf(oTrans.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
+                    } else {
+                        ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                        txtField02.clear();
+                        return;
+                    }
+                    break;
             }
-        });
-    }
-
-    private void loadLaborFields() {
-        if (!psLbrDsc.isEmpty()) {
-            oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc(psLbrDsc);
-        }
-        txtField01.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborCde()));
-        txtField02.setText(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDsc()));
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp() != null && !oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp().equals("")) {
-            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getChrgeTyp())));
-        }
-
-        double lnLaborAmnt = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()));
-        double lnLaborDsc = Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
-        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborAmt()))));
-        switch (comboBox03.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(lnLaborAmnt));
-                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
-                double lnNetPriceFree = lnLaborAmnt - lnLaborAmnt;
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceFree));
-                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
-                break;
-            case 1:
-                if (lnLaborDsc > lnLaborAmnt) {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Amount cannot be less than Discount.");
-                    oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
-                }
-                txtField05.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()))));
-                double lnNetPriceCharge = lnLaborAmnt - Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getLaborDscount()));
-                oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).setNtLabAmt(new BigDecimal(lnNetPriceCharge));
-                txtField06.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getNtLabAmt()))));
-                break;
-            default:
-                txtField04.setText("0.00");
-                txtField05.setText("0.00");
-                txtField06.setText("0.00");
-                break;
-        }
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getAddtl().equals("0")) {
-            checkBoxIsAdd.setSelected(false);
-            txtField02.setDisable(true);
-        } else {
-            checkBoxIsAdd.setSelected(true);
-        }
-        if (oTransVSPLabor.getVSPLaborModel().getVSPLabor(pnRow).getEntryNo() > 0) {
-            txtField02.setDisable(true);
+            initFields();
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
     }
 
@@ -288,7 +256,7 @@ public class VSPLaborController implements Initializable {
                 break;
             case "btnCloseLabor":
                 if (pbState) {
-                    oTransVSPLabor.removeVSPLabor(pnRow);
+                    oTrans.removeVSPLabor(pnRow);
                 }
                 CommonUtils.closeStage(btnCloseLabor);
                 break;
@@ -297,6 +265,74 @@ public class VSPLaborController implements Initializable {
                 break;
         }
 
+    }
+
+    private void initComboBoxItems() {
+        comboBox03.setItems(cChargeType);
+    }
+
+    private void initFieldsAction() {
+        if (pbState) {
+            if (pbLbrDsc) {
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("0");
+            } else {
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setAddtl("1");
+            }
+        }
+        comboBox03.setOnAction(event -> {
+            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
+                oTrans.getVSPLaborModel().getVSPLabor(pnRow).setChrgeTyp(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+                if (comboBox03.getSelectionModel().getSelectedIndex() == 1) {
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDscount(new BigDecimal(0.00));
+                }
+                loadMasterFields();
+                initFields();
+            }
+        }
+        );
+    }
+
+    private void initTextFieldsProperty() {
+        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTrans.getVSPLaborModel().getVSPLabor(pnRow).setLaborDsc("");
+                }
+            }
+        });
+    }
+
+    private void initFields() {
+        switch (comboBox03.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                txtField04.setDisable(false);
+                txtField05.setDisable(true);
+                break;
+            case 1:
+                txtField04.setDisable(false);
+                txtField05.setDisable(txtField04.getText().isEmpty());
+                break;
+            default:
+                CustomCommonUtil.setDisable(true, txtField04, txtField05);
+                break;
+        }
+        if (pbState) {
+            btnAddLabor.setVisible(true);
+            btnAddLabor.setManaged(true);
+            btnEditLabor.setVisible(false);
+            btnEditLabor.setManaged(false);
+            if (pbLbrDsc) {
+                txtField02.setDisable(true);
+            }
+        } else {
+            btnAddLabor.setVisible(false);
+            btnAddLabor.setManaged(false);
+            btnEditLabor.setVisible(true);
+            btnEditLabor.setManaged(true);
+            if (!psJO.isEmpty()) {
+                CustomCommonUtil.setDisable(true, txtField04, comboBox03);
+            }
+        }
     }
 
     private boolean isValidEntry() {
@@ -320,45 +356,6 @@ public class VSPLaborController implements Initializable {
             }
         }
         return true;
-    }
-
-    private void setDisable(boolean disable, Node... nodes) {
-        for (Node node : nodes) {
-            node.setDisable(disable);
-        }
-    }
-
-    private void initFields() {
-        switch (comboBox03.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                txtField04.setDisable(false);
-                txtField05.setDisable(true);
-                break;
-            case 1:
-                txtField04.setDisable(false);
-                txtField05.setDisable(txtField04.getText().isEmpty());
-                break;
-            default:
-                setDisable(true, txtField04, txtField05);
-                break;
-        }
-        if (pbState) {
-            btnAddLabor.setVisible(true);
-            btnAddLabor.setManaged(true);
-            btnEditLabor.setVisible(false);
-            btnEditLabor.setManaged(false);
-            if (pbLbrDsc) {
-                txtField02.setDisable(true);
-            }
-        } else {
-            btnAddLabor.setVisible(false);
-            btnAddLabor.setManaged(false);
-            btnEditLabor.setVisible(true);
-            btnEditLabor.setManaged(true);
-            if (!psJO.isEmpty()) {
-                setDisable(true, txtField04, comboBox03);
-            }
-        }
     }
 
 }

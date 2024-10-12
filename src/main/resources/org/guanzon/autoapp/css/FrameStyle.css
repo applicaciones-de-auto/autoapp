@@ -15,7 +15,12 @@ and open the template in the editor.
     -fx-font-family: "Arial";
     -fx-font-size: 11.5px;
 }
-
+#LabelFormTitle{
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
 .glyph-icon {
     -fx-fill: black;
 }

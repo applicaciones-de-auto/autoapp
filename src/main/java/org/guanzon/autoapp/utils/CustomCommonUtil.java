@@ -7,8 +7,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -370,5 +374,71 @@ public class CustomCommonUtil {
         for (Label label : labels) {
             label.setText(fsValue);
         }
+    }
+
+    /**
+     * Sets the selected state for a variable number of CheckBox components.
+     *
+     * @param fbValue The value to set for the selected state (true to select,
+     * false to deselect).
+     * @param checkBoxes The CheckBox components to modify.
+     *
+     * <p>
+     * Example usage:</p>
+     * <pre>
+     * CheckBox checkBox1 = new CheckBox("Option 1");
+     * CheckBox checkBox2 = new CheckBox("Option 2");
+     *
+     * // Select all checkboxes
+     * UIUtils.setSelected(true, checkBox1, checkBox2);
+     *
+     * // Deselect all checkboxes
+     * UIUtils.setSelected(false, checkBox1, checkBox2);
+     * </pre>
+     */
+    public static void setSelected(boolean fbValue, CheckBox... checkBoxes) {
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setSelected(fbValue);
+        }
+    }
+
+    /**
+     * Sets the selected state for a variable number of RadioButton components.
+     *
+     * @param fbValue The value to set for the selected state (true to select,
+     * false to deselect).
+     * @param radioButtons The RadioButton components to modify.
+     *
+     * <p>
+     * Example usage:</p>
+     * <pre>
+     * RadioButton radioBtn1 = new RadioButton("Option A");
+     * RadioButton radioBtn2 = new RadioButton("Option B");
+     *
+     * // Select the first radio button
+     * UIUtils.setSelected(true, radioBtn1);
+     *
+     * // Deselect the first radio button
+     * UIUtils.setSelected(false, radioBtn1);
+     * </pre>
+     */
+    public static void setSelected(boolean fbValue, RadioButton... radioButtons) {
+        for (RadioButton radioBtn : radioButtons) {
+            radioBtn.setSelected(fbValue);
+        }
+    }
+
+    /**
+     *
+     *
+     * @param foTab the tab from parent tabpane
+     * @param foTabPane this is the parent of tab<pre>
+     * Example usage:{@code
+     * switchToTab(tab1 , TabPane);
+     * }
+     * </pre>
+     */
+    public static void switchToTab(Tab foTab, TabPane foTabPane) {
+        foTabPane.getSelectionModel().select(foTab);
     }
 }

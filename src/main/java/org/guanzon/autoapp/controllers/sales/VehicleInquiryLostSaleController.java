@@ -41,7 +41,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VehicleInquiryLostSaleController implements Initializable {
 
@@ -69,9 +69,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
     ObservableList<String> cGdsCat = FXCollections.observableArrayList("BRAND NEW", "PRE-OWNED");
 
     @FXML
-    private Button btnDlost;
-    @FXML
-    private Button btnTlost;
+    private Button btnDlost, btnTlost;
     @FXML
     private ComboBox<String> comboBox01, comboBox02, comboBox03;
     @FXML
@@ -126,111 +124,34 @@ public class VehicleInquiryLostSaleController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Pattern pattern;
-        pattern = Pattern.compile("^[a-zA-Z0-9 .,]*");
-        textArea06.setTextFormatter(new TextFormatterUtil(pattern));
-
         lblClientName.setText(psClient);
-        comboBox01.setItems(cTag);
-        comboBox02.setItems(cReasons);
-        comboBox03.setItems(cGdsCat);
         comboBox02.setDisable(true);
-
-        btnTlost.setOnAction(this::handleButtonAction);
-        btnDlost.setOnAction(this::handleButtonAction);
-
         if (pbIsInquiry) {
             comboBox01.getSelectionModel().select(1);
         }
-        initCmboxFieldAction();
-        initTextKeyPressed();
-        initTextFieldFocus();
         initCapitalizationFields();
+        initPatternFields();
+        initTextFieldFocus();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         initFields();
     }
 
-    private void initCmboxFieldAction() {
-        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
-                }
-            }
-        }
-        );
-        txtField05.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
-                }
-            }
-        }
-        );
-        comboBox01.setOnAction(event -> {
-            int selectedIndex = comboBox01.getSelectionModel().getSelectedIndex();
-            if (selectedIndex >= 0) {
-                initFields();
-            }
-        });
-        comboBox02.setOnAction(event -> {
-            int selectedIndex = comboBox02.getSelectionModel().getSelectedIndex();
-            if (selectedIndex >= 0) {
-                String[] reasons = {"cmptr", "2ndhd", "odlr", "nobgt", "lackr", "noavl", "nonp", "nonap"};
-                String lsReason = reasons[selectedIndex];
-                oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
-                oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
-                if (selectedIndex != 1) {
-                    comboBox03.setValue("");
-                } else {
-                    comboBox03.getSelectionModel().select(1);
-                }
-                if (selectedIndex == 0 || selectedIndex >= 3) {
-                    oTransLost.getMasterModel().getMasterModel().setGdsCmptr("");
-                }
-                oTransLost.getMasterModel().getMasterModel().setRspnseCd(lsReason);
-                initFields();
-            }
-        });
-        comboBox03.setOnAction(event -> {
-            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
-            }
-        });
-    }
-
-    private void initTextKeyPressed() {
+    private void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField04, txtField05);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        /*TextArea*/
-        textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+
+        List<TextArea> loTxtArea = Arrays.asList(textArea06);
+        loTxtArea.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
     }
 
-    //Search using F3
-    private void txtField_KeyPressed(KeyEvent event) {
-        TextField loTxtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        switch (event.getCode()) {
-            case ENTER:
-            case DOWN:
-                CommonUtils.SetNextFocus(loTxtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(loTxtField);
-        }
-    }
-
-    /*TRIGGER FOCUS*/
-    private void txtArea_KeyPressed(KeyEvent event) {
-        if (event.getCode() == ENTER || event.getCode() == DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        }
+    private void initPatternFields() {
+        Pattern pattern;
+        pattern = Pattern.compile("^[a-zA-Z0-9 .,]*");
+        textArea06.setTextFormatter(new TextFormatterUtil(pattern));
     }
 
     private void initTextFieldFocus() {
@@ -291,12 +212,44 @@ public class VehicleInquiryLostSaleController implements Initializable {
         }
     };
 
-    private void initCapitalizationFields() {
+    private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField04, txtField05);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+        /*TextArea*/
+        textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
+    }
 
-        List<TextArea> loTxtArea = Arrays.asList(textArea06);
-        loTxtArea.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    //Search using F3
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField loTxtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        switch (event.getCode()) {
+            case ENTER:
+            case DOWN:
+                CommonUtils.SetNextFocus(loTxtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(loTxtField);
+        }
+    }
+
+    /*TRIGGER FOCUS*/
+    private void txtArea_KeyPressed(KeyEvent event) {
+        if (event.getCode() == ENTER || event.getCode() == DOWN) {
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.DOWN) {
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        }
+    }
+
+    public void initButtonsClick() {
+        btnTlost.setOnAction(this::handleButtonAction);
+        btnDlost.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -375,6 +328,97 @@ public class VehicleInquiryLostSaleController implements Initializable {
 
     }
 
+    private void initComboBoxItems() {
+        comboBox01.setItems(cTag);
+        comboBox02.setItems(cReasons);
+        comboBox03.setItems(cGdsCat);
+    }
+
+    private void initFieldsAction() {
+        comboBox01.setOnAction(event -> {
+            int selectedIndex = comboBox01.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                initFields();
+            }
+        });
+        comboBox02.setOnAction(event -> {
+            int selectedIndex = comboBox02.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                String[] reasons = {"cmptr", "2ndhd", "odlr", "nobgt", "lackr", "noavl", "nonp", "nonap"};
+                String lsReason = reasons[selectedIndex];
+                oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
+                oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                if (selectedIndex != 1) {
+                    comboBox03.setValue("");
+                } else {
+                    comboBox03.getSelectionModel().select(1);
+                }
+                if (selectedIndex == 0 || selectedIndex >= 3) {
+                    oTransLost.getMasterModel().getMasterModel().setGdsCmptr("");
+                }
+                oTransLost.getMasterModel().getMasterModel().setRspnseCd(lsReason);
+                initFields();
+            }
+        });
+        comboBox03.setOnAction(event -> {
+            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
+                oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+            }
+        });
+    }
+
+    private void initTextFieldsProperty() {
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
+                }
+            }
+        }
+        );
+        txtField05.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                }
+            }
+        }
+        );
+    }
+
+    private void initFields() {
+        CustomCommonUtil.setDisable(true, comboBox01, comboBox03, txtField04,
+                txtField05, textArea06);
+        comboBox02.setDisable(false);
+        if (!pbIsInquiry) {
+            comboBox01.setDisable(false);
+            switch (comboBox01.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    CustomCommonUtil.setDisable(true, comboBox01, comboBox02, comboBox03, txtField04,
+                            txtField05);
+                    textArea06.setDisable(false);
+                    break;
+                case 1:
+                    CustomCommonUtil.setDisable(false, comboBox01, comboBox02, comboBox03, txtField04,
+                            txtField05, textArea06);
+                    break;
+            }
+        }
+        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+            case 0:
+            case 2:
+                CustomCommonUtil.setDisable(false, comboBox03, txtField04, txtField05);
+                break;
+            case 1:
+                comboBox03.setDisable(true);
+                CustomCommonUtil.setDisable(false, txtField04, txtField05);
+                break;
+            default:
+                CustomCommonUtil.setDisable(true, comboBox03, txtField04, txtField05);
+                break;
+        }
+    }
+
     /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean setSelection() {
@@ -412,49 +456,4 @@ public class VehicleInquiryLostSaleController implements Initializable {
         return true;
     }
 
-    private void initFields() {
-        comboBox01.setDisable(true);
-        comboBox02.setDisable(false);
-        comboBox03.setDisable(true);
-        txtField04.setDisable(true);
-        txtField05.setDisable(true);
-        textArea06.setDisable(true);
-        if (!pbIsInquiry) {
-            comboBox01.setDisable(false);
-            switch (comboBox01.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                    comboBox02.setDisable(true);
-                    comboBox03.setDisable(true);
-                    txtField04.setDisable(true);
-                    txtField05.setDisable(true);
-                    textArea06.setDisable(false);
-                    break;
-                case 1:
-                    comboBox02.setDisable(false);
-                    comboBox03.setDisable(false);
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(false);
-                    textArea06.setDisable(false);
-                    break;
-            }
-        }
-        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
-            case 0:
-            case 2:
-                comboBox03.setDisable(false);
-                txtField04.setDisable(false);
-                txtField05.setDisable(false);
-                break;
-            case 1:
-                comboBox03.setDisable(true);
-                txtField04.setDisable(false);
-                txtField05.setDisable(false);
-                break;
-            default:
-                comboBox03.setDisable(true);
-                txtField04.setDisable(true);
-                txtField05.setDisable(true);
-                break;
-        }
-    }
 }

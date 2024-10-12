@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.parameters;
 
 import java.net.URL;
@@ -23,6 +19,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_ItemLocation;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -31,24 +28,20 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class ItemLocationController implements Initializable, ScreenInterface {
+public class ItemLocationController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private final String pxeModuleName = "Item Location";
     private int pnEditMode;//Modifying fields
-    private Parts_ItemLocation oTransItemLocation;
+    private Parts_ItemLocation oTrans;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
-    private TextField txtField01, txtField02, txtField03;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05;
     @FXML
     private CheckBox cboxActivate;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
 
     /**
      * Initializes the controller class.
@@ -64,33 +57,42 @@ public class ItemLocationController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransItemLocation = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
+        oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
 
-        initTextFieldPattern();
         initCapitalizationFields();
+        initPatternFields();
+        initTextFieldFocus();
         initTextKeyPressed();
-        initCmboxFieldAction();
-        initButtons();
+        initButtonsClick();
+        initTextFieldsProperty();
         clearFields();
-
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadItemLocationFields() {
-        txtField01.setText(oTransItemLocation.getModel().getModel().getLocatnID());
-        txtField02.setText(oTransItemLocation.getModel().getModel().getWHouseNm());
-        txtField03.setText(oTransItemLocation.getModel().getModel().getSectnNme());
-        txtField04.setText(oTransItemLocation.getModel().getModel().getBinName());
-        txtField05.setText(oTransItemLocation.getModel().getModel().getLocatnDs());
-        if (oTransItemLocation.getModel().getModel().getRecdStat().equals("1")) {
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getLocatnID());
+        txtField02.setText(oTrans.getModel().getModel().getWHouseNm());
+        txtField03.setText(oTrans.getModel().getModel().getSectnNme());
+        txtField04.setText(oTrans.getModel().getModel().getBinName());
+        txtField05.setText(oTrans.getModel().getModel().getLocatnDs());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
@@ -98,18 +100,40 @@ public class ItemLocationController implements Initializable, ScreenInterface {
         txtField04.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    private void generateLocation() { //autogenerate location
+        String lsGen = "";
+        String lsWarehouse = oTrans.getModel().getModel().getWHouseNm();
+        String lsSection = oTrans.getModel().getModel().getSectnNme();
+        String lsBin = oTrans.getModel().getModel().getBinName();
+        lsWarehouse = lsWarehouse.isEmpty() ? "" : (lsSection.isEmpty() && lsBin.isEmpty() ? lsWarehouse : (lsSection.isEmpty() && !lsBin.isEmpty() ? lsWarehouse + "-" : lsWarehouse));
+        lsSection = lsSection.isEmpty() ? "" : (lsWarehouse.isEmpty() ? lsSection : "-" + lsSection);
+        lsBin = lsBin.isEmpty() ? "" : (lsSection.isEmpty() ? lsBin : "-" + lsBin);
+        lsGen = lsWarehouse.isEmpty() && lsSection.isEmpty() && lsBin.isEmpty()
+                ? ""
+                : lsWarehouse + lsSection + lsBin;
+
+        oTrans.getModel().getModel().setLocatnDs(lsGen);
     }
 
-    private void initTextKeyPressed() {
+    @Override
+    public void initLimiterFields() {
+
+    }
+
+    @Override
+    public void initTextFieldFocus() {
+
+    }
+
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             TextField lsTxtField = (TextField) event.getSource();
             String txtFieldID = ((TextField) event.getSource()).getId();
@@ -123,11 +147,11 @@ public class ItemLocationController implements Initializable, ScreenInterface {
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField02":
-                        loJSON = oTransItemLocation.searchWarehouse(lsValue, true);
+                        loJSON = oTrans.searchWarehouse(lsValue, true);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField02.setText(oTransItemLocation.getModel().getModel().getWHouseNm());
+                            txtField02.setText(oTrans.getModel().getModel().getWHouseNm());
                             generateLocation();
-                            txtField05.setText(oTransItemLocation.getModel().getModel().getLocatnDs());
+                            txtField05.setText(oTrans.getModel().getModel().getLocatnDs());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField02.setText("");
@@ -136,11 +160,11 @@ public class ItemLocationController implements Initializable, ScreenInterface {
                         }
                         break;
                     case "txtField03":
-                        loJSON = oTransItemLocation.searchSection(lsValue, true);
+                        loJSON = oTrans.searchSection(lsValue, true);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField03.setText(oTransItemLocation.getModel().getModel().getSectnNme());
+                            txtField03.setText(oTrans.getModel().getModel().getSectnNme());
                             generateLocation();
-                            txtField05.setText(oTransItemLocation.getModel().getModel().getLocatnDs());
+                            txtField05.setText(oTrans.getModel().getModel().getLocatnDs());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField03.setText("");
@@ -149,11 +173,11 @@ public class ItemLocationController implements Initializable, ScreenInterface {
                         }
                         break;
                     case "txtField04":
-                        loJSON = oTransItemLocation.searchBin(lsValue, true);
+                        loJSON = oTrans.searchBin(lsValue, true);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField04.setText(oTransItemLocation.getModel().getModel().getBinName());
+                            txtField04.setText(oTrans.getModel().getModel().getBinName());
                             generateLocation();
-                            txtField05.setText(oTransItemLocation.getModel().getModel().getLocatnDs());
+                            txtField05.setText(oTrans.getModel().getModel().getLocatnDs());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField04.setText("");
@@ -175,31 +199,150 @@ public class ItemLocationController implements Initializable, ScreenInterface {
         }
     }
 
-    private void generateLocation() { //autogenerate location
-        String lsGen = "";
-        String lsWarehouse = oTransItemLocation.getModel().getModel().getWHouseNm();
-        String lsSection = oTransItemLocation.getModel().getModel().getSectnNme();
-        String lsBin = oTransItemLocation.getModel().getModel().getBinName();
-        lsWarehouse = lsWarehouse.isEmpty() ? "" : (lsSection.isEmpty() && lsBin.isEmpty() ? lsWarehouse : (lsSection.isEmpty() && !lsBin.isEmpty() ? lsWarehouse + "-" : lsWarehouse));
-        lsSection = lsSection.isEmpty() ? "" : (lsWarehouse.isEmpty() ? lsSection : "-" + lsSection);
-        lsBin = lsBin.isEmpty() ? "" : (lsSection.isEmpty() ? lsBin : "-" + lsBin);
-        lsGen = lsWarehouse.isEmpty() && lsSection.isEmpty() && lsBin.isEmpty()
-                ? ""
-                : lsWarehouse + lsSection + lsBin;
-
-        oTransItemLocation.getModel().getModel().setLocatnDs(lsGen);
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
     }
 
-    private void initCmboxFieldAction() {
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
+                btnClose, btnDeactivate, btnActive);
+
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
+        String lsButton = ((Button) event.getSource()).getId();
+        switch (lsButton) {
+            case "btnAdd":
+                clearFields();
+                oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+                break;
+            case "btnEdit":
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                }
+                break;
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, "Item Location Information Saving....", "Are you sure, do you want to save?")) {
+                    loJSON = oTrans.saveRecord();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getLocatnID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
+                }
+                break;
+            case "btnCancel":
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
+                    oTrans.getModel().getModel().setLocatnID("");
+                    clearFields();
+                    oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
+                    pnEditMode = EditMode.UNKNOWN;
+                }
+                break;
+            case "btnBrowse":
+                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                    if (ShowMessageFX.YesNo(null, "Search Item Location Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    } else {
+                        return;
+                    }
+                }
+                loJSON = oTrans.searchRecord("", false);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, "Search Item Location Information", (String) loJSON.get("message"));
+                }
+                break;
+            case "btnClose":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
+                break;
+            case "btnDeactivate":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTrans.getModel().getModel().getLocatnID();
+                    loJSON = oTrans.deactivateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Item Location Information", (String) loJSON.get("message"));
+                        return;
+                    }
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getLocatnID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTrans.getEditMode();
+                    }
+                }
+                break;
+            case "btnActive":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
+                    String fsValue = oTrans.getModel().getModel().getLocatnID();
+                    loJSON = oTrans.activateRecord(fsValue);
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, "Item Location Information", (String) loJSON.get("message"));
+                    }
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getLocatnID());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        initFields(pnEditMode);
+                        pnEditMode = oTrans.getEditMode();
+                    }
+                }
+                break;
+            default:
+                ShowMessageFX.Warning("Please contact admin to assist about no button available", "Integrated Automotive System", pxeModuleName);
+                break;
+        }
+        initFields(pnEditMode);
+    }
+
+    @Override
+    public void initComboBoxItems() {
+
+    }
+
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
         txtField02.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransItemLocation.getModel().getModel().setWHouseID("");
-                                oTransItemLocation.getModel().getModel().setWHouseNm("");
+                                oTrans.getModel().getModel().setWHouseID("");
+                                oTrans.getModel().getModel().setWHouseNm("");
                                 generateLocation();
-                                loadItemLocationFields();
+                                loadMasterFields();
                             }
                         }
                     }
@@ -210,10 +353,10 @@ public class ItemLocationController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransItemLocation.getModel().getModel().setSectnID("");
-                                oTransItemLocation.getModel().getModel().setSectnNme("");
+                                oTrans.getModel().getModel().setSectnID("");
+                                oTrans.getModel().getModel().setSectnNme("");
                                 generateLocation();
-                                loadItemLocationFields();
+                                loadMasterFields();
                             }
                         }
                     }
@@ -225,10 +368,10 @@ public class ItemLocationController implements Initializable, ScreenInterface {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTransItemLocation.getModel().getModel().setBinID("");
-                                oTransItemLocation.getModel().getModel().setBinName("");
+                                oTrans.getModel().getModel().setBinID("");
+                                oTrans.getModel().getModel().setBinName("");
                                 generateLocation();
-                                loadItemLocationFields();
+                                loadMasterFields();
                             }
                         }
                     }
@@ -236,165 +379,39 @@ public class ItemLocationController implements Initializable, ScreenInterface {
                 );
     }
 
-    private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
-                btnClose, btnDeactivate, btnActive);
+    @Override
+    public void clearTables() {
 
-        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnAdd":
-                clearFields();
-                oTransItemLocation = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
-                loJSON = oTransItemLocation.newRecord();
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadItemLocationFields();
-                    pnEditMode = oTransItemLocation.getEditMode();
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                }
-                break;
-            case "btnEdit":
-                loJSON = oTransItemLocation.updateRecord();
-                pnEditMode = oTransItemLocation.getEditMode();
-                if ("error".equals((String) loJSON.get("result"))) {
-                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
-                }
-                break;
-            case "btnSave":
-                if (ShowMessageFX.YesNo(null, "Item Location Information Saving....", "Are you sure, do you want to save?")) {
-                    loJSON = oTransItemLocation.saveRecord();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
-                        loJSON = oTransItemLocation.openRecord(oTransItemLocation.getModel().getModel().getLocatnID());
-                        if ("success".equals((String) loJSON.get("result"))) {
-                            loadItemLocationFields();
-                            initFields(pnEditMode);
-                            pnEditMode = oTransItemLocation.getEditMode();
-                        }
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
-                    }
-                }
-                break;
-            case "btnCancel":
-                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTransItemLocation = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
-                }
-                break;
-            case "btnBrowse":
-                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                    if (ShowMessageFX.YesNo(null, "Search Item Location Information", "You have unsaved data. Are you sure you want to browse a new record?")) {
-                    } else {
-                        return;
-                    }
-                }
-                loJSON = oTransItemLocation.searchRecord("", false);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadItemLocationFields();
-                    pnEditMode = oTransItemLocation.getEditMode();
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, "Search Item Location Information", (String) loJSON.get("message"));
-                }
-                break;
-            case "btnClose":
-                CommonUtils.closeStage(btnClose);
-                break;
-            case "btnDeactivate":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransItemLocation.getModel().getModel().getLocatnID();
-                    loJSON = oTransItemLocation.deactivateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
-                    } else {
-                        ShowMessageFX.Warning(null, "Item Location Information", (String) loJSON.get("message"));
-                        return;
-                    }
-                    loJSON = oTransItemLocation.openRecord(oTransItemLocation.getModel().getModel().getLocatnID());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadItemLocationFields();
-                        initFields(pnEditMode);
-                        pnEditMode = oTransItemLocation.getEditMode();
-                    }
-                }
-                break;
-            case "btnActive":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransItemLocation.getModel().getModel().getLocatnID();
-                    loJSON = oTransItemLocation.activateRecord(fsValue);
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Item Location Information", (String) loJSON.get("message"));
-                    } else {
-                        ShowMessageFX.Warning(null, "Item Location Information", (String) loJSON.get("message"));
-                    }
-                    loJSON = oTransItemLocation.openRecord(oTransItemLocation.getModel().getModel().getLocatnID());
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        loadItemLocationFields();
-                        initFields(pnEditMode);
-                        pnEditMode = oTransItemLocation.getEditMode();
-                    }
-                }
-                break;
-            default:
-                ShowMessageFX.Warning("Please contact admin to assist about no button available", "Integrated Automotive System", pxeModuleName);
-                break;
-        }
-        initFields(pnEditMode);
-    }
-
-    private void clearFields() {
+    @Override
+    public void clearFields() {
         cboxActivate.setSelected(false);
-        txtField01.clear();
-        txtField02.clear();
-        txtField03.clear();
-        txtField04.clear();
-        txtField05.clear();
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03,
+                txtField04, txtField05);
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
-
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        txtField04.setDisable(!lbShow);
-        txtField05.setDisable(true);
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, txtField05, cboxActivate);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03, txtField04);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
-            if (oTransItemLocation.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
+
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.cashiering;
 
 import java.io.IOException;
@@ -48,6 +44,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.cashiering.VehicleSalesInvoice;
+import org.guanzon.autoapp.interfaces.GTransactionInterface;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
@@ -56,12 +53,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class VehicleSalesInvoiceController implements Initializable, ScreenInterface {
+public class VehicleSalesInvoiceController implements Initializable, ScreenInterface, GTransactionInterface {
 
     private GRider oApp;
-    private VehicleSalesInvoice oTransVSI;
+    private VehicleSalesInvoice oTrans;
     private int pnEditMode = -1;
     private String pxeModuleName = "Vehicle Sales Invoice";
     ObservableList<String> cCustomerType = FXCollections.observableArrayList("CUSTOMER", "SUPPLIER"); // Customer Type Values
@@ -94,78 +91,73 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransVSI = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
-        initTextFieldFocus();
-        initButtonClick();
-        initTextFieldKeyPressed();
-        initFieldActions();
-        initCapitalizationFields();
-        clearFields();
+        oTrans = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
         datePicker03.setDayCellFactory(callB);
-        comboBox02.setItems(cCustomerType);
-        Pattern decOnly = Pattern.compile("[0-9,.]*");
-        txtField20.setTextFormatter(new TextFormatterUtil(decOnly));  //Discount
+        initCapitalizationFields();
+        initPatternFields();
+        initTextFieldFocus();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
+        clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
-    private Callback<DatePicker, DateCell> callB = new Callback<DatePicker, DateCell>() {
-        @Override
-        public DateCell call(final DatePicker param) {
-            return new DateCell() {
-                @Override
-                public void updateItem(LocalDate item, boolean empty) {
-                    super.updateItem(item, empty);
-                    LocalDate today = LocalDate.now();
-                    setDisable(empty || item.compareTo(today) < 0);
-                }
 
-            };
-        }
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
+                txtField13, txtField14);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
 
-    };
+        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea15, textArea16, textArea17);
+        loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
+    }
 
-    private void loadVSIFields() {
+    @Override
+    public boolean loadMasterFields() {
         JSONObject loJSON = new JSONObject();
-//        loJSON = oTransVSI();
-        txtField01.setText(oTransVSI.getMasterModel().getMasterModel().getReferNo());
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
 
-        if (oTransVSI.getMasterModel().getMasterModel().getTransactDte() != null) {
-            datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransVSI.getMasterModel().getMasterModel().getTransactDte())));
+        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
+            datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
         }
-        if (oTransVSI.getVSISourceList().size() > 0) {
-            if (oTransVSI.getVSISourceModel().getDetailModel().getCustType() != null) {
-                if (!oTransVSI.getVSISourceModel().getDetailModel().getCustType().isEmpty()) {
-                    comboBox02.getSelectionModel().select(Integer.parseInt(oTransVSI.getVSISourceModel().getDetailModel().getCustType()));
+        if (oTrans.getVSISourceList().size() > 0) {
+            if (oTrans.getVSISourceModel().getDetailModel().getCustType() != null) {
+                if (!oTrans.getVSISourceModel().getDetailModel().getCustType().isEmpty()) {
+                    comboBox02.getSelectionModel().select(Integer.parseInt(oTrans.getVSISourceModel().getDetailModel().getCustType()));
                 }
             }
-            txtField04.setText(oTransVSI.getVSISourceModel().getDetailModel().getUDRNo());
+            txtField04.setText(oTrans.getVSISourceModel().getDetailModel().getUDRNo());
             txtField05.setText(""); // NO PO GETTERS
-            txtField06.setText(oTransVSI.getMasterModel().getMasterModel().getBuyCltNm());
-            textArea07.setText(oTransVSI.getMasterModel().getMasterModel().getAddress());
-            txtField08.setText(oTransVSI.getMasterModel().getMasterModel().getTaxIDNo());
-            txtField09.setText(oTransVSI.getVSISourceModel().getDetailModel().getCoCltNm());
-            txtField10.setText(oTransVSI.getVSISourceModel().getDetailModel().getSEName());
-            txtField11.setText(oTransVSI.getVSISourceModel().getDetailModel().getCSNo());
-            txtField12.setText(oTransVSI.getVSISourceModel().getDetailModel().getPlateNo());
-            txtField13.setText(oTransVSI.getVSISourceModel().getDetailModel().getEngineNo());
-            txtField14.setText(oTransVSI.getVSISourceModel().getDetailModel().getFrameNo());
-            textArea15.setText(oTransVSI.getVSISourceModel().getDetailModel().getVhclFDsc());
-            if (oTransVSI.getVSISourceModel().getDetailModel().getUnitPrce() != null) {
+            txtField06.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
+            textArea07.setText(oTrans.getMasterModel().getMasterModel().getAddress());
+            txtField08.setText(oTrans.getMasterModel().getMasterModel().getTaxIDNo());
+            txtField09.setText(oTrans.getVSISourceModel().getDetailModel().getCoCltNm());
+            txtField10.setText(oTrans.getVSISourceModel().getDetailModel().getSEName());
+            txtField11.setText(oTrans.getVSISourceModel().getDetailModel().getCSNo());
+            txtField12.setText(oTrans.getVSISourceModel().getDetailModel().getPlateNo());
+            txtField13.setText(oTrans.getVSISourceModel().getDetailModel().getEngineNo());
+            txtField14.setText(oTrans.getVSISourceModel().getDetailModel().getFrameNo());
+            textArea15.setText(oTrans.getVSISourceModel().getDetailModel().getVhclFDsc());
+            if (oTrans.getVSISourceModel().getDetailModel().getUnitPrce() != null) {
                 txtField18.setText(
-                        poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSI.getVSISourceModel().getDetailModel().getUnitPrce()))));
+                        poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSISourceModel().getDetailModel().getUnitPrce()))));
             }
             txtField19.setText(
-                    poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSI.getVSISourceModel().getDetailModel().getVatRate()))));
+                    poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSISourceModel().getDetailModel().getVatRate()))));
         }
         textArea16.setText(
                 "");
         textArea17.setText(
                 "");
 
-        txtField20.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSI.getMasterModel().getMasterModel().getVatAmt()))));
-        txtField21.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSI.getMasterModel().getMasterModel().getDiscount()))));
-        txtField22.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSI.getMasterModel().getMasterModel().getTranTotl()))));
-        switch (oTransVSI.getMasterModel().getMasterModel().getTranStat()) {
+        txtField20.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVatAmt()))));
+        txtField21.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getDiscount()))));
+        txtField22.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTranTotl()))));
+        switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lbStatus.setText("Active");
                 break;
@@ -182,69 +174,21 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 lbStatus.setText("");
                 break;
         }
+        return true;
     }
 
-    private void initTextFieldKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
-                txtField13, txtField14, txtField18, txtField19, txtField20, txtField21, txtField22);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        /*TextArea*/
-        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea15, textArea16, textArea17);
-        loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
+    @Override
+    public void initPatternFields() {
+        Pattern decOnly = Pattern.compile("[0-9,.]*");
+        txtField20.setTextFormatter(new TextFormatterUtil(decOnly));  //Discount
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
-            } else {
-                lsValue = lsTxtField.getText();
-            }
-            JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField04":
-                        String lsCustType = String.valueOf(comboBox02.getSelectionModel().getSelectedIndex());
-                        loJSON = oTransVSI.searchVDR(lsValue, false, lsCustType);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            loadVSIFields();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField04.setText("");
-                            return;
-                        }
-                        break;
-                }
-                initFields(pnEditMode);
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            }
-        }
+    @Override
+    public void initLimiterFields() {
     }
 
-    private void textArea_KeyPressed(KeyEvent event) {
-        String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        }
-    }
-
-    private void initTextFieldFocus() {
+    @Override
+    public void initTextFieldFocus() {
         /*TextArea*/
         List<TextArea> loTxtArea = Arrays.asList(textArea16, textArea17);
         loTxtArea.forEach(tf -> tf.focusedProperty().addListener(txtArea_Focus));
@@ -261,7 +205,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             /*Lost Focus*/
             switch (lnIndex) {
                 case 1:
-                    oTransVSI.getMasterModel().getMasterModel().setReferNo(lsValue);
+                    oTrans.getMasterModel().getMasterModel().setReferNo(lsValue);
                     break;
             }
         } else {
@@ -279,7 +223,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             /*Lost Focus*/
             switch (lnIndex) {
                 case 16:
-//                    oTransVSI.getMasterModel().getMasterModel().set(lsValue);
+//                    oTrans.getMasterModel().getMasterModel().set(lsValue);
                     break;
             }
         } else {
@@ -287,79 +231,106 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         }
     };
 
-    private void initFieldActions() {
-        datePicker03.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransVSI.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-            }
-        });
-        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTransVSI.getVSISourceModel().getDetailModel().setUDRNo("");
-                        clearFieldsNoVSINo();
-                    }
-                }
-                initFields(pnEditMode);
-            }
-        });
-        comboBox02.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW) {
-                if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSI.getMasterModel().getMasterModel().setClientTp(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
-                }
-                initFields(pnEditMode);
-            }
-        });
-    }
-
-    private void clearFieldsNoVSINo() {
-        List<TextField> loTxtField = Arrays.asList(txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
-                txtField13, txtField14, txtField18, txtField19, txtField20, txtField21, txtField22);
-        loTxtField.forEach(tf -> tf.setText(""));
-        List<TextField> loTxtFieldNum = Arrays.asList(txtField18, txtField19, txtField20, txtField21, txtField22);
-        loTxtFieldNum.forEach(tf -> tf.setText("0.00"));
-        txtField19.setText("0");
-        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea15, textArea16, textArea17);
-        loTxtArea.forEach(ta -> ta.setText(""));
-    }
-
-    private void initCapitalizationFields() {
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
-                txtField13, txtField14);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
-
+                txtField13, txtField14, txtField18, txtField19, txtField20, txtField21, txtField22);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+        /*TextArea*/
         List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea15, textArea16, textArea17);
-
-        loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
+        loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
     }
 
-    private void initButtonClick() {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            TextField lsTxtField = (TextField) event.getSource();
+            String txtFieldID = ((TextField) event.getSource()).getId();
+            String lsValue = "";
+            if (lsTxtField.getText() == null) {
+                lsValue = "";
+            } else {
+                lsValue = lsTxtField.getText();
+            }
+            JSONObject loJSON = new JSONObject();
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField04":
+                                String lsCustType = String.valueOf(comboBox02.getSelectionModel().getSelectedIndex());
+                                loJSON = oTrans.searchVDR(lsValue, false, lsCustType);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    loadMasterFields();
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField04.setText("");
+                                    return;
+                                }
+                                break;
+                        }
+                        initFields(pnEditMode);
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        break;
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+        String textAreaID = ((TextArea) event.getSource()).getId();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (textAreaID) {
+            }
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+        }
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> loButtons = Arrays.asList(btnClose, btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnVSICancel);
         loButtons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransVSI = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
-                loJSON = oTransVSI.newTransaction();
+                oTrans = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    oTransVSI.getMasterModel().getMasterModel().setDocType("0");
-                    loadVSIFields();
-                    pnEditMode = oTransVSI.getEditMode();
+                    oTrans.getMasterModel().getMasterModel().setDocType("0");
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransVSI.updateTransaction();
-                pnEditMode = oTransVSI.getEditMode();
+                loJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -374,14 +345,14 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose Customer to proceed.");
                         return;
                     }
-                    loJSON = oTransVSI.saveTransaction();
+                    loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VSI Information", (String) loJSON.get("message"));
-                        loJSON = oTransVSI.openTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadVSIFields();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransVSI.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -392,7 +363,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransVSI = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
+                    oTrans = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -403,11 +374,11 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                         return;
                     }
                 }
-                loJSON = oTransVSI.searchTransaction("");
+                loJSON = oTrans.searchTransaction("");
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadVSIFields();
+                    loadMasterFields();
                     initFields(pnEditMode);
-                    pnEditMode = oTransVSI.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, "Search VSI Information Confirmation", (String) loJSON.get("message"));
                 }
@@ -427,16 +398,16 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             break;
             case "btnVSICancel":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VSI?")) {
-                    loJSON = oTransVSI.cancelTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VSI Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "VSI Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransVSI.openTransaction(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadVSIFields();
-                        pnEditMode = oTransVSI.getEditMode();
+                        loadMasterFields();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     }
                 }
@@ -448,17 +419,90 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
+    @Override
+    public void initComboBoxItems() {
+        comboBox02.setItems(cCustomerType);
+    }
+
+    @Override
+    public void initFieldsAction() {
+        datePicker03.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+            }
+        });
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getVSISourceModel().getDetailModel().setUDRNo("");
+                        clearFieldsNoVSINo();
+                    }
+                }
+                initFields(pnEditMode);
+            }
+        });
+        comboBox02.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW) {
+                if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
+                    oTrans.getMasterModel().getMasterModel().setClientTp(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+                }
+                initFields(pnEditMode);
+            }
+        });
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    private void clearFieldsNoVSINo() {
+        CustomCommonUtil.setText("", txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
                 txtField13, txtField14, txtField18, txtField19, txtField20, txtField21, txtField22);
-        loTxtField.forEach(tf -> tf.setText(""));
-        List<TextField> loTxtFieldNum = Arrays.asList(txtField18, txtField19, txtField20, txtField21, txtField22);
-        loTxtFieldNum.forEach(tf -> tf.setText("0.00"));
-        List<TextArea> loTxtArea = Arrays.asList(textArea07, textArea15, textArea16, textArea17);
-        loTxtArea.forEach(ta -> ta.setText(""));
+        CustomCommonUtil.setText("0.00", txtField18, txtField19, txtField20, txtField21, txtField22);
+        CustomCommonUtil.setText("", textArea07, textArea15, textArea16, textArea17);
+        txtField19.setText("0");
+    }
+
+    @Override
+    public void clearFields() {
+        CustomCommonUtil.setText("", txtField01, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11, txtField12,
+                txtField13, txtField14, txtField18, txtField19, txtField20, txtField21, txtField22);
+        CustomCommonUtil.setText("0.00", txtField18, txtField19, txtField20, txtField21, txtField22);
+        CustomCommonUtil.setText("", textArea07, textArea15, textArea16, textArea17);
         txtField19.setText("0");
         comboBox02.setValue("");
         datePicker03.setValue(LocalDate.of(1990, Month.JANUARY, 1));
+    }
+
+    @Override
+    public void initFields(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+
+        CustomCommonUtil.setDisable(!lbShow, txtField01, comboBox02, datePicker03);
+        txtField04.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()));
+
+        btnAdd.setVisible(!lbShow);
+        btnAdd.setManaged(!lbShow);
+        CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
+        CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
+        CustomCommonUtil.setVisible(false, btnEdit, btnPrint, btnVSICancel);
+        CustomCommonUtil.setManaged(false, btnEdit, btnPrint, btnVSICancel);
+        if (fnValue == EditMode.READY) {
+            if (!lbStatus.getText().equals("Cancelled")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnVSICancel);
+                CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnVSICancel);
+            }
+        }
+        if (fnValue == EditMode.UPDATE) {
+            CustomCommonUtil.setDisable(true, txtField01, comboBox02, txtField04);
+        }
     }
 
     private void loadVSIPrint() throws SQLException {
@@ -468,8 +512,8 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSiPrint.fxml"));
             VSIPrintController loControl = new VSIPrintController();
             loControl.setGRider(oApp);
-            loControl.setVSIObject(oTransVSI);
-            loControl.setTransNox(oTransVSI.getMasterModel().getMasterModel().getTransNo());
+            loControl.setVSIObject(oTrans);
+            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -493,40 +537,20 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             System.exit(1);
         }
     }
+    private Callback<DatePicker, DateCell> callB = new Callback<DatePicker, DateCell>() {
+        @Override
+        public DateCell call(final DatePicker param) {
+            return new DateCell() {
+                @Override
+                public void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+                    LocalDate today = LocalDate.now();
 
-    private void initFields(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(!lbShow);
-        comboBox02.setDisable(!lbShow);
-        datePicker03.setDisable(!lbShow);
-        txtField04.setDisable(!(lbShow && !comboBox02.getValue().isEmpty()));
-        textArea16.setDisable(!lbShow);
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnPrint.setVisible(false);
-        btnPrint.setManaged(false);
-        btnVSICancel.setVisible(false);
-        btnVSICancel.setManaged(false);
-        if (fnValue == EditMode.READY) {
-            if (!lbStatus.getText().equals("Cancelled")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnPrint.setVisible(true);
-                btnPrint.setManaged(true);
-                btnVSICancel.setVisible(true);
-                btnVSICancel.setManaged(true);
-            }
+                    setDisable(empty || item.compareTo(datePicker03.getValue()) < 0);
+                }
+
+            };
         }
-        if (fnValue == EditMode.UPDATE) {
-            txtField01.setDisable(true);
-            comboBox02.setDisable(true);
-            txtField04.setDisable(true);
-        }
-    }
+
+    };
 }

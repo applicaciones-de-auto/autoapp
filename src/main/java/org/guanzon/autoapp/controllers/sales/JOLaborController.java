@@ -18,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -35,7 +34,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class JOLaborController implements Initializable {
 
@@ -92,21 +91,17 @@ public class JOLaborController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initCapitalizationFields();
-        comboBox03.setItems(cChargeType);
-        initTextKeyPressed();
-        initTextFieldFocus();
-        initCmboxFieldAction();
-        initTextPropertyAction();
-        initButtonsClick();
-        initFielPattern();
-        loadLaborFields();
-        initFields();
-    }
 
-    private void initFielPattern() {
-        Pattern pattern = Pattern.compile("[0-9,.]*");
-        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
+        initCapitalizationFields();
+        initPatternFields();
+        initTextFieldFocus();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
+        loadMasterFields();
+        initFields();
     }
 
     private void initCapitalizationFields() {
@@ -114,27 +109,24 @@ public class JOLaborController implements Initializable {
         CustomCommonUtil.setCapsLockBehavior(txtField02);
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(
-                txtField01, txtField02, txtField04);
-        //Detail & AddOns TextField Tab);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    private void loadMasterFields() {
+        if (!psLbrDsc.isEmpty()) {
+            oTransLabor.getJOLaborModel().getDetailModel(pnRow).setLaborDsc(psLbrDsc);
+        }
+        txtField01.setText(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getLaborCde()));
+        txtField02.setText(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getLaborDsc()));
+        if (oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge() != null && !oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge().equals("")) {
+            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge())));
+        }
+        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getUnitPrce()))));
+        if (oTransLabor.getJOLaborModel().getDetailModel(pnRow).getEntryNo() > 0) {
+            txtField02.setDisable(true);
+        }
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        String lsTxtFieldID = ((TextField) event.getSource()).getId();
-        JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (lsTxtFieldID) {
-            }
-            initFields();
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        }
+    private void initPatternFields() {
+        Pattern pattern = Pattern.compile("[0-9,.]*");
+        txtField04.setTextFormatter(new TextFormatterUtil(pattern));
     }
 
     private void initTextFieldFocus() {
@@ -160,43 +152,30 @@ public class JOLaborController implements Initializable {
                     oTransLabor.getJOLaborModel().getDetailModel(pnRow).setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
                     break;
             }
-            loadLaborFields();
+            loadMasterFields();
         }
     };
 
-    private void initCmboxFieldAction() {
-        comboBox03.setOnAction(event -> {
-            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
-                oTransLabor.getJOLaborModel().getDetailModel(pnRow).setPayChrge(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
-                loadLaborFields();
-                initFields();
-            }
-        }
-        );
+    private void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(
+                txtField01, txtField02, txtField04);
+        //Detail & AddOns TextField Tab);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void initTextPropertyAction() {
-        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    oTransLabor.getJOLaborModel().getDetailModel(pnRow).setLaborDsc("");
-                }
+    private void txtField_KeyPressed(KeyEvent event) {
+        String lsTxtFieldID = ((TextField) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
+        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
+            switch (lsTxtFieldID) {
             }
-        });
-    }
-
-    private void loadLaborFields() {
-        if (!psLbrDsc.isEmpty()) {
-            oTransLabor.getJOLaborModel().getDetailModel(pnRow).setLaborDsc(psLbrDsc);
-        }
-        txtField01.setText(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getLaborCde()));
-        txtField02.setText(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getLaborDsc()));
-        if (oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge() != null && !oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge().equals("")) {
-            comboBox03.getSelectionModel().select(Integer.parseInt(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getPayChrge())));
-        }
-        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransLabor.getJOLaborModel().getDetailModel(pnRow).getUnitPrce()))));
-        if (oTransLabor.getJOLaborModel().getDetailModel(pnRow).getEntryNo() > 0) {
-            txtField02.setDisable(true);
+            initFields();
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
     }
 
@@ -230,27 +209,29 @@ public class JOLaborController implements Initializable {
 
     }
 
-    private boolean isValidEntry() {
-        if (txtField02.getText().trim().isEmpty()) {
-            ShowMessageFX.Warning(null, "Warning", "Please input Labor Description");
-            txtField02.requestFocus();
-            return false;
-        }
-        if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
-            ShowMessageFX.Warning(null, "Warning", "Please select Charge Type");
-            return false;
-        }
-        if (txtField04.getText().equals(0.00) || txtField04.getText().equals("0.00")) {
-            ShowMessageFX.Warning(null, "Warning", "Please enter amount.");
-            return false;
-        }
-        return true;
+    private void initComboBoxItems() {
+        comboBox03.setItems(cChargeType);
     }
 
-    private void setDisable(boolean disable, Node... nodes) {
-        for (Node node : nodes) {
-            node.setDisable(disable);
+    private void initFieldsAction() {
+        comboBox03.setOnAction(event -> {
+            if (comboBox03.getSelectionModel().getSelectedIndex() >= 0) {
+                oTransLabor.getJOLaborModel().getDetailModel(pnRow).setPayChrge(String.valueOf(comboBox03.getSelectionModel().getSelectedIndex()));
+                loadMasterFields();
+                initFields();
+            }
         }
+        );
+    }
+
+    private void initTextFieldsProperty() {
+        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLabor.getJOLaborModel().getDetailModel(pnRow).setLaborDsc("");
+                }
+            }
+        });
     }
 
     private void initFields() {
@@ -278,16 +259,33 @@ public class JOLaborController implements Initializable {
                 btnEditLabor.setVisible(true);
                 btnEditLabor.setManaged(true);
                 if (!psJO.isEmpty()) {
-                    setDisable(true, txtField04, comboBox03);
+                    CustomCommonUtil.setDisable(true, txtField04, comboBox03);
                 }
             } else {
                 btnAddLabor.setVisible(false);
                 btnAddLabor.setManaged(false);
                 btnEditLabor.setVisible(false);
                 btnEditLabor.setManaged(false);
-                setDisable(true, txtField01, txtField02, comboBox03, txtField04);
+                CustomCommonUtil.setDisable(true, txtField01, txtField02, comboBox03, txtField04);
             }
         }
+    }
+
+    private boolean isValidEntry() {
+        if (txtField02.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, "Warning", "Please input Labor Description");
+            txtField02.requestFocus();
+            return false;
+        }
+        if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
+            ShowMessageFX.Warning(null, "Warning", "Please select Charge Type");
+            return false;
+        }
+        if (txtField04.getText().equals(0.00) || txtField04.getText().equals("0.00")) {
+            ShowMessageFX.Warning(null, "Warning", "Please enter amount.");
+            return false;
+        }
+        return true;
     }
 
 }

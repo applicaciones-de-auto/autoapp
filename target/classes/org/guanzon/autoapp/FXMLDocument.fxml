@@ -121,7 +121,7 @@
                                                                         <MenuItem fx:id="mnuWarehsEntry" mnemonicParsing="false" onAction="#mnuWarehsEntryClicked" text="Warehouse" />
                                                                         <MenuItem fx:id="mnuBinEntry" mnemonicParsing="false" onAction="#mnuBinEntryClicked" text="Bin" />
                                                                         <MenuItem fx:id="mnuSectionEntry" mnemonicParsing="false" onAction="#mnuSectionEntryClicked" text="Section" />
-                                                                        <MenuItem fx:id="mnuInvLocEntry" mnemonicParsing="false" onAction="#mnuInvLocEntryClicked" text="Inventory Location" />
+                                                                        <MenuItem fx:id="mnuItemLocEntry" mnemonicParsing="false" onAction="#mnuItemLocEntryClicked" text="Item Location" />
                                                                     </items>
                                                                 </Menu>
                                                                 <Menu mnemonicParsing="false" text="Vehicle Description">
@@ -145,8 +145,9 @@
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Service">
                                                             <items>
-                                                                <MenuItem mnemonicParsing="false" text="Delete" />
                                                                 <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" />
+                                                                <MenuItem fx:id="mnuServiceAdvisor" mnemonicParsing="false" onAction="#mnuServiceAdvisorClick" text="Service Advisor" />
+                                                                <MenuItem fx:id="mnuServiceTech" mnemonicParsing="false" onAction="#mnuServiceTechClick" text="Service Technician" />
                                                             </items>
                                                         </Menu>
                                                         <Menu fx:id="menusales" mnemonicParsing="false" text="Vehicle Sales">
@@ -163,7 +164,15 @@
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
                                                             </items>
                                                         </Menu>
-                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance" />
+                                                        <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
+                                                            <items>
+                                                                <MenuItem fx:id="mnuInsProposal" mnemonicParsing="false" onAction="#mnuInsProposalClick" text="Insurance Proposal" />
+                                                                <MenuItem fx:id="mnuInsPropApp" mnemonicParsing="false" onAction="#mnuInsPropAppClick" text="Insurance Proposal Approval" />
+                                                                <MenuItem fx:id="mnuInsApplication" mnemonicParsing="false" onAction="#mnuInsApplicationClick" text="Insurance Application" />
+                                                                <MenuItem fx:id="mnuInsPolicy" mnemonicParsing="false" onAction="#mnuInsPolicyClick" text="Insurance Policy" />
+                                                                <MenuItem fx:id="mnuFollowUp" mnemonicParsing="false" onAction="#mnuFollowUpClick" text="Follow Up List" />
+                                                            </items>
+                                                        </Menu>
                                                         <Menu mnemonicParsing="false" text="Cashiering">
                                                             <items>
                                                                 <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />

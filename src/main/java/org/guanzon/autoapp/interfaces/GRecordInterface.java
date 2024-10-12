@@ -4,6 +4,8 @@
  */
 package org.guanzon.autoapp.interfaces;
 
+import javafx.event.ActionEvent;
+import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.base.GRider;
 
 /**
@@ -16,11 +18,23 @@ public interface GRecordInterface {
 
     void initCapitalizationFields();
 
+    boolean loadMasterFields();
+
+    void initPatternFields();
+
+    void initLimiterFields();
+
     void initTextFieldFocus();
 
     void initTextKeyPressed();
 
+    void txtField_KeyPressed(KeyEvent event);
+
+    void textArea_KeyPressed(KeyEvent event);
+
     void initButtonsClick();
+
+    void handleButtonAction(ActionEvent event);
 
     void initComboBoxItems();
 

@@ -7,8 +7,10 @@ package org.guanzon.autoapp.controllers.insurance;
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -39,7 +41,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceApplicationPrintController implements Initializable, GPrintInterface {
 
@@ -48,13 +50,11 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Insurance Application Print";
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
     Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
-    private final int pnCtr = 0;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -90,10 +90,15 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
         timeline = new Timeline();
+        initButtonsClick();
         generateReport();
 
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
+    }
+
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
     @Override
@@ -131,6 +136,24 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
         timeline.stop();
     }
 
+    @Override
+    public void generateReport() {
+        hideReport();
+        if (!running) {
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                timeSeconds--;
+                if (timeSeconds <= 0) {
+                    timeSeconds = 0;
+                }
+                if (timeSeconds == 0) {
+                    loadReport();
+                }
+            }));
+            timeline.playFromStart();
+        }
+    }
+
     private String getValueReport(String fsValue, String fsCol) {
         fsValue = "";
         if (oTransPrint.getMaster(fsCol) != null) {
@@ -162,31 +185,13 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
     }
 
     @Override
-    public void generateReport() {
-        hideReport();
-        if (!running) {
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
-                timeSeconds--;
-                if (timeSeconds <= 0) {
-                    timeSeconds = 0;
-                }
-                if (timeSeconds == 0) {
-                    loadReport();
-                }
-            }));
-            timeline.playFromStart();
-        }
-    }
-
-    @Override
     public boolean loadReport() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
             params.put("branchName", oApp.getBranchName());
             params.put("transDate", getValueDateReport("transDate", "dTransact"));
-            params.put("controlNo", "");
+            params.put("controlNo", getValueReport("controlNo", "sTransNox"));
             params.put("customerName", getValueReport("customerName", "sOwnrNmxx"));
             params.put("address", getValueReport("customerName", "sAddressx"));
             params.put("vehicleDesc", getValueReport("vehicleDesc", "sVhclDesc"));
@@ -218,7 +223,7 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
                 case "y":
                     lsPolicyType = "TPL";
                     break;
-                case "n":
+                case "c":
                     lsPolicyType = "COMPREHENSIVE";
                     break;
                 case "b":
@@ -235,15 +240,14 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
             params.put("mortgage", lsBank);
             String lsTPLAmnt = "";
             String lsTPLPrem = "";
-            if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM() != null) {
-                if (oTransPrint.getMasterModel().getMasterModel().getAONCPayM().equals("na")) {
-                    lsTPLAmnt = "N/A";
-                    lsTPLPrem = "N/A";
-                } else {
-                    lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
-                    lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
-                }
+            if (String.valueOf(oTransPrint.getMasterModel().getMasterModel().getInsTypID()).equals("c")) {
+                lsTPLAmnt = "N/A";
+                lsTPLPrem = "N/A";
+            } else {
+                lsTPLAmnt = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLAmt()));
+                lsTPLPrem = getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             }
+
             params.put("ownDmgAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getODTCAmt())));
             params.put("aonAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBdyCAmt())));
             params.put("tplAmount", lsTPLAmnt);

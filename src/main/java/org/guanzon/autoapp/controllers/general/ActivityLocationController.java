@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import java.net.URL;
@@ -28,7 +24,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
 public class ActivityLocationController implements Initializable, ScreenInterface {
 
@@ -80,45 +76,29 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
-        textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
-
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
-        CustomCommonUtil.setCapsLockBehavior(textArea06);
-        initButtons();
-        textProperty();
-        if (pbState) {
-            btnAdd.setVisible(true);
-            btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
-        } else {
-            loadActLocationFields();
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
-
+        initCapitalizationFields();
+        initTextKeyPressed();
+        initButtonsClick();
+        initTextFieldsProperty();
+        initFields();
         if (oTransLocation.getActLocationList().size() > 0) {
             if (!psProvID.isEmpty()) {
                 oTransLocation.setActLocation(pnRow, "sProvIDxx", (String) oTransLocation.getActLocation(0, "sProvIDxx"));
                 oTransLocation.setActLocation(pnRow, "sProvName", (String) oTransLocation.getActLocation(0, "sProvName"));
-                loadActLocationFields();
+                loadMasterFields();
             }
-
             initFields();
         }
     }
 
-    private void loadActLocationFields() {
-        txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
+    private void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        CustomCommonUtil.setCapsLockBehavior(textArea06);
+    }
 
+    private void loadMasterFields() {
+        txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
         txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
         txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
         txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
@@ -127,45 +107,10 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
 
     }
 
-    private void textProperty() {
-        txtField02.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sProvIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            txtField03.setText("");
-                            txtField04.setText("");
-                            txtField05.setText("");
-                            initFields();
-                        }
-                    }
-                }
-                );
-        txtField03.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            txtField04.setText("");
-                            txtField05.setText("");
-                            initFields();
-                        }
-                    }
-                }
-                );
-        txtField04.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            initFields();
-                        }
-                    }
-                }
-                );
+    private void initTextKeyPressed() {
+        List<TextField> poTxtFieldList = Arrays.asList(txtField01, txtField02, txtField03, txtField04, txtField05);
+        poTxtFieldList.forEach(tf -> tf.setOnKeyPressed(this::txtField_KeyPressed));
+        textArea06.setOnKeyPressed(this::txtArea_KeyPressed);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -235,7 +180,7 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         }
     }
 
-    private void initButtons() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -274,6 +219,67 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
 
     }
 
+    private void initTextFieldsProperty() {
+        txtField02.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTransLocation.setActLocation(pnRow, "sProvIDxx", "");
+                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
+                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
+                            txtField03.setText("");
+                            txtField04.setText("");
+                            txtField05.setText("");
+                            initFields();
+                        }
+                    }
+                }
+                );
+        txtField03.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
+                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
+                            txtField04.setText("");
+                            txtField05.setText("");
+                            initFields();
+                        }
+                    }
+                }
+                );
+        txtField04.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
+                            initFields();
+                        }
+                    }
+                }
+                );
+    }
+
+    private void initFields() {
+        if (pbState) {
+            btnAdd.setVisible(true);
+            btnAdd.setManaged(true);
+            btnEdit.setVisible(false);
+            btnEdit.setManaged(false);
+        } else {
+            loadMasterFields();
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+        if (oTransLocation.getActLocationList().size() > 1) {
+            txtField02.setDisable(true);
+        }
+        txtField03.setDisable(txtField02.getText().isEmpty());
+        txtField04.setDisable(txtField03.getText().isEmpty());
+    }
+
     private boolean settoClass() {
         //Validate Before adding to tables
         if (txtField01.getText().trim().equals("")) {
@@ -301,11 +307,4 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         return true;
     }
 
-    private void initFields() {
-        if (oTransLocation.getActLocationList().size() > 1) {
-            txtField02.setDisable(true);
-        }
-        txtField03.setDisable(txtField02.getText().isEmpty());
-        txtField04.setDisable(txtField03.getText().isEmpty());
-    }
 }

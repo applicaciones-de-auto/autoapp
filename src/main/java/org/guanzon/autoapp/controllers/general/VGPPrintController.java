@@ -1,20 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import java.awt.Component;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingNode;
@@ -37,6 +31,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Vehicle_Gatepass;
+import org.guanzon.autoapp.interfaces.GPrintInterface;
 import org.guanzon.autoapp.models.general.JobDone;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -45,9 +40,9 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class VGPPrintController implements Initializable, ScreenInterface {
+public class VGPPrintController implements Initializable, ScreenInterface, GPrintInterface {
 
     private Vehicle_Gatepass oTransPrint;
     private GRider oApp;
@@ -100,11 +95,17 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         btnPrint.setDisable(true);
         timeline = new Timeline();
         generateReport();
-        btnClose.setOnAction(this::handleButtonAction);
-        btnPrint.setOnAction(this::handleButtonAction);
+        initButtonsClick();
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
@@ -128,7 +129,8 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         }
     }
 
-    private void hideReport() {
+    @Override
+    public void hideReport() {
         poJrViewer = new JRViewer(null);
         reportPane.getChildren().clear();
         poJrViewer.setVisible(false);
@@ -137,7 +139,8 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         timeline.stop();
     }
 
-    private void generateReport() {
+    @Override
+    public void generateReport() {
         hideReport();
         if (!running) {
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -147,34 +150,10 @@ public class VGPPrintController implements Initializable, ScreenInterface {
                     timeSeconds = 0;
                 }
                 if (timeSeconds == 0) {
-                    try {
-                        loadReport();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(VGPPrintController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    loadReport();
                 }
             }));
             timeline.playFromStart();
-        }
-    }
-
-    private void findAndHideButton(Component foComponent, String fsButtonText) {
-        if (foComponent instanceof AbstractButton) {
-            AbstractButton button = (AbstractButton) foComponent;
-            if (button.getToolTipText() != null) {
-                if (button.getToolTipText().equals(fsButtonText)) {
-                    button.setVisible(false);
-                    return;
-                }
-            }
-        }
-
-        if (foComponent instanceof java.awt.Container) {
-            java.awt.Container container = (java.awt.Container) foComponent;
-            Component[] loComponents = container.getComponents();
-            for (Component childComponent : loComponents) {
-                findAndHideButton(childComponent, fsButtonText);
-            }
         }
     }
 
@@ -194,7 +173,8 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         return fsValue;
     }
 
-    private boolean loadReport() throws SQLException {
+    @Override
+    public boolean loadReport() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
@@ -216,51 +196,36 @@ public class VGPPrintController implements Initializable, ScreenInterface {
             params.put("refeno", getValueReport("refeno", "sSourceNo"));
             vgpData.clear();
             // First, add labor data to the jobDoneData list
-            String lsLaborJONo = "";
-            int lnRow = 1;
-
-            // Iterate over labor data
-            for (int lnLaborRow = 0; lnLaborRow <= oTransPrint.getVSPLaborList().size() - 1; lnLaborRow++) {
-                lsLaborJONo = oTransPrint.getVSPLaborModel().getDetailModel(lnLaborRow).getDSNo();
-
-                // Add only if DSNo is not null
-                if (lsLaborJONo != null && !lsLaborJONo.isEmpty()) {
-                    vgpData.add(new JobDone(
-                            String.valueOf(lnRow),
-                            "LABOR",
-                            String.valueOf(oTransPrint.getVSPLaborModel().getDetailModel(lnLaborRow).getLaborCde()),
-                            String.valueOf(oTransPrint.getVSPLaborModel().getDetailModel(lnLaborRow).getLaborDsc()),
-                            "1", // Assuming 1 as a placeholder
-                            lsLaborJONo,
-                            "",
-                            String.valueOf(oTransPrint.getVSPLaborModel().getDetailModel(lnLaborRow).getRemarks()))
-                    );
-                    lnRow++;
+            String lsItem = "";
+            String lsDescID = "";
+            String lsDesc = "";
+            for (int lnCtr = 0; lnCtr <= oTransPrint.getVGPItemList().size() - 1; lnCtr++) {
+                switch (String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemType())) {
+                    case "l":
+                        lsItem = "LABOR";
+                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getLaborCde());
+                        lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
+                        break;
+                    case "p":
+                        lsItem = "PARTS";
+                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getStockID());
+                        lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
+                        break;
                 }
+                vgpData.add(new JobDone(
+                        String.valueOf(lnCtr + 1),
+                        lsItem,
+                        lsDescID,
+                        lsDesc,
+                        String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getQuantity()), // Assuming 1 as a placeholder
+                        "",
+                        String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getReleased()),
+                        ""
+                ));
+                lsItem = "";
+                lsDescID = "";
+                lsDesc = "";
             }
-
-            String lsPartsJONo = "";
-
-            // Iterate over parts data
-            for (int lnPartsRow = 0; lnPartsRow <= oTransPrint.getVSPPartsList().size() - 1; lnPartsRow++) {
-                lsPartsJONo = oTransPrint.getVSPPartsModel().getDetailModel(lnPartsRow).getDSNo();
-
-                // Add only if DSNo is not null
-                if (lsPartsJONo != null && !lsPartsJONo.isEmpty()) {
-                    vgpData.add(new JobDone(
-                            String.valueOf(lnRow),
-                            "PARTS",
-                            String.valueOf(oTransPrint.getVSPPartsModel().getDetailModel(lnPartsRow).getBarCode()),
-                            String.valueOf(oTransPrint.getVSPPartsModel().getDetailModel(lnPartsRow).getPartDesc()),
-                            String.valueOf(oTransPrint.getVSPPartsModel().getDetailModel(lnPartsRow).getQuantity()),
-                            lsPartsJONo,
-                            "",
-                            "")
-                    );
-                    lnRow++;
-                }
-            }
-
             String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/VehicleGatePass.jasper";
             JRBeanCollectionDataSource jobDoneData = new JRBeanCollectionDataSource(vgpData);
             System.out.println("vehicle: " + jobDoneData.getData());
@@ -280,7 +245,8 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         return false;
     }
 
-    private void showReport() {
+    @Override
+    public void showReport() {
         vbProgress.setVisible(false);
         btnPrint.setVisible(true);
         btnPrint.setDisable(false);
@@ -303,5 +269,26 @@ public class VGPPrintController implements Initializable, ScreenInterface {
         running = true;
         reportPane.setVisible(true);
         timeline.stop();
+    }
+
+    @Override
+    public void findAndHideButton(Component foComponent, String fsButtonText) {
+        if (foComponent instanceof AbstractButton) {
+            AbstractButton button = (AbstractButton) foComponent;
+            if (button.getToolTipText() != null) {
+                if (button.getToolTipText().equals(fsButtonText)) {
+                    button.setVisible(false);
+                    return;
+                }
+            }
+        }
+
+        if (foComponent instanceof java.awt.Container) {
+            java.awt.Container container = (java.awt.Container) foComponent;
+            Component[] loComponents = container.getComponents();
+            for (Component childComponent : loComponents) {
+                findAndHideButton(childComponent, fsButtonText);
+            }
+        }
     }
 }

@@ -7,8 +7,10 @@ package org.guanzon.autoapp.controllers.sales;
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -33,6 +35,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
+import org.guanzon.autoapp.interfaces.GPrintInterface;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -42,7 +45,7 @@ import org.json.simple.JSONObject;
  *
  * @author AutoGroup Programmers
  */
-public class VSPPrintController implements Initializable, ScreenInterface {
+public class VSPPrintController implements Initializable, ScreenInterface, GPrintInterface {
 
     private VehicleSalesProposal oTransPrint;
     private GRider oApp;
@@ -59,9 +62,7 @@ public class VSPPrintController implements Initializable, ScreenInterface {
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnClose;
+    private Button btnPrint, btnClose;
     @FXML
     private VBox vbProgress;
     @FXML
@@ -80,7 +81,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         oTransPrint = foValue;
     }
 
-    public void setTransNox(String fsValue) {
+    @Override
+    public void setTransNo(String fsValue) {
         psTransNox = fsValue;
     }
 
@@ -93,13 +95,18 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);
         timeline = new Timeline();
+        initButtonsClick();
         generateReport();
-
-        btnClose.setOnAction(this::handleButtonClick);
-        btnPrint.setOnAction(this::handleButtonClick);
     }
 
-    private void handleButtonClick(ActionEvent event) {
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
@@ -123,7 +130,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         }
     }
 
-    private void hideReport() {
+    @Override
+    public void hideReport() {
         poJrViewer = new JRViewer(null);
         reportPane.getChildren().clear();
         poJrViewer.setVisible(false);
@@ -132,7 +140,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         timeline.stop();
     }
 
-    private void generateReport() {
+    @Override
+    public void generateReport() {
         hideReport();
         if (!running) {
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -185,7 +194,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         return lsFormattedAmount;
     }
 
-    private boolean loadReport() {
+    @Override
+    public boolean loadReport() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTransPrint.openTransaction(psTransNox);
         if ("success".equals((String) loJSON.get("result"))) {
@@ -489,7 +499,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         return false;
     }
 
-    private void showReport() {
+    @Override
+    public void showReport() {
         vbProgress.setVisible(false);
         btnPrint.setVisible(true);
         btnPrint.setDisable(false);
@@ -514,7 +525,8 @@ public class VSPPrintController implements Initializable, ScreenInterface {
         timeline.stop();
     }
 
-    private void findAndHideButton(Component foComponent, String fsButtonText) {
+    @Override
+    public void findAndHideButton(Component foComponent, String fsButtonText) {
         if (foComponent instanceof AbstractButton) {
             AbstractButton button = (AbstractButton) foComponent;
             if (button.getToolTipText() != null) {
@@ -533,5 +545,4 @@ public class VSPPrintController implements Initializable, ScreenInterface {
             }
         }
     }
-
 }

@@ -1,14 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.sales;
 
 import java.awt.Component;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -35,6 +33,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
+import org.guanzon.autoapp.interfaces.GPrintInterface;
 import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -43,9 +42,9 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class VehicleInquiryReservationPrintController implements Initializable, ScreenInterface {
+public class VehicleInquiryReservationPrintController implements Initializable, ScreenInterface, GPrintInterface {
 
     private Inquiry oTransPrint;
     private GRider oApp;
@@ -62,9 +61,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnClose;
+    private Button btnPrint, btnClose;
     @FXML
     private VBox vbProgress;
     @FXML
@@ -73,6 +70,10 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setTransNo(String fsValue) {
     }
 
     private Stage getStage() {
@@ -97,12 +98,17 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         btnPrint.setDisable(true);
         timeline = new Timeline();
         generateReport();
-
-        btnClose.setOnAction(this::cmdButton_Click);
-        btnPrint.setOnAction(this::cmdButton_Click);
+        initButtonsClick();
     }
 
-    private void cmdButton_Click(ActionEvent event) {
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnClose, btnPrint);
+        buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
+    }
+
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnClose":
@@ -126,7 +132,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         }
     }
 
-    private void hideReport() {
+    @Override
+    public void hideReport() {
         poJrViewer = new JRViewer(null);
         reportPane.getChildren().clear();
         poJrViewer.setVisible(false);
@@ -135,7 +142,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         timeline.stop();
     }
 
-    private void generateReport() {
+    @Override
+    public void generateReport() {
         hideReport();
         if (!running) {
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -168,7 +176,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         return fsValue;
     }
 
-    private boolean loadReport() {
+    @Override
+    public boolean loadReport() {
         JSONObject loJSON = new JSONObject();
         Map<String, Object> params = new HashMap<>();
         params.put("sCompnyNm", "Guanzon Group of Companies");
@@ -260,7 +269,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
 
     }
 
-    private void showReport() {
+    @Override
+    public void showReport() {
         vbProgress.setVisible(false);
         btnPrint.setVisible(true);
         btnPrint.setDisable(false);
@@ -285,7 +295,8 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
         timeline.stop();
     }
 
-    private void findAndHideButton(Component foComponent, String fsButtonText) {
+    @Override
+    public void findAndHideButton(Component foComponent, String fsButtonText) {
         if (foComponent instanceof AbstractButton) {
             AbstractButton button = (AbstractButton) foComponent;
             if (button.getToolTipText() != null) {

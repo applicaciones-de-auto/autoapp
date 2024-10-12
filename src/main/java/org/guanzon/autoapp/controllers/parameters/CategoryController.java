@@ -25,6 +25,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_InventoryCategory;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -33,14 +34,14 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
-public class CategoryController implements Initializable, ScreenInterface {
+public class CategoryController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private final String pxeModuleName = "Category";
     private int pnEditMode;//Modifying fields
-    private Parts_InventoryCategory oTransCategory;
+    private Parts_InventoryCategory oTrans;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
@@ -62,58 +63,89 @@ public class CategoryController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransCategory = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
+        oTrans = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
 
-        initTextFieldPattern();
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
         initTextFieldFocus();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
+        initTextFieldsProperty();
         clearFields();
-        txtField03.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTransCategory.getModel().getModel().setInvTypCd("");
-                            }
-                        }
-                    }
-                }
-                );
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void loadCategoryFields() {
-        txtField01.setText(oTransCategory.getModel().getModel().getCategrCd());
-        txtField02.setText(oTransCategory.getModel().getModel().getDescript());
-        txtField03.setText(oTransCategory.getModel().getModel().getInvTypDs());
-        if (oTransCategory.getModel().getModel().getRecdStat().equals("1")) {
+    @Override
+    public void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        txtField01.setText(oTrans.getModel().getModel().getCategrCd());
+        txtField02.setText(oTrans.getModel().getModel().getDescript());
+        txtField03.setText(oTrans.getModel().getModel().getInvTypDs());
+        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
             cboxActivate.setSelected(false);
         }
+        return true;
     }
 
-    private void initTextFieldPattern() {
+    @Override
+    public void initPatternFields() {
         Pattern textOnly;
         textOnly = Pattern.compile("[A-Za-z 0-9]*");
         txtField02.setTextFormatter(new TextFormatterUtil(textOnly));
     }
 
-    private void initCapitalizationFields() {
-        List<TextField> loTxtField = Arrays.asList(txtField01, txtField02, txtField03);
-        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+    @Override
+    public void initLimiterFields() {
+
     }
 
-    private void initTextKeyPressed() {
+    @Override
+    public void initTextFieldFocus() {
+        List<TextField> loTxtField = Arrays.asList(txtField02);
+        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    }
+
+    /*Set TextField Value to Master Class*/
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        JSONObject loJSON = new JSONObject();
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 2:
+                    loJSON = oTrans.getModel().getModel().setDescript(lsValue);
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                    break;
+            }
+        } else {
+            txtField.selectAll();
+        }
+    };
+
+    @Override
+    public void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             TextField lsTxtField = (TextField) event.getSource();
             String txtFieldID = ((TextField) event.getSource()).getId();
@@ -127,9 +159,9 @@ public class CategoryController implements Initializable, ScreenInterface {
             if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
                 switch (txtFieldID) {
                     case "txtField03":
-                        loJSON = oTransCategory.searchInvType(lsValue, true);
+                        loJSON = oTrans.searchInvType(lsValue, true);
                         if (!"error".equals(loJSON.get("result"))) {
-                            txtField03.setText(oTransCategory.getModel().getModel().getInvTypDs());
+                            txtField03.setText(oTrans.getModel().getModel().getInvTypDs());
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                             txtField03.setText("");
@@ -151,59 +183,36 @@ public class CategoryController implements Initializable, ScreenInterface {
         }
     }
 
-    private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(txtField02);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
     }
-    /*Set TextField Value to Master Class*/
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        JSONObject loJSON = new JSONObject();
-        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 2:
-                    loJSON = oTransCategory.getModel().getModel().setDescript(lsValue);
-                    if ("error".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    }
-                    break;
-            }
-        } else {
-            txtField.selectAll();
-        }
-    };
 
-    private void initButtons() {
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnDeactivate, btnActive);
-
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransCategory = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
-                loJSON = oTransCategory.newRecord();
+                oTrans = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadCategoryFields();
-                    pnEditMode = oTransCategory.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransCategory.updateRecord();
-                pnEditMode = oTransCategory.getEditMode();
+                loJSON = oTrans.updateRecord();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -220,14 +229,14 @@ public class CategoryController implements Initializable, ScreenInterface {
                         txtField03.setText("");
                         return;
                     }
-                    loJSON = oTransCategory.saveRecord();
+                    loJSON = oTrans.saveRecord();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Category Information", (String) loJSON.get("message"));
-                        loJSON = oTransCategory.openRecord(oTransCategory.getModel().getModel().getCategrCd());
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getCategrCd());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadCategoryFields();
+                            loadMasterFields();
                             initFields(pnEditMode);
-                            pnEditMode = oTransCategory.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -238,7 +247,7 @@ public class CategoryController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransCategory = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
+                    oTrans = new Parts_InventoryCategory(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -249,50 +258,52 @@ public class CategoryController implements Initializable, ScreenInterface {
                         return;
                     }
                 }
-                loJSON = oTransCategory.searchRecord("", false);
+                loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadCategoryFields();
-                    pnEditMode = oTransCategory.getEditMode();
+                    loadMasterFields();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Category Information", (String) loJSON.get("message"));
                 }
                 break;
             case "btnClose":
-                CommonUtils.closeStage(btnClose);
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
+                    CommonUtils.closeStage(btnClose);
+                }
                 break;
             case "btnDeactivate":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransCategory.getModel().getModel().getCategrCd();
-                    loJSON = oTransCategory.deactivateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getCategrCd();
+                    loJSON = oTrans.deactivateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Category Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Category Information", (String) loJSON.get("message"));
                         return;
                     }
-                    loJSON = oTransCategory.openRecord(oTransCategory.getModel().getModel().getCategrCd());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getCategrCd());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadCategoryFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransCategory.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
             case "btnActive":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to change status?") == true) {
-                    String fsValue = oTransCategory.getModel().getModel().getCategrCd();
-                    loJSON = oTransCategory.activateRecord(fsValue);
+                    String fsValue = oTrans.getModel().getModel().getCategrCd();
+                    loJSON = oTrans.activateRecord(fsValue);
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Category Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Category Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransCategory.openRecord(oTransCategory.getModel().getModel().getCategrCd());
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getCategrCd());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loadCategoryFields();
+                        loadMasterFields();
                         initFields(pnEditMode);
-                        pnEditMode = oTransCategory.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                     }
                 }
                 break;
@@ -303,46 +314,62 @@ public class CategoryController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
-        cboxActivate.setSelected(false);
-        txtField01.clear();
-        txtField02.clear();
-        txtField03.clear();
+    @Override
+    public void initComboBoxItems() {
+
     }
 
-    private void initFields(int fnValue) {
+    @Override
+    public void initFieldsAction() {
+
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField03.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getModel().getModel().setInvTypCd("");
+                            }
+                        }
+                    }
+                }
+                );
+    }
+
+    @Override
+    public void clearTables() {
+
+    }
+
+    @Override
+    public void clearFields() {
+        cboxActivate.setSelected(false);
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03);
+    }
+
+    @Override
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        txtField01.setDisable(true);
-        txtField02.setDisable(!lbShow);
-        txtField03.setDisable(!lbShow);
-        cboxActivate.setDisable(true);
+        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        btnDeactivate.setVisible(false);
-        btnDeactivate.setManaged(false);
-        btnActive.setVisible(false);
-        btnActive.setManaged(false);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+        CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate, btnActive);
+        CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
-            //show edit if user clicked save / browse
-            if (oTransCategory.getModel().getModel().getRecdStat().equals("1")) {
-                btnEdit.setVisible(true);
-                btnEdit.setManaged(true);
-                btnDeactivate.setVisible(true);
-                btnDeactivate.setManaged(true);
-                btnActive.setVisible(false);
-                btnActive.setManaged(false);
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
-                btnDeactivate.setVisible(false);
-                btnDeactivate.setManaged(false);
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
             }
         }
     }
+
 }

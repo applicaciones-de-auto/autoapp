@@ -6,13 +6,13 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -48,19 +48,20 @@ import org.guanzon.auto.main.insurance.InsurancePolicyApplication;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.GTransactionInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class InsuranceApplicationController implements Initializable, ScreenInterface, GTransactionInterface {
 
     private GRider oApp;
-    private InsurancePolicyApplication oTransInsApplication;
-    private String pxeModuleName = "Insurance Proposal";
+    private InsurancePolicyApplication oTrans;
+    private String pxeModuleName = "Insurance Application";
     private UnloadForm poUnload = new UnloadForm();
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnEditMode = -1;
@@ -80,7 +81,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     private TextField txtField01, txtField02, txtField07, txtField08, txtField10, txtField13, txtField15, txtField16, txtField17,
             txtField19, txtField20, txtField23, txtField24, txtField25, txtField26, txtField27, txtField29,
             txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
-            txtField39, txtField40, txtField41, txtField42, txtField43, txtField45;
+            txtField39, txtField40, txtField41, txtField42, txtField43, txtField45, txtField47;
     @FXML
     private DatePicker datePicker05, datePicker06, datePicker11;
     @FXML
@@ -101,9 +102,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransInsApplication = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
+        oTrans = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
         datePicker05.setDayCellFactory(DateFrom);
         initCapitalizationFields();
+        initPatternFields();
         initTextFieldFocus();
         initTextKeyPressed();
         initButtonsClick();
@@ -123,6 +125,175 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
         List<TextArea> loTextArea = Arrays.asList(textArea14, textArea44, textArea46);
         loTextArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
+    }
+
+    @Override
+    public boolean loadMasterFields() {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.computeAmount();
+        /* POLICY INFORMATION */
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getPropslNo());
+        txtField02.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
+        int lnAppType = -1;
+        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
+                case "y":
+                    lnAppType = 0;
+                    break;
+                case "n":
+                    lnAppType = 1;
+                    break;
+            }
+        }
+        comboBox03.getSelectionModel().select(lnAppType);
+        int policeType = -1;
+        if (oTrans.getMasterModel().getMasterModel().getInsTypID() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getInsTypID()) {
+                case "y":
+                    policeType = 0;
+                    break;
+                case "c":
+                    policeType = 1;
+                    break;
+                case "b":
+                    policeType = 2;
+                    break;
+            }
+        }
+        comboBox04.getSelectionModel().select(policeType);
+        if (oTrans.getMasterModel().getMasterModel().getValidFrmDte() != null) {
+            datePicker05.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidFrmDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        if (oTrans.getMasterModel().getMasterModel().getValidTruDte() != null) {
+            datePicker06.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidTruDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        String lsInsBranc = "";
+        if (oTrans.getMasterModel().getMasterModel().getInsurNme() != null && oTrans.getMasterModel().getMasterModel().getBrInsNme() != null) {
+            lsInsBranc = oTrans.getMasterModel().getMasterModel().getInsurNme() + " " + oTrans.getMasterModel().getMasterModel().getBrInsNme();
+        }
+        txtField07.setText(lsInsBranc.trim());
+        txtField08.setText(oTrans.getMasterModel().getMasterModel().getEmpName());
+        if (oTrans.getMasterModel().getMasterModel().getFinType() != null && !oTrans.getMasterModel().getMasterModel().getFinType().trim().isEmpty()) {
+            comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getFinType()));
+        }
+        String lsBrBank = "";
+        if (oTrans.getMasterModel().getMasterModel().getBankName() != null && oTrans.getMasterModel().getMasterModel().getBrBankNm() != null) {
+            lsBrBank = oTrans.getMasterModel().getMasterModel().getBankName() + " " + oTrans.getMasterModel().getMasterModel().getBrBankNm();
+        }
+        txtField10.setText(lsBrBank.trim());
+        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null && !String.valueOf(oTrans.getMasterModel().getMasterModel().getTransactDte()).isEmpty()) {
+            datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
+        int lnNewBus = -1;
+        if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
+                case "y":
+                    lnNewBus = 0;
+                    break;
+                case "n":
+                    lnNewBus = 1;
+                    break;
+            }
+        }
+        comboBox12.getSelectionModel().select(lnNewBus);
+        txtField13.setText(oTrans.getMasterModel().getMasterModel().getOwnrNm());
+        textArea14.setText(oTrans.getMasterModel().getMasterModel().getAddress());
+        txtField15.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+        txtField16.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+        txtField47.setText(oTrans.getMasterModel().getMasterModel().getVhclFDsc());
+        txtField17.setText(String.valueOf("0"));
+        if (oTrans.getMasterModel().getMasterModel().getUnitType() != null && !oTrans.getMasterModel().getMasterModel().getUnitType().trim().isEmpty()) {
+            comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getUnitType()));
+        }
+        txtField19.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
+        txtField20.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
+
+        if (oTrans.getMasterModel().getMasterModel().getVhclSize() != null && !oTrans.getMasterModel().getMasterModel().getVhclSize().trim().isEmpty()) {
+            comboBox21.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getVhclSize()));
+        }
+
+        if (oTrans.getMasterModel().getMasterModel().getBodyType() != null && !oTrans.getMasterModel().getMasterModel().getBodyType().trim().isEmpty()) {
+            comboBox22.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getBodyType()));
+        }
+
+        txtField23.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCAmt()))));
+        txtField24.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCRate()))));
+        txtField26.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCAmt()))));
+        txtField27.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCRate()))));
+        txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCAmt()))));
+        txtField32.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCAmt()))));
+        txtField34.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCAmt()))));
+        txtField36.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLAmt()))));
+        int actNtr = -1;
+        if (oTrans.getMasterModel().getMasterModel().getAONCPayM() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getAONCPayM()) {
+                case "cha":
+                    actNtr = 0;
+                    break;
+                case "foc":
+                    actNtr = 1;
+                    break;
+                case "na":
+                    actNtr = 2;
+                    break;
+            }
+        }
+        comboBox28.getSelectionModel().select(actNtr);
+        txtField25.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCPrem()))));
+        txtField29.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getAONCPrem()))));
+        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getBdyCPrem()))));
+        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPrDCPrem()))));
+        txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getPAcCPrem()))));
+        txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTPLPrem()))));
+        txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxRate()))));
+        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTaxAmt()))));
+        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTotalAmt()))));
+
+        txtField43.setText("");
+        textArea44.setText("");
+        txtField45.setText("");
+        textArea46.setText("");
+        if (oTrans.getMasterModel().getMasterModel().getTranStat() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
+                case TransactionStatus.STATE_OPEN:
+                    lblStatus.setText("Active");
+                    break;
+                case TransactionStatus.STATE_CLOSED:
+                    lblStatus.setText("Approved");
+                    break;
+                case TransactionStatus.STATE_CANCELLED:
+                    lblStatus.setText("Cancelled");
+                    break;
+                case TransactionStatus.STATE_POSTED:
+                    lblStatus.setText("Posted");
+                    break;
+                default:
+                    lblStatus.setText("");
+                    break;
+            }
+        }
+        String lsPolicyNo = "";
+        if (oTrans.getMasterModel().getMasterModel().getPolicyNo() != null && !oTrans.getMasterModel().getMasterModel().getPolicyNo().isEmpty()) {
+            lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
+        }
+        lblPolicyNo.setText(lsPolicyNo);
+        lblPrintDate.setText("");
+        return true;
+    }
+
+    @Override
+    public void initPatternFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField23, txtField24, txtField25, txtField26, txtField27, txtField29,
+                txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
+                txtField39, txtField40, txtField41, txtField42);
+        Pattern loDecOnly = Pattern.compile("[0-9,.]*");
+        Pattern loNumOnly = Pattern.compile("[0-9]*");
+        loTxtField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(loDecOnly)));
+        txtField17.setTextFormatter(new TextFormatterUtil(loNumOnly));
+    }
+
+    @Override
+    public void initLimiterFields() {
     }
 
     @Override
@@ -148,8 +319,8 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         lsValue = "0";
                     }
                     int lnAutCapacity = Integer.parseInt(lsValue);
-//                    oTransInsApplication.getMasterModel().getMasterModel().setAuhorize(lnAutCapacity);
-//                    txtField17.setText( oTransInsApplication.getMasterModel().getMasterModel().getAuhorize();
+//                    oTrans.getMasterModel().getMasterModel().setAuhorize(lnAutCapacity);
+//                    txtField17.setText( oTrans.getMasterModel().getMasterModel().getAuhorize();
                     break;
                 case 41:
                     if (lsValue.isEmpty()) {
@@ -161,14 +332,14 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
                         lsValue = "0.00"; // Reset to 0.00 for invalid amount
                     }
-////                    oTransInsApplication.getMasterModel().getMasterModel().setAuhorize(lnAutCapacity);
-////                    txtField17.setText( oTransInsApplication.getMasterModel().getMasterModel().getAuhorize();
-//                    oTransInsApplication.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(lsValue.replace(",", "")));
+////                    oTrans.getMasterModel().getMasterModel().setAuhorize(lnAutCapacity);
+////                    txtField17.setText( oTrans.getMasterModel().getMasterModel().getAuhorize();
+//                    oTrans.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(lsValue.replace(",", "")));
 //                    if (!loadMasterFields()) {
 //                        txtField41.setText("0.00");
-//                        oTransInsApplication.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(txtField41.getText().replace(",", "")));
+//                        oTrans.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(txtField41.getText().replace(",", "")));
 //                    }
-//                    txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getODTCAmt()))));
+//                    txtField41.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getODTCAmt()))));
                     break;
             }
             loadMasterFields();
@@ -204,7 +375,8 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
     }
 
-    private void txtField_KeyPressed(KeyEvent event) {
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
         String lsValue = "";
@@ -214,52 +386,61 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             lsValue = lsTxtField.getText();
         }
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField01":
-                    loJSON = oTransInsApplication.searchProposal(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField01":
+                            loJSON = oTrans.searchProposal(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {
+                                System.out.println("bank name: " + oTrans.getMasterModel().getMasterModel().getBankName());
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            initFields(pnEditMode);
+                            break;
+                        case "txtField08":
+                            loJSON = oTrans.searchInsuranceCoordinator(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {;
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            break;
+                        case "txtField10":
+                            loJSON = oTrans.searchbank(lsValue.trim());
+                            if (!"error".equals(loJSON.get("result"))) {
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            break;
                     }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
                     initFields(pnEditMode);
                     break;
-                case "txtField08":
-                    loJSON = oTransInsApplication.searchInsuranceCoordinator(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {;
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
-                    }
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
                     break;
-                case "txtField10":
-                    loJSON = oTransInsApplication.searchbank(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
-                    }
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-            initFields(pnEditMode);
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
-    private void textArea_KeyPressed(KeyEvent event) {
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (textAreaID) {
@@ -274,29 +455,30 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     @Override
     public void initButtonsClick() {
-        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnInsAppCancel, btnClose);
+        List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPayment, btnPrint, btnInsAppCancel, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransInsApplication = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
-                loJSON = oTransInsApplication.newTransaction();
+                oTrans = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
-                    pnEditMode = oTransInsApplication.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransInsApplication.updateTransaction();
-                pnEditMode = oTransInsApplication.getEditMode();
+                loJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
@@ -315,13 +497,13 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         return;
                     }
 
-                    loJSON = oTransInsApplication.saveTransaction();
+                    loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Insurance Application Information", (String) loJSON.get("message"));
-                        loJSON = oTransInsApplication.openTransaction(oTransInsApplication.getMasterModel().getMasterModel().getTransNo());
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                         if ("success".equals((String) loJSON.get("result"))) {
                             loadMasterFields();
-                            pnEditMode = oTransInsApplication.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                             initFields(pnEditMode);
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
@@ -337,7 +519,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransInsApplication = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
+                    oTrans = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -348,10 +530,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         return;
                     }
                 }
-                loJSON = oTransInsApplication.searchTransaction("", false);
+                loJSON = oTrans.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
-                    pnEditMode = oTransInsApplication.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Application Information Confirmation", (String) loJSON.get("message"));
@@ -375,19 +557,22 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             break;
             case "btnInsAppCancel":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this Insurance Proposal?")) {
-                    loJSON = oTransInsApplication.cancelTransaction(oTransInsApplication.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Insurance Proposal Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Insurance Proposal Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransInsApplication.openTransaction(oTransInsApplication.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMasterFields();
-                        pnEditMode = oTransInsApplication.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     }
                 }
+                break;
+            case "btnPayment":
+                ShowMessageFX.Warning(null, pxeModuleName, "Button payment history is underdevelopment");
                 break;
             default:
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
@@ -410,57 +595,39 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
 
     @Override
     public void initFieldsAction() {
-        comboBox09.setOnAction(event -> {
+        comboBox09.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransInsApplication.getMasterModel().getMasterModel().setVhclNew(String.valueOf(comboBox22.getSelectionModel().getSelectedIndex()));
+                    if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
+                        switch (comboBox09.getSelectionModel().getSelectedIndex()) {
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                                oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                                oTrans.getMasterModel().getMasterModel().setBrBankNm("");
+                                oTrans.getMasterModel().getMasterModel().setBankName("");
+                                txtField10.setText("");
+                                break;
+                        }
+                    }
+                    oTrans.getMasterModel().getMasterModel().setFinType(String.valueOf(comboBox09.getSelectionModel().getSelectedIndex()));
                     initFields(pnEditMode);
-                }
-            }
-
-        });
-        comboBox21.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox21.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransInsApplication.getMasterModel().getMasterModel().setVhclNew(String.valueOf(comboBox22.getSelectionModel().getSelectedIndex()));
-                }
-            }
-        });
-        comboBox22.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox22.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransInsApplication.getMasterModel().getMasterModel().setVhclNew(String.valueOf(comboBox22.getSelectionModel().getSelectedIndex()));
                 }
             }
         });
         datePicker05.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransInsApplication.getMasterModel().getMasterModel().setValidFrmDte(SQLUtil.toDate(datePicker05.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getMasterModel().getMasterModel().setValidFrmDte(SQLUtil.toDate(datePicker05.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
             }
         });
         datePicker06.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransInsApplication.getMasterModel().getMasterModel().setValidTruDte(SQLUtil.toDate(datePicker06.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getMasterModel().getMasterModel().setValidTruDte(SQLUtil.toDate(datePicker06.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
             }
         });
     }
-    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
-
-    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
-        @Override
-        public void updateItem(LocalDate foItem, boolean fbEmpty) {
-            super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = datePicker06.getValue();
-            setDisable(fbEmpty || foItem.isBefore(minDate));
-        }
-    };
 
     @Override
     public void initTextFieldsProperty() {
@@ -479,9 +646,9 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
-                        oTransInsApplication.getMasterModel().getMasterModel().setBrBankID("");
-                        oTransInsApplication.getMasterModel().getMasterModel().setBankName("");
-                        oTransInsApplication.getMasterModel().getMasterModel().setBrBankNm("");
+                        oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                        oTrans.getMasterModel().getMasterModel().setBankName("");
+                        oTrans.getMasterModel().getMasterModel().setBrBankNm("");
                     }
                 }
             }
@@ -505,42 +672,46 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (txtField02.getText().trim().isEmpty()) {
                 /*POLICY INFORMATION*/
-                oTransInsApplication.getMasterModel().getMasterModel().setPropslNo("");
-                oTransInsApplication.getMasterModel().getMasterModel().setPropslDt(null);
-                oTransInsApplication.getMasterModel().getMasterModel().setInsTypID("");
-                oTransInsApplication.getMasterModel().getMasterModel().setIsNew("");
-                oTransInsApplication.getMasterModel().getMasterModel().setBrInsID("");
-                oTransInsApplication.getMasterModel().getMasterModel().setInsurNme("");
-                oTransInsApplication.getMasterModel().getMasterModel().setBrInsNme("");
-                oTransInsApplication.getMasterModel().getMasterModel().setFinType("");
-                oTransInsApplication.getMasterModel().getMasterModel().setBrBankID("");
-                oTransInsApplication.getMasterModel().getMasterModel().setBankName("");
-                oTransInsApplication.getMasterModel().getMasterModel().setBrBankNm("");
+                oTrans.getMasterModel().getMasterModel().setPropslNo("");
+                oTrans.getMasterModel().getMasterModel().setPropslDt(null);
+                oTrans.getMasterModel().getMasterModel().setInsTypID("");
+                oTrans.getMasterModel().getMasterModel().setIsNew("");
+                oTrans.getMasterModel().getMasterModel().setBrInsID("");
+                oTrans.getMasterModel().getMasterModel().setInsurNme("");
+                oTrans.getMasterModel().getMasterModel().setBrInsNme("");
+                oTrans.getMasterModel().getMasterModel().setFinType("");
+                oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                oTrans.getMasterModel().getMasterModel().setBankName("");
+                oTrans.getMasterModel().getMasterModel().setBrBankNm("");
                 /*Customer INFORMATION*/
-                oTransInsApplication.getMasterModel().getMasterModel().setClientID("");
-                oTransInsApplication.getMasterModel().getMasterModel().setOwnrNm("");
-                oTransInsApplication.getMasterModel().getMasterModel().setAddress("");
-                oTransInsApplication.getMasterModel().getMasterModel().setPlateNo("");
-                oTransInsApplication.getMasterModel().getMasterModel().setCSNo("");
-                oTransInsApplication.getMasterModel().getMasterModel().setEngineNo("");
-                oTransInsApplication.getMasterModel().getMasterModel().setFrameNo("");
-                oTransInsApplication.getMasterModel().getMasterModel().setVhclFDsc("");
+                oTrans.getMasterModel().getMasterModel().setClientID("");
+                oTrans.getMasterModel().getMasterModel().setOwnrNm("");
+                oTrans.getMasterModel().getMasterModel().setAddress("");
+                oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                oTrans.getMasterModel().getMasterModel().setCSNo("");
+                oTrans.getMasterModel().getMasterModel().setEngineNo("");
+                oTrans.getMasterModel().getMasterModel().setFrameNo("");
+                oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+                oTrans.getMasterModel().getMasterModel().setUnitType("");
+                oTrans.getMasterModel().getMasterModel().setVhclSize("");
+                oTrans.getMasterModel().getMasterModel().setBodyType("");
+
                 /*POLICY INFORMATION*/
-                oTransInsApplication.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setODTCRate(0.00);
-                oTransInsApplication.getMasterModel().getMasterModel().setODTCPrem(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setAONCAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setAONCRate(0.00);
-                oTransInsApplication.getMasterModel().getMasterModel().setAONCPayM("");
-                oTransInsApplication.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setBdyCAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setBdyCPrem(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setPrDCAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setPrDCPrem(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setPAcCAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setPAcCPrem(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal(0.00));
-                oTransInsApplication.getMasterModel().getMasterModel().setTPLPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setODTCAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setODTCRate(0.00);
+                oTrans.getMasterModel().getMasterModel().setODTCPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setAONCAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setAONCRate(0.00);
+                oTrans.getMasterModel().getMasterModel().setAONCPayM("");
+                oTrans.getMasterModel().getMasterModel().setAONCPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setBdyCAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setBdyCPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setPrDCAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setPrDCPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setPAcCAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setPAcCPrem(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal(0.00));
+                oTrans.getMasterModel().getMasterModel().setTPLPrem(new BigDecimal(0.00));
             }
         }
     }
@@ -550,11 +721,11 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
                 txtField39, txtField40, txtField41, txtField42);
         CustomCommonUtil.setText("", txtField07, txtField08, txtField10, txtField13, txtField15, txtField16, txtField17,
-                txtField19, txtField20, txtField43, txtField45);
+                txtField19, txtField20, txtField43, txtField45, txtField47);
         CustomCommonUtil.setText("", textArea14);
         List<DatePicker> loDatePicker = Arrays.asList(
                 datePicker05, datePicker06, datePicker11);
-        loDatePicker.forEach(dp -> dp.setValue(LocalDate.of(1900, Month.JANUARY, 1)));
+        loDatePicker.forEach(dp -> dp.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()))));
         CustomCommonUtil.setValue(null, comboBox03, comboBox04, comboBox09, comboBox12, comboBox18, comboBox21, comboBox22, comboBox28);
     }
 
@@ -563,12 +734,13 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         CustomCommonUtil.setText("0.00", txtField23, txtField24, txtField25, txtField26, txtField27, txtField29,
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, txtField36, txtField37, txtField38,
                 txtField39, txtField40, txtField41, txtField42);
-        CustomCommonUtil.setText("", txtField01, txtField02, txtField07, txtField08, txtField10, txtField13, txtField15, txtField16, txtField17,
-                txtField19, txtField20, txtField43, txtField45);
+        txtField17.setText("0");
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField07, txtField08, txtField10, txtField13, txtField15, txtField16,
+                txtField19, txtField20, txtField43, txtField45, txtField47);
         CustomCommonUtil.setText("", textArea14, textArea44, textArea46);
         List<DatePicker> loDatePicker = Arrays.asList(
                 datePicker05, datePicker06, datePicker11);
-        loDatePicker.forEach(dp -> dp.setValue(LocalDate.of(1900, Month.JANUARY, 1)));
+        loDatePicker.forEach(dp -> dp.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()))));
         CustomCommonUtil.setValue(null, comboBox03, comboBox04, comboBox09, comboBox12, comboBox18, comboBox21, comboBox22, comboBox28);
         CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus);
     }
@@ -576,7 +748,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
         CustomCommonUtil.setDisable(true, datePicker05, datePicker06,
                 comboBox09, txtField10,
                 txtField17, comboBox21,
@@ -592,25 +763,21 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         CustomCommonUtil.setVisible(false, btnEdit, btnPrint, btnInsAppCancel, btnPayment);
         CustomCommonUtil.setManaged(false, btnEdit, btnPrint, btnInsAppCancel, btnPayment);
         if (lbShow) {
-            if (oTransInsApplication.getMasterModel().getMasterModel().getTotalAmt() != null) {
-                if (!oTransInsApplication.getMasterModel().getMasterModel().getTotalAmt().equals("0.00")) {
-                    txtField41.setDisable(!lbShow);
-                }
-            }
-            if (oTransInsApplication.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
+//            if (oTrans.getMasterModel().getMasterModel().getTotalAmt() != null) {
+//                if (!oTrans.getMasterModel().getMasterModel().getTotalAmt().equals("0.00")) {
+//                    txtField41.setDisable(!lbShow);
+//                }
+//            }
+            if (oTrans.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
                 comboBox09.setDisable(!lbShow);
-            }
-            switch (comboBox09.getSelectionModel().getSelectedIndex()) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    if (oTransInsApplication.getMasterModel().getMasterModel().getVSPTrnNo() != null) {
-                        if (!oTransInsApplication.getMasterModel().getMasterModel().getVSPTrnNo().isEmpty()) {
-                            txtField10.setDisable(!lbShow);
-                        }
-                    }
-                    break;
+                switch (comboBox09.getSelectionModel().getSelectedIndex()) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        txtField10.setDisable(!lbShow);
+                        break;
+                }
             }
         }
         if (fnValue == EditMode.READY) {
@@ -618,8 +785,8 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnInsAppCancel);
                 CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnInsAppCancel);
             }
-            if (oTransInsApplication.getMasterModel().getMasterModel().getTransNo() != null
-                    && !oTransInsApplication.getMasterModel().getMasterModel().getTransNo().isEmpty()) {
+            if (oTrans.getMasterModel().getMasterModel().getTransNo() != null
+                    && !oTrans.getMasterModel().getMasterModel().getTransNo().isEmpty()) {
                 btnPayment.setVisible(true);
                 btnPayment.setManaged(true);
             }
@@ -629,160 +796,22 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             txtField01.setDisable(true);
         }
     }
+    private Callback<DatePicker, DateCell> DateFrom = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            setDisable(fbEmpty || foItem.isBefore(datePicker05.getValue()));
+        }
+    };
 
-    @Override
-    public boolean loadMasterFields() {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTransInsApplication.computeAmount();
-        /* POLICY INFORMATION */
-        txtField01.setText(oTransInsApplication.getMasterModel().getMasterModel().getPropslNo());
-        txtField02.setText(oTransInsApplication.getMasterModel().getMasterModel().getTransNo());
-        int lnAppType = -1;
-        if (oTransInsApplication.getMasterModel().getMasterModel().getIsNew() != null) {
-            switch (oTransInsApplication.getMasterModel().getMasterModel().getIsNew()) {
-                case "y":
-                    lnAppType = 0;
-                    break;
-                case "n":
-                    lnAppType = 1;
-                    break;
-            }
+    private Callback<DatePicker, DateCell> DateTo = (final DatePicker param) -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate foItem, boolean fbEmpty) {
+            super.updateItem(foItem, fbEmpty);
+            LocalDate minDate = datePicker05.getValue();
+            setDisable(fbEmpty || foItem.isBefore(minDate));
         }
-        comboBox03.getSelectionModel().select(lnAppType);
-        int policeType = -1;
-        if (oTransInsApplication.getMasterModel().getMasterModel().getInsTypID() != null) {
-            switch (oTransInsApplication.getMasterModel().getMasterModel().getInsTypID()) {
-                case "y":
-                    policeType = 0;
-                    break;
-                case "c":
-                    policeType = 1;
-                    break;
-                case "b":
-                    policeType = 2;
-                    break;
-            }
-        }
-        comboBox04.getSelectionModel().select(policeType);
-        if (oTransInsApplication.getMasterModel().getMasterModel().getValidFrmDte() != null) {
-            datePicker05.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransInsApplication.getMasterModel().getMasterModel().getValidFrmDte())));
-        }
-        if (oTransInsApplication.getMasterModel().getMasterModel().getValidTruDte() != null) {
-            datePicker06.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransInsApplication.getMasterModel().getMasterModel().getValidTruDte())));
-        }
-        String lsInsBranc = "";
-        if (oTransInsApplication.getMasterModel().getMasterModel().getInsurNme() != null && oTransInsApplication.getMasterModel().getMasterModel().getBrInsNme() != null) {
-            if (!oTransInsApplication.getMasterModel().getMasterModel().getInsurNme().isEmpty() && !oTransInsApplication.getMasterModel().getMasterModel().getBrInsNme().isEmpty()) {
-                lsInsBranc = oTransInsApplication.getMasterModel().getMasterModel().getInsurNme() + " " + oTransInsApplication.getMasterModel().getMasterModel().getBrInsNme();
-            }
-        }
-        txtField07.setText(lsInsBranc);
-        txtField08.setText(oTransInsApplication.getMasterModel().getMasterModel().getEmpName());
-        if (oTransInsApplication.getMasterModel().getMasterModel().getFinType() != null && !oTransInsApplication.getMasterModel().getMasterModel().getFinType().trim().isEmpty()) {
-            comboBox09.getSelectionModel().select(Integer.parseInt(oTransInsApplication.getMasterModel().getMasterModel().getFinType()));
-        }
-        String lsBrBank = "";
-        if (oTransInsApplication.getMasterModel().getMasterModel().getBankName() != null && oTransInsApplication.getMasterModel().getMasterModel().getBrBankNm() != null) {
-            if (!oTransInsApplication.getMasterModel().getMasterModel().getBankName().isEmpty() && !oTransInsApplication.getMasterModel().getMasterModel().getBrBankNm().isEmpty()) {
-                lsBrBank = oTransInsApplication.getMasterModel().getMasterModel().getBankName() + " " + oTransInsApplication.getMasterModel().getMasterModel().getBrBankNm();
-            }
-        }
-        txtField10.setText(lsBrBank);
-        if (oTransInsApplication.getMasterModel().getMasterModel().getPropslDt() != null) {
-            datePicker11.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransInsApplication.getMasterModel().getMasterModel().getPropslDt())));
-        }
-        int lnNewBus = -1;
-        if (oTransInsApplication.getMasterModel().getMasterModel().getIsNew() != null) {
-            switch (oTransInsApplication.getMasterModel().getMasterModel().getIsNew()) {
-                case "y":
-                    lnNewBus = 0;
-                    break;
-                case "n":
-                    lnNewBus = 1;
-                    break;
-            }
-        }
-        comboBox12.getSelectionModel().select(lnNewBus);
-        txtField13.setText(oTransInsApplication.getMasterModel().getMasterModel().getOwnrNm());
-        txtField13.setText(oTransInsApplication.getMasterModel().getMasterModel().getOwnrNm());
-        textArea14.setText(oTransInsApplication.getMasterModel().getMasterModel().getAddress());
-        txtField15.setText(oTransInsApplication.getMasterModel().getMasterModel().getCSNo());
-        txtField16.setText(oTransInsApplication.getMasterModel().getMasterModel().getPlateNo());
-        txtField19.setText(oTransInsApplication.getMasterModel().getMasterModel().getEngineNo());
-        txtField20.setText(oTransInsApplication.getMasterModel().getMasterModel().getFrameNo());
-        txtField16.setText(oTransInsApplication.getMasterModel().getMasterModel().getVhclFDsc());
-        txtField17.setText(String.valueOf("0"));
-        if (oTransInsApplication.getMasterModel().getMasterModel().getVhclNew() != null && !oTransInsApplication.getMasterModel().getMasterModel().getVhclNew().trim().isEmpty()) {
-            comboBox18.getSelectionModel().select(Integer.parseInt(oTransInsApplication.getMasterModel().getMasterModel().getVhclNew()));
-        }
-        if (oTransInsApplication.getMasterModel().getMasterModel().getVhclNew() != null && !oTransInsApplication.getMasterModel().getMasterModel().getVhclNew().trim().isEmpty()) {
-            comboBox22.getSelectionModel().select(Integer.parseInt(oTransInsApplication.getMasterModel().getMasterModel().getVhclNew()));
-        }
-
-        if (oTransInsApplication.getMasterModel().getMasterModel().getVhclNew() != null && !oTransInsApplication.getMasterModel().getMasterModel().getVhclNew().trim().isEmpty()) {
-            comboBox22.getSelectionModel().select(Integer.parseInt(oTransInsApplication.getMasterModel().getMasterModel().getVhclNew()));
-        }
-
-        txtField23.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getODTCAmt()))));
-        txtField24.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getODTCRate()))));
-        txtField26.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getAONCAmt()))));
-        txtField27.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getAONCRate()))));
-        txtField30.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getBdyCAmt()))));
-        txtField32.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getPrDCAmt()))));
-        txtField34.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getPAcCAmt()))));
-        txtField36.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getTPLAmt()))));
-        int actNtr = -1;
-        if (oTransInsApplication.getMasterModel().getMasterModel().getAONCPayM() != null) {
-            switch (oTransInsApplication.getMasterModel().getMasterModel().getAONCPayM()) {
-                case "cha":
-                    actNtr = 0;
-                    break;
-                case "foc":
-                    actNtr = 1;
-                    break;
-                case "na":
-                    actNtr = 2;
-                    break;
-            }
-        }
-        comboBox28.getSelectionModel().select(actNtr);
-        txtField25.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getODTCPrem()))));
-        txtField29.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getAONCPrem()))));
-        txtField31.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getBdyCPrem()))));
-        txtField33.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getPrDCPrem()))));
-        txtField35.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getPAcCPrem()))));
-        txtField37.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getTPLPrem()))));
-        txtField38.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getTaxRate()))));
-        txtField39.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getTaxAmt()))));
-        txtField40.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransInsApplication.getMasterModel().getMasterModel().getTotalAmt()))));
-
-        txtField43.setText("");
-        textArea44.setText("");
-        txtField45.setText("");
-        textArea46.setText("");
-        if (oTransInsApplication.getMasterModel().getMasterModel().getTranStat() != null) {
-            switch (oTransInsApplication.getMasterModel().getMasterModel().getTranStat()) {
-                case TransactionStatus.STATE_OPEN:
-                    lblStatus.setText("Active");
-                    break;
-                case TransactionStatus.STATE_CLOSED:
-                    lblStatus.setText("Approved");
-                    break;
-                case TransactionStatus.STATE_CANCELLED:
-                    lblStatus.setText("Cancelled");
-                    break;
-                case TransactionStatus.STATE_POSTED:
-                    lblStatus.setText("Posted");
-                    break;
-                default:
-                    lblStatus.setText("");
-                    break;
-            }
-        }
-        lblPolicyNo.setText("");
-        lblPrintDate.setText("");
-        return true;
-    }
+    };
 
     private void loadInsProposalPrint() throws SQLException {
         try {
@@ -791,8 +820,8 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/insurance/InsuranceApplicationPrint.fxml"));
             InsuranceApplicationPrintController loControl = new InsuranceApplicationPrintController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransInsApplication);
-            loControl.setTransNo(oTransInsApplication.getMasterModel().getMasterModel().getTransNo());
+            loControl.setObject(oTrans);
+            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -816,4 +845,5 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             System.exit(1);
         }
     }
+
 }

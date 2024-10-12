@@ -74,20 +74,20 @@
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                                             </graphic>
                                         </Button>
                                     </children>
@@ -230,7 +230,7 @@
                                                                                                         <TextField fx:id="txtField12" promptText="Search: F3" GridPane.columnIndex="10" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                                                                                                         <ComboBox fx:id="comboBox08" prefWidth="150.0" GridPane.columnIndex="7" />
                                                                                                         <ComboBox fx:id="comboBox09" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                                                                                                        <DatePicker fx:id="txtField11" promptText="mm/dd/yyyy" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                                                        <DatePicker fx:id="datePicker11" promptText="mm/dd/yyyy" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                                                         <ComboBox fx:id="comboBox07" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                         <Label id="LabelDesc" text="Title" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                                                         <Label id="LabelDesc" text="Civil Status" GridPane.columnIndex="6" GridPane.rowIndex="1" />
@@ -424,7 +424,7 @@
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
-                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>

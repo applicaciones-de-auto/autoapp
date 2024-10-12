@@ -75,22 +75,6 @@
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnActCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="98.0" text="Activity Cancel">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
                                             <effect>
                                                 <Blend />
@@ -99,12 +83,28 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                                            </graphic>
+                                        </Button>
                                         <Button fx:id="btnPrint" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print">
                                             <effect>
                                                 <Blend />
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnActCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="98.0" text="Activity Cancel">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
                                         <Button fx:id="btnActivityHistory" contentDisplay="TOP" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="97.0" text="Activity History" visible="false">

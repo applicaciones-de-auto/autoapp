@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" prefHeight="660.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" prefHeight="660.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane prefHeight="584.0" prefWidth="646.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -23,7 +23,7 @@
                     <top>
                         <AnchorPane prefHeight="33.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" text="INSURANCE POLICY PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="INSURANCE APPLICATION PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font name="Arial Bold" size="13.0" />
                                     </font>
@@ -40,12 +40,12 @@
                             <children>
                                 <VBox fx:id="vbProgress" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Label text="Loading insurance policy please wait...">
+                                        <Label text="Loading insurance application please wait...">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
                                         </Label>
-                                        <Label text="(Note: Please don't do anything while loading insurance policy!!!)" textFill="#d30909">
+                                        <Label text="(Note: Please don't do anything while loading application!!!)" textFill="#d30909">
                                             <font>
                                                 <Font size="14.0" />
                                             </font>

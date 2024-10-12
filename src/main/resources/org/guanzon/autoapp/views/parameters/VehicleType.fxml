@@ -67,7 +67,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TextField fx:id="txtField01" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                <TextField fx:id="txtField01" disable="true" editable="false" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                                 <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="2" />
                                                 <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Vehicle Type ID" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                 <Label id="LabelDesc" text="Format" GridPane.columnIndex="1" GridPane.rowIndex="1" />

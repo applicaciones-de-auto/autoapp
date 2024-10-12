@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.general;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -38,7 +34,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -52,6 +47,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.auto.main.clients.Vehicle_Serial;
+import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.models.general.CustomerAddress;
 import org.guanzon.autoapp.models.general.CustomerEmail;
 import org.guanzon.autoapp.models.general.CustomerMobile;
@@ -66,16 +62,15 @@ import org.guanzon.autoapp.utils.TextFormatterUtil;
 /**
  * FXML Controller class
  *
- * @author Auto Group Programmers
+ * @author John Dave
  */
-public class CustomerController implements Initializable, ScreenInterface {
+public class CustomerController implements Initializable, ScreenInterface, GRecordInterface {
 
     private GRider oApp;
     private Client oTrans;
     private Vehicle_Serial oTransVehicle;
     private UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    private final String pxeModuleName = "Customer"; //Form Title
-    private final String pModuleName = "Customer Information"; //for dialog
+    private final String pxeModuleName = "Customer Information"; //Form Title
     private int pnEditMode;//Modifying fields for Customer Entry
     private double xOffset, yOffset = 0;
     private int pnRow = -1;
@@ -157,9 +152,6 @@ public class CustomerController implements Initializable, ScreenInterface {
     /* ---------------------COMBOBOX---------------------- */
     @FXML
     private ComboBox<String> comboBox07, comboBox08, comboBox09, comboBox18;
-    /* --------------------DATEPICKER--------------------- */
-    @FXML
-    private DatePicker txtField11;
     /* --------------------LABEL-------------------------- */
     @FXML
     private Label lblType;
@@ -167,6 +159,8 @@ public class CustomerController implements Initializable, ScreenInterface {
     private Label lblTypeValue;
     @FXML
     private TableColumn<?, ?> tblCoVhcllist07;
+    @FXML
+    private DatePicker datePicker11;
 
     /**
      * Initializes the controller class.
@@ -188,66 +182,30 @@ public class CustomerController implements Initializable, ScreenInterface {
         // Initialize the Client_Master transaction
         oTrans = new Client(oApp, false, oApp.getBranchCode());
         oTransVehicle = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
-
         initAddress();
         initContact();
         initEmail();
         initSocialMedia();
         initVehicleInfo();
         initCoVehicleInfo();
-        initComboBoxValue();
-        initTextFieldPattern();
-        txtField11.setOnAction(this::getDate);
+
         initCapitalizationFields();
-        initTextKeyPressed();
+        initPatternFields();
+        initLimiterFields();
         initTextFieldFocus();
-        initCmboxFieldAction();
-        initButtons();
+        initTextKeyPressed();
+        initButtonsClick();
+        initComboBoxItems();
+        initFieldsAction();
+        initTextFieldsProperty();
         clearFields();
         clearTables();
-        CustomCommonUtil.addTextLimiter(txtField13, 15); // tin
-        CustomCommonUtil.addTextLimiter(txtField14, 15); // lto
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
 
-    private void initComboBoxValue() {
-        comboBox07.setItems(cTitle);
-        comboBox08.setItems(cGender);
-        comboBox09.setItems(cCvlStat);
-        comboBox18.setItems(cCusttype);
-    }
-
-    private void initTextFieldPattern() {
-        Pattern TinOnly, textOnly, suffOnly, ltoOnly, lastOnly;
-        TinOnly = Pattern.compile("[0-9-]*");
-        textOnly = Pattern.compile("[A-Za-z ]*");
-        lastOnly = Pattern.compile("[A-Za-z -]*");
-        suffOnly = Pattern.compile("[A-Za-z .]*");
-        ltoOnly = Pattern.compile("[A-Za-z0-9-]*");
-        txtField13.setTextFormatter(new TextFormatterUtil(TinOnly));
-        txtField10.setTextFormatter(new TextFormatterUtil(textOnly)); //citezenship
-        txtField02.setTextFormatter(new TextFormatterUtil(lastOnly)); //lastname
-        txtField03.setTextFormatter(new TextFormatterUtil(textOnly)); //firstname
-        txtField04.setTextFormatter(new TextFormatterUtil(textOnly)); //middlename
-        txtField05.setTextFormatter(new TextFormatterUtil(textOnly)); // maidenname
-        txtField06.setTextFormatter(new TextFormatterUtil(suffOnly));
-        txtField14.setTextFormatter(new TextFormatterUtil(ltoOnly));
-
-    }
-
-    private void getDate(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
-        /*CLIENT INFORMATION*/
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                oTrans.setMaster(11, SQLUtil.toDate(txtField11.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                checkExistingCustomerInformation(true);
-            }
-        }
-    }
-
-    private void initCapitalizationFields() {
+    @Override
+    public void initCapitalizationFields() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06,
                 txtField16, txtField10, txtField25, txtField12, txtField14, txtField13);
         loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
@@ -255,125 +213,88 @@ public class CustomerController implements Initializable, ScreenInterface {
         CustomCommonUtil.setCapsLockBehavior(textArea15);
     }
 
-    private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06,
-                txtField16, txtField10, txtField25, txtField12, txtField14, txtField13);
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        /*TextArea*/
-        textArea15.setOnKeyPressed(this::textArea_KeyPressed);
-    }
+    @Override
+    public boolean loadMasterFields() {
+        comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getClientTp()));
+        txtField13.setText(oTrans.getModel().getModel().getTaxIDNo());
+        txtField14.setText(oTrans.getModel().getModel().getLTOID());
+        textArea15.setText(oTrans.getModel().getModel().getAddlInfo());
 
-    private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
+        if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+            lblType.setText("CLIENT ID : ");
+            if (oTrans.getModel().getModel().getClientID() != null) {
+                lblTypeValue.setText(oTrans.getModel().getModel().getClientID());
             } else {
-                lsValue = lsTxtField.getText();
+                lblTypeValue.setText("");
             }
-            JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField10":
-                        loJSON = oTrans.searchCitizenShip(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField10.setText(oTrans.getModel().getModel().getCntryNme());
-                        } else {
-                            ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
-                            txtField10.setText("");
-                            txtField10.requestFocus();
-                            return;
-                        }
-                        break;
-                    case "txtField25":
-                        loJSON = oTrans.searchSpouse(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField25.setText(oTrans.getModel().getModel().getSpouseNm());
-                        } else {
-                            ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
-                            txtField25.setText("");
-                            txtField25.requestFocus();
-                            return;
-                        }
-                        break;
-                    case "txtField12":
-                        loJSON = oTrans.searchBirthPlc(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField12.setText(oTrans.getModel().getModel().getTownName());
-                        } else {
-                            ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
-                            txtField12.setText("");
-                            txtField12.requestFocus();
-                            return;
-                        }
-                        break;
-                }
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
+            txtField16.setText("");
+            txtField02.setText(oTrans.getModel().getModel().getLastName());
+            txtField03.setText(oTrans.getModel().getModel().getFirstName());
+            txtField04.setText(oTrans.getModel().getModel().getMiddleName());
+            txtField05.setText(oTrans.getModel().getModel().getMaidenName());
+            txtField06.setText(oTrans.getModel().getModel().getSuffixName());
+            if (oTrans.getModel().getModel().getTitle() != null && !oTrans.getModel().getModel().getTitle().trim().isEmpty()) {
+                comboBox07.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getTitle()));
             }
+            if (oTrans.getModel().getModel().getGender() != null && !oTrans.getModel().getModel().getGender().trim().isEmpty()) {
+                comboBox08.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getGender()));
+            }
+            if (oTrans.getModel().getModel().getCvilStat() != null && !oTrans.getModel().getModel().getCvilStat().trim().isEmpty()) {
+                comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getCvilStat()));
+            }
+            if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
+                datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getBirthDte(), SQLUtil.FORMAT_SHORT_DATE)));
 
+            }
+            txtField10.setText(oTrans.getModel().getModel().getCntryNme());
+            txtField12.setText(oTrans.getModel().getModel().getTownName());
+        } else {
+            lblType.setText("COMPANY ID : ");
+            if (oTrans.getModel().getModel().getClientID() != null) {
+                lblTypeValue.setText(oTrans.getModel().getModel().getClientID());
+            } else {
+                lblTypeValue.setText("");
+            }
+            CustomCommonUtil.setText("", txtField02, txtField03, txtField04, txtField05, txtField06,
+                    txtField10, txtField12, txtField25);
+            CustomCommonUtil.setValue(null, comboBox07, comboBox08, comboBox09);
+            datePicker11.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+            txtField25.setDisable(true);
+            txtField16.setText(oTrans.getModel().getModel().getCompnyNm());
         }
+        return true;
     }
 
-    private void textArea_KeyPressed(KeyEvent event) {
-        String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
-            }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        }
+    @Override
+    public void initPatternFields() {
+        Pattern TinOnly, textOnly, suffOnly, ltoOnly, lastOnly;
+        TinOnly = Pattern.compile("[0-9-]*");
+        textOnly = Pattern.compile("[A-Za-z ]*");
+        lastOnly = Pattern.compile("[A-Za-z -]*");
+        suffOnly = Pattern.compile("[A-Za-z .]*");
+        ltoOnly = Pattern.compile("[A-Za-z0-9-]*");
+        txtField13.setTextFormatter(new TextFormatterUtil(TinOnly));
+        txtField02.setTextFormatter(new TextFormatterUtil(lastOnly));
+        txtField06.setTextFormatter(new TextFormatterUtil(suffOnly));
+        txtField14.setTextFormatter(new TextFormatterUtil(ltoOnly));
+        List<TextField> loTxtField = Arrays.asList(txtField10, txtField03, txtField04, txtField05);
+        loTxtField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(textOnly)));
     }
 
-    private void initTextFieldFocus() {
+    @Override
+    public void initLimiterFields() {
+        CustomCommonUtil.addTextLimiter(txtField06, 4);
+        CustomCommonUtil.addTextLimiter(txtField13, 15); // tin
+        CustomCommonUtil.addTextLimiter(txtField14, 15); // lto
+    }
+
+    @Override
+    public void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06,
                 txtField16, txtField10, txtField25, txtField12, txtField14, txtField13);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
-
         textArea15.focusedProperty().addListener(txtArea_Focus);
 
-    }
-
-    private boolean checkExistingCustomerInformation(boolean fbIsClient) {
-        JSONObject loJSON = new JSONObject();
-        loJSON = oTrans.validateExistingClientInfo(fbIsClient);
-        if ("error".equals((String) loJSON.get("result"))) {
-            if (ShowMessageFX.YesNo(null, pModuleName, (String) loJSON.get("message"))) {
-                loJSON = oTrans.openRecord((String) loJSON.get("sClientID"));
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadCustomerInformation();
-                    loadAddress();
-                    loadContact();
-                    loadEmail();
-                    loadSocialMedia();
-                    loadVehicleInfoTable();
-                    loadCoOwnVehicleInfoTable();
-                    pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
-                } else {
-                    ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return true;
     }
 
     /*Set TextField Value to Master Class*/
@@ -442,169 +363,118 @@ public class CustomerController implements Initializable, ScreenInterface {
         }
     };
 
-    private static Date convertLocalDateToDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    @Override
+    public void initTextKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06,
+                txtField16, txtField10, txtField25, txtField12, txtField14, txtField13);
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+        /*TextArea*/
+        textArea15.setOnKeyPressed(this::textArea_KeyPressed);
     }
 
-    private void initCmboxFieldAction() {
-        comboBox18.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTrans.getModel().getModel().setClientTp(String.valueOf(comboBox18.getSelectionModel().getSelectedIndex()));
-                comboChange();
-                if (!oTrans.getModel().getModel().getClientTp().equals("0")) {
-                    oTrans.getModel().getModel().setLastName("");
-                    oTrans.getModel().getModel().setFirstName("");
-                    oTrans.getModel().getModel().setMiddleName("");
-                    oTrans.getModel().getModel().setMaidenName("");
-                    oTrans.getModel().getModel().setSuffixName("");
-                    oTrans.getModel().getModel().setTitle(null);
-                    oTrans.getModel().getModel().setGender(null);
-                    oTrans.getModel().getModel().setCvilStat(null);
-                    oTrans.getModel().getModel().setCitizen("");
-                    oTrans.getModel().getModel().setCntryNme("");
-                    oTrans.getModel().getModel().setSpouseID("");
-                    oTrans.getModel().getModel().setSpouseNm("");
-                    oTrans.getModel().getModel().setTownName("");
-                    oTrans.getModel().getModel().setBirthPlc("");
-                    oTrans.getModel().getModel().setBirthDte(convertLocalDateToDate(LocalDate.of(1900, Month.JANUARY, 1)));
-                    txtField25.setDisable(true);
-                } else {
-                    oTrans.getModel().getModel().setCompnyNm("");
-                    txtField25.setDisable(true);
-                }
-                loadCustomerInformation();
+    @Override
+    public void txtField_KeyPressed(KeyEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            TextField lsTxtField = (TextField) event.getSource();
+            String txtFieldID = ((TextField) event.getSource()).getId();
+            String lsValue = "";
+            if (lsTxtField.getText() == null) {
+                lsValue = "";
+            } else {
+                lsValue = lsTxtField.getText();
             }
-        });
-
-        comboBox08.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (comboBox08.getSelectionModel().getSelectedIndex() >= 0) {
-                        oTrans.getModel().getModel().setGender(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
-                    }
-                }
-                txtField25.setText("");
-                oTrans.getModel().getModel().setSpouseID("");
-                oTrans.getModel().getModel().setSpouseNm("");
-
-                if (comboBox09.getValue() != null) {
-                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                        if (comboBox08.getValue() != null) {
-                            txtField25.setDisable(false);
+            JSONObject loJSON = new JSONObject();
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField10":
+                                loJSON = oTrans.searchCitizenShip(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField10.setText(oTrans.getModel().getModel().getCntryNme());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField10.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField25":
+                                loJSON = oTrans.searchSpouse(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField25.setText(oTrans.getModel().getModel().getSpouseNm());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField25.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField12":
+                                loJSON = oTrans.searchBirthPlc(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField12.setText(oTrans.getModel().getModel().getTownName());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField12.setText("");
+                                    return;
+                                }
+                                break;
                         }
-                    } else {
-                        txtField25.setDisable(true);
-                    }
-                } else {
-                    txtField25.setDisable(true);
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        break;
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    default:
+                        break;
                 }
             }
-        });
-        comboBox07.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
-                        oTrans.getModel().getModel().setTitle(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
-                    }
-                }
-            }
-        });
-        comboBox09.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (!comboBox09.getValue().isEmpty()) {
-                        if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                            if (comboBox08.getValue() != null) {
-                                txtField25.setDisable(false);
-                            }
-                        } else {
-                            oTrans.getModel().getModel().setSpouseID("");
-                            oTrans.getModel().getModel().setSpouseNm("");
-                            txtField25.setText("");
-                            txtField25.setDisable(true);
-                        }
-                    } else {
-                        txtField25.setDisable(true);
-                    }
-                    if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
-                        oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
-                    }
-                }
-            }
-        });
-        txtField12.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getModel().getModel().setBirthPlc("");
-                        }
-                    }
-                }
-            }
-        });
 
-        txtField25.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getModel().getModel().setSpouseID("");
-                            oTrans.getModel().getModel().setSpouseNm("");
-                        }
-                    }
-                }
-            }
-        });
-
-        txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getModel().getModel().setCitizen("");
-                    }
-                }
-            }
-        });
-
-        //Tab Process
-        tabPCustCont.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
-            pnRow = 0;
-            btnTabRem.setVisible(false);
-        });
-    }
-
-    private void comboChange() {
-        switch (comboBox18.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                txtField16.clear(); //company name
-                break;
-            case 1:
-                txtField02.clear(); //last name
-                txtField03.clear(); //first name
-                txtField04.clear(); //mid name
-                txtField06.clear(); //suffix
-                txtField05.clear(); //maiden
-                txtField12.clear(); // birth plce
-                txtField10.clear(); //citizenship
-                txtField14.clear(); //LTO NO
-                txtField25.clear(); // Spouse
-                comboBox07.setValue("");
-                comboBox08.setValue("");
-                comboBox09.setValue("");
-                break;
         }
-        cmdCLIENTType(true);
     }
 
-    private void initButtons() {
+    @Override
+    public void textArea_KeyPressed(KeyEvent event) {
+        String textAreaID = ((TextArea) event.getSource()).getId();
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textAreaID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnEdit, btnSave, btnBrowse, btnCancel,
                 btnClose, btnTabAdd, btnTabRem);
-
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         iTabIndex = tabPCustCont.getSelectionModel().getSelectedIndex();
@@ -615,10 +485,10 @@ public class CustomerController implements Initializable, ScreenInterface {
                 oTrans = new Client(oApp, false, oApp.getBranchCode());
                 loJSON = oTrans.newRecord();
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadCustomerInformation();
+                    loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
                 } else {
-                    ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
@@ -630,7 +500,7 @@ public class CustomerController implements Initializable, ScreenInterface {
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Customer Information Saving....", "Are you sure, do you want to save?")) {
-                    LocalDate selectedDate = txtField11.getValue();
+                    LocalDate selectedDate = datePicker11.getValue();
                     LocalDate currentDate = LocalDate.now();
                     Period age = Period.between(selectedDate, currentDate);
                     //check fields before saving
@@ -639,60 +509,60 @@ public class CustomerController implements Initializable, ScreenInterface {
                             return;
                         }
                         if (txtField02.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid last name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid last name information.");
                             txtField02.setText("");
                             return;
                         }
                         if (txtField02.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter value last name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value last name information.");
                             txtField02.setText("");
                             return;
                         }
                         if (txtField03.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid first name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid first name information.");
                             txtField03.setText("");
                             return;
                         }
                         if (txtField03.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter value first name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value first name information.");
                             txtField03.setText("");
                             return;
                         }
                         if (txtField04.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid middle name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid middle name information.");
                             txtField04.setText("");
                             return;
                         }
                         if (txtField05.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid maiden name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid maiden name information.");
                             txtField05.setText("");
                             return;
                         }
                         if (txtField06.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid suffix information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid suffix information.");
                             txtField06.setText("");
                             return;
                         }
                         if (age.getYears() < 18) {
-                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Less than 18 years old is not allowed.");
-                            txtField11.requestFocus();
+                            ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Less than 18 years old is not allowed.");
+                            datePicker11.requestFocus();
                             return;
                         }
                         if (age.getYears() >= 100) {
-                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Greater than 100 years old is not allowed.");
-                            txtField11.requestFocus();
+                            ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Greater than 100 years old is not allowed.");
+                            datePicker11.requestFocus();
                             return;
                         }
                         if (comboBox09.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() == 1) {
-                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Civil Status.");
+                            ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Civil Status.");
                             return;
                         }
                         if (comboBox08.getSelectionModel().getSelectedIndex() == 0 && comboBox07.getSelectionModel().getSelectedIndex() >= 1) {
-                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Gender.");
+                            ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Gender.");
                             return;
                         }
                         if (comboBox08.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() < 1) {
-                            ShowMessageFX.Warning(getStage(), null, pModuleName, "Please choose valid Title and Gender.");
+                            ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Please choose valid Title and Gender.");
                             return;
                         }
                     } else {
@@ -700,12 +570,12 @@ public class CustomerController implements Initializable, ScreenInterface {
                             return;
                         }
                         if (txtField16.getText().matches("[^a-zA-Z].*")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter valid company name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid company name information.");
                             txtField16.setText("");
                             return;
                         }
                         if (txtField16.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pModuleName, "Please enter value company name information.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value company name information.");
                             txtField16.setText("");
                             return;
                         }
@@ -720,7 +590,7 @@ public class CustomerController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information(null, "Customer Information", (String) loJSON.get("message"));
                         loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                         if ("success".equals((String) loJSON.get("result"))) {
-                            loadCustomerInformation();
+                            loadMasterFields();
                             loadAddress();
                             loadContact();
                             loadEmail();
@@ -731,7 +601,7 @@ public class CustomerController implements Initializable, ScreenInterface {
                             pnEditMode = oTrans.getEditMode();
                         }
                     } else {
-                        ShowMessageFX.Warning(null, pModuleName, (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         return;
                     }
                 } else {
@@ -755,7 +625,7 @@ public class CustomerController implements Initializable, ScreenInterface {
                 }
                 loJSON = oTrans.searchRecord("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
-                    loadCustomerInformation();
+                    loadMasterFields();
                     loadAddress();
                     loadContact();
                     loadEmail();
@@ -771,9 +641,9 @@ public class CustomerController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Customer");
+                        poUnload.unloadForm(AnchorMain, oApp, "Customer Information");
                     } else {
-                        ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                     }
                 }
                 break;
@@ -853,6 +723,269 @@ public class CustomerController implements Initializable, ScreenInterface {
         initFields(pnEditMode);
     }
 
+    @Override
+    public void initComboBoxItems() {
+        comboBox07.setItems(cTitle);
+        comboBox08.setItems(cGender);
+        comboBox09.setItems(cCvlStat);
+        comboBox18.setItems(cCusttype);
+    }
+
+    @Override
+    public void initFieldsAction() {
+        comboBox18.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getModel().getModel().setClientTp(String.valueOf(comboBox18.getSelectionModel().getSelectedIndex()));
+                comboChange();
+                if (!oTrans.getModel().getModel().getClientTp().equals("0")) {
+                    oTrans.getModel().getModel().setLastName("");
+                    oTrans.getModel().getModel().setFirstName("");
+                    oTrans.getModel().getModel().setMiddleName("");
+                    oTrans.getModel().getModel().setMaidenName("");
+                    oTrans.getModel().getModel().setSuffixName("");
+                    oTrans.getModel().getModel().setTitle(null);
+                    oTrans.getModel().getModel().setGender(null);
+                    oTrans.getModel().getModel().setCvilStat(null);
+                    oTrans.getModel().getModel().setCitizen("");
+                    oTrans.getModel().getModel().setCntryNme("");
+                    oTrans.getModel().getModel().setSpouseID("");
+                    oTrans.getModel().getModel().setSpouseNm("");
+                    oTrans.getModel().getModel().setTownName("");
+                    oTrans.getModel().getModel().setBirthPlc("");
+                    oTrans.getModel().getModel().setBirthDte(convertLocalDateToDate(LocalDate.of(1900, Month.JANUARY, 1)));
+                    txtField25.setDisable(true);
+                } else {
+                    oTrans.getModel().getModel().setCompnyNm("");
+                    txtField25.setDisable(true);
+                }
+                loadMasterFields();
+            }
+        });
+
+        comboBox08.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (comboBox08.getSelectionModel().getSelectedIndex() >= 0) {
+                        oTrans.getModel().getModel().setGender(String.valueOf((comboBox08.getSelectionModel().getSelectedIndex())));
+                    }
+                }
+                txtField25.setText("");
+                oTrans.getModel().getModel().setSpouseID("");
+                oTrans.getModel().getModel().setSpouseNm("");
+
+                if (comboBox09.getValue() != null) {
+                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                        if (comboBox08.getValue() != null) {
+                            txtField25.setDisable(false);
+                        }
+                    } else {
+                        txtField25.setDisable(true);
+                    }
+                } else {
+                    txtField25.setDisable(true);
+                }
+            }
+        });
+        comboBox07.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (comboBox07.getSelectionModel().getSelectedIndex() >= 0) {
+                        oTrans.getModel().getModel().setTitle(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
+                    }
+                }
+            }
+        });
+        comboBox09.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (!comboBox09.getValue().isEmpty()) {
+                        if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                            if (comboBox08.getValue() != null) {
+                                txtField25.setDisable(false);
+                            }
+                        } else {
+                            oTrans.getModel().getModel().setSpouseID("");
+                            oTrans.getModel().getModel().setSpouseNm("");
+                            txtField25.setText("");
+                            txtField25.setDisable(true);
+                        }
+                    } else {
+                        txtField25.setDisable(true);
+                    }
+                    if (comboBox09.getSelectionModel().getSelectedIndex() >= 0) {
+                        oTrans.getModel().getModel().setCvilStat(String.valueOf((comboBox09.getSelectionModel().getSelectedIndex())));
+                    }
+                }
+            }
+        });
+        datePicker11.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                oTrans.getModel().getModel().setBirthDte(SQLUtil.toDate(datePicker11.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                checkExistingCustomerInformation(true);
+            }
+        });
+
+        //Tab Process
+        tabPCustCont.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+            pnRow = 0;
+            btnTabRem.setVisible(false);
+        });
+    }
+
+    @Override
+    public void initTextFieldsProperty() {
+        txtField12.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTrans.getModel().getModel().setBirthPlc("");
+                        }
+                    }
+                }
+            }
+        });
+
+        txtField25.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
+                    if (newValue != null) {
+                        if (newValue.isEmpty()) {
+                            oTrans.getModel().getModel().setSpouseID("");
+                            oTrans.getModel().getModel().setSpouseNm("");
+                        }
+                    }
+                }
+            }
+        });
+
+        txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setCitizen("");
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void clearTables() {
+        addressdata.clear();
+        contactdata.clear();
+        emaildata.clear();
+        socialmediadata.clear();
+        vhclinfodata.clear();
+        coownvhclinfodata.clear();
+    }
+
+    @Override
+    public void clearFields() {
+        pnRow = 0;
+        CustomCommonUtil.setValue(null, comboBox07, comboBox08, comboBox09, comboBox18);
+        datePicker11.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        lblType.setText("");
+        lblTypeValue.setText("");
+        CustomCommonUtil.setText("", txtField02, txtField03, txtField04, txtField05,
+                txtField06, txtField10, txtField12, txtField13, txtField14, txtField16, txtField25
+        );
+        textArea15.setText("");
+    }
+
+    @Override
+    public void initFields(int fnValue) {
+        pnRow = 0;
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        tabVhclInfo.setDisable(fnValue == EditMode.ADDNEW);
+        CustomCommonUtil.setDisable(!lbShow, comboBox18, txtField13, txtField14,
+                textArea15);
+        CustomCommonUtil.setDisable(true, txtField02, txtField03, txtField04,
+                txtField06, txtField05, comboBox07, comboBox08, comboBox09, txtField10, datePicker11,
+                txtField12, txtField16, txtField25);
+        cmdCLIENTType(lbShow);
+        if (lbShow) {
+            if (comboBox09.getValue() != null) {
+                if (!comboBox09.getValue().isEmpty()) {
+                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
+                        if (comboBox08.getValue() != null) {
+                            txtField25.setDisable(false);
+                        }
+                    } else {
+                        txtField25.setDisable(true);
+                        txtField25.setText("");
+                        oTrans.getModel().getModel().setSpouseID("");
+                        oTrans.getModel().getModel().setSpouseNm("");
+                    }
+                } else {
+                    txtField25.setDisable(true);
+                }
+            } else {
+                txtField25.setDisable(true);
+            }
+        }
+        btnAdd.setVisible(!lbShow);
+        btnAdd.setManaged(!lbShow);
+        CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave, btnTabAdd);
+        CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave, btnTabAdd);
+        CustomCommonUtil.setVisible(false, btnTabRem, btnEdit);
+        CustomCommonUtil.setManaged(false, btnTabRem, btnEdit);
+        if (fnValue == EditMode.READY) {
+            btnEdit.setVisible(true);
+            btnEdit.setManaged(true);
+        }
+        if (fnValue == EditMode.UPDATE || fnValue == EditMode.READY) {
+            comboBox18.setDisable(true);
+        }
+    }
+
+    private boolean checkExistingCustomerInformation(boolean fbIsClient) {
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.validateExistingClientInfo(fbIsClient);
+        if ("error".equals((String) loJSON.get("result"))) {
+            if (ShowMessageFX.YesNo(null, pxeModuleName, (String) loJSON.get("message"))) {
+                loJSON = oTrans.openRecord((String) loJSON.get("sClientID"));
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    loadAddress();
+                    loadContact();
+                    loadEmail();
+                    loadSocialMedia();
+                    loadVehicleInfoTable();
+                    loadCoOwnVehicleInfoTable();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    private static Date convertLocalDateToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private void comboChange() {
+        switch (comboBox18.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                txtField16.clear(); //company name
+                break;
+            case 1:
+                CustomCommonUtil.setText("", txtField02, txtField03, txtField04,
+                        txtField05, txtField06, txtField10, txtField12,
+                        txtField14, txtField25);
+                CustomCommonUtil.setValue("", comboBox07, comboBox08, comboBox09);
+                break;
+        }
+        cmdCLIENTType(true);
+    }
+
     /*Set ComboBox Value to Master Class*/
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean setSelection() {
@@ -892,143 +1025,6 @@ public class CustomerController implements Initializable, ScreenInterface {
         return true;
     }
 
-    private void clearTables() {
-        addressdata.clear();
-        contactdata.clear();
-        emaildata.clear();
-        socialmediadata.clear();
-        vhclinfodata.clear();
-        coownvhclinfodata.clear();
-    }
-
-    private void loadCustomerInformation() {
-        comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getClientTp()));
-        txtField13.setText(oTrans.getModel().getModel().getTaxIDNo());
-        txtField14.setText(oTrans.getModel().getModel().getLTOID());
-        textArea15.setText(oTrans.getModel().getModel().getAddlInfo());
-
-        if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
-            lblType.setText("CLIENT ID : ");
-            if (oTrans.getModel().getModel().getClientID() != null) {
-                lblTypeValue.setText(oTrans.getModel().getModel().getClientID());
-            } else {
-                lblTypeValue.setText("");
-            }
-            txtField16.setText("");
-            txtField02.setText(oTrans.getModel().getModel().getLastName());
-            txtField03.setText(oTrans.getModel().getModel().getFirstName());
-            txtField04.setText(oTrans.getModel().getModel().getMiddleName());
-            txtField05.setText(oTrans.getModel().getModel().getMaidenName());
-            txtField06.setText(oTrans.getModel().getModel().getSuffixName());
-            if (oTrans.getModel().getModel().getTitle() != null && !oTrans.getModel().getModel().getTitle().trim().isEmpty()) {
-                comboBox07.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getTitle()));
-            }
-            if (oTrans.getModel().getModel().getGender() != null && !oTrans.getModel().getModel().getGender().trim().isEmpty()) {
-                comboBox08.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getGender()));
-            }
-            if (oTrans.getModel().getModel().getCvilStat() != null && !oTrans.getModel().getModel().getCvilStat().trim().isEmpty()) {
-                comboBox09.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getCvilStat()));
-            }
-            if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
-                txtField11.setValue(CustomCommonUtil.strToDate(oTrans.getMaster(11).toString()));
-            }
-            txtField10.setText(oTrans.getModel().getModel().getCntryNme());
-            txtField12.setText(oTrans.getModel().getModel().getTownName());
-        } else {
-            lblType.setText("COMPANY ID : ");
-            if (oTrans.getModel().getModel().getClientID() != null) {
-                lblTypeValue.setText(oTrans.getModel().getModel().getClientID());
-            } else {
-                lblTypeValue.setText("");
-            }
-            txtField02.setText("");
-            txtField03.setText("");
-            txtField04.setText("");
-            txtField05.setText("");
-            txtField06.setText("");
-            comboBox07.setValue(null);
-            comboBox08.setValue(null);
-            comboBox09.setValue(null);
-            txtField11.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-            txtField10.setText("");
-            txtField25.setText("");
-            txtField25.setDisable(true);
-            txtField12.setText("");
-            txtField16.setText(oTrans.getModel().getModel().getCompnyNm());
-        }
-
-    }
-
-    /*Enabling / Disabling Fields*/
-    private void initFields(int fnValue) {
-        pnRow = 0;
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
-        /*CLIENT VEHICLE INFO TAB*/
-        tabVhclInfo.setDisable(fnValue == EditMode.ADDNEW);
-
-        /*CLIENT Master*/
-        comboBox18.setDisable(!lbShow); //CLIENT type
-        txtField14.setDisable(!lbShow); //LTO NO
-        txtField13.setDisable(!lbShow); //TIN NO
-        textArea15.setDisable(!lbShow); //Remarks
-        txtField02.setDisable(true); //last name
-        txtField03.setDisable(true); //first name
-        txtField04.setDisable(true); //mid name
-        txtField06.setDisable(true); //suffix
-        txtField05.setDisable(true); //maiden name
-        txtField12.setDisable(true); //birth plce
-        txtField10.setDisable(true); //citizenship
-        txtField11.setDisable(true); //bdate
-        comboBox08.setDisable(true); //Gender
-        comboBox09.setDisable(true); //Civil Stat
-        comboBox07.setDisable(true); //Title
-        txtField25.setDisable(true); //Spouse
-        txtField16.setDisable(true); //company name
-        cmdCLIENTType(lbShow);
-
-        if (lbShow) {
-            if (comboBox09.getValue() != null) {
-                if (!comboBox09.getValue().isEmpty()) {
-                    if (comboBox09.getSelectionModel().getSelectedIndex() == 1) {
-                        if (comboBox08.getValue() != null) {
-                            txtField25.setDisable(false);
-                        }
-                    } else {
-                        txtField25.setDisable(true);
-                        txtField25.setText("");
-                        oTrans.getModel().getModel().setSpouseID("");
-                        oTrans.getModel().getModel().setSpouseNm("");
-                    }
-                } else {
-                    txtField25.setDisable(true);
-                }
-            } else {
-                txtField25.setDisable(true);
-            }
-        }
-
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnTabAdd.setVisible(lbShow);
-        btnTabRem.setVisible(false);
-
-        btnEdit.setVisible(false);
-        btnEdit.setManaged(false);
-        if (fnValue == EditMode.READY) {
-            btnEdit.setVisible(true);
-            btnEdit.setManaged(true);
-        }
-
-        if (fnValue == EditMode.UPDATE || fnValue == EditMode.READY) {
-            comboBox18.setDisable(true);
-        }
-    }
-
     private void cmdCLIENTType(boolean bValue) {
         if (bValue) {
             boolean bCust = true;
@@ -1040,43 +1036,11 @@ public class CustomerController implements Initializable, ScreenInterface {
                     bCust = false;
                     break;
             }
-
-            txtField16.setDisable(bCust); //company name
-            txtField02.setDisable(!bCust); //last name
-            txtField03.setDisable(!bCust); //first name
-            txtField04.setDisable(!bCust); //mid name
-            txtField06.setDisable(!bCust); //suffix
-            txtField05.setDisable(!bCust); //maiden name
-            txtField12.setDisable(!bCust); // birth plce
-            txtField10.setDisable(!bCust); //citizenship
-            txtField11.setDisable(!bCust); //bdate
-            comboBox08.setDisable(!bCust); //Gender
-            comboBox09.setDisable(!bCust); //Civil Stat
-            comboBox07.setDisable(!bCust); //Title
+            CustomCommonUtil.setDisable(!bCust, txtField02, txtField03, txtField04,
+                    txtField05, txtField06, comboBox07, comboBox08, comboBox09,
+                    txtField10, datePicker11, txtField12);
+            txtField16.setDisable(bCust);
         }
-    }
-
-    private void clearFields() {
-        pnRow = 0;
-        comboBox18.setValue(null);
-        comboBox08.setValue(null);
-        comboBox09.setValue(null);
-        comboBox07.setValue(null);
-        txtField11.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        lblType.setText("");
-        lblTypeValue.setText("");
-        txtField16.clear();
-        txtField02.clear();
-        txtField03.clear();
-        txtField04.clear();
-        txtField05.clear();
-        txtField06.clear();
-        txtField10.clear();
-        txtField25.clear();
-        txtField12.clear();
-        txtField14.clear();
-        txtField13.clear();
-        textArea15.clear();
     }
 
     @FXML
