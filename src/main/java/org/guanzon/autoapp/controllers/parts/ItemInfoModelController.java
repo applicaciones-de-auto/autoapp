@@ -91,15 +91,16 @@ public class ItemInfoModelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboFilter.setItems(cItems);
-        loadItemModelTable();
-        initItemModelTable();
-        initItemModelYearTable();
-        loadItemModelYearTable();
+
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonClick();
         initFieldsAction();
         CheckNoYear();
+        loadItemModelTable();
+        initItemModelTable();
+        initItemModelYearTable();
+        loadItemModelYearTable();
     }
 
     private void initCapitalizationFields() {
