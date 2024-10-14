@@ -851,7 +851,11 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
     public void initFields(int fnValue) {
         pnRow = 0;
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
+        CustomCommonUtil.setDisable(true, txtField01, txtField03);
+        CustomCommonUtil.setVisible(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
+        CustomCommonUtil.setManaged(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
+        CustomCommonUtil.setVisible(false, anchorMisc, gridMisc);
+        CustomCommonUtil.setManaged(false, anchorMisc, gridMisc);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
@@ -859,8 +863,11 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         if (!pbisVhclSales) {
             txtField01.setDisable(!lbShow);
             txtField03.setDisable(!(lbShow && !txtField01.getText().isEmpty()));
+            CustomCommonUtil.setVisible(true, anchorMisc, gridMisc);
+            CustomCommonUtil.setManaged(true, anchorMisc, gridMisc);
         } else {
-            CustomCommonUtil.setDisable(true, txtField01, txtField03);
+            CustomCommonUtil.setVisible(true, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
+            CustomCommonUtil.setManaged(true, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
         }
         CustomCommonUtil.setDisable(!lbShow, txtField05, txtField11, txtField12, txtField15,
                 txtField16, txtField24, textArea27);
@@ -882,12 +889,10 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         if (pnEditMode == EditMode.ADDNEW) {
             if (!pbisVhclSales) {
                 btnVhclAvl.setVisible(true);
+                btnVhclAvl.setManaged(true);
             } else {
-                comboBox17.setDisable(false);
+                comboBox17.setDisable(!lbShow);
             }
-        }
-        if (pbisVhclSales) {
-            comboBox17.setDisable(!lbShow);
         }
         CustomCommonUtil.setVisible(false, btnVhclDesc, btnTransfer);
         CustomCommonUtil.setManaged(false, btnVhclDesc, btnTransfer);
@@ -899,19 +904,6 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
             btnEdit.setManaged(true);
         }
 
-        if (pbisVhclSales) {
-            CustomCommonUtil.setVisible(false, anchorMisc, gridMisc);
-            CustomCommonUtil.setManaged(false, anchorMisc, gridMisc);
-            CustomCommonUtil.setVisible(true, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
-            CustomCommonUtil.setManaged(true, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
-            CustomCommonUtil.setDisable(true, txtField01, txtField03);
-        } else {
-            CustomCommonUtil.setVisible(true, anchorMisc, gridMisc);
-            CustomCommonUtil.setManaged(true, anchorMisc, gridMisc);
-            CustomCommonUtil.setVisible(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
-            CustomCommonUtil.setManaged(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
-            CustomCommonUtil.setDisable(true, txtField01, txtField03);
-        }
         comboBox18.setVisible(true);
         comboBox18.setManaged(true);
     }

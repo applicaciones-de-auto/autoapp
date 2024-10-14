@@ -42,6 +42,7 @@ import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.insurance.InsurancePolicy;
@@ -127,8 +128,15 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
-            setDisable(fbEmpty || foItem.isBefore(minDate));
+            switch (pnEditMode) {
+                case EditMode.ADDNEW:
+                    LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+                    setDisable(fbEmpty || foItem.isBefore(minDate));
+                    break;
+                case EditMode.UPDATE:
+                    setDisable(fbEmpty || foItem.isBefore(datePicker12.getValue()));
+                    break;
+            }
         }
     };
 
@@ -152,10 +160,11 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
         txtField02.setText(oTrans.getMasterModel().getMasterModel().getPolicyNo());
         txtField03.setText(oTrans.getMasterModel().getMasterModel().getORNo());
         if (oTrans.getMasterModel().getMasterModel().getApplicDte() != null) {
-            datePicker04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApplicDte())));
+            datePicker04.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getApplicDte(), SQLUtil.FORMAT_SHORT_DATE)));
+
         }
         if (oTrans.getMasterModel().getMasterModel().getValidFrmDte() != null) {
-            datePicker05.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getValidFrmDte())));
+            datePicker05.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidFrmDte(), SQLUtil.FORMAT_SHORT_DATE)));
         }
 
         int lnAppType = -1;
@@ -196,10 +205,10 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
         txtField10.setText(oTrans.getMasterModel().getMasterModel().getCOCNo());
         txtField11.setText(oTrans.getMasterModel().getMasterModel().getMVFileNo());
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
-            datePicker12.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
+            datePicker12.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
         }
         if (oTrans.getMasterModel().getMasterModel().getValidTruDte() != null) {
-            datePicker13.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getValidTruDte())));
+            datePicker13.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getValidTruDte(), SQLUtil.FORMAT_SHORT_DATE)));
         }
         int lnNewBus = -1;
         if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
@@ -1123,11 +1132,11 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/insurance/InsurancePolicyPrint.fxml"));
-//            InsurancePolicyPrintController loControl = new InsurancePolicyPrintController();
-//            loControl.setGRider(oApp);
-//            loControl.setObject(oTrans);
-//            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
-//            fxmlLoader.setController(loControl);
+            InsurancePolicyPrintController loControl = new InsurancePolicyPrintController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTrans);
+            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
+            fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {

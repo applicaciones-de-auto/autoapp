@@ -478,7 +478,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         CustomCommonUtil.setText("", textArea07, textArea15, textArea16, textArea17);
         txtField19.setText("0");
         comboBox02.setValue("");
-        datePicker03.setValue(LocalDate.of(1990, Month.JANUARY, 1));
+        datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
     }
 
     @Override
@@ -545,8 +545,8 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 public void updateItem(LocalDate item, boolean empty) {
                     super.updateItem(item, empty);
                     LocalDate today = LocalDate.now();
-
                     setDisable(empty || item.compareTo(datePicker03.getValue()) < 0);
+
                 }
 
             };

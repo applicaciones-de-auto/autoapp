@@ -168,6 +168,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
 
         initCapitalizationFields();
         initPatternFields();
+        initTextFieldFocus();
         initTextKeyPressed();
         initButtonsClick();
         initComboBoxItems();

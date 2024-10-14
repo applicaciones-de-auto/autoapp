@@ -6,7 +6,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -527,12 +526,9 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 yOffset = event.getSceneY();
             });
 
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
             });
 
             //set the main interface as the scene

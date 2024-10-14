@@ -6,6 +6,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -740,7 +741,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         CustomCommonUtil.setText("", textArea14, textArea44, textArea46);
         List<DatePicker> loDatePicker = Arrays.asList(
                 datePicker05, datePicker06, datePicker11);
-        loDatePicker.forEach(dp -> dp.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()))));
+        loDatePicker.forEach(dp -> dp.setValue(LocalDate.of(1900, Month.JANUARY, 1)));
         CustomCommonUtil.setValue(null, comboBox03, comboBox04, comboBox09, comboBox12, comboBox18, comboBox21, comboBox22, comboBox28);
         CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus);
     }
@@ -800,7 +801,15 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            setDisable(fbEmpty || foItem.isBefore(datePicker05.getValue()));
+            switch (pnEditMode) {
+                case EditMode.ADDNEW:
+                    LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+                    setDisable(fbEmpty || foItem.isBefore(minDate));
+                    break;
+                case EditMode.UPDATE:
+                    setDisable(fbEmpty || foItem.isBefore(datePicker05.getValue()));
+                    break;
+            }
         }
     };
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -141,8 +142,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
         initTextFieldFocus();
         initTextKeyPressed();
         initButtonsClick();
-        initComboBoxItems();
         initFieldsAction();
+        initComboBoxItems();
         initTextFieldsProperty();
         clearFields();
         clearTables();
@@ -768,8 +769,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
         CustomCommonUtil.setText("", textArea07, textArea08,
                 textArea09, textArea10);
         CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate, lblApprovedBy);
-        dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
-        dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
+        dateFrom03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        dateTo04.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         comboBox05.setValue("");
         txtField15.setText("0");
         txtField16.setText("0.00");

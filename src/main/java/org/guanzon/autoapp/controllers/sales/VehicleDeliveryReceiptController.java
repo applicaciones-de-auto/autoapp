@@ -30,7 +30,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -391,10 +390,27 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         oTransVDR.getMasterModel().getMasterModel().setVSPNO("");
+                        oTransVDR.getMasterModel().getMasterModel().setClientID("");
+                        oTransVDR.getMasterModel().getMasterModel().setBuyCltNm("");
+                        oTransVDR.getMasterModel().getMasterModel().setCoCltNm("");
+                        oTransVDR.getMasterModel().getMasterModel().setCSNo("");
+                        oTransVDR.getMasterModel().getMasterModel().setPlateNo("");
+                        oTransVDR.getMasterModel().getMasterModel().setEngineNo("");
+                        oTransVDR.getMasterModel().getMasterModel().setFrameNo("");
+                        oTransVDR.getMasterModel().getMasterModel().setVhclFDsc("");
+                        oTransVDR.getMasterModel().getMasterModel().setIsVhclNw("");
+                        clearVSPFields();
                     }
                 }
             }
         });
+    }
+
+    private void clearVSPFields() {
+        CustomCommonUtil.setText("", txtField05,
+                txtField07, txtField08, txtField09, txtField10, txtField11);
+        CustomCommonUtil.setText("", textArea06, textArea12, textArea13, textArea14);
+        CustomCommonUtil.setSelected(false, radioBrandNew, radioPreOwned);
     }
 
     @Override
@@ -408,7 +424,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                 txtField07, txtField08, txtField09, txtField10, txtField11);
         CustomCommonUtil.setText("", textArea06, textArea12, textArea13, textArea14);
         comboBox02.setValue(null);
-        datePicker03.setValue(LocalDate.of(1999, Month.JANUARY, 1));
+        datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         CustomCommonUtil.setSelected(false, radioBrandNew, radioPreOwned);
         CustomCommonUtil.setText("", lblVDRStatus, lblVSINo);
     }

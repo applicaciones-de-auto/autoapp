@@ -2679,9 +2679,15 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         @Override
         public void updateItem(LocalDate foItem, boolean fbEmpty) {
             super.updateItem(foItem, fbEmpty);
-            LocalDate loMinDate = datePicker22.getValue();
-
-            setDisable(fbEmpty || foItem.isBefore(loMinDate));
+            switch (pnEditMode) {
+                case EditMode.ADDNEW:
+                    LocalDate minDate = CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
+                    setDisable(fbEmpty || foItem.isBefore(minDate));
+                    break;
+                case EditMode.UPDATE:
+                    setDisable(fbEmpty || foItem.isBefore(datePicker22.getValue()));
+                    break;
+            }
         }
     };
 

@@ -9,7 +9,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -45,10 +44,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -190,9 +185,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
 
         initLaborTable();
         initAccessoriesTable();
-
         datePicker09.setDayCellFactory(DateFormatCell);
-
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();
@@ -552,9 +545,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         lsValue = "0.00";
                     }
                     double lnRate = Double.parseDouble(lsValue.replace(",", ""));
-
-                    if (lnRate > lnUnitPrice) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Rate cannot be greater than Vehicle Price");
+                    if (lnRate > 100.00 || lnRate < 0.00) {
+                        ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
                         lnRate = 0.00;
                     }
                     oTransVSP.getVSPFinanceModel().getVSPFinanceModel().setAcctRate(lnRate);
@@ -881,36 +873,33 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 case 75://Description
                     oTransVSP.getMasterModel().getMasterModel().setOthrDesc(lsValue);
                     break;
-                case 82: // DownPayment
+                case 82:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
                     double diIncent = Double.parseDouble(lsValue.replace(",", ""));
-                    if (lnUnitPrice >= 0.00) {
-                        if (diIncent > lnUnitPrice) {
-                            ShowMessageFX.Warning(null, "Warning", "Dealer Incentives Rate cannot be greater than Vehicle Price");
-                            lsValue = "0.00";
-                        }
+                    if (diIncent > 100.00 || diIncent < 0.00) {
+                        ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
+                        diIncent = 0.00;
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setDealrRte((Double.valueOf(lsValue.replace(",", ""))));
+                    oTransVSP.getMasterModel().getMasterModel().setDealrRte(diIncent);
                     if (!loadMasterFields()) {
                         txtField82.setText("0.00");
                         oTransVSP.getMasterModel().getMasterModel().setDealrRte(Double.valueOf(txtField82.getText().replace(",", "")));
                     }
                     txtField82.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getDealrRte()))));
                     break;
-                case 84: // DownPayment
+                case 84:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
                     double siIncent = Double.parseDouble(lsValue.replace(",", ""));
-                    if (lnUnitPrice >= 0.00) {
-                        if (siIncent > lnUnitPrice) {
-                            ShowMessageFX.Warning(null, "Warning", "Sales Executive Incentives Rate cannot be greater than Vehicle Price");
-                            lsValue = "0.00";
-                        }
+                    if (siIncent > 100.00 || siIncent < 0.00) {
+                        ShowMessageFX.Warning(null, "Warning", "Invalid Amount");
+                        siIncent = 0.00;
                     }
-                    oTransVSP.getMasterModel().getMasterModel().setSlsInRte((Double.valueOf(lsValue.replace(",", ""))));
+
+                    oTransVSP.getMasterModel().getMasterModel().setSlsInRte(siIncent);
                     if (!loadMasterFields()) {
                         txtField84.setText("0.00");
                         oTransVSP.getMasterModel().getMasterModel().setSlsInRte(Double.valueOf(txtField84.getText().replace(",", "")));
@@ -1388,10 +1377,10 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                                         + "if YES: from Downpayment to Promissory Note Amt will be cleared\n"
                                         + "if NO: it will remain the values.")) {
                                     oTransVSP.removeVSPFinance(0);
-                                    oTransVSP.getMasterModel().getMasterModel().setDownPaym(new BigDecimal("0.00"));
+                                    oTransVSP.getMasterModel().getMasterModel().setDownPaym(new BigDecimal(0.00));
                                     oTransVSP.getMasterModel().getMasterModel().setChmoStat("0");
                                     comboBox71.getSelectionModel().select(0);
-                                    oTransVSP.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal("0.00"));
+                                    oTransVSP.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal(0.00));
                                     txtField70.setText("0.00");
                                     oTransVSP.getMasterModel().getMasterModel().setDealrRte(0.00);
                                     oTransVSP.getMasterModel().getMasterModel().setSlsInRte(0.00);
@@ -1545,12 +1534,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox71.setOnAction(e
-                -> {
+        comboBox71.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTransVSP.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
                 if (comboBox71.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVSP.getMasterModel().getMasterModel().setCompAmt(new BigDecimal(0.00));
+                    oTransVSP.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal(0.00));
                     txtField70.setText("0.00");
                 }
                 initFields(pnEditMode);
@@ -2477,11 +2465,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             //Compre Insurance
             switch (comboBox64.getSelectionModel().getSelectedIndex()) {
                 case 1: //FOC
-                    CustomCommonUtil.setDisable(lbShow, txtField65, comboBox67);
+                    CustomCommonUtil.setDisable(!lbShow, txtField65, comboBox67);
                     CustomCommonUtil.setDisable(true, txtField63, comboBox66);
                     break;
                 case 3:
-                    CustomCommonUtil.setDisable(lbShow, txtField63, txtField65, comboBox66, comboBox67);
+                    CustomCommonUtil.setDisable(!lbShow, txtField63, txtField65, comboBox66, comboBox67);
                     break;
                 default: //NONE
                     CustomCommonUtil.setDisable(true, txtField63, txtField65, comboBox66, comboBox67);
@@ -2741,6 +2729,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/VehicleGatePass.fxml"));
             VehicleGatePassController loControl = new VehicleGatePassController();
             loControl.setGRider(oApp);
+
             loControl.setVSPTransNo(oTransVSP.getMasterModel().getMasterModel().getTransNo());
             loControl.setVGPTransNo(oTransVSP.getMasterModel().getMasterModel().getGatePsNo());
             loControl.setIsVSPState(true);
