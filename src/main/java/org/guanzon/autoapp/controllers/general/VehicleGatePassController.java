@@ -446,12 +446,12 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             switch (String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType())) {
                 case "l":
                     lsItem = "LABOR";
-                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborCde());
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
                     break;
                 case "p":
                     lsItem = "PARTS";
-                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockID());
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
                     break;
             }

@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -50,11 +51,14 @@
                                         <BorderPane>
                                             <top>
                                                 <AnchorPane prefHeight="25.0" prefWidth="1340.0" style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets bottom="3.0" />
+                                                    </BorderPane.margin>
                                                     <children>
-                                                        <GridPane prefHeight="30.0" prefWidth="279.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0">
+                                                        <GridPane prefHeight="30.0" prefWidth="279.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                                                             <columnConstraints>
-                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="-Infinity" prefWidth="70.0" />
-                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.3333282470703" minWidth="10.0" prefWidth="158.66665649414062" />
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1067.0" minWidth="-Infinity" prefWidth="1038.6666259765625" />
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="533.3333435058594" minWidth="-Infinity" prefWidth="28.3333740234375" />
@@ -64,11 +68,14 @@
                                                                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                             </rowConstraints>
                                                             <children>
-                                                                <ComboBox fx:id="comboFilter" prefWidth="150.0" promptText="Choose to Filter" GridPane.columnIndex="1">
+                                                                <ComboBox fx:id="comboBoxFilter" maxWidth="1.7976931348623157E308" promptText="Choose to Filter" GridPane.columnIndex="1">
                                                                     <stylesheets>
                                                                         <URL value="@../css/FrameStyle.css" />
                                                                         <URL value="@../css/MainPanelStyle.css" />
                                                                     </stylesheets>
+                                                                    <tooltip>
+                                                                        <Tooltip text="Please choose type to filter." />
+                                                                    </tooltip>
                                                                 </ComboBox>
                                                                 <Label text="FILTER">
                                                                     <font>
@@ -81,31 +88,34 @@
                                                                             <HBox.margin>
                                                                                 <Insets />
                                                                             </HBox.margin>
+                                                                            <tooltip>
+                                                                                <Tooltip text="Enter words to filter." />
+                                                                            </tooltip>
                                                                         </TextField>
-                                                                        <Label fx:id="lFrom" prefHeight="24.0" prefWidth="46.0" text="FROM">
+                                                                        <Label fx:id="lblFrom" prefHeight="24.0" prefWidth="46.0" text="FROM">
                                                                             <font>
                                                                                 <Font name="System Bold" size="12.0" />
                                                                             </font>
                                                                         </Label>
-                                                                        <DatePicker fx:id="fromDate" prefHeight="24.0" prefWidth="136.0">
+                                                                        <DatePicker fx:id="datePickerFrom" prefHeight="24.0" prefWidth="136.0">
                                                                             <HBox.margin>
                                                                                 <Insets />
                                                                             </HBox.margin>
+                                                                            <tooltip>
+                                                                                <Tooltip text="Pick Date From to filter." />
+                                                                            </tooltip>
                                                                         </DatePicker>
-                                                                        <Label fx:id="lTo" alignment="CENTER" prefHeight="24.0" prefWidth="33.0" text="TO">
+                                                                        <Label fx:id="lblTo" alignment="CENTER" prefHeight="24.0" prefWidth="33.0" text="TO">
                                                                             <font>
                                                                                 <Font name="System Bold" size="12.0" />
                                                                             </font>
                                                                         </Label>
-                                                                        <DatePicker fx:id="toDate" prefHeight="24.0" prefWidth="136.0" />
-                                                                        <ComboBox fx:id="comboType" prefHeight="24.0" prefWidth="150.0" promptText="Choose Type" />
-                                                                        <Button fx:id="btnActNo" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnActTitle" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnPerson" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnDepart" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnDate" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnType" mnemonicParsing="false" prefHeight="24.0" text="Filter" />
-                                                                        <Button fx:id="btnRefresh" mnemonicParsing="false" prefHeight="24.0" text="Refresh" />
+                                                                        <DatePicker fx:id="datePickerTo" prefHeight="24.0" prefWidth="136.0">
+                                                                            <tooltip>
+                                                                                <Tooltip text="Pick Date To, to filter." />
+                                                                            </tooltip>
+                                                                        </DatePicker>
+                                                                        <Button fx:id="btnFilter" mnemonicParsing="false" prefHeight="24.0" prefWidth="49.0" text="Filter" />
                                                                     </children>
                                                                     <GridPane.margin>
                                                                         <Insets />
@@ -116,10 +126,12 @@
                                                                 </HBox>
                                                             </children>
                                                         </GridPane>
+                                                        <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                            <graphic>
+                                                                <FontAwesomeIconView glyphName="REFRESH" />
+                                                            </graphic>
+                                                        </Button>
                                                     </children>
-                                                    <BorderPane.margin>
-                                                        <Insets bottom="3.0" />
-                                                    </BorderPane.margin>
                                                 </AnchorPane>
                                             </top>
                                             <center>
@@ -129,20 +141,20 @@
                                                             <center>
                                                                 <TableView fx:id="tblViewActApproval" prefHeight="376.0" prefWidth="1338.0" BorderPane.alignment="CENTER">
                                                                     <columns>
-                                                                        <TableColumn fx:id="tblindex01" editable="false" prefWidth="41.66666793823242" sortable="false" text="Row" />
-                                                                        <TableColumn fx:id="tblindexselect" editable="false" prefWidth="47.66667175292969" sortable="false">
+                                                                        <TableColumn fx:id="tblindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                        <TableColumn fx:id="tblindexselect" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false">
                                                                             <graphic>
                                                                                 <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
                                                                             </graphic>
                                                                         </TableColumn>
-                                                                        <TableColumn fx:id="tblindex02" editable="false" prefWidth="141.6666717529297" sortable="false" text="Activity No" />
-                                                                        <TableColumn fx:id="tblindex03" editable="false" prefWidth="212.33334350585938" sortable="false" text="Activity Period" />
-                                                                        <TableColumn fx:id="tblindex04" editable="false" prefWidth="220.33331298828125" sortable="false" text="Activity Title" />
-                                                                        <TableColumn fx:id="tblindex05" editable="false" prefWidth="187.0" sortable="false" text="Person in Charge" />
-                                                                        <TableColumn fx:id="tblindex06" editable="false" prefWidth="187.0" sortable="false" text="Department" />
-                                                                        <TableColumn fx:id="tblindex07" editable="false" prefWidth="177.6666259765625" sortable="false" text="Branch in Charge" />
-                                                                        <TableColumn fx:id="tblindex08" editable="false" prefWidth="118.0" sortable="false" text="Activity Location" />
-                                                                        <TableColumn fx:id="tblindex09" editable="false" prefWidth="120.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Budget Proposal" />
+                                                                        <TableColumn fx:id="tblindex02" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Activity No" />
+                                                                        <TableColumn fx:id="tblindex03" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Period" />
+                                                                        <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Activity Title" />
+                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" sortable="false" text="Person in Charge" />
+                                                                        <TableColumn fx:id="tblindex06" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Department" />
+                                                                        <TableColumn fx:id="tblindex07" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Branch in Charge" />
+                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Location" />
+                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Budget Proposal" />
                                                                     </columns>
                                                                 </TableView>
                                                             </center>
@@ -161,7 +173,7 @@
                                                                                         <Insets right="10.0" />
                                                                                     </HBox.margin>
                                                                                     <font>
-                                                                                        <Font size="13.0" />
+                                                                                        <Font name="System Bold" size="13.0" />
                                                                                     </font>
                                                                                 </Label>
                                                                             </children>
