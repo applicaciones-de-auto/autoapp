@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="582.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="582.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane layoutX="10.0" layoutY="10.0" prefHeight="453.0" prefWidth="1220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -34,7 +34,7 @@
                     <top>
                         <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" text="ACTIVITY FOR APPROVAL" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="VEHICLE SALES ADVANCES APPROVAL" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
                                         <Font name="Arial Bold" size="13.0" />
                                     </font>
@@ -50,7 +50,7 @@
                                     <children>
                                         <BorderPane>
                                             <top>
-                                                <AnchorPane prefHeight="25.0" prefWidth="1340.0" style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                <AnchorPane style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
                                                     <BorderPane.margin>
                                                         <Insets bottom="3.0" />
                                                     </BorderPane.margin>
@@ -137,51 +137,22 @@
                                             <center>
                                                 <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                            <center>
-                                                                <TableView fx:id="tblViewActApproval" prefHeight="376.0" prefWidth="1338.0" BorderPane.alignment="CENTER">
-                                                                    <columns>
-                                                                        <TableColumn fx:id="tblindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
-                                                                        <TableColumn fx:id="tblindexselect" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false">
-                                                                            <graphic>
-                                                                                <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
-                                                                            </graphic>
-                                                                        </TableColumn>
-                                                                        <TableColumn fx:id="tblindex02" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Activity No" />
-                                                                        <TableColumn fx:id="tblindex03" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Period" />
-                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Type" />
-                                                                        <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Activity Title" />
-                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" sortable="false" text="Person in Charge" />
-                                                                        <TableColumn fx:id="tblindex06" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Department" />
-                                                                        <TableColumn fx:id="tblindex07" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Branch in Charge" />
-                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Budget Proposal" />
-                                                                    </columns>
-                                                                </TableView>
-                                                            </center>
-                                                            <bottom>
-                                                                <AnchorPane prefHeight="33.0" prefWidth="1338.0" style="-fx-background-color: #FACEA1;" BorderPane.alignment="CENTER">
-                                                                    <children>
-                                                                        <HBox layoutX="1056.0" layoutY="-31.0" prefHeight="23.0" prefWidth="241.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
-                                                                            <children>
-                                                                                <Label prefHeight="23.0" prefWidth="149.0" text="Total Budget Proposal: ">
-                                                                                    <font>
-                                                                                        <Font name="System Bold" size="12.0" />
-                                                                                    </font>
-                                                                                </Label>
-                                                                                <Label fx:id="lbTotalBudget" alignment="CENTER_RIGHT" prefHeight="45.0" prefWidth="112.0">
-                                                                                    <HBox.margin>
-                                                                                        <Insets right="10.0" />
-                                                                                    </HBox.margin>
-                                                                                    <font>
-                                                                                        <Font name="System Bold" size="13.0" />
-                                                                                    </font>
-                                                                                </Label>
-                                                                            </children>
-                                                                        </HBox>
-                                                                    </children>
-                                                                </AnchorPane>
-                                                            </bottom>
-                                                        </BorderPane>
+                                                        <TableView fx:id="tblVhclApproval" prefWidth="550.0" scaleShape="false" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <columns>
+                                                                <TableColumn fx:id="tblindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false">
+                                                                    <graphic>
+                                                                        <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
+                                                                    </graphic>
+                                                                </TableColumn>
+                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Slip No" />
+                                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Type" />
+                                                                <TableColumn fx:id="tblindex05" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Slip Date" />
+                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
+                                                                <TableColumn fx:id="tblindex07" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Amount" />
+                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Status" />
+                                                            </columns>
+                                                        </TableView>
                                                     </children>
                                                 </AnchorPane>
                                             </center>

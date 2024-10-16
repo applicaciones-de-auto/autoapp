@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package org.guanzon.autoapp.models.insurance;
+package org.guanzon.autoapp.models.sales;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
@@ -11,7 +7,7 @@ import javafx.scene.control.CheckBox;
  *
  * @author John Dave
  */
-public class InsuranceProposalApproval {
+public class InquiryApproval {
 
     private SimpleStringProperty tblindex01;
     private CheckBox select;
@@ -25,8 +21,9 @@ public class InsuranceProposalApproval {
     private SimpleStringProperty tblindex09;
     private SimpleStringProperty tblindex10;
     private SimpleStringProperty tblindex11;
+    private SimpleStringProperty tblindex12;
 
-    public InsuranceProposalApproval(String tblindex01,
+    public InquiryApproval(String tblindex01,
             String tblindex02,
             String tblindex03,
             String tblindex04,
@@ -36,7 +33,9 @@ public class InsuranceProposalApproval {
             String tblindex08,
             String tblindex09,
             String tblindex10,
-            String tblindex11) {
+            String tblindex11,
+            String tblindex12
+    ) {
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.select = new CheckBox();
         this.tblindex02 = new SimpleStringProperty(tblindex02);
@@ -48,6 +47,8 @@ public class InsuranceProposalApproval {
         this.tblindex08 = new SimpleStringProperty(tblindex08);
         this.tblindex09 = new SimpleStringProperty(tblindex09);
         this.tblindex10 = new SimpleStringProperty(tblindex10);
+        this.tblindex11 = new SimpleStringProperty(tblindex11);
+        this.tblindex12 = new SimpleStringProperty(tblindex12);
     }
 
     public String getTblindex01() {
@@ -144,6 +145,14 @@ public class InsuranceProposalApproval {
 
     public void setTblindex11(String tblindex11) {
         this.tblindex11.set(tblindex11);
+    }
+
+    public String getTblindex12() {
+        return tblindex12.get();
+    }
+
+    public void setTblindex12(String tblindex12) {
+        this.tblindex12.set(tblindex12);
     }
 
 }

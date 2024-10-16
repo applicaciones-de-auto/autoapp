@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package org.guanzon.autoapp.models.insurance;
+package org.guanzon.autoapp.models.sales;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.CheckBox;
@@ -11,7 +7,7 @@ import javafx.scene.control.CheckBox;
  *
  * @author John Dave
  */
-public class InsuranceProposalApproval {
+public class VSPApproval {
 
     private SimpleStringProperty tblindex01;
     private CheckBox select;
@@ -25,8 +21,15 @@ public class InsuranceProposalApproval {
     private SimpleStringProperty tblindex09;
     private SimpleStringProperty tblindex10;
     private SimpleStringProperty tblindex11;
+    private SimpleStringProperty tblindex12;
+    private SimpleStringProperty tblindex13;
+    private SimpleStringProperty tblindex14;
+    private SimpleStringProperty tblindex15;
+    private SimpleStringProperty tblindex16;
+    private SimpleStringProperty tblindex17;
+    private SimpleStringProperty tblindex18;
 
-    public InsuranceProposalApproval(String tblindex01,
+    public VSPApproval(String tblindex01,
             String tblindex02,
             String tblindex03,
             String tblindex04,
@@ -36,7 +39,15 @@ public class InsuranceProposalApproval {
             String tblindex08,
             String tblindex09,
             String tblindex10,
-            String tblindex11) {
+            String tblindex11,
+            String tblindex12,
+            String tblindex13,
+            String tblindex14,
+            String tblindex15,
+            String tblindex16,
+            String tblindex17,
+            String tblindex18
+    ) {
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.select = new CheckBox();
         this.tblindex02 = new SimpleStringProperty(tblindex02);
@@ -48,6 +59,14 @@ public class InsuranceProposalApproval {
         this.tblindex08 = new SimpleStringProperty(tblindex08);
         this.tblindex09 = new SimpleStringProperty(tblindex09);
         this.tblindex10 = new SimpleStringProperty(tblindex10);
+        this.tblindex11 = new SimpleStringProperty(tblindex11);
+        this.tblindex12 = new SimpleStringProperty(tblindex12);
+        this.tblindex13 = new SimpleStringProperty(tblindex13);
+        this.tblindex14 = new SimpleStringProperty(tblindex14);
+        this.tblindex15 = new SimpleStringProperty(tblindex15);
+        this.tblindex16 = new SimpleStringProperty(tblindex16);
+        this.tblindex17 = new SimpleStringProperty(tblindex17);
+        this.tblindex18 = new SimpleStringProperty(tblindex18);
     }
 
     public String getTblindex01() {
@@ -144,6 +163,62 @@ public class InsuranceProposalApproval {
 
     public void setTblindex11(String tblindex11) {
         this.tblindex11.set(tblindex11);
+    }
+
+    public String getTblindex12() {
+        return tblindex12.get();
+    }
+
+    public void setTblindex12(String tblindex12) {
+        this.tblindex12.set(tblindex12);
+    }
+
+    public String getTblindex13() {
+        return tblindex13.get();
+    }
+
+    public void setTblindex13(String tblindex13) {
+        this.tblindex13.set(tblindex13);
+    }
+
+    public String getTblindex14() {
+        return tblindex14.get();
+    }
+
+    public void setTblindex14(String tblindex14) {
+        this.tblindex14.set(tblindex14);
+    }
+
+    public String getTblindex15() {
+        return tblindex15.get();
+    }
+
+    public void setTblindex15(String tblindex15) {
+        this.tblindex15.set(tblindex15);
+    }
+
+    public String getTblindex16() {
+        return tblindex16.get();
+    }
+
+    public void setTblindex16(String tblindex16) {
+        this.tblindex16.set(tblindex16);
+    }
+
+    public String getTblindex17() {
+        return tblindex17.get();
+    }
+
+    public void setTblindex17(String tblindex17) {
+        this.tblindex17.set(tblindex17);
+    }
+
+    public String getTblindex18() {
+        return tblindex18.get();
+    }
+
+    public void setTblindex18(String tblindex18) {
+        this.tblindex18.set(tblindex18);
     }
 
 }

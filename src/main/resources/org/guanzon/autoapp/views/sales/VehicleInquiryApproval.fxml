@@ -139,18 +139,18 @@
                                                     <children>
                                                         <TableView fx:id="tblVhclApproval" prefWidth="550.0" scaleShape="false" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblindex01" editable="false" maxWidth="-1.0" minWidth="38.0" prefWidth="38.0" sortable="false" text="Row" />
-                                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="-1.0" minWidth="33.0" prefWidth="33.0" resizable="false" sortable="false">
+                                                                <TableColumn fx:id="tblindex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                <TableColumn fx:id="tblindex02" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false">
                                                                     <graphic>
                                                                         <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
                                                                     </graphic>
                                                                 </TableColumn>
-                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="-1.0" minWidth="109.0" prefWidth="109.0" sortable="false" text="Inquiry ID" />
-                                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="-1.0" minWidth="109.0" prefWidth="109.0" sortable="false" text="Inquiry Date" />
-                                                                <TableColumn fx:id="tblindex05" editable="false" maxWidth="348.33331298828125" minWidth="255.0" prefWidth="348.33331298828125" resizable="false" sortable="false" text="Customer Name" />
-                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="348.33331298828125" minWidth="125.0" prefWidth="298.33331298828125" resizable="false" sortable="false" text="Sales Executive" />
-                                                                <TableColumn fx:id="tblindex07" editable="false" maxWidth="348.33331298828125" minWidth="125.0" prefWidth="265.666748046875" resizable="false" sortable="false" text="Branch" />
-                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="348.33331298828125" minWidth="65.333251953125" prefWidth="133.333251953125" resizable="false" sortable="false" text="Inquiry Status" />
+                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Inquiry ID" />
+                                                                <TableColumn fx:id="tblindex04" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Inquiry Date" />
+                                                                <TableColumn fx:id="tblindex05" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
+                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Executive" />
+                                                                <TableColumn fx:id="tblindex07" editable="false" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Branch" />
+                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Inquiry Status" />
                                                             </columns>
                                                         </TableView>
                                                     </children>

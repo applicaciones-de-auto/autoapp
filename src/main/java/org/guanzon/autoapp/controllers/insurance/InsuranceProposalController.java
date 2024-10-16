@@ -189,7 +189,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 lsInsBranc = oTrans.getMasterModel().getMasterModel().getInsurNme() + " " + oTrans.getMasterModel().getMasterModel().getBrInsNme();
             }
         }
-        txtField16.setText(lsInsBranc);
+        txtField16.setText(lsInsBranc.trim());
         int appType = -1;
         if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
             switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
@@ -272,6 +272,9 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     break;
                 case TransactionStatus.STATE_POSTED:
                     lblIPStatus.setText("Posted");
+                    break;
+                case TransactionStatus.STATE_VOID:
+                    lblIPStatus.setText("Disapproved");
                     break;
                 default:
                     lblIPStatus.setText("");
@@ -1247,17 +1250,13 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             }
         }
         if (fnValue == EditMode.READY) {
-            if (!lblIPStatus.getText().equals("Cancelled")) {
+            if (!lblIPStatus.getText().equals("Cancelled") || !lblIPStatus.getText().equals("Disapproved")) {
                 CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnIPCancel);
                 CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnIPCancel);
             }
-            if (lblIPStatus.getText().equals("Approved")) {
-                CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel);
-                CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel);
-            }
             if (!lblIPStatus.getText().equals("Approved")) {
-                CustomCommonUtil.setVisible(false, btnPrint);
-                CustomCommonUtil.setManaged(false, btnPrint);
+                CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel, btnPrint);
+                CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel, btnPrint);
             }
         }
     }

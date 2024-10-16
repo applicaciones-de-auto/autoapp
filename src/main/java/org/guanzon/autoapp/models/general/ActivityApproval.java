@@ -9,7 +9,7 @@ import javafx.scene.control.CheckBox;
 
 /**
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class ActivityApproval {
 

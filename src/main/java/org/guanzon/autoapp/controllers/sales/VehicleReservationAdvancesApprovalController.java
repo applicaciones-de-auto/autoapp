@@ -2,6 +2,7 @@ package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.interfaces.GApprovalInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
-import org.guanzon.autoapp.models.sales.InquiryApproval;
+import org.guanzon.autoapp.models.sales.InquiryVehicleSalesAdvances;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
@@ -38,15 +39,18 @@ import org.json.simple.JSONObject;
  *
  * @author John Dave
  */
-public class VehicleInquiryApprovalController implements Initializable, ScreenInterface, GApprovalInterface {
+public class VehicleReservationAdvancesApprovalController implements Initializable, ScreenInterface, GApprovalInterface {
 
     private GRider oApp;
     private Inquiry oTrans;
-    private final String pxeModuleName = "Vehicle Inquiry Approval"; //Form Title
+    private final String pxeModuleName = "Vehicle Reservation Approval"; //Form Title
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    ObservableList<String> cComboFilter = FXCollections.observableArrayList("INQUIRY ID", "INQUIRY DATE", "CUSTOMER NAME", "SALES EXECUTIVE",
-            "BRANCH", "INQUIRY STATUS");
-    private ObservableList<InquiryApproval> poInqApprovalData = FXCollections.observableArrayList();
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
+    ObservableList<String> cComboFilter = FXCollections.observableArrayList("SLIP NO",
+            "TYPE",
+            "SLIP DATE",
+            "CUSTOMER NAME");
+    private ObservableList<InquiryVehicleSalesAdvances> poReservApprovalData = FXCollections.observableArrayList();
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -56,11 +60,13 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
     @FXML
     private Button btnRefresh, btnFilter, btnClose;
     @FXML
-    private TableView<InquiryApproval> tblVhclApproval;
+    private TableView<InquiryVehicleSalesAdvances> tblVhclApproval;
     @FXML
-    private TableColumn<InquiryApproval, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08;
+    private TableColumn<InquiryVehicleSalesAdvances, String> tblindex01;
     @FXML
-    private TableColumn<InquiryApproval, Boolean> tblindex02;
+    private TableColumn<InquiryVehicleSalesAdvances, String> tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08;
+    @FXML
+    private TableColumn<InquiryVehicleSalesAdvances, Boolean> tblindex02;
     @FXML
     private CheckBox selectAllCheckBox;
     @FXML
@@ -111,15 +117,15 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 break;
             case "btnFilter":
                 String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
-                FilteredList<InquiryApproval> filteredData = new FilteredList<>(poInqApprovalData, p -> true);
+                FilteredList<InquiryVehicleSalesAdvances> filteredData = new FilteredList<>(poReservApprovalData, p -> true);
                 switch (lsSelectedFilter) {
-                    case "INQUIRY DATE":
+                    case "SLIP DATE":
                         if (datePickerFrom.getValue() != null && datePickerTo.getValue() != null) {
                             LocalDate fromDate = datePickerFrom.getValue();
                             LocalDate toDate = datePickerTo.getValue();
                             filteredData.setPredicate(item -> {
                                 LocalDate itemDate;
-                                itemDate = CustomCommonUtil.strToDate(item.getTblindex03());
+                                itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
                                 return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
                             });
 
@@ -131,30 +137,28 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                             selectAllCheckBox.setSelected(false);
                         }
                         break;
-                    case "INQUIRY ID":
-                        String lsInquiryIDSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsInquiryIDSearch.isEmpty()) {
+                    case "SLIP NO":
+                        String lsVSPNoSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsVSPNoSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex02().toLowerCase().contains(lsInquiryIDSearch)
+                                    -> item.getTblindex02().toLowerCase().contains(lsVSPNoSearch)
                             );
                         }
                         break;
-
-                    case "CUSTOMER NAME":
+                    case "TYPE":
                         String lsCustomNameSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsCustomNameSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex04().toLowerCase().contains(lsCustomNameSearch));
+                                    -> item.getTblindex03().toLowerCase().contains(lsCustomNameSearch));
                         }
                         break;
-
-                    case "SALES EXECUTIVE":
+                    case "CUSTOMER NAME":
                         String lsSalesExeSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsSalesExeSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
@@ -164,29 +168,9 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                                     -> item.getTblindex05().toLowerCase().contains(lsSalesExeSearch));
                         }
                         break;
-                    case "BRANCH": // Corrected from 'DEPARMENT'
-                        String lsBranchSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsBranchSearch.isEmpty()) {
-                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
-                            selectAllCheckBox.setSelected(false);
-                        } else {
-                            filteredData.setPredicate(item
-                                    -> item.getTblindex06().toLowerCase().contains(lsBranchSearch));
-                        }
-                        break;
-                    case "INQUIRY STATUS":
-                        String lsInqStatusSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsInqStatusSearch.isEmpty()) {
-                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
-                            selectAllCheckBox.setSelected(false);
-                        } else {
-                            filteredData.setPredicate(item
-                                    -> item.getTblindex07().toLowerCase().contains(lsInqStatusSearch));
-                        }
-                        break;
                 }
                 int rowNumber = 1;
-                for (InquiryApproval item : filteredData) {
+                for (InquiryVehicleSalesAdvances item : filteredData) {
                     item.setTblindex01(String.valueOf(rowNumber)); // Reset the row number for filtered items
                     rowNumber++;
                 }
@@ -197,23 +181,20 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 }
                 break;
             case "btnApproved":
-                ObservableList<InquiryApproval> selectedItems = FXCollections.observableArrayList();
+                ObservableList<InquiryVehicleSalesAdvances> selectedItems = FXCollections.observableArrayList();
 
-                // Get selected items from the currently displayed table (either filtered or unfiltered)
-                for (InquiryApproval item : tblVhclApproval.getItems()) {
+                for (InquiryVehicleSalesAdvances item : tblVhclApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                         System.out.println("Selected size: " + selectedItems.size());
                     }
                 }
 
-                // If no items are selected, show an error message
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected.");
                     return;
                 }
 
-                // Ask for confirmation
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to approve?")) {
                     return;
                 }
@@ -221,21 +202,17 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 int lnApprovedCount = 0;
                 String lsMessage = "";
 
-                // Loop through each selected item from the filtered/unfiltered table view
-                for (InquiryApproval selectedItem : selectedItems) {
-                    // Get the inquiryID from the selected item
-                    String inquiryID = selectedItem.getTblindex02();
+                for (InquiryVehicleSalesAdvances selectedItem : selectedItems) {
+                    String lsSlipNo = selectedItem.getTblindex02();
 
-                    // Find the corresponding original item using the inquiryID
-                    InquiryApproval originalItem = poInqApprovalData.stream()
-                            .filter(item -> item.getTblindex02().equals(inquiryID))
+                    InquiryVehicleSalesAdvances originalItem = poReservApprovalData.stream()
+                            .filter(item -> item.getTblindex02().equals(lsSlipNo))
                             .findFirst()
-                            .orElse(null); // Find the original item based on inquiryID
+                            .orElse(null);
 
-                    // Ensure the original item is found
                     if (originalItem != null) {
-                        int originalIndex = poInqApprovalData.indexOf(originalItem);
-                        JSONObject loJSON = oTrans.approveInquiry(originalIndex);
+                        int originalIndex = poReservApprovalData.indexOf(originalItem);
+                        JSONObject loJSON = oTrans.approveReservation(originalIndex);
 
                         if (!"error".equals((String) loJSON.get("result"))) {
                             lsMessage = "Approved successfully.";
@@ -271,76 +248,78 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
 
     @Override
     public void loadTable() {
-        poInqApprovalData.clear();
-        String lsInquiryID = "";
-        String lsDate = "";
-        String lsCustomerName = "";
-        String lsSalesExe = "";
-        String lsBranch = "";
-        String lsStatus = "";
+        poReservApprovalData.clear();
+        String lsSlipNoxx = "";
+        String lsSlipType = "";
+        String lsSlipDate = "";
+        String lsCustName = "";
+        String lsAmountxx = "";
+        String lsStatusxx = "";
         JSONObject loJSON = new JSONObject();
-        loJSON = oTrans.loadInquiryForApproval();
+        loJSON = oTrans.loadReservationForApproval();
         if ("success".equals((String) loJSON.get("result"))) {
-            for (int lnCtr = 0; lnCtr <= oTrans.getInquiryList().size() - 1; lnCtr++) {
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getInqryID() != null) {
-                    lsInquiryID = String.valueOf(oTrans.getInquiryModel().getDetailModel(lnCtr).getInqryID());
+            for (int lnCtr = 0; lnCtr <= oTrans.getReservationList().size() - 1; lnCtr++) {
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getReferNo() != null) {
+                    lsSlipNoxx = String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getReferNo());
                 }
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getTransactDte() != null) {
-                    lsDate = CustomCommonUtil.xsDateShort(oTrans.getInquiryModel().getDetailModel(lnCtr).getTransactDte());
-                }
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getClientNm() != null) {
-                    lsCustomerName = String.valueOf(oTrans.getInquiryModel().getDetailModel(lnCtr).getClientNm());
-                }
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getSalesExe() != null) {
-                    lsSalesExe = String.valueOf(oTrans.getInquiryModel().getDetailModel(lnCtr).getSalesExe());
-                }
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getBranchNm() != null) {
-                    lsBranch = String.valueOf(oTrans.getInquiryModel().getDetailModel(lnCtr).getBranchNm());
-                }
-                if (oTrans.getInquiryModel().getDetailModel(lnCtr).getTranStat() != null) {
-                    switch (oTrans.getInquiryModel().getDetailModel(lnCtr).getTranStat()) {
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getResrvTyp() != null) {
+                    switch (oTrans.getReservationModel().getDetailModel(lnCtr).getResrvTyp()) {
                         case "0":
-                            lsStatus = "FOR FOLLOW-UP";
+                            lsSlipType = "RESERVATION";
                             break;
                         case "1":
-                            lsStatus = "ON PROCESS";
+                            lsSlipType = "DEPOSIT";
                             break;
                         case "2":
-                            lsStatus = "LOST SALE";
-                            break;
-                        case "3":
-                            lsStatus = "WITH VSP";
-                            break;
-                        case "4":
-                            lsStatus = "SOLD";
-                            break;
-                        case "5":
-                            lsStatus = "CANCELLED";
+                            lsSlipType = "SAFEGUARD DUTY";
                             break;
                     }
                 }
-
-                poInqApprovalData.add(new InquiryApproval(
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getTransactDte() != null) {
+                    lsSlipDate = CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(lnCtr).getTransactDte());
+                }
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getCompnyNm() != null) {
+                    lsCustName = String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getCompnyNm());
+                }
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getTranAmt() != null) {
+                    lsAmountxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getTranAmt())));
+                }
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getTranStat() != null) {
+                    switch (oTrans.getReservationModel().getDetailModel(lnCtr).getTranStat()) {
+                        case "0":
+                            lsStatusxx = "CANCELLED";
+                            break;
+                        case "1":
+                            lsStatusxx = "FOR APPROVAL";
+                            break;
+                        case "2":
+                            lsStatusxx = "APPROVED";
+                            break;
+                    }
+                }
+                poReservApprovalData.add(new InquiryVehicleSalesAdvances(
                         String.valueOf(lnCtr + 1),
-                        lsInquiryID.toUpperCase(),
-                        lsDate.toUpperCase(),
-                        lsCustomerName.toUpperCase(),
-                        lsSalesExe.toUpperCase(),
-                        lsBranch.toUpperCase(),
-                        lsStatus.toUpperCase(),
+                        lsSlipNoxx.toUpperCase(),
+                        lsSlipType.toUpperCase(),
+                        lsSlipDate.toUpperCase(),
+                        lsCustName.toUpperCase(),
+                        lsAmountxx.toUpperCase(),
+                        lsStatusxx.toUpperCase(),
+                        "",
                         "",
                         "",
                         "",
                         "",
                         ""));
+
             }
-            lsInquiryID = "";
-            lsDate = "";
-            lsCustomerName = "";
-            lsSalesExe = "";
-            lsBranch = "";
-            lsStatus = "";
-            tblVhclApproval.setItems(poInqApprovalData);
+            lsSlipNoxx = "";
+            lsSlipType = "";
+            lsSlipDate = "";
+            lsCustName = "";
+            lsAmountxx = "";
+            lsStatusxx = "";
+            tblVhclApproval.setItems(poReservApprovalData);
         }
     }
 
@@ -354,6 +333,7 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
         tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
         tblindex07.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
         tblindex08.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
+
         tblVhclApproval.getItems().forEach(item -> {
             CheckBox loSelectCheckBox = item.getSelect();
             loSelectCheckBox.setOnAction(event -> {
@@ -385,23 +365,21 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
             CustomCommonUtil.setManaged(false, txtFieldSearch, lblFrom, lblTo, datePickerFrom, datePickerTo, btnFilter);
             String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
             switch (lsSelectedFilter) {
-                case "INQUIRY DATE":
+                case "SLIP DATE":
                     CustomCommonUtil.setVisible(true, datePickerFrom, datePickerTo, btnFilter);
                     CustomCommonUtil.setManaged(true, datePickerFrom, datePickerTo, btnFilter);
                     txtFieldSearch.setText("");
-                    tblVhclApproval.setItems(poInqApprovalData);
+                    tblVhclApproval.setItems(poReservApprovalData);
                     break;
-                case "INQUIRY ID":
+                case "SLIP NO":
+                case "TYPE":
                 case "CUSTOMER NAME":
-                case "SALES EXECUTIVE":
-                case "BRANCH":
-                case "INQUIRY STATUS":
                     txtFieldSearch.setText("");
                     CustomCommonUtil.setVisible(true, txtFieldSearch, btnFilter);
                     CustomCommonUtil.setManaged(true, txtFieldSearch, btnFilter);
                     datePickerFrom.setValue(null);
                     datePickerTo.setValue(null);
-                    tblVhclApproval.setItems(poInqApprovalData);
+                    tblVhclApproval.setItems(poReservApprovalData);
                     break;
             }
             selectAllCheckBox.setSelected(false);

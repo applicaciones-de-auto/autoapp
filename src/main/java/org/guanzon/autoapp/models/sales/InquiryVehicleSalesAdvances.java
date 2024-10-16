@@ -18,7 +18,6 @@ import javafx.scene.control.CheckBox;
 public class InquiryVehicleSalesAdvances {
 
     private CheckBox select;
-//    private SimpleBooleanProperty tblcheck01; //Check box
     private SimpleStringProperty tblindex01; //Row
     private SimpleStringProperty tblindex02; //Slip Date / Advances Date
     private SimpleStringProperty tblindex03; //Slip Type

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -24,7 +20,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -296,8 +291,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         textArea24.setText("");
 
         String inqStats = "";
-        if (!oTrans.getMaster("cTranStat").equals("")) {
-            switch (String.valueOf(oTrans.getMaster("cTranStat"))) {
+        if (oTrans.getMasterModel().getMasterModel().getTranStat() != null) {
+            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
                 case "0":
                     inqStats = "FOR FOLLOW-UP";
                     break;
@@ -315,6 +310,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     break;
                 case "5":
                     inqStats = "CANCELLED";
+                    break;
+                case "6":
+                    inqStats = "FOR APPROVAL";
                     break;
             }
             lblInqStatus.setText(inqStats);
@@ -1308,8 +1306,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             trgvIndex04.setVisible(false);
             CustomCommonUtil.setVisible(true, btnEdit, btnLostSale);
             CustomCommonUtil.setManaged(true, btnEdit, btnLostSale);
-            switch (String.valueOf(oTrans.getMasterModel().getMasterModel().getTranStat())) {
+            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
                 case "0"://For Follow up
+                case "6":
                     if (tabPaneMain.getSelectionModel().getSelectedIndex() == 1) {
                         btnSave.setVisible(false);
                         btnSave.setManaged(false);
@@ -1350,6 +1349,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 case 0:
                     switch (String.valueOf(oTrans.getMaster("cTranStat"))) {
                         case "0":
+                        case "6":
                         case "1":
                         case "3":
                             btnEdit.setVisible(true);
@@ -1370,7 +1370,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                             btnEdit.setVisible(true);
                             btnEdit.setManaged(true);
                             break;
-                        case "0":
                         default:
                             btnEdit.setVisible(false);
                             btnEdit.setManaged(false);
@@ -1423,6 +1422,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             case "0":
             case "1":
             case "3":
+            case "6":
                 if (fnValue == EditMode.READY) {
                     if (tblAdvanceSlip.getItems().size() > 0) {
                         vsasCheck01.setVisible(true);
@@ -1551,6 +1551,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
 
             switch (String.valueOf(oTrans.getMasterModel().getMasterModel().getTranStat())) { // cTranStat
                 case "0"://For Follow up
+                case "6":
                     rqrmIndex01.setVisible(true);
                     //Requirements
                     CustomCommonUtil.setDisable(false, comboBox25, txtField27, btnSndMngerApprov);
@@ -1652,8 +1653,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     txtField11.requestFocus();
                     return false;
                 }
-                break;
-            default:
                 break;
         }
         if (comboBox21.getSelectionModel().getSelectedIndex() < 0) {
@@ -1770,20 +1769,14 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             //load the main interface
             Parent parent = fxmlLoader.load();
 
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
             });
 
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
             });
 
             //set the main interface as the scene
@@ -1795,7 +1788,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             stage.showAndWait();
 
         } catch (IOException e) {
-            e.printStackTrace();
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }

@@ -47,8 +47,9 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
     private final String pxeModuleName = "Activity Approval"; //Form Title
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("ACTIVITY NO", "ACTIVITY DATE", "ACTIVITY TITLE", "ACTIVITY TYPE",
-            "PERSON IN CHARGE", "DEPARMENT");
+            "PERSON IN CHARGE", "DEPARTMENT");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
+
     private ObservableList<ActivityApproval> poActApprovalData = FXCollections.observableArrayList();
     @FXML
     private AnchorPane AnchorMain;
@@ -122,35 +123,34 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                         if (datePickerFrom.getValue() != null && datePickerTo.getValue() != null) {
                             LocalDate fromDate = datePickerFrom.getValue();
                             LocalDate toDate = datePickerTo.getValue();
-
                             filteredData.setPredicate(item -> {
                                 LocalDate itemDate;
                                 itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
                                 return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
                             });
-
-                            if (filteredData.isEmpty()) {
-                                ShowMessageFX.Information(null, "No Records", "No records found for the selected date range.");
-                            }
                         } else {
                             ShowMessageFX.Information(null, "Filter Error", "Please select both a 'From' and 'To' date.");
+                            selectAllCheckBox.setSelected(false);
                         }
                         break;
                     case "ACTIVITY NO":
                         String lsActivityNoSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsActivityNoSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
                         } else {
                             filteredData.setPredicate(item
                                     -> item.getTblindex02().toLowerCase().contains(lsActivityNoSearch)
                             );
                         }
                         break;
-
                     case "ACTIVITY TITLE":
                         String lsActivityTitleSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsActivityTitleSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
                         } else {
                             filteredData.setPredicate(item
                                     -> item.getTblindex06().toLowerCase().contains(lsActivityTitleSearch));
@@ -160,26 +160,32 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                         String lsActivityTypeSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsActivityTypeSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
                         } else {
                             filteredData.setPredicate(item
                                     -> item.getTblindex05().toLowerCase().contains(lsActivityTypeSearch));
                         }
                         break;
-
                     case "DEPARTMENT": // Corrected from 'DEPARMENT'
                         String lsDepartSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsDepartSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                            loadTable();
                         } else {
                             filteredData.setPredicate(item
                                     -> item.getTblindex08().toLowerCase().contains(lsDepartSearch));
                         }
                         break;
-
                     case "PERSON IN CHARGE":
                         String lsPersonInChargeSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsPersonInChargeSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
                         } else {
                             filteredData.setPredicate(item
                                     -> item.getTblindex07().toLowerCase().contains(lsPersonInChargeSearch));
@@ -194,6 +200,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 tblViewActApproval.setItems(filteredData);
                 if (filteredData.isEmpty()) {
                     ShowMessageFX.Information(null, "No Records", "No records found for the selected criteria.");
+                    selectAllCheckBox.setSelected(false);
+                    lbTotalBudget.setText("₱ " + poGetDecimalFormat.format(0.00));
                 }
                 break;
             case "btnApproved":
@@ -203,7 +211,6 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 for (ActivityApproval item : tblViewActApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
-                        System.out.println("Selected size: " + selectedItems.size());
                     }
                 }
 
@@ -238,10 +245,10 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                         JSONObject loJSON = oTrans.approveActivity(originalIndex);
 
                         if (!"error".equals((String) loJSON.get("result"))) {
-                            lsMessage = (String) loJSON.get("message");
+                            lsMessage = "Approved successfully.";
                             lnApprovedCount++;
                         } else {
-                            lsMessage = (String) loJSON.get("message");
+                            lsMessage = "Approve failed, Please try again or contact support.";
                         }
                     }
                 }
@@ -283,9 +290,11 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
         String lsBranchInCharge = "";
         String lsActLocation = "";
         String lsBudgetProposal = "";
-        double lnTotalBudg = 0.00;
+        double lnTotalBudget = 0.00;
+
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.loadActivityForApproval();
+
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTrans.getActivityList().size() - 1; lnCtr++) {
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getActTitle() != null) {
@@ -310,26 +319,24 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getDateFrom() != null) {
                     lsDateFrom = CustomCommonUtil.xsDateShort(oTrans.getActivityModel().getDetailModel(lnCtr).getDateFrom());
                 }
-                if (oTrans.getActivityModel().getDetailModel(lnCtr).getDateFrom() != null) {
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getDateThru() != null) {
                     lsDateThru = CustomCommonUtil.xsDateShort(oTrans.getActivityModel().getDetailModel(lnCtr).getDateThru());
                 }
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getEmpInCharge() != null) {
                     lsPersonCharge = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getEmpInCharge());
                 }
-
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getDeptName() != null) {
                     lsDepartment = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getDeptName());
                 }
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getBranchNm() != null) {
                     lsBranchInCharge = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getBranchNm());
                 }
-
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getLocation() != null) {
                     lsActLocation = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getLocation());
                 }
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt() != null) {
                     lsBudgetProposal = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt())));
-                    lnTotalBudg = lnTotalBudg + Double.parseDouble(String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt()));
+                    lnTotalBudget += oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt();
                 }
 
                 poActApprovalData.add(new ActivityApproval(
@@ -356,7 +363,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             lsBranchInCharge = "";
             lsActLocation = "";
             lsBudgetProposal = "";
-            lbTotalBudget.setText("₱ " + poGetDecimalFormat.format(lnTotalBudg));
+            lbTotalBudget.setText("₱ " + poGetDecimalFormat.format(lnTotalBudget));
             tblViewActApproval.setItems(poActApprovalData);
         }
     }
@@ -379,6 +386,8 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             boolean lbNewValue = selectAllCheckBox.isSelected();
             tblViewActApproval.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
         });
+
+        tblindex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
         tblindex03.setCellValueFactory(cellData -> {
             // Get the data for the current row
             ActivityApproval rowData = cellData.getValue();
@@ -395,11 +404,12 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
 
             return observableValue;
         });
+
         tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
         tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
         tblindex07.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
-        tblindex08.setCellValueFactory(new PropertyValueFactory<>("tblindex10"));
+        tblindex08.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
         tblindex09.setCellValueFactory(new PropertyValueFactory<>("tblindex11"));
         tblViewActApproval.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewActApproval.lookup("TableHeaderRow");
@@ -428,7 +438,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 case "ACTIVITY TITLE":
                 case "PERSON IN CHARGE":
                 case "ACTIVITY TYPE":
-                case "DEPARMENT":
+                case "DEPARTMENT":
                     txtFieldSearch.setText("");
                     CustomCommonUtil.setVisible(true, txtFieldSearch, btnFilter);
                     CustomCommonUtil.setManaged(true, txtFieldSearch, btnFilter);
@@ -437,6 +447,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                     tblViewActApproval.setItems(poActApprovalData);
                     break;
             }
+            selectAllCheckBox.setSelected(false);
             loadTable();
         });
 

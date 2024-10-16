@@ -13,7 +13,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -128,12 +127,11 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         initVehicleComponentsTable();
 
         initCapitalizationFields();
-        initFieldAction();
         initButtonsClick();
+        initComboBoxItems();
+        initFieldAction();
         clearTables();
         clearFields();
-        initFields(pnEditMode);
-
         Platform.runLater(() -> {
             JSONObject loJSON = new JSONObject();
             if (!pbIsClicked) {
@@ -162,6 +160,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 }
             }
         });
+        initFields(pnEditMode);
+
     }
 
     @Override
@@ -364,7 +364,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
     @Override
     public void initComboBoxItems() {
-
+        comboBox03.setItems(cVhclSrc);
+        comboBox04.setItems(cPurpose);
     }
 
     @Override
@@ -448,15 +449,18 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     lsItem = "LABOR";
                     lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
+                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
+                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
+                    }
                     break;
                 case "p":
                     lsItem = "PARTS";
                     lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
+                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
+                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
+                    }
                     break;
-            }
-            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
-                lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
             }
             jobDoneData.add(new JobDone(
                     String.valueOf(lnCtr + 1),
@@ -471,12 +475,10 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             lsItem = "";
             lsDescID = "";
             lsDesc = "";
+            lsJoNo = "";
 
         }
         tblViewJobDone.setItems(jobDoneData);
-        jobDoneData.stream()
-                .filter(jd -> jd.getTblindex04_done().startsWith("s"))
-                .forEach(e -> System.out.println("Job Done Value: " + e));
     }
 
     private void initJobDoneTable() {

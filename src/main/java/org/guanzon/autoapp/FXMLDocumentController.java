@@ -48,9 +48,6 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -88,10 +85,12 @@ import org.guanzon.autoapp.controllers.parameters.WareHouseController;
 import org.guanzon.autoapp.controllers.parts.ItemInformationController;
 import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
 import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
+import org.guanzon.autoapp.controllers.sales.VSPApprovalController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
 import org.guanzon.autoapp.controllers.sales.VehicleDeliveryReceiptController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryApprovalController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryController;
+import org.guanzon.autoapp.controllers.sales.VehicleReservationAdvancesApprovalController;
 import org.guanzon.autoapp.utils.UnloadForm;
 
 /**
@@ -719,7 +718,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         } else if (fsValue.contains("VSP.fxml")) {
             return new VSPController();
         } else if (fsValue.contains("VSPApproval.fxml")) {
-//            return new VSPApprovalController();
+            return new VSPApprovalController();
         } else if (fsValue.contains("ItemInformation.fxml")) {
             return new ItemInformationController();
         } else if (fsValue.contains("VSPAccessoriesRequest.fxml")) {
@@ -758,8 +757,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new FollowUpController();
         } else if (fsValue.contains("VehicleInquiryApproval.fxml")) {
             return new VehicleInquiryApprovalController();
-        } else if (fsValue.contains("VSPApproval.fxml")) {
-//            return new VSPApprovalController();
+        } else if (fsValue.contains("VehicleReservationAdvancesApproval.fxml")) {
+            return new VehicleReservationAdvancesApprovalController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -795,7 +794,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Unit Receiving Information";
         } else if (menuaction.contains("VehicleInquiry.fxml")) {
             return "Vehicle Inquiry";
-        } else if (menuaction.contains("VehicleSalesApproval.fxml")) {
+        } else if (menuaction.contains("VehicleReservationAdvancesApproval.fxml")) {
             return "Vehicle Reservation Approval";
         } else if (menuaction.contains("VehicleDeliveryReceipt.fxml")) {
             return "Vehicle Delivery Receipt";
@@ -983,7 +982,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuVhclRsrvAppClick(ActionEvent event) {
-        String sformname = "VehicleSalesApproval.fxml";
+        String sformname = psSalesPath + "VehicleReservationAdvancesApproval.fxml";
 
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1031,14 +1030,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuCustVhclInfoClick(ActionEvent event) {
         sVehicleInfoType = "Customer Vehicle Information";
         String sformname = psGeneralPath + "CustomerVehicleInfo.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    private void mnuAddOnsApprovalClick(ActionEvent event) {
-        String sformname = "VSPApproval.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
