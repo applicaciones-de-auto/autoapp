@@ -148,7 +148,7 @@
                                                                 <TableColumn fx:id="tblindex03" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="VSP No" />
                                                                 <TableColumn fx:id="tblindex04" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="VSP Date" />
                                                                 <TableColumn fx:id="tblindex05" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Target Delivery Date" />
-                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Inquiring Customer Name" />
+                                                                <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Buying Customer Name" />
                                                                 <TableColumn fx:id="tblindex07" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Co-Buyer Name" />
                                                                 <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Plate/CS No." />
                                                                 <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Branch" />
@@ -158,6 +158,7 @@
                                                                 <TableColumn fx:id="tblindex13" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
                                                                 <TableColumn fx:id="tblindex14" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reservation Amount" />
                                                                 <TableColumn fx:id="tblindex15" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Downpayment" />
+                                                                <TableColumn fx:id="tblindex17" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Discount" />
                                                                 <TableColumn fx:id="tblindex16" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Amount Due" />
                                                             </columns>
                                                         </TableView>

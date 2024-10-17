@@ -4,8 +4,11 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -32,6 +35,7 @@ import org.guanzon.autoapp.interfaces.GApprovalInterface;
 import org.guanzon.autoapp.models.general.ActivityApproval;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import org.guanzon.autoapp.utils.ExcelExporterUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -167,7 +171,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                                     -> item.getTblindex05().toLowerCase().contains(lsActivityTypeSearch));
                         }
                         break;
-                    case "DEPARTMENT": // Corrected from 'DEPARMENT'
+                    case "DEPARTMENT":
                         String lsDepartSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsDepartSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
@@ -207,20 +211,17 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             case "btnApproved":
                 ObservableList<ActivityApproval> selectedItems = FXCollections.observableArrayList();
 
-                // Get selected items from the currently displayed table (either filtered or unfiltered)
                 for (ActivityApproval item : tblViewActApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
                 }
 
-                // If no items are selected, show an error message
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected.");
                     return;
                 }
 
-                // Ask for confirmation
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to approve?")) {
                     return;
                 }
@@ -228,18 +229,13 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 int lnApprovedCount = 0;
                 String lsMessage = "";
 
-                // Loop through each selected item from the filtered/unfiltered table view
                 for (ActivityApproval selectedItem : selectedItems) {
-                    // Get the activity number from the selected item
                     String activityNo = selectedItem.getTblindex02();
 
-                    // Find the corresponding original item using the activity number
                     ActivityApproval originalItem = poActApprovalData.stream()
                             .filter(item -> item.getTblindex02().equals(activityNo))
                             .findFirst()
-                            .orElse(null); // Find the original item based on activity number
-
-                    // Ensure the original item is found
+                            .orElse(null);
                     if (originalItem != null) {
                         int originalIndex = poActApprovalData.indexOf(originalItem);
                         JSONObject loJSON = oTrans.approveActivity(originalIndex);
@@ -294,7 +290,6 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
 
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.loadActivityForApproval();
-
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTrans.getActivityList().size() - 1; lnCtr++) {
                 if (oTrans.getActivityModel().getDetailModel(lnCtr).getActTitle() != null) {

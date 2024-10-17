@@ -795,7 +795,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     oTransVSP.getMasterModel().getMasterModel().setAddlDsc(new BigDecimal(Double.valueOf(lsValue.replace(",", ""))));
                     if (!loadMasterFields()) {
                         txtField54.setText("0.00");
-                        oTransVSP.getMasterModel().getMasterModel().setAddlDsc(new BigDecimal(Double.valueOf(txtField48.getText().replace(",", ""))));
+                        oTransVSP.getMasterModel().getMasterModel().setAddlDsc(new BigDecimal(Double.valueOf(txtField54.getText().replace(",", ""))));
                     }
                     txtField54.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSP.getMasterModel().getMasterModel().getAddlDsc()))));
                     break;

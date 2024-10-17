@@ -48,6 +48,9 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -483,7 +486,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "Vehicle Inquiry":
                 mnuVhclInquiry.fire();
                 break;
-            case "Vehicle Reservation Approval":
+            case "Vehicle Sales Advances Approval":
                 mnuVhclRsrvApp.fire();
                 break;
             case "Vehicle Delivery Receipt":
@@ -795,7 +798,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         } else if (menuaction.contains("VehicleInquiry.fxml")) {
             return "Vehicle Inquiry";
         } else if (menuaction.contains("VehicleReservationAdvancesApproval.fxml")) {
-            return "Vehicle Reservation Approval";
+            return "Vehicle Sales Advances Approval";
         } else if (menuaction.contains("VehicleDeliveryReceipt.fxml")) {
             return "Vehicle Delivery Receipt";
         } else if (menuaction.contains("VSP.fxml")) {

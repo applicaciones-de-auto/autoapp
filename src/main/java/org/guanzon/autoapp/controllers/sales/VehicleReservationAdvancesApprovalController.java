@@ -26,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.interfaces.GApprovalInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -43,7 +44,7 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
 
     private GRider oApp;
     private Inquiry oTrans;
-    private final String pxeModuleName = "Vehicle Reservation Approval"; //Form Title
+    private final String pxeModuleName = "Vehicle Sales Advances Approval";
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("SLIP NO",
@@ -128,44 +129,40 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
                                 itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
                                 return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
                             });
-
-                            if (filteredData.isEmpty()) {
-                                ShowMessageFX.Information(null, "No Records", "No records found for the selected date range.");
-                            }
                         } else {
                             ShowMessageFX.Information(null, "Filter Error", "Please select both a 'From' and 'To' date.");
                             selectAllCheckBox.setSelected(false);
                         }
                         break;
                     case "SLIP NO":
-                        String lsVSPNoSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsVSPNoSearch.isEmpty()) {
+                        String lsSlipNoSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsSlipNoSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex02().toLowerCase().contains(lsVSPNoSearch)
+                                    -> item.getTblindex02().toLowerCase().contains(lsSlipNoSearch)
                             );
                         }
                         break;
                     case "TYPE":
-                        String lsCustomNameSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsCustomNameSearch.isEmpty()) {
+                        String lsTypeSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsTypeSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex03().toLowerCase().contains(lsCustomNameSearch));
+                                    -> item.getTblindex03().toLowerCase().contains(lsTypeSearch));
                         }
                         break;
                     case "CUSTOMER NAME":
-                        String lsSalesExeSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsSalesExeSearch.isEmpty()) {
+                        String lsCustomSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsCustomSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex05().toLowerCase().contains(lsSalesExeSearch));
+                                    -> item.getTblindex05().toLowerCase().contains(lsCustomSearch));
                         }
                         break;
                 }
@@ -281,19 +278,22 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
                 if (oTrans.getReservationModel().getDetailModel(lnCtr).getCompnyNm() != null) {
                     lsCustName = String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getCompnyNm());
                 }
-                if (oTrans.getReservationModel().getDetailModel(lnCtr).getTranAmt() != null) {
-                    lsAmountxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getTranAmt())));
+                if (oTrans.getReservationModel().getDetailModel(lnCtr).getAmount() != null) {
+                    lsAmountxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(lnCtr).getAmount())));
                 }
                 if (oTrans.getReservationModel().getDetailModel(lnCtr).getTranStat() != null) {
                     switch (oTrans.getReservationModel().getDetailModel(lnCtr).getTranStat()) {
-                        case "0":
-                            lsStatusxx = "CANCELLED";
+                        case TransactionStatus.STATE_OPEN:
+                            lsStatusxx = "For Approval";
                             break;
-                        case "1":
-                            lsStatusxx = "FOR APPROVAL";
+                        case TransactionStatus.STATE_CLOSED:
+                            lsStatusxx = "Approved";
                             break;
-                        case "2":
-                            lsStatusxx = "APPROVED";
+                        case TransactionStatus.STATE_CANCELLED:
+                            lsStatusxx = "Cancelled";
+                            break;
+                        case TransactionStatus.STATE_POSTED:
+                            lsStatusxx = "Posted";
                             break;
                     }
                 }
@@ -303,7 +303,7 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
                         lsSlipType.toUpperCase(),
                         lsSlipDate.toUpperCase(),
                         lsCustName.toUpperCase(),
-                        lsAmountxx.toUpperCase(),
+                        lsAmountxx,
                         lsStatusxx.toUpperCase(),
                         "",
                         "",

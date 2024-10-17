@@ -54,7 +54,7 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("VSP NO",
             "VSP DATE",
             "TARGET DELIVERY DATE",
-            "INQUIRING CUSTOMER NAME",
+            "BUYING CUSTOMER NAME",
             "PLATE/CS NO",
             "BRANCH");
     private ObservableList<VSPApproval> poVSPApprovalData = FXCollections.observableArrayList();
@@ -70,7 +70,7 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
     private TableView<VSPApproval> tblVhclApproval;
     @FXML
     private TableColumn<VSPApproval, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08,
-            tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15, tblindex16;
+            tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15, tblindex16, tblindex17;
     @FXML
     private TableColumn<VSPApproval, Boolean> tblindex02;
     @FXML
@@ -131,13 +131,9 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                             LocalDate toDate = datePickerTo.getValue();
                             filteredData.setPredicate(item -> {
                                 LocalDate itemDate;
-                                itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
+                                itemDate = CustomCommonUtil.strToDate(item.getTblindex03());
                                 return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
                             });
-
-                            if (filteredData.isEmpty()) {
-                                ShowMessageFX.Information(null, "No Records", "No records found for the selected date range.");
-                            }
                         } else {
                             ShowMessageFX.Information(null, "Filter Error", "Please select both a 'From' and 'To' date.");
                             selectAllCheckBox.setSelected(false);
@@ -152,10 +148,6 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                                 itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
                                 return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
                             });
-
-                            if (filteredData.isEmpty()) {
-                                ShowMessageFX.Information(null, "No Records", "No records found for the selected date range.");
-                            }
                         } else {
                             ShowMessageFX.Information(null, "Filter Error", "Please select both a 'From' and 'To' date.");
                             selectAllCheckBox.setSelected(false);
@@ -172,7 +164,7 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                             );
                         }
                         break;
-                    case "INQUIRING CUSTOMER NAME":
+                    case "BUYING CUSTOMER NAME":
                         String lsCustomNameSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsCustomNameSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
@@ -183,16 +175,16 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                         }
                         break;
                     case "PLATE/CS NO":
-                        String lsSalesExeSearch = txtFieldSearch.getText().toLowerCase();
-                        if (lsSalesExeSearch.isEmpty()) {
+                        String lsPlateCSSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsPlateCSSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex07().toLowerCase().contains(lsSalesExeSearch));
+                                    -> item.getTblindex07().toLowerCase().contains(lsPlateCSSearch));
                         }
                         break;
-                    case "BRANCH": // Corrected from 'DEPARMENT'
+                    case "BRANCH":
                         String lsBranchSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsBranchSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
@@ -205,7 +197,7 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                 }
                 int rowNumber = 1;
                 for (VSPApproval item : filteredData) {
-                    item.setTblindex01(String.valueOf(rowNumber)); // Reset the row number for filtered items
+                    item.setTblindex01(String.valueOf(rowNumber));
                     rowNumber++;
                 }
                 tblVhclApproval.setItems(filteredData);
@@ -220,7 +212,6 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                 for (VSPApproval item : tblVhclApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
-                        System.out.println("Selected size: " + selectedItems.size());
                     }
                 }
 
@@ -249,10 +240,10 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                         JSONObject loJSON = oTrans.approveVSP(originalIndex);
 
                         if (!"error".equals((String) loJSON.get("result"))) {
-                            lsMessage = "The selected approval process was completed successfully.";
+                            lsMessage = "Approved successfully.";
                             lnApprovedCount++;
                         } else {
-                            lsMessage = "The selected approval process could not be completed. Please try again or contact support.";
+                            lsMessage = "Approve failed, Please try again or contact support.";
                         }
                     }
                 }
@@ -283,111 +274,133 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
     @Override
     public void loadTable() {
         poVSPApprovalData.clear();
-        String lsVSPNo = "";
-        String lsVSPDate = "";
-        String lsTargetDate = "";
-        String lsInqCustName = "";
+        String lsVSPNoxxxxxx = "";
+        String lsVSPDatexxxx = "";
+        String lsTargetDatex = "";
+        String lsBuyerNamexx = "";
         String lsCoBuyerName = "";
-        String lsPlateCSNo = "";
-        String lsBranchName = "";
-        String lsVSPStatus = "";
-        String lsGrossLabor = "0.00";
-        String lsGrossAcces = "0.00";
-        String lsGrossAmnt = "0.00";
-        String lsReserveAmount = "0.00";
+        String lsPlateCSNoxx = "";
+        String lsBranchNamex = "";
+        String lsVSPStatusxx = "";
+        String lsGrossLaborx = "0.00";
+        String lsGrossAccesx = "0.00";
+        String lsGrossAmntxx = "0.00";
+        String lsReserveAmnt = "0.00";
         String lsDownPayment = "0.00";
-        String lsNetPaymentDue = "0.00";
+        String lsNetPaymentx = "0.00";
+        String lsOverAllDisc = "0.00";
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.loadVSPForApproval();
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTrans.getVSPList().size() - 1; lnCtr++) {
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getVSPNO() != null) {
-                    lsVSPNo = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getVSPNO());
+                    lsVSPNoxxxxxx = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getVSPNO());
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getTransactDte() != null) {
-                    lsVSPDate = CustomCommonUtil.xsDateShort(oTrans.getVSPModel().getDetailModel(lnCtr).getTransactDte());
+                    lsVSPDatexxxx = CustomCommonUtil.xsDateShort(oTrans.getVSPModel().getDetailModel(lnCtr).getTransactDte());
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getDelvryDt() != null) {
-                    lsTargetDate = CustomCommonUtil.xsDateShort(oTrans.getVSPModel().getDetailModel(lnCtr).getDelvryDt());
+                    lsTargetDatex = CustomCommonUtil.xsDateShort(oTrans.getVSPModel().getDetailModel(lnCtr).getDelvryDt());
                 }
-                if (oTrans.getVSPModel().getDetailModel(lnCtr).getInqCltNm() != null) {
-                    lsInqCustName = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getInqCltNm());
+                if (oTrans.getVSPModel().getDetailModel(lnCtr).getBuyCltNm() != null) {
+                    lsBuyerNamexx = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getBuyCltNm());
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getCoCltNm() != null) {
                     lsCoBuyerName = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getCoCltNm());
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getPlateNo() != null && oTrans.getVSPModel().getDetailModel(lnCtr).getCSNo() != null) {
-                    lsPlateCSNo = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getPlateNo()) + "/" + String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getCSNo());
+                    lsPlateCSNoxx = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getPlateNo()) + "/" + String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getCSNo());
                 } else {
-                    lsPlateCSNo = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getCSNo());
+                    lsPlateCSNoxx = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getCSNo());
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getBranchNm() != null) {
-                    lsBranchName = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getBranchNm());
+                    lsBranchNamex = String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getBranchNm());
                 }
                 switch (oTrans.getVSPModel().getDetailModel(lnCtr).getTranStat()) {
                     case TransactionStatus.STATE_OPEN:
-                        lsVSPStatus = "Active";
+                        lsVSPStatusxx = "Active";
                         break;
                     case TransactionStatus.STATE_CLOSED:
-                        lsVSPStatus = "Approved";
+                        lsVSPStatusxx = "Approved";
                         break;
                     case TransactionStatus.STATE_CANCELLED:
-                        lsVSPStatus = "Cancelled";
+                        lsVSPStatusxx = "Cancelled";
                         break;
                     case TransactionStatus.STATE_POSTED:
-                        lsVSPStatus = "Posted";
+                        lsVSPStatusxx = "Posted";
                         break;
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getLaborAmt() != null) {
-                    lsGrossLabor = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getLaborAmt()));
+                    lsGrossLaborx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getLaborAmt())));
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getAccesAmt() != null) {
-                    lsGrossAcces = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getAccesAmt()));
+                    lsGrossAccesx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getAccesAmt())));
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getTranTotl() != null) {
-                    lsGrossAmnt = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getTranTotl()));
+                    lsGrossAmntxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getTranTotl())));
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getResrvFee() != null) {
-                    lsReserveAmount = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getResrvFee()));
+                    lsReserveAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getResrvFee())));
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getAmtPaid() != null) {
-                    lsDownPayment = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getAmtPaid()));
+                    lsDownPayment = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getAmtPaid())));
                 }
                 if (oTrans.getVSPModel().getDetailModel(lnCtr).getNetTTotl() != null) {
-                    lsNetPaymentDue = poGetDecimalFormat.format(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getNetTTotl()));
+                    lsNetPaymentx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSPModel().getDetailModel(lnCtr).getNetTTotl())));
+                }
+
+                if (oTrans.getVSPModel().getDetailModel(lnCtr).getAddlDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getPromoDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getFleetDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getSPFltDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getBndleDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getToLabDsc() != null
+                        && oTrans.getVSPModel().getDetailModel(lnCtr).getToPrtDsc() != null) {
+                    double lnCashDiscx = oTrans.getVSPModel().getDetailModel(lnCtr).getAddlDsc().doubleValue();
+                    double lnPromoDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getPromoDsc().doubleValue();
+                    double lnSplFlDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getFleetDsc().doubleValue();
+                    double lnStdFlDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getSPFltDsc().doubleValue();
+                    double lnBndleDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getBndleDsc().doubleValue();
+                    double lnLaborDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getToLabDsc().doubleValue();
+                    double lnAccesDisc = oTrans.getVSPModel().getDetailModel(lnCtr).getToPrtDsc().doubleValue();
+                    double lnDisc = lnCashDiscx + lnPromoDisc + lnSplFlDisc + lnStdFlDisc + lnBndleDisc + lnLaborDisc + lnAccesDisc;
+                    lsOverAllDisc = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lnDisc)));
                 }
                 poVSPApprovalData.add(new VSPApproval(
                         String.valueOf(lnCtr + 1),
-                        lsVSPNo.toUpperCase(),
-                        lsVSPDate.toUpperCase(),
-                        lsTargetDate.toUpperCase(),
-                        lsInqCustName.toUpperCase(),
+                        lsVSPNoxxxxxx.toUpperCase(),
+                        lsVSPDatexxxx.toUpperCase(),
+                        lsTargetDatex.toUpperCase(),
+                        lsBuyerNamexx.toUpperCase(),
                         lsCoBuyerName.toUpperCase(),
-                        lsPlateCSNo.toUpperCase(),
-                        lsBranchName.toUpperCase(),
-                        lsVSPStatus.toUpperCase(),
-                        lsGrossLabor,
-                        lsGrossAcces,
-                        lsGrossAmnt,
-                        lsReserveAmount,
+                        lsPlateCSNoxx.toUpperCase(),
+                        lsBranchNamex.toUpperCase(),
+                        lsVSPStatusxx.toUpperCase(),
+                        lsGrossLaborx,
+                        lsGrossAccesx,
+                        lsGrossAmntxx,
+                        lsReserveAmnt,
                         lsDownPayment,
-                        lsNetPaymentDue,
-                        "",
+                        lsNetPaymentx,
+                        lsOverAllDisc,
                         "",
                         ""));
-                lsVSPNo = "";
-                lsVSPDate = "";
-                lsTargetDate = "";
-                lsInqCustName = "";
+                lsVSPNoxxxxxx = "";
+                lsVSPDatexxxx = "";
+                lsTargetDatex = "";
+                lsBuyerNamexx = "";
                 lsCoBuyerName = "";
-                lsPlateCSNo = "";
-                lsBranchName = "";
-                lsVSPStatus = "";
-                lsGrossLabor = "";
-                lsGrossAcces = "";
-                lsReserveAmount = "";
+                lsPlateCSNoxx = "";
+                lsBranchNamex = "";
+                lsVSPStatusxx = "";
+                lsGrossLaborx = "";
+                lsGrossAccesx = "";
+                lsGrossAmntxx = "";
+                lsReserveAmnt = "";
                 lsDownPayment = "";
-                lsNetPaymentDue = "";
+                lsNetPaymentx = "";
+                lsOverAllDisc = "";
+
             }
             tblVhclApproval.setItems(poVSPApprovalData);
         }
@@ -411,6 +424,7 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
         tblindex14.setCellValueFactory(new PropertyValueFactory<>("tblindex13"));
         tblindex15.setCellValueFactory(new PropertyValueFactory<>("tblindex14"));
         tblindex16.setCellValueFactory(new PropertyValueFactory<>("tblindex15"));
+        tblindex17.setCellValueFactory(new PropertyValueFactory<>("tblindex16"));
 
         tblVhclApproval.getItems().forEach(item -> {
             CheckBox loSelectCheckBox = item.getSelect();
@@ -450,7 +464,8 @@ public class VSPApprovalController implements Initializable, ScreenInterface, GA
                     txtFieldSearch.setText("");
                     tblVhclApproval.setItems(poVSPApprovalData);
                     break;
-                case "INQUIRING CUSTOMER NAME":
+                case "VSP NO":
+                case "BUYING CUSTOMER NAME":
                 case "CUSTOMER NAME":
                 case "PLATE/CS NO":
                 case "BRANCH":

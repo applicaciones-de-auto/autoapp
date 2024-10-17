@@ -55,6 +55,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.BankApplication;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
@@ -2176,14 +2177,17 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             }
             if (String.valueOf(oTrans.getReservation(lnCtr, "cTranStat")) != null) {
                 switch (String.valueOf(oTrans.getReservation(lnCtr, "cTranStat"))) {
-                    case "0":
-                        lsInqStat = "CANCELLED";
+                    case TransactionStatus.STATE_OPEN:
+                        lsInqStat = "For Approval";
                         break;
-                    case "1":
-                        lsInqStat = "FOR APPROVAL";
+                    case TransactionStatus.STATE_CLOSED:
+                        lsInqStat = "Approved";
                         break;
-                    case "2":
-                        lsInqStat = "APPROVED";
+                    case TransactionStatus.STATE_CANCELLED:
+                        lsInqStat = "Cancelled";
+                        break;
+                    case TransactionStatus.STATE_POSTED:
+                        lsInqStat = "Posted";
                         break;
                 }
             }
@@ -2199,7 +2203,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     String.valueOf(oTrans.getReservation(lnCtr, "cResrvTyp")),
                     lsResType,
                     lsAmount,
-                    lsInqStat,
+                    lsInqStat.toUpperCase(),
                     String.valueOf(oTrans.getReservation(lnCtr, "sRemarksx")),
                     lsApprovedBy,
                     lsApprovedDte,

@@ -155,9 +155,9 @@
                                                                 <MenuItem fx:id="mnuSalesExecutive" mnemonicParsing="false" onAction="#mnuSalesExecutiveClick" text="Sales Executive" />
                                                                 <MenuItem fx:id="mnuSalesAgent" mnemonicParsing="false" onAction="#mnuSalesAgentClick" text="Referral Agent" />
                                                                 <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclSalesEntryClick" text="Vehicle Sales Information" />
-                                                                <MenuItem fx:id="mnuInquiry" mnemonicParsing="false" onAction="#mnuInquiryClick" text="Inquiry" />
+                                                                <MenuItem fx:id="mnuInquiry" mnemonicParsing="false" onAction="#mnuInquiryClick" text="Vehicle Inquiry" />
                                                                 <MenuItem fx:id="mnuInquiryApproval" mnemonicParsing="false" onAction="#mnuInquiryApprovalClick" text="Vehicle Inquiry Approval" />
-                                                                <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
+                                                                <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Sales Advances Approval" />
                                                                 <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
                                                                 <MenuItem fx:id="mnuVSPApproval" mnemonicParsing="false" onAction="#mnuVSPApprovalClick" text="VSP Approval" />
                                                                 <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />

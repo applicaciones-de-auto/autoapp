@@ -164,7 +164,7 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                                     -> item.getTblindex05().toLowerCase().contains(lsSalesExeSearch));
                         }
                         break;
-                    case "BRANCH": // Corrected from 'DEPARMENT'
+                    case "BRANCH":
                         String lsBranchSearch = txtFieldSearch.getText().toLowerCase();
                         if (lsBranchSearch.isEmpty()) {
                             ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
@@ -187,7 +187,7 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 }
                 int rowNumber = 1;
                 for (InquiryApproval item : filteredData) {
-                    item.setTblindex01(String.valueOf(rowNumber)); // Reset the row number for filtered items
+                    item.setTblindex01(String.valueOf(rowNumber));
                     rowNumber++;
                 }
                 tblVhclApproval.setItems(filteredData);
@@ -199,7 +199,6 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
             case "btnApproved":
                 ObservableList<InquiryApproval> selectedItems = FXCollections.observableArrayList();
 
-                // Get selected items from the currently displayed table (either filtered or unfiltered)
                 for (InquiryApproval item : tblVhclApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
@@ -207,13 +206,11 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                     }
                 }
 
-                // If no items are selected, show an error message
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Information(null, pxeModuleName, "No items selected.");
                     return;
                 }
 
-                // Ask for confirmation
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to approve?")) {
                     return;
                 }
@@ -221,18 +218,12 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 int lnApprovedCount = 0;
                 String lsMessage = "";
 
-                // Loop through each selected item from the filtered/unfiltered table view
                 for (InquiryApproval selectedItem : selectedItems) {
-                    // Get the inquiryID from the selected item
                     String inquiryID = selectedItem.getTblindex02();
-
-                    // Find the corresponding original item using the inquiryID
                     InquiryApproval originalItem = poInqApprovalData.stream()
                             .filter(item -> item.getTblindex02().equals(inquiryID))
                             .findFirst()
-                            .orElse(null); // Find the original item based on inquiryID
-
-                    // Ensure the original item is found
+                            .orElse(null);
                     if (originalItem != null) {
                         int originalIndex = poInqApprovalData.indexOf(originalItem);
                         JSONObject loJSON = oTrans.approveInquiry(originalIndex);

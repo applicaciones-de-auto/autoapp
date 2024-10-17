@@ -202,9 +202,18 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         txtField24.setText(oTrans.getModel().getModel().getDealerNm());
         txtField25.setText(oTrans.getModel().getModel().getPlaceReg());
         textArea27.setText(oTrans.getModel().getModel().getRemarks());
+        int lnVhclNew = -1;
         if (oTrans.getModel().getModel().getVhclNew() != null && !oTrans.getModel().getModel().getVhclNew().trim().isEmpty()) {
-            comboBox17.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclNew()));
+            switch (oTrans.getModel().getModel().getVhclNew()) {
+                case "0":
+                    lnVhclNew = 0;
+                    break;
+                case "1":
+                    lnVhclNew = 1;
+                    break;
+            }
         }
+        comboBox17.getSelectionModel().select(lnVhclNew);
         if (oTrans.getModel().getModel().getSoldStat() != null && !oTrans.getModel().getModel().getSoldStat().trim().isEmpty()) {
             comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getSoldStat()));
         }
@@ -960,8 +969,10 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pbisVhclSales) {
                 if (comboBox17.getSelectionModel().getSelectedIndex() < 0) {
-                    ShowMessageFX.Warning(null, "Vehicle Category", "Please select `Vehicle Category` value.");
-                    return false;
+                    if (comboBox18.getSelectionModel().getSelectedIndex() != 0) {
+                        ShowMessageFX.Warning(null, "Vehicle Category", "Please select `Vehicle Category` value.");
+                        return false;
+                    }
                 } else {
                     oTrans.getModel().getModel().setVhclNew(String.valueOf((comboBox17.getSelectionModel().getSelectedIndex())));
                 }
