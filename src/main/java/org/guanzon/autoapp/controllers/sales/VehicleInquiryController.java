@@ -862,21 +862,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                     selectedItems.add(item);
                                 }
                                 break;
-                            case "3":
-                                switch (lsButton) {
-                                    case "btnASCancel":
-                                        ShowMessageFX.Warning(getStage(), "You are not allowed to Cancel Slip No. " + oTrans.getReservation(lnRow, 3).toString(), pxeModuleName, null);
-                                        return;
-                                    case "btnASremove":
-                                        ShowMessageFX.Warning(getStage(), "You are not allowed to Remove Slip No. " + oTrans.getReservation(lnRow, 3).toString(), pxeModuleName, null);
-                                        return;
-                                    case "btnASprint":
-                                        selectedItems.add(item);
-                                }
-                                break;
-                            case "0":
-                                ShowMessageFX.Warning(getStage(), "Slip No. " + oTrans.getReservation(lnRow, "sReferNox").toString() + " is already Cancelled.", pxeModuleName, null);
-                                return;
+
                         }
                         pnCtr++;
                     }
