@@ -155,8 +155,8 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             }
         }
 
-        txtField07.setText((String) oTrans.getReservation(pnRow, "sApproved"));
-        txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dApproved")));
+        txtField07.setText((String) oTrans.getReservation(pnRow, "sApprover"));
+        txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dApprovex")));
         textArea05.setText((String) oTrans.getReservation(pnRow, "sRemarksx"));
     }
 

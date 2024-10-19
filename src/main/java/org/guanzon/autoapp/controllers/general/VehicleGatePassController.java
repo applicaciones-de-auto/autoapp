@@ -144,8 +144,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                         pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     } else {
-                        clearFields();
-                        clearTables();
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        CommonUtils.closeStage(btnClose);
                     }
                 }
             } else {
@@ -156,7 +156,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("result"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
             }
         });

@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="582.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="582.0" prefWidth="1360.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane layoutX="10.0" layoutY="10.0" prefHeight="453.0" prefWidth="1220.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -152,7 +152,7 @@
                                                                 <TableColumn fx:id="tblindex07" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Insurance Company" />
                                                                 <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
                                                                 <TableColumn fx:id="tblindex10" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Plate / CS No" />
-                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Amount" />
+                                                                <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Amount" />
                                                             </columns>
                                                         </TableView>
                                                     </children>

@@ -4,11 +4,8 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -35,7 +32,6 @@ import org.guanzon.autoapp.interfaces.GApprovalInterface;
 import org.guanzon.autoapp.models.general.ActivityApproval;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
-import org.guanzon.autoapp.utils.ExcelExporterUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -52,7 +48,7 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("ACTIVITY NO", "ACTIVITY DATE", "ACTIVITY TITLE", "ACTIVITY TYPE",
             "PERSON IN CHARGE", "DEPARTMENT");
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
 
     private ObservableList<ActivityApproval> poActApprovalData = FXCollections.observableArrayList();
     @FXML

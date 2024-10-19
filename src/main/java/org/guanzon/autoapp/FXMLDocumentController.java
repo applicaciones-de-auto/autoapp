@@ -40,6 +40,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -49,7 +50,10 @@ import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
@@ -88,7 +92,6 @@ import org.guanzon.autoapp.controllers.parameters.WareHouseController;
 import org.guanzon.autoapp.controllers.parts.ItemInformationController;
 import org.guanzon.autoapp.controllers.parts.VSPAccessoriesRequestController;
 import org.guanzon.autoapp.controllers.sales.SalesJobOrderController;
-import org.guanzon.autoapp.controllers.sales.VSPApprovalController;
 import org.guanzon.autoapp.controllers.sales.VSPController;
 import org.guanzon.autoapp.controllers.sales.VehicleDeliveryReceiptController;
 import org.guanzon.autoapp.controllers.sales.VehicleInquiryApprovalController;
@@ -620,10 +623,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
         // Add new tab;
         Tab newTab = new Tab(SetTabTitle(fsFormName));
-        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: Arial;");
+        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 200; -fx-font-size: 10.5px; -fx-font-family: Arial;");
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
-
         tabName.add(SetTabTitle(fsFormName));
 
         try {
@@ -720,8 +722,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new VehicleDeliveryReceiptController();
         } else if (fsValue.contains("VSP.fxml")) {
             return new VSPController();
-        } else if (fsValue.contains("VSPApproval.fxml")) {
-            return new VSPApprovalController();
+//        } else if (fsValue.contains("VSPApproval.fxml")) {
+//            return new VSPApprovalController();
         } else if (fsValue.contains("ItemInformation.fxml")) {
             return new ItemInformationController();
         } else if (fsValue.contains("VSPAccessoriesRequest.fxml")) {
@@ -803,8 +805,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Vehicle Delivery Receipt";
         } else if (menuaction.contains("VSP.fxml")) {
             return "Vehicle Sales Proposal";
-        } else if (menuaction.contains("VSPApproval.fxml")) {
-            return "VSP Approval";
+//        } else if (menuaction.contains("VSPApproval.fxml")) {
+//            return "VSP Approval";
         } else if (menuaction.contains("SalesJobOrder.fxml")) {
             return "Sales Job Order";
         } else if (menuaction.contains("VehicleInquiryApproval.fxml")) {
@@ -1003,11 +1005,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuVSPApprovalClick(ActionEvent event) {
-        String sformname = psSalesPath + "VSPApproval.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+//        String sformname = psSalesPath + "VSPApproval.fxml";
+//        //check tab
+//        if (checktabs(SetTabTitle(sformname)) == 1) {
+//            setScene2(loadAnimate(sformname));
+//        }
     }
 
     @FXML

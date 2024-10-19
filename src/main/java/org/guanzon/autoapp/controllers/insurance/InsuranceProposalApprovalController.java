@@ -48,7 +48,7 @@ public class InsuranceProposalApprovalController implements Initializable, Scree
     private GRider oApp;
     private final String pxeModuleName = "Insurance Proposal Approval";
     private InsurancePolicyProposal oTrans;
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     private ObservableList<InsuranceProposalApproval> poInsProposalData = FXCollections.observableArrayList();
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("INSURANCE PROPOSAL DATE", "PROPOSAL NO", "INSURANCE COMPANY", "CUSTOMER NAME", "PLATE/CSNO");
@@ -147,9 +147,13 @@ public class InsuranceProposalApprovalController implements Initializable, Scree
                     lsCustName = String.valueOf(oTrans.getProposalModel().getDetailModel(lnCtr).getOwnrNm());
                 }
                 if (oTrans.getProposalModel().getDetailModel(lnCtr).getPlateNo() != null && oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo() != null) {
-                    lsPltCSNox = String.valueOf(oTrans.getProposalModel().getDetailModel(lnCtr).getPlateNo()) + "/" + String.valueOf(oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo());
+                    if (!oTrans.getProposalModel().getDetailModel(lnCtr).getPlateNo().isEmpty()) {
+                        lsPltCSNox = oTrans.getProposalModel().getDetailModel(lnCtr).getPlateNo() + "/" + oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo();
+                    } else {
+                        lsPltCSNox = oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo();
+                    }
                 } else {
-                    lsPltCSNox = String.valueOf(oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo());
+                    lsPltCSNox = oTrans.getProposalModel().getDetailModel(lnCtr).getCSNo();
                 }
                 poInsProposalData.add(new InsuranceProposalApproval(
                         String.valueOf(lnCtr + 1),

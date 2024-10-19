@@ -308,6 +308,8 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                         case "5":
                             lsStatus = "CANCELLED";
                             break;
+                        case "6":
+                            lsStatus = "FOR APPROVAL";
                     }
                 }
 

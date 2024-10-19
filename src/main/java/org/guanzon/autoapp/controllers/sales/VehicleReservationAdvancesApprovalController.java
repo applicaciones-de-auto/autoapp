@@ -46,7 +46,7 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
     private Inquiry oTrans;
     private final String pxeModuleName = "Vehicle Sales Advances Approval";
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.0");
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("SLIP NO",
             "TYPE",
             "SLIP DATE",

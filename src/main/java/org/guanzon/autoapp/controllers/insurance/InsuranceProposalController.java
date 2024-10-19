@@ -1250,13 +1250,18 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             }
         }
         if (fnValue == EditMode.READY) {
-            if (!lblIPStatus.getText().equals("Cancelled") || !lblIPStatus.getText().equals("Disapproved")) {
+            if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)
+                    && !oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_VOID)) {
                 CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnIPCancel);
                 CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnIPCancel);
             }
-            if (!lblIPStatus.getText().equals("Approved")) {
-                CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel, btnPrint);
-                CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel, btnPrint);
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_OPEN)) {
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
+            }
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+                btnEdit.setVisible(false);
+                btnEdit.setManaged(false);
             }
         }
     }
