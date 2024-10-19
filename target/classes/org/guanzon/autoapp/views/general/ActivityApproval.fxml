@@ -149,11 +149,11 @@
                                                                         </TableColumn>
                                                                         <TableColumn fx:id="tblindex02" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Activity No" />
                                                                         <TableColumn fx:id="tblindex03" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Period" />
+                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Type" />
                                                                         <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Activity Title" />
                                                                         <TableColumn fx:id="tblindex05" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" sortable="false" text="Person in Charge" />
                                                                         <TableColumn fx:id="tblindex06" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Department" />
                                                                         <TableColumn fx:id="tblindex07" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Branch in Charge" />
-                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Activity Location" />
                                                                         <TableColumn fx:id="tblindex09" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Budget Proposal" />
                                                                     </columns>
                                                                 </TableView>
@@ -194,7 +194,7 @@
                     <bottom>
                         <AnchorPane prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <HBox spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>
                                         <Button fx:id="btnApproved" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Approve">
                                             <effect>
