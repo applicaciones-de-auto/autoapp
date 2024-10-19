@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane prefHeight="300.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -155,10 +155,11 @@
                                                                 <MenuItem fx:id="mnuSalesExecutive" mnemonicParsing="false" onAction="#mnuSalesExecutiveClick" text="Sales Executive" />
                                                                 <MenuItem fx:id="mnuSalesAgent" mnemonicParsing="false" onAction="#mnuSalesAgentClick" text="Referral Agent" />
                                                                 <MenuItem fx:id="mnuVhclEntry" mnemonicParsing="false" onAction="#mnuVhclSalesEntryClick" text="Vehicle Sales Information" />
-                                                                <MenuItem fx:id="mnuInquiry" mnemonicParsing="false" onAction="#mnuInquiryClick" text="Inquiry" />
-                                                                <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="Vehicle Reservation Approval" />
+                                                                <MenuItem fx:id="mnuInquiry" mnemonicParsing="false" onAction="#mnuInquiryClick" text="Vehicle Inquiry" />
+                                                                <MenuItem fx:id="mnuInquiryApproval" mnemonicParsing="false" onAction="#mnuInquiryApprovalClick" text="Vehicle Inquiry Approval" />
+                                                                <MenuItem fx:id="mnuVhclRsrvApp" mnemonicParsing="false" onAction="#mnuVhclRsrvAppClick" text="VSA Approval" />
                                                                 <MenuItem fx:id="mnuVSPEntry" mnemonicParsing="false" onAction="#mnuVSPEntryClick" text="Vehicle Sales Proposal" />
-                                                                <MenuItem fx:id="mnuAddOnsApproval" mnemonicParsing="false" onAction="#mnuAddOnsApprovalClick" text="VSP Approval" />
+                                                                <MenuItem fx:id="mnuVSPApproval" mnemonicParsing="false" onAction="#mnuVSPApprovalClick" text="VSP Approval" visible="false" />
                                                                 <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />
                                                                 <MenuItem fx:id="mnuVchlDeliveryReceipt" mnemonicParsing="false" onAction="#mnuVchlDeliveryReceiptClick" text="Vehicle Delivery Receipt" />
                                                                 <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
