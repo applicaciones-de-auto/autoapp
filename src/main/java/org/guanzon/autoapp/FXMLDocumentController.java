@@ -50,11 +50,7 @@ import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
-import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -64,7 +60,6 @@ import org.guanzon.autoapp.controllers.general.ReferralAgentController;
 import org.guanzon.autoapp.controllers.general.SalesExecutiveController;
 import org.guanzon.autoapp.controllers.general.ServiceAdvisorController;
 import org.guanzon.autoapp.controllers.general.TechnicianController;
-import org.guanzon.autoapp.controllers.insurance.FollowUpController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceApplicationController;
 import org.guanzon.autoapp.controllers.insurance.InsurancePolicyController;
 import org.guanzon.autoapp.controllers.insurance.InsuranceProposalApprovalController;
@@ -623,7 +618,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
         // Add new tab;
         Tab newTab = new Tab(SetTabTitle(fsFormName));
-        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 200; -fx-font-size: 10.5px; -fx-font-family: Arial;");
+        newTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: Arial;");
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
         tabName.add(SetTabTitle(fsFormName));
@@ -758,8 +753,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new InsuranceApplicationController();
         } else if (fsValue.contains("InsurancePolicy.fxml")) {
             return new InsurancePolicyController();
-        } else if (fsValue.contains("FollowUp.fxml")) {
-            return new FollowUpController();
+//        } else if (fsValue.contains("FollowUp.fxml")) {
+//            return new FollowUpController();
         } else if (fsValue.contains("VehicleInquiryApproval.fxml")) {
             return new VehicleInquiryApprovalController();
         } else if (fsValue.contains("VehicleReservationAdvancesApproval.fxml")) {
@@ -800,7 +795,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         } else if (menuaction.contains("VehicleInquiry.fxml")) {
             return "Vehicle Inquiry";
         } else if (menuaction.contains("VehicleReservationAdvancesApproval.fxml")) {
-            return "Vehicle Sales Advances Approval";
+            return "VSA Approval";
         } else if (menuaction.contains("VehicleDeliveryReceipt.fxml")) {
             return "Vehicle Delivery Receipt";
         } else if (menuaction.contains("VSP.fxml")) {
@@ -839,8 +834,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return "Insurance Application";
         } else if (menuaction.contains("InsurancePolicy.fxml")) {
             return "Insurance Policy";
-        } else if (menuaction.contains("FollowUp.fxml")) {
-            return "Follow Up List";
+//        } else if (menuaction.contains("FollowUp.fxml")) {
+//            return "Follow Up List";
         } else {
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Tab Title for " + menuaction);
             return null;
@@ -1200,11 +1195,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuFollowUpClick(ActionEvent event) {
-        String sformname = psInsurancePath + "FollowUp.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
+//        String sformname = psInsurancePath + "FollowUp.fxml";
+//        //check tab
+//        if (checktabs(SetTabTitle(sformname)) == 1) {
+//            setScene2(loadAnimate(sformname));
+//        }
     }
 
     /*ACTIVITY*/
