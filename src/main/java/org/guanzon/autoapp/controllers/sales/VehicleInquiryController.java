@@ -862,7 +862,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                     selectedItems.add(item);
                                 }
                                 break;
-                            case "2":
+                            case "3":
                                 switch (lsButton) {
                                     case "btnASCancel":
                                         ShowMessageFX.Warning(getStage(), "You are not allowed to Cancel Slip No. " + oTrans.getReservation(lnRow, 3).toString(), pxeModuleName, null);
