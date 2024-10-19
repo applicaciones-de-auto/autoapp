@@ -126,17 +126,10 @@
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Aprroved Status:" textFill="WHITE" GridPane.columnIndex="2" />
-                                        <Label text="Aprroved Date:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <Label fx:id="lblApprovedBy" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="3">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label fx:id="lblApprovedDate" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                        <Label text="Aprroved Date:" textFill="WHITE" GridPane.columnIndex="2" />
+                                        <Label fx:id="lblApprovedDate" prefHeight="17.0" prefWidth="103.0" textFill="WHITE" GridPane.columnIndex="3">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
                                             </font>

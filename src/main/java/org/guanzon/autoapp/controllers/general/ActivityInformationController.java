@@ -88,7 +88,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
     @FXML
     private Button btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnPrint, btnActivityHistory, btnActCancel, btnClose, btnAddSource, btnAddRowTasks, btnRemoveTasks, btnAddRowBudget, btnRemoveBudget, btnTabAdd, btnTabRem;
     @FXML
-    private Label lblApprovedBy, lblApprovedDate, lblCancelStatus, lblActivityID, lblActivityIDValue;
+    private Label lblApprovedDate, lblCancelStatus, lblActivityID, lblActivityIDValue;
     @FXML
     private TabPane tabPaneMain;
     @FXML
@@ -200,16 +200,11 @@ public class ActivityInformationController implements Initializable, ScreenInter
         txtField14.setText(oTrans.getModel().getModel().getLocation());
         txtField15.setText(String.valueOf(oTrans.getModel().getModel().getTrgtClnt()));
         txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
-
-//        if (oTrans.getModel().getModel().getApproved() != null) {
-//            lblApprovedBy.setText(oTrans.getModel().getModel().getApproved());
-//            if (oTrans.getModel().getModel().getApprovedDte() != null && !oTrans.getModel().getModel().getApprovedDte().toString().isEmpty()) {
-//                lblApprovedDate.setText(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApprovedDte()));//dApproved
-//            }
-//        } else {
-//            lblApprovedBy.setText("");
-//            lblApprovedDate.setText("");//dApproved
-//        }
+        String lsApprvDate = "";
+        if (oTrans.getModel().getModel().getApproveDte() != null) {
+            lsApprvDate = CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApproveDte());//dApproved
+        }
+        lblApprovedDate.setText(lsApprvDate);
         switch (oTrans.getModel().getModel().getTranStat()) {
             case "0":
                 lblCancelStatus.setText("Deactivated");
@@ -778,7 +773,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 txtField11, txtField12, txtField13, txtField14);
         CustomCommonUtil.setText("", textArea07, textArea08,
                 textArea09, textArea10);
-        CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate, lblApprovedBy);
+        CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate);
         dateFrom03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         dateTo04.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         comboBox05.setValue("");
@@ -1052,6 +1047,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }
@@ -1135,6 +1131,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }
@@ -1214,6 +1211,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }
