@@ -1750,6 +1750,19 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+            JSONObject loJSON = new JSONObject();
+            loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+            if ("success".equals((String) loJSON.get("result"))) {
+                loadMasterFields();
+                loadVehiclePriority();
+                loadPromoOffered();
+                loadInquiryRequirements();
+                loadAdvancesSlip();
+                loadBankApplications();
+                loadFollowHistory();
+                pnEditMode = oTrans.getEditMode();
+                initFields(pnEditMode);
+            }
 
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -2163,7 +2176,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             inqvsadata.add(new InquiryVehicleSalesAdvances(
                     String.valueOf(lnCtr + 1),
                     lsResDte,
-                    "",
+                    oTrans.getReservationModel().getReservation(lnCtr).getResrvTyp(),
                     lsResType,
                     lsAmount,
                     lsInqStat,
@@ -2244,19 +2257,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            JSONObject loJSON = new JSONObject();
-            loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
-            if ("success".equals((String) loJSON.get("result"))) {
-                loadMasterFields();
-                loadVehiclePriority();
-                loadPromoOffered();
-                loadInquiryRequirements();
-                loadAdvancesSlip();
-                loadBankApplications();
-                loadFollowHistory();
-                pnEditMode = oTrans.getEditMode();
-                initFields(pnEditMode);
-            }
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
