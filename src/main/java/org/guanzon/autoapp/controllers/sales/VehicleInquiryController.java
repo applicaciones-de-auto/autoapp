@@ -1424,10 +1424,12 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     if (tabPinEditMode == 1) {
                         initCustomerInquiryFieldsFalse();
                         initInquiryProcessFieldsTrue();
+
                     } else {
                         initCustomerInquiryFieldsTrue();
                         initInquiryProcessFieldsFalse();
                     }
+
                 }
                 break;
             case "2":
@@ -1481,8 +1483,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
     private void initCustomerInquiryFieldsTrue() {
         rqrmIndex01.setVisible(false);
         vsasCheck01.setVisible(false);
-        CustomCommonUtil.setVisible(true, btnFollowUp, btnBankAppNew);
-        CustomCommonUtil.setManaged(true, btnFollowUp, btnBankAppNew);
+        CustomCommonUtil.setVisible(false, btnFollowUp, btnBankAppNew);
+        CustomCommonUtil.setManaged(false, btnFollowUp, btnBankAppNew);
         CustomCommonUtil.setDisable(true, btnASremove, comboBox25, comboBox26,
                 txtField27, btnSndMngerApprov, btnASadd, btnASremove, btnASprint, btnASCancel);
     }
