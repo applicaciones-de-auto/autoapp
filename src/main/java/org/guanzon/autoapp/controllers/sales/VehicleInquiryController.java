@@ -2176,7 +2176,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             inqvsadata.add(new InquiryVehicleSalesAdvances(
                     String.valueOf(lnCtr + 1),
                     lsResDte,
-                    oTrans.getReservationModel().getReservation(lnCtr).getResrvTyp(),
+                    "",
                     lsResType,
                     lsAmount,
                     lsInqStat,
