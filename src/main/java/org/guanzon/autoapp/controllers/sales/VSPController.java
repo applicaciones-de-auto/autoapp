@@ -444,7 +444,13 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
 
         lblSINo.setText(lsVSI);
 
-        lblPrint.setText(oTrans.getMasterModel().getMasterModel().getPrinted());
+        String lsPrinted = "";
+        if (oTrans.getMasterModel().getMasterModel().getPrinted().equals("1")) {
+            lsPrinted = "Y";
+        } else {
+            lsPrinted = "N";
+        }
+        lblPrint.setText(lsPrinted);
         switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lblVSPStatus.setText("For Approval");
@@ -1835,6 +1841,15 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+            JSONObject loJSON = new JSONObject();
+            loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+            if ("success".equals((String) loJSON.get("result"))) {
+                loadMasterFields();
+                loadLaborTable();
+                loadAccessoriesTable();
+                pnEditMode = oTrans.getEditMode();
+                initFields(pnEditMode);
+            }
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -2568,7 +2583,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         if (!tblViewLabor.getItems().isEmpty() || !tblViewAccessories.getItems().isEmpty()) {
-            btnJobOrderAdd.setDisable(fnValue == EditMode.ADDNEW || lblVSPStatus.getText().equals("Cancelled"));
+            btnJobOrderAdd.setDisable(fnValue == EditMode.ADDNEW || oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED));
         }
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
@@ -2578,20 +2593,18 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
         btnGatePass.setVisible(false);
         if (fnValue == EditMode.READY) {
-            if (!lblVSPStatus.getText().equals("Cancelled")) {
+            if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)) {
                 if (oTrans.getMasterModel().getMasterModel().getUDRNo() != null && !oTrans.getMasterModel().getMasterModel().getUDRNo().isEmpty()) {
                     btnGatePass.setManaged(true);
                     btnGatePass.setVisible(true);
                 }
 
-                CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnCancelVSP);
-                CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnCancelVSP);
-                if (lblVSPStatus.getText().equals("For Approval")) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnCancelVSP);
+                CustomCommonUtil.setManaged(true, btnEdit, btnCancelVSP);
+                if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_OPEN)) {
                     btnApprove.setVisible(true);
                     btnApprove.setManaged(true);
                 }
-                tabAddOns.setDisable(false);
-                tabDetails.setDisable(false);
                 if (oTrans.getMasterModel().getMasterModel().getGatePsNo() != null) {
                     if (!oTrans.getMasterModel().getMasterModel().getGatePsNo().isEmpty()) {
                         btnGatePass.setManaged(false);
@@ -2600,6 +2613,12 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 }
             }
             btnRemoveReservation.setDisable(false);
+            tabAddOns.setDisable(false);
+            tabDetails.setDisable(false);
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+                btnPrint.setVisible(true);
+                btnPrint.setManaged(true);
+            }
         }
 
     }

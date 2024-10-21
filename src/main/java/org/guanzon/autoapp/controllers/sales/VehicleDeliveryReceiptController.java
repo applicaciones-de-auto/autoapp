@@ -57,7 +57,7 @@ import org.json.simple.JSONObject;
 public class VehicleDeliveryReceiptController implements Initializable, ScreenInterface, GTransactionInterface {
 
     private GRider oApp;
-    private VehicleDeliveryReceipt oTransVDR;
+    private VehicleDeliveryReceipt oTrans;
     private double xOffset = 0;
     private double yOffset = 0;
     public int pnEditMode = -1;//Modifying fields
@@ -89,7 +89,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTransVDR = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
+        oTrans = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
 
         datePicker03.setDayCellFactory(targetDate);
         initCapitalizationFields();
@@ -116,33 +116,33 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTransVDR.getMasterModel().getMasterModel().getReferNo());
-        if (oTransVDR.getMasterModel().getMasterModel().getClientTp() != null) {
-            comboBox02.getSelectionModel().select(Integer.parseInt(oTransVDR.getMasterModel().getMasterModel().getCustType()));
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
+        if (oTrans.getMasterModel().getMasterModel().getClientTp() != null) {
+            comboBox02.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getCustType()));
         }
-        if (oTransVDR.getMasterModel().getMasterModel().getDelvryDte() != null) {
-            datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransVDR.getMasterModel().getMasterModel().getTransactDte())));
+        if (oTrans.getMasterModel().getMasterModel().getDelvryDte() != null) {
+            datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
         }
-        txtField04.setText(oTransVDR.getMasterModel().getMasterModel().getVSPNO());
-        txtField05.setText(oTransVDR.getMasterModel().getMasterModel().getBuyCltNm());
-        textArea06.setText(oTransVDR.getMasterModel().getMasterModel().getAddress());
-        txtField07.setText(oTransVDR.getMasterModel().getMasterModel().getCoCltNm());
-        if (oTransVDR.getMasterModel().getMasterModel().getIsVhclNw() != null) {
-            if (oTransVDR.getMasterModel().getMasterModel().getIsVhclNw().equals("0")) {
+        txtField04.setText(oTrans.getMasterModel().getMasterModel().getVSPNO());
+        txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
+        textArea06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
+        txtField07.setText(oTrans.getMasterModel().getMasterModel().getCoCltNm());
+        if (oTrans.getMasterModel().getMasterModel().getIsVhclNw() != null) {
+            if (oTrans.getMasterModel().getMasterModel().getIsVhclNw().equals("0")) {
                 radioBrandNew.setSelected(true);
             } else {
                 radioPreOwned.setSelected(true);
             }
         }
-        txtField08.setText(oTransVDR.getMasterModel().getMasterModel().getCSNo());
-        txtField09.setText(oTransVDR.getMasterModel().getMasterModel().getPlateNo());
-        txtField10.setText(oTransVDR.getMasterModel().getMasterModel().getEngineNo());
-        txtField11.setText(oTransVDR.getMasterModel().getMasterModel().getFrameNo());
-        textArea12.setText(oTransVDR.getMasterModel().getMasterModel().getVhclFDsc());
-        textArea13.setText(oTransVDR.getMasterModel().getMasterModel().getRemarks());
+        txtField08.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+        txtField09.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+        txtField10.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
+        txtField11.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
+        textArea12.setText(oTrans.getMasterModel().getMasterModel().getVhclFDsc());
+        textArea13.setText(oTrans.getMasterModel().getMasterModel().getRemarks());
         textArea14.setText("");
-        lblVSINo.setText(oTransVDR.getMasterModel().getMasterModel().getSINo());
-        switch (oTransVDR.getMasterModel().getMasterModel().getTranStat()) {
+        lblVSINo.setText(oTrans.getMasterModel().getMasterModel().getSINo());
+        switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lblVDRStatus.setText("Active");
                 break;
@@ -186,7 +186,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             /*Lost Focus*/
             switch (lnIndex) {
                 case 13:
-                    oTransVDR.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
                     break;
             }
         } else {
@@ -196,7 +196,6 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
 
     @Override
     public void initTextKeyPressed() {
-
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
     }
 
@@ -217,7 +216,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                 case F3:
                     switch (txtFieldID) {
                         case "txtField04":
-                            loJSON = oTransVDR.searchVSP(lsValue.trim(), false);
+                            loJSON = oTrans.searchVSP(lsValue.trim(), false);
                             if (!"error".equals(loJSON.get("result"))) {
                                 loadMasterFields();
                             } else {
@@ -261,19 +260,19 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
-                oTransVDR = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
-                loJSON = oTransVDR.newTransaction();
+                oTrans = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
-                    pnEditMode = oTransVDR.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJSON = oTransVDR.updateTransaction();
-                pnEditMode = oTransVDR.getEditMode();
+                loJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getEditMode();
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                 }
@@ -288,13 +287,13 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                         ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose Customer to proceed.");
                         return;
                     }
-                    loJSON = oTransVDR.saveTransaction();
+                    loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "Vehicle Delivery Receipt Information", (String) loJSON.get("message"));
-                        loJSON = oTransVDR.openTransaction(oTransVDR.getMasterModel().getMasterModel().getTransNo());
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                         if ("success".equals((String) loJSON.get("result"))) {
                             loadMasterFields();
-                            pnEditMode = oTransVDR.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                             initFields(pnEditMode);
                         }
                     } else {
@@ -305,7 +304,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
-                    oTransVDR = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
+                    oTrans = new VehicleDeliveryReceipt(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
@@ -316,10 +315,10 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                         return;
                     }
                 }
-                loJSON = oTransVDR.searchTransaction("", false);
+                loJSON = oTrans.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
-                    pnEditMode = oTransVDR.getEditMode();
+                    pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Delivery Receipt Information", (String) loJSON.get("message"));
@@ -335,16 +334,16 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
                 break;
             case "btnCancelVDR":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VDR?")) {
-                    loJSON = oTransVDR.cancelTransaction(oTransVDR.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VDR Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "VDR Information", (String) loJSON.get("message"));
                     }
-                    loJSON = oTransVDR.openTransaction(oTransVDR.getMasterModel().getMasterModel().getTransNo());
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMasterFields();
-                        pnEditMode = oTransVDR.getEditMode();
+                        pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     }
                 }
@@ -366,7 +365,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         comboBox02.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTransVDR.getMasterModel().getMasterModel().setCustType(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+                    oTrans.getMasterModel().getMasterModel().setCustType(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
                     if (comboBox02.getSelectionModel().getSelectedIndex() == 1) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose customer to proceed.");
                         return;
@@ -377,7 +376,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         });
         datePicker03.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                oTransVDR.getMasterModel().getMasterModel().setDelvryDte(SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getMasterModel().getMasterModel().setDelvryDte(SQLUtil.toDate(datePicker03.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
             }
         });
 
@@ -389,16 +388,16 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
-                        oTransVDR.getMasterModel().getMasterModel().setVSPNO("");
-                        oTransVDR.getMasterModel().getMasterModel().setClientID("");
-                        oTransVDR.getMasterModel().getMasterModel().setBuyCltNm("");
-                        oTransVDR.getMasterModel().getMasterModel().setCoCltNm("");
-                        oTransVDR.getMasterModel().getMasterModel().setCSNo("");
-                        oTransVDR.getMasterModel().getMasterModel().setPlateNo("");
-                        oTransVDR.getMasterModel().getMasterModel().setEngineNo("");
-                        oTransVDR.getMasterModel().getMasterModel().setFrameNo("");
-                        oTransVDR.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTransVDR.getMasterModel().getMasterModel().setIsVhclNw("");
+                        oTrans.getMasterModel().getMasterModel().setVSPNO("");
+                        oTrans.getMasterModel().getMasterModel().setClientID("");
+                        oTrans.getMasterModel().getMasterModel().setBuyCltNm("");
+                        oTrans.getMasterModel().getMasterModel().setCoCltNm("");
+                        oTrans.getMasterModel().getMasterModel().setCSNo("");
+                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
+                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
+                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+                        oTrans.getMasterModel().getMasterModel().setIsVhclNw("");
                         clearVSPFields();
                     }
                 }
@@ -449,11 +448,14 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             }
         }
         if (fnValue == EditMode.READY) {
-            if (!lblVDRStatus.getText().equals("Cancelled")) {
-                CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnCancelVDR);
-                CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnCancelVDR);
+            if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnCancelVDR);
+                CustomCommonUtil.setManaged(true, btnEdit, btnCancelVDR);
             }
-
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+                btnPrint.setVisible(true);
+                btnPrint.setManaged(true);
+            }
         }
     }
 
@@ -465,8 +467,8 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/VDRPrint.fxml"));
             VDRPrintController loControl = new VDRPrintController();
             loControl.setGRider(oApp);
-            loControl.setObject(oTransVDR);
-            loControl.setTransNo(oTransVDR.getMasterModel().getMasterModel().getTransNo());
+            loControl.setObject(oTrans);
+            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();

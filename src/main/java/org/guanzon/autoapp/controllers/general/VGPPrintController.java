@@ -114,6 +114,7 @@ public class VGPPrintController implements Initializable, ScreenInterface, GPrin
             case "btnPrint":
                 try {
                 if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                    oTransPrint.getMasterModel().getMasterModel().setPrinted("1");
                     ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
                     CommonUtils.closeStage(btnClose);
                 } else {

@@ -97,6 +97,7 @@ public class VDRPrintController implements Initializable, ScreenInterface, GPrin
     @Override
     public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
@@ -104,8 +105,12 @@ public class VDRPrintController implements Initializable, ScreenInterface, GPrin
             case "btnPrint":
                 try {
                 if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                    CommonUtils.closeStage(btnClose);
+                    oTransPrint.getMasterModel().getMasterModel().setPrinted("1");
+                    loJSON = oTransPrint.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
+                        CommonUtils.closeStage(btnClose);
+                    }
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
                 }

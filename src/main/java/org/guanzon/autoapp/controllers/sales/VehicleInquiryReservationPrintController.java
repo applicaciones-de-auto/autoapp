@@ -110,6 +110,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     @Override
     public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
@@ -117,8 +118,15 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
             case "btnPrint":
                 try {
                 if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                    CommonUtils.closeStage(btnClose);
+                    for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
+                        Integer lnCtr = pnRows[pnCtr];
+                        oTransPrint.getReservationModel().getReservation(lnCtr).setPrinted(1);
+                    }
+                    loJSON = oTransPrint.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
+                        CommonUtils.closeStage(btnClose);
+                    }
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
                 }
@@ -243,7 +251,7 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                         lsInqStat,
                         getValueReport(lnCtr, "lsRemarks", "sRemarksx"),
                         "",
-                        getValueDateReport(lnCtr, "lsApprovDate", "dApproved"),
+                        getValueDateReport(lnCtr, "lsApprovDate", "dApprovex"),
                         getValueReport(lnCtr, "lsRefNo", "sReferNox"),
                         getValueReport(lnCtr, "lsCompanyName", "sCompnyNm"),
                         "",

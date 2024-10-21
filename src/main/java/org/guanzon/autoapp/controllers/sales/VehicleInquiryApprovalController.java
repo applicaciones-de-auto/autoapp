@@ -244,7 +244,6 @@ public class VehicleInquiryApprovalController implements Initializable, ScreenIn
                 }
                 loadTable();
                 selectAllCheckBox.setSelected(false);
-                tblVhclApproval.getItems().removeAll(selectedItems);
                 break;
             case "btnRefresh":
                 tblVhclApproval.refresh();
