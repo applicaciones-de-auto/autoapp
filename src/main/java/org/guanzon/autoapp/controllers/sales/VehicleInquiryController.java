@@ -1287,8 +1287,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
 
         CustomCommonUtil.setDisable(true, txtField05, txtField14, txtField11, txtField12, txtField13,
                 btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel);
-        CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10, txtField11,
-                txtField12, txtField13, rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
+        CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10,
+                rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
                 comboBox21, datePicker22, textArea23);
         if (fnValue == EditMode.ADDNEW) {
             trgvIndex03.setVisible(true);
