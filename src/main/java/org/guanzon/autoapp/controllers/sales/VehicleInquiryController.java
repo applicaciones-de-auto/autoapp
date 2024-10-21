@@ -847,9 +847,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 ObservableList<InquiryVehicleSalesAdvances> selectedItems = FXCollections.observableArrayList();
 
                 for (InquiryVehicleSalesAdvances item : tblAdvanceSlip.getItems()) {
-                    String lsStatus = item.getTblindex06();
                     if (item.getSelect().isSelected()) {
-//                        selectedItems.add(item);
                         if ("btnASremove".equals(lsButton) && pnCtr > 1) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Please select atleast 1 slip to be removed.");
                             return;
@@ -857,31 +855,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         if ("btnASCancel".equals(lsButton) && pnCtr > 1) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Please select atleast 1 slip to be cancelled.");
                             return;
-                        }
-                        switch (oTrans.getReservation(lnRow, "cTranStat").toString()) {
-                            case "0":
-                                if ("btnASprint".equals(lsButton)) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, "Slip No. " + oTrans.getReservation(lnRow, 3).toString() + " is not yet approved. Printing Aborted.");
-                                    return;
-                                } else {
-                                    selectedItems.add(item);
-                                }
-                                break;
-                            case "1":
-                                switch (lsButton) {
-                                    case "btnASCancel":
-                                        ShowMessageFX.Warning(null, pxeModuleName, "You are not allowed to Cancel Slip No. " + oTrans.getReservation(lnRow, 3).toString());
-                                        return;
-                                    case "btnASremove":
-                                        ShowMessageFX.Warning(null, pxeModuleName, "You are not allowed to Remove Slip No. " + oTrans.getReservation(lnRow, 3).toString());
-                                        return;
-                                    case "btnASprint":
-                                        selectedItems.add(item);
-                                }
-                                break;
-                            case "3":
-                                ShowMessageFX.Warning(null, pxeModuleName, "Slip No. " + oTrans.getReservation(lnRow, "sReferNox").toString() + " is already Cancelled.");
-                                return;
                         }
                         pnCtr++;
                     }
