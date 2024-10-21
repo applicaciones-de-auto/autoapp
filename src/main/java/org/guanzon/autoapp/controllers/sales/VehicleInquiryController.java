@@ -43,6 +43,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -843,26 +847,41 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 ObservableList<InquiryVehicleSalesAdvances> selectedItems = FXCollections.observableArrayList();
 
                 for (InquiryVehicleSalesAdvances item : tblAdvanceSlip.getItems()) {
+                    String lsStatus = item.getTblindex06();
                     if (item.getSelect().isSelected()) {
 //                        selectedItems.add(item);
                         if ("btnASremove".equals(lsButton) && pnCtr > 1) {
-                            ShowMessageFX.Warning(getStage(), "Please select atleast 1 slip to be removed.", pxeModuleName, null);
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please select atleast 1 slip to be removed.");
                             return;
                         }
                         if ("btnASCancel".equals(lsButton) && pnCtr > 1) {
-                            ShowMessageFX.Warning(getStage(), "Please select atleast 1 slip to be cancelled.", pxeModuleName, null);
+                            ShowMessageFX.Warning(null, pxeModuleName, "Please select atleast 1 slip to be cancelled.");
                             return;
                         }
                         switch (oTrans.getReservation(lnRow, "cTranStat").toString()) {
-                            case "1":
+                            case "0":
                                 if ("btnASprint".equals(lsButton)) {
-                                    ShowMessageFX.Warning(getStage(), "Slip No. " + oTrans.getReservation(lnRow, 3).toString() + " is not yet approved. Printing Aborted.", pxeModuleName, null);
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Slip No. " + oTrans.getReservation(lnRow, 3).toString() + " is not yet approved. Printing Aborted.");
                                     return;
                                 } else {
                                     selectedItems.add(item);
                                 }
                                 break;
-
+                            case "1":
+                                switch (lsButton) {
+                                    case "btnASCancel":
+                                        ShowMessageFX.Warning(null, pxeModuleName, "You are not allowed to Cancel Slip No. " + oTrans.getReservation(lnRow, 3).toString());
+                                        return;
+                                    case "btnASremove":
+                                        ShowMessageFX.Warning(null, pxeModuleName, "You are not allowed to Remove Slip No. " + oTrans.getReservation(lnRow, 3).toString());
+                                        return;
+                                    case "btnASprint":
+                                        selectedItems.add(item);
+                                }
+                                break;
+                            case "3":
+                                ShowMessageFX.Warning(null, pxeModuleName, "Slip No. " + oTrans.getReservation(lnRow, "sReferNox").toString() + " is already Cancelled.");
+                                return;
                         }
                         pnCtr++;
                     }
@@ -891,7 +910,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                     }
                                 }
                                 if (lbIsCancelled) {
-                                    ShowMessageFX.Information(getStage(), "Reservation cancelled successfully.", pxeModuleName, null);
+                                    ShowMessageFX.Information(null, pxeModuleName, "Reservation cancelled successfully.");
                                 }
                             }
                             break;
@@ -2117,16 +2136,16 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             if (String.valueOf(oTrans.getReservation(lnCtr, "cTranStat")) != null) {
                 switch (String.valueOf(oTrans.getReservation(lnCtr, "cTranStat"))) {
                     case TransactionStatus.STATE_OPEN:
-                        lsInqStat = "For Approval";
+                        lsInqStat = "FOR APPROVAL";
                         break;
                     case TransactionStatus.STATE_CLOSED:
-                        lsInqStat = "Approved";
+                        lsInqStat = "APPROVED";
                         break;
                     case TransactionStatus.STATE_CANCELLED:
-                        lsInqStat = "Cancelled";
+                        lsInqStat = "CANCELLED";
                         break;
                     case TransactionStatus.STATE_POSTED:
-                        lsInqStat = "Posted";
+                        lsInqStat = "POSTED";
                         break;
                 }
             }
@@ -2142,13 +2161,13 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     String.valueOf(oTrans.getReservation(lnCtr, "cResrvTyp")),
                     lsResType,
                     lsAmount,
-                    lsInqStat.toUpperCase(),
+                    lsInqStat,
                     String.valueOf(oTrans.getReservation(lnCtr, "sRemarksx")),
                     lsApprovedBy,
                     lsApprovedDte,
                     lsRsNox,
                     String.valueOf(oTrans.getReservation(lnCtr, "sCompnyNm")),
-                    "",
+                    lsSlipNo,
                     ""));
             lsResDte = "";
             lsResType = "";
