@@ -227,7 +227,6 @@ public class VehicleReservationAdvancesApprovalController implements Initializab
                 }
                 loadTable();
                 selectAllCheckBox.setSelected(false);
-                tblVhclApproval.getItems().removeAll(selectedItems);
                 break;
             case "btnRefresh":
                 tblVhclApproval.refresh();

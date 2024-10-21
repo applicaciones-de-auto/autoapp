@@ -252,7 +252,6 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 }
                 loadTable();
                 selectAllCheckBox.setSelected(false);
-                tblViewActApproval.getItems().removeAll(selectedItems);
                 break;
             case "btnRefresh":
                 tblViewActApproval.refresh();

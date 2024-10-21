@@ -1286,7 +1286,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         CustomCommonUtil.setManaged(false, btnBankAppNew, btnProcess);
 
         CustomCommonUtil.setDisable(true, txtField05, txtField14, txtField11, txtField12, txtField13,
-                btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov);
+                btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel);
         CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10, txtField11,
                 txtField12, txtField13, rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
                 comboBox21, datePicker22, textArea23, textArea24);
@@ -1356,6 +1356,16 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             }
             switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
                 case 0:
+                    switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
+                        case "0":
+                        case "1":
+                        case "6":
+                        case "3":
+                            btnEdit.setVisible(true);
+                            btnEdit.setManaged(true);
+                            break;
+                    }
+                    break;
                 case 1:
                     switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
                         case "1":
@@ -1541,8 +1551,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         if (!tblAdvanceSlip.getItems().isEmpty()) {
             CustomCommonUtil.setDisable(false, btnASCancel, btnASprint);
         }
-        if (fnValue == EditMode.READY || (lbShow)) {
-            btnASprint.setVisible(true);
+        if (fnValue == EditMode.READY) {
             switch (String.valueOf(oTrans.getMasterModel().getMasterModel().getTranStat())) {
                 case "0"://For Follow up
                     rqrmIndex01.setVisible(true);
