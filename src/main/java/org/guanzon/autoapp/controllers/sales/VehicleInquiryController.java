@@ -1289,7 +1289,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel);
         CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10, txtField11,
                 txtField12, txtField13, rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
-                comboBox21, datePicker22, textArea23, textArea24);
+                comboBox21, datePicker22, textArea23);
         if (fnValue == EditMode.ADDNEW) {
             trgvIndex03.setVisible(true);
             trgvIndex04.setVisible(true);
@@ -1406,14 +1406,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             txtField03.setDisable(true);
             txtField09.setDisable(true);
         }
-        if (fnValue == EditMode.ADDNEW) {
-            if (oApp.isMainOffice()) {
-                txtField14.setDisable(!lbShow); // Branch Name
-            } else {
-                txtField14.setDisable(true); // Branch Name
-            }
+        if (oTrans.getMasterModel()
+                .getMasterModel().getTranStat().equals("0")) {
+            btnSndMngerApprov.setDisable(false);
         }
-
         switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case "0":
             case "1":
@@ -1445,9 +1441,12 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 break;
         }
 
-        if (oTrans.getMasterModel()
-                .getMasterModel().getTranStat().equals("0")) {
-            btnSndMngerApprov.setDisable(false);
+        if (fnValue == EditMode.ADDNEW) {
+            if (oApp.isMainOffice()) {
+                txtField14.setDisable(false); // Branch Name
+            } else {
+                txtField14.setDisable(true); // Branch Name
+            }
         }
     }
 
@@ -1455,7 +1454,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         // Set visibility for trgvIndex fields
         trgvIndex03.setVisible(true);
         trgvIndex04.setVisible(true);
-        CustomCommonUtil.setDisable(false, comboBox10, txtField14, comboBox21, datePicker22,
+        CustomCommonUtil.setDisable(false, comboBox10, comboBox21, datePicker22,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnPromoAdd, btnTestDriveModel, textArea23);
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (oTrans.getMasterModel().getMasterModel().getClientTp().equals("1")) {
@@ -1474,9 +1473,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
     private void initInquiryProcessFieldsTrue() {
         trgvIndex03.setVisible(false);
         trgvIndex04.setVisible(false);
-        CustomCommonUtil.setDisable(true, txtField05, txtField09, comboBox10, txtField11, txtField12, txtField13, txtField14, comboBox21, datePicker22,
+        CustomCommonUtil.setDisable(true, txtField05, txtField09, comboBox10, txtField11, txtField12, txtField13, comboBox21, datePicker22,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnPromoAdd, btnPromoRemove, btnTestDriveModel, textArea23);
-        txtField14.setEditable(false); // Branch Name
 
     }
 
@@ -1485,20 +1483,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         vsasCheck01.setVisible(false);
         CustomCommonUtil.setVisible(true, btnFollowUp, btnBankAppNew);
         CustomCommonUtil.setManaged(true, btnFollowUp, btnBankAppNew);
-        CustomCommonUtil.setDisable(true, btnASremove, btnASCancel, btnASprint, comboBox25, comboBox26, btnASadd,
-                txtField27, btnSndMngerApprov);
-        if (pnEditMode == EditMode.READY) {
-            if (!tblAdvanceSlip.getItems().isEmpty()) {
-                btnASprint.setDisable(false);
-                btnASCancel.setDisable(false);
-            }
-        }
-        if (pnEditMode == EditMode.UPDATE) {
-            btnASadd.setDisable(false);
-            if (!tblAdvanceSlip.getItems().isEmpty()) {
-                btnASremove.setDisable(false);
-            }
-        }
+        CustomCommonUtil.setDisable(true, btnASremove, comboBox25, comboBox26,
+                txtField27, btnSndMngerApprov, btnASadd, btnASremove, btnASprint, btnASCancel);
     }
 
     private void initCustomerInquiryFieldsFalse() {
