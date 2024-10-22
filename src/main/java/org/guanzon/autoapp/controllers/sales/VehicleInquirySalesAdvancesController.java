@@ -105,15 +105,15 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     }
 
     private void loadMasterFields() {
-        comboBox01.getSelectionModel().select(Integer.parseInt(oTrans.getReservation(pnRow, "cResrvTyp").toString())); //VSA Type
-        txtField02.setText(oTrans.getReservation(pnRow, "sReferNox").toString());
+        comboBox01.getSelectionModel().select(Integer.parseInt(oTrans.getReservationModel().getDetailModel(pnRow).getResrvTyp())); //VSA Type
+        txtField02.setText(oTrans.getReservationModel().getDetailModel(pnRow).getReferNo());
         if (pbState) { //Add
             txtField03.setText(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
             txtField06.setText("FOR APPROVAL");
         } else {
-            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dTransact")));
-            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
-            switch (oTrans.getReservation(pnRow, "cTranStat").toString()) {
+            txtField03.setText(CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(pnRow).getTransactDte()));
+            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getAmount()))));
+            switch (oTrans.getReservationModel().getDetailModel(pnRow).getTranStat()) {
                 case TransactionStatus.STATE_OPEN:
                     txtField06.setText("FOR APPROVAL");
                     switch (pnIinqStat) {
@@ -155,9 +155,9 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             }
         }
 
-        txtField07.setText((String) oTrans.getReservation(pnRow, "sApprover"));
-        txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dApprovex")));
-        textArea05.setText((String) oTrans.getReservation(pnRow, "sRemarksx"));
+        txtField07.setText(oTrans.getReservationModel().getDetailModel(pnRow).getApprover());
+        txtField08.setText(CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(pnRow).getApproveDte()));
+        textArea05.setText(oTrans.getReservationModel().getDetailModel(pnRow).getRemarks());
     }
 
     public void initPatternFields() {
@@ -211,8 +211,8 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                         lsValue = "0.00";
                     }
                     try {
-                        oTrans.setReservation(pnRow, "nAmountxx", Double.valueOf(txtField04.getText().replace(",", "")));
-                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
+                        oTrans.getReservationModel().getDetailModel(pnRow).setAmount(Double.valueOf(txtField04.getText().replace(",", "")));
+                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getAmount()))));
                     } catch (NumberFormatException e) {
                         System.out.print(e);
                     }
@@ -281,7 +281,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
 
     private void initFields() {
         CustomCommonUtil.setDisable(true, comboBox01, txtField02, txtField03, txtField04, textArea05);
-        if (!oTrans.getReservation(pnRow, "cTranStat").equals("2")) {
+        if (!oTrans.getReservationModel().getDetailModel(pnRow).getTranStat().equals("2")) {
             CustomCommonUtil.setDisable(false, comboBox01, txtField04, textArea05);
         }
     }
@@ -295,24 +295,25 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter value amount.");
             return false;
         }
+        String lsStat = "";
         switch (txtField06.getText()) {
             case "CANCELLED":
-                oTrans.setReservation(pnRow, "cTranStat", TransactionStatus.STATE_CANCELLED);
+                lsStat = TransactionStatus.STATE_CANCELLED;
                 break;
             case "FOR APPROVAL":
-                oTrans.setReservation(pnRow, "cTranStat", TransactionStatus.STATE_OPEN);
+                lsStat = TransactionStatus.STATE_OPEN;
                 break;
             case "APPROVED":
-                oTrans.setReservation(pnRow, "cTranStat", TransactionStatus.STATE_CLOSED);
+                lsStat = TransactionStatus.STATE_CLOSED;
                 break;
             case "POSTED":
-                oTrans.setReservation(pnRow, "cTranStat", TransactionStatus.STATE_POSTED);
+                lsStat = TransactionStatus.STATE_POSTED;
                 break;
         }
-
-        oTrans.setReservation(pnRow, "dTransact", SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
-        oTrans.setReservation(pnRow, "sRemarksx", textArea05.getText());
-        oTrans.setReservation(pnRow, "cResrvTyp", String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
+        oTrans.getReservationModel().getDetailModel(pnRow).setTranStat(lsStat);
+        oTrans.getReservationModel().getDetailModel(pnRow).setTransactDte(SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
+        oTrans.getReservationModel().getDetailModel(pnRow).setRemarks(textArea05.getText());
+        oTrans.getReservationModel().getDetailModel(pnRow).setResrvTyp(String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
         return true;
     }
 
