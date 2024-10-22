@@ -44,6 +44,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -1391,42 +1395,49 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         );
         comboBox29.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                int originalPay = Integer.parseInt(oTrans.getMasterModel().getMasterModel().getPayMode());
-                int originalIndex = comboBox29.getSelectionModel().getSelectedIndex();
-                if (originalIndex >= 0 && originalIndex < comboBox29.getItems().size()) {
-                    switch (originalIndex) {
-                        case 0:
-                            if (oTrans.getVSPFinanceList().size() - 1 == 0) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                        "Are you sure you want to replace payment mode to cash?\n"
-                                        + "if YES: from Downpayment to Promissory Note Amt will be cleared\n"
-                                        + "if NO: it will remain the values.")) {
-                                    oTrans.removeVSPFinance(0);
-                                    oTrans.getMasterModel().getMasterModel().setDownPaym(new BigDecimal(0.00));
-                                    oTrans.getMasterModel().getMasterModel().setChmoStat("0");
-                                    comboBox71.getSelectionModel().select(0);
-                                    oTrans.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal(0.00));
-                                    txtField70.setText("0.00");
-                                    oTrans.getMasterModel().getMasterModel().setDealrRte(0.00);
-                                    oTrans.getMasterModel().getMasterModel().setSlsInRte(0.00);
-                                    clearFinanceFields();
-                                } else {
-                                    Platform.runLater(() -> {
-                                        comboBox29.getSelectionModel().select(originalPay); // Restore previous item
-                                    });
-                                    return;
+                try {
+                    String originalPay = String.valueOf(oTrans.getMasterModel().getMasterModel().getPayMode());
+                    int originalIndex = comboBox29.getSelectionModel().getSelectedIndex();
+                    if (originalIndex >= 0 && originalIndex < comboBox29.getItems().size()) {
+                        switch (originalIndex) {
+                            case 0:
+                                if (oTrans.getVSPFinanceList().size() - 1 == 0) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to replace payment mode to cash?\n"
+                                            + "if YES: from Downpayment to Promissory Note Amt will be cleared\n"
+                                            + "if NO: it will remain the values.")) {
+                                        oTrans.removeVSPFinance(0);
+                                        oTrans.getMasterModel().getMasterModel().setDownPaym(new BigDecimal(0.00));
+                                        oTrans.getMasterModel().getMasterModel().setChmoStat("0");
+                                        comboBox71.getSelectionModel().select(0);
+                                        oTrans.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal(0.00));
+                                        txtField70.setText("0.00");
+                                        oTrans.getMasterModel().getMasterModel().setDealrRte(0.00);
+                                        oTrans.getMasterModel().getMasterModel().setSlsInRte(0.00);
+                                        clearFinanceFields();
+                                    } else {
+                                        Platform.runLater(() -> {
+                                            if (!String.valueOf(originalPay).equals("")) {
+                                                comboBox29.getSelectionModel().select(Integer.parseInt(originalPay));
+                                            }
+                                            // Restore previous item
+                                        });
+                                        return;
+                                    }
                                 }
-                            }
-                            break;
-                        default:
-                            if (oTrans.getVSPFinanceList().size() - 1 < 0) {
-                                oTrans.addVSPFinance();
-                            }
-                            break;
+                                break;
+                            default:
+                                if (oTrans.getVSPFinanceList().size() - 1 < 0) {
+                                    oTrans.addVSPFinance();
+                                }
+                                break;
+                        }
+                        oTrans.getMasterModel().getMasterModel().setPayMode(String.valueOf(comboBox29.getSelectionModel().getSelectedIndex()));
+                        initFields(pnEditMode);
+                        loadMasterFields();
                     }
-                    oTrans.getMasterModel().getMasterModel().setPayMode(String.valueOf(comboBox29.getSelectionModel().getSelectedIndex()));
-                    initFields(pnEditMode);
-                    loadMasterFields();
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -1453,7 +1464,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox61.setOnAction(event -> {
+        comboBox61.setOnAction(event
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTrans.getMasterModel().getMasterModel().setTPLStat(String.valueOf(comboBox61.getSelectionModel().getSelectedIndex()));
                 if (comboBox61.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1468,7 +1480,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox64.setOnAction(event -> {
+        comboBox64.setOnAction(event
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox64.getSelectionModel().getSelectedIndex() >= 0) {
                     oTrans.getMasterModel().getMasterModel().setInsCode("");
@@ -1513,7 +1526,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox66.setOnAction(e -> {
+        comboBox66.setOnAction(e
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 int selectedIndex = comboBox66.getSelectionModel().getSelectedIndex();
                 if (selectedIndex >= 0) {
@@ -1538,7 +1552,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         }
         );
 
-        comboBox67.setOnAction(e -> {
+        comboBox67.setOnAction(e
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox67.getSelectionModel().getSelectedIndex() >= 0) {
                     oTrans.getMasterModel().getMasterModel().setInsurYr(Integer.valueOf(comboBox67.getValue()));
@@ -1559,7 +1574,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox71.setOnAction(e -> {
+        comboBox71.setOnAction(e
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTrans.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
                 if (comboBox71.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1584,24 +1600,46 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         comboBox37.setValue(null);
     }
 
+    private boolean isInquiryEmpty() {
+        oTrans.getMasterModel().getMasterModel().setClientID("");
+        oTrans.getMasterModel().getMasterModel().setInqCltID("");
+        oTrans.getMasterModel().getMasterModel().setInqCltNm("");
+        oTrans.getMasterModel().getMasterModel().setCoCltID("");
+        oTrans.getMasterModel().getMasterModel().setIsVhclNw("");
+        oTrans.getMasterModel().getMasterModel().setCSNo("");
+        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
+        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+        oTrans.getMasterModel().getMasterModel().setKeyNo("");
+        oTrans.getMasterModel().getMasterModel().setPayMode("");
+        oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
+        oTrans.getMasterModel().getMasterModel().setBankName("");
+        oTrans.getMasterModel().getMasterModel().setBrBankNm("");
+        if (!oTrans.getVSPFinanceList().isEmpty()) {
+            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
+            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
+        }
+        if (oTrans.getVSPFinanceList().size() - 1 == 0) {
+            oTrans.removeVSPFinance(0);
+        }
+        oTrans.getMasterModel().getMasterModel().setUnitPrce(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setDownPaym(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setDealrRte(0.00);
+        oTrans.getMasterModel().getMasterModel().setDealrAmt(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setSlsInRte(0.00);
+        oTrans.getMasterModel().getMasterModel().setSlsInAmt(new BigDecimal(0.00));
+        return true;
+    }
+
     @Override
     public void initTextFieldsProperty() {
         txtField15.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setClientID("");
-                        oTrans.getMasterModel().getMasterModel().setCoCltID("");
-                        oTrans.getMasterModel().getMasterModel().setIsVhclNw("");
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTrans.getMasterModel().getMasterModel().setKeyNo("");
-                        clearFields();
-                        clearFinanceFields();
+                        if (isInquiryEmpty()) {
+                            clearFields();
+                            clearFinanceFields();
+                        }
                     }
                 }
                 initFields(pnEditMode);
@@ -1704,7 +1742,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     if (newValue.isEmpty()) {
                         oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
                         oTrans.getMasterModel().getMasterModel().setBankName("");
-                        if (oTrans.getVSPFinanceList().size() > 0) {
+                        if (!oTrans.getVSPFinanceList().isEmpty()) {
                             oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
                             oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
                         }
@@ -1785,6 +1823,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void clearFields() {
         CustomCommonUtil.setText("", txtField02, txtField03, txtField04, txtField06, txtField07, txtField08,
                 txtField10, txtField11, txtField12, txtField13, txtField14, txtField16, txtField18,
@@ -1802,7 +1841,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
                 comboBox64, comboBox66, comboBox67, comboBox69, comboBox71);
         loComboBox.forEach(cmB -> cmB.setValue(null));
-        datePicker09.setValue(LocalDate.of(1999, Month.JANUARY, 1));
+        datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         brandNewCat.setSelected(false);
         preOwnedCat.setSelected(false);
         CustomCommonUtil.setSelected(false, chckBoxSpecialAccount, chckBoxRustProof,
@@ -2396,8 +2435,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 txtField74, chckBoxRustProof, chckBoxPermaShine, chckBoxUndercoat, chckBoxTint,
                 btnAdditionalLabor, btnAddParts, datePicker09
         );
-        tabAddOns.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
-        tabDetails.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
+//        tabAddOns.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
+//        tabDetails.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
         //depends if empty or not
         CustomCommonUtil.setDisable(!(lbShow && !txtField15.getText().isEmpty()),
                 txtField16, txtField18,
