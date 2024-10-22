@@ -2435,8 +2435,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 txtField74, chckBoxRustProof, chckBoxPermaShine, chckBoxUndercoat, chckBoxTint,
                 btnAdditionalLabor, btnAddParts, datePicker09
         );
-//        tabAddOns.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
-//        tabDetails.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
+        tabAddOns.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
+        tabDetails.setDisable(!(lbShow && !txtField15.getText().isEmpty()));
         //depends if empty or not
         CustomCommonUtil.setDisable(!(lbShow && !txtField15.getText().isEmpty()),
                 txtField16, txtField18,
