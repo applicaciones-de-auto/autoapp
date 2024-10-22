@@ -856,10 +856,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                             ShowMessageFX.Warning(null, pxeModuleName, "Please select atleast 1 slip to be cancelled.");
                             return;
                         }
-                        switch (oTrans.getReservation(lnRow, "cTranStat").toString()) {
+                        switch (oTrans.getReservationModel().getReservation(lnRow).getTranStat()) {
                             case TransactionStatus.STATE_OPEN: //For Approval
                                 if ("btnASprint".equals(lsButton)) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, "Slip No. " + oTrans.getReservation(lnRow, 3).toString() + " is not yet approved. Printing Aborted.");
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Reservation row " + (lnRow + 1) + " is not yet approved. Printing Aborted.");
                                     return;
                                 }
                                 break;
@@ -904,7 +904,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                             oTrans.removeReservation(lnRow);
                                             System.out.println("status: " + oTrans.getMasterModel().getMasterModel().getTranStat());
                                         } else {
-                                            ShowMessageFX.Warning(null, pxeModuleName, "Reservation No. " + String.valueOf(oTrans.getReservation(lnRow, "sReferNox")) + " is already saved.\n\nCancel reservation instead.");
+                                            ShowMessageFX.Warning(null, pxeModuleName, "Reservation row " + (lnRow + 1) + " is already saved.\n\nCancel reservation instead.");
                                         }
                                     }
                                 }
@@ -927,7 +927,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                     lnSelRow[lnCtr] = lnRow;
                                     lnCtr++;
                                 }
-
                                 try {
                                     loadVehicleSalesAdvancesPrint(lnSelRow);
                                 } catch (SQLException ex) {
@@ -943,6 +942,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     loadAdvancesSlip();
                 }
                 break;
+
             case "btnBankAppNew":
                 loJSON = oTransBank.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
@@ -1267,7 +1267,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
     }
 
     @Override
-    public void initFields(int fnValue) {
+    public void initFields(int fnValue
+    ) {
         pnRow = 0;
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         //Inquiry button
