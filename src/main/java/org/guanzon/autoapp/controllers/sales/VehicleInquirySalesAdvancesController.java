@@ -322,7 +322,6 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     private boolean setSelection() {
         if (comboBox01.getSelectionModel().getSelectedIndex() < 0) {
             ShowMessageFX.Warning("No `Slip Type` selected.", pxeModuleName, "Please select `Slip Type` value.");
-            comboBox01.requestFocus();
             return false;
         }
         return true;
