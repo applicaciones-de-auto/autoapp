@@ -154,8 +154,11 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                     break;
             }
         }
-
-        txtField07.setText(oTrans.getReservationModel().getDetailModel(pnRow).getApprover());
+        String lsApprover = "";
+        if (oTrans.getReservationModel().getDetailModel(pnRow).getApprover() != null) {
+            lsApprover = String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getApprover());
+        }
+        txtField07.setText(lsApprover);
         txtField08.setText(CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(pnRow).getApproveDte()));
         textArea05.setText(oTrans.getReservationModel().getDetailModel(pnRow).getRemarks());
     }
