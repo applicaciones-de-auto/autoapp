@@ -244,7 +244,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     }
 
                     if (!lbIsEmpty) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "No Stock ID detected, Please select or enter value in any row.");
+                        ShowMessageFX.Warning(null, pxeModuleName, "No Accessories Number detected, Please select or enter value in any row.");
                         return;
                     }
                     loJSON = oTransVSPRequest.saveTransaction();
