@@ -1132,11 +1132,11 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/insurance/InsurancePolicyPrint.fxml"));
-            InsurancePolicyPrintController loControl = new InsurancePolicyPrintController();
-            loControl.setGRider(oApp);
-            loControl.setObject(oTrans);
-            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
-            fxmlLoader.setController(loControl);
+//            InsurancePolicyPrintController loControl = new InsurancePolicyPrintController();
+//            loControl.setGRider(oApp);
+//            loControl.setObject(oTrans);
+//            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
+//            fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
