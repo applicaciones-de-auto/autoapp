@@ -201,7 +201,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
-
+        initTableKeyPressed();
         addRowVSPLabor();
         tblViewLabor.setOnMouseClicked(this::tblLabor_Clicked);
         tblViewAccessories.setOnMouseClicked(this::tblParts_Clicked);
