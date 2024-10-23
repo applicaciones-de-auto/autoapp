@@ -235,6 +235,18 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
+                    boolean lbIsEmpty = false;
+                    for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
+                        if (!oTransVSPRequest.getVSPPartsModel().getDetailModel(lnCtr).getStockID().isEmpty()) {
+                            lbIsEmpty = true;
+                            break;
+                        }
+                    }
+
+                    if (!lbIsEmpty) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "No Stock ID detected, Please select or enter value in any row.");
+                        return;
+                    }
                     loJSON = oTransVSPRequest.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VSP Parts Request Information", (String) loJSON.get("message"));
