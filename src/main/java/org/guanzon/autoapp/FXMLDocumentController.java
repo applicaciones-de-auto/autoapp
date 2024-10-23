@@ -205,7 +205,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuSalesPartsRequest;
     @FXML
     private MenuItem mnuServiceJobOrder;
-    private MenuItem mnuAddOnsApproval;
     @FXML
     private MenuItem mnuSalesExecutive;
     @FXML
@@ -492,9 +491,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 break;
             case "Vehicle Sales Proposal":
                 mnuVSPEntry.fire();
-                break;
-            case "VSP Approval":
-                mnuAddOnsApproval.fire();
                 break;
             case "Sales Job Order":
                 mnuSalesJobOrder.fire();

@@ -34,6 +34,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -1054,10 +1058,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             }
             techData.add(new TechnicianLabor(
                     String.valueOf(lnCtr + 1),
-                    lsTechID,
-                    lsTechName,
-                    lsLaborCde,
-                    lsLaborDesc));
+                    lsTechID.toUpperCase(),
+                    lsTechName.toUpperCase(),
+                    lsLaborCde.toUpperCase(),
+                    lsLaborDesc.toUpperCase()));
             lsTechName = "";
             lsTechID = "";
             lsLaborCde = "";

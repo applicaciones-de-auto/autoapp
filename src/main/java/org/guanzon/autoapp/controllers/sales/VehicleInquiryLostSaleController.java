@@ -273,6 +273,44 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 } else {
                     return;
                 }
+                if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
+                    if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select Reason.");
+                        return;
+                    }
+                }
+                if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
+                    if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
+                        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+                            case 0:
+                            case 2:
+                                if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Goods Category.");
+                                    return;
+                                }
+                                if (txtField04.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Make Competitor.");
+                                    return;
+                                }
+                                if (txtField05.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Dealer Competitor.");
+                                    return;
+                                }
+                                break;
+                            case 1:
+                                if (txtField04.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Make Competitor.");
+                                    return;
+                                }
+                                if (txtField05.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Dealer Competitor.");
+                                    return;
+                                }
+                                break;
+                        }
+                    }
+                }
+
                 if (textArea06.getText().length() < 20) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter at least 20 characters.");
                     textArea06.requestFocus();
@@ -348,6 +386,8 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 String lsReason = reasons[selectedIndex];
                 oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
                 oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                CustomCommonUtil.setText("", txtField04, txtField05);
+                comboBox03.setValue("");
                 if (selectedIndex != 1) {
                     comboBox03.setValue("");
                 } else {

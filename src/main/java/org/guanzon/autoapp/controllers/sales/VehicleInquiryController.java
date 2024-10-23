@@ -1318,8 +1318,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         if (fnValue == EditMode.READY) {
             trgvIndex03.setVisible(false);
             trgvIndex04.setVisible(false);
-            CustomCommonUtil.setVisible(true, btnLostSale);
-            CustomCommonUtil.setManaged(true, btnLostSale);
             switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
                 case "0"://For Follow up
                     if (tabPaneMain.getSelectionModel().getSelectedIndex() == 1) {
@@ -1328,8 +1326,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         btnProcess.setVisible(true);
                         btnProcess.setManaged(true);
                     }
-                    btnFollowUp.setVisible(true);
-                    btnFollowUp.setManaged(true);
+                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
                     break;
                 case "1": //On process
                     if (comboBox25.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1342,16 +1340,16 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         btnBankAppNew.setManaged(true);
                     }
                     //For Follow up
-                    btnFollowUp.setVisible(true);
-                    btnFollowUp.setManaged(true);
+                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
                     break;
                 case "3": //VSP
                     CustomCommonUtil.setVisible(true, btnBankAppNew, btnFollowUp);
                     CustomCommonUtil.setManaged(true, btnBankAppNew, btnFollowUp);
                     break;
-                case "6":
-                    btnFollowUp.setVisible(true);
-                    btnFollowUp.setManaged(true);
+                case "6": // For FollowUp
+                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
                     break;
 
             }

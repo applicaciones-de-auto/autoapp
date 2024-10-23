@@ -94,7 +94,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     private Button btnAdd, btnEdit, btnSave, btnBrowse, btnInsAppCancel, btnCancel, btnPrint, btnClose, btnPayment;
 
     @FXML
-    private Label lblPolicyNo, lblPrintDate, lblStatus;
+    private Label lblPolicyNo, lblPrintDate, lblStatus, lblPrintBy;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -278,7 +278,11 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
         }
         lblPolicyNo.setText(lsPolicyNo);
-        lblPrintDate.setText("");
+        String lsPrintDate = "";
+        lblPrintDate.setText(lsPrintDate);
+        String lsPrintBy = "";
+        lblPrintBy.setText(lsPrintBy);
+
         return true;
     }
 
@@ -743,7 +747,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 datePicker05, datePicker06, datePicker11);
         loDatePicker.forEach(dp -> dp.setValue(LocalDate.of(1900, Month.JANUARY, 1)));
         CustomCommonUtil.setValue(null, comboBox03, comboBox04, comboBox09, comboBox12, comboBox18, comboBox21, comboBox22, comboBox28);
-        CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus);
+        CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus, lblPrintBy);
     }
 
     @Override

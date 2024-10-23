@@ -979,7 +979,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField15.setText("");
-                                txtField15.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -992,7 +991,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField16.setText("");
-                                txtField16.requestFocus();
                                 return;
                             }
                             break;
@@ -1003,7 +1001,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField18.setText("");
-                                txtField18.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1024,7 +1021,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField20.setText("");
-                                txtField20.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1045,7 +1041,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField21.setText("");
-                                txtField21.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1066,7 +1061,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField22.setText("");
-                                txtField22.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1087,7 +1081,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField23.setText("");
-                                txtField23.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1099,6 +1092,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                                 txtField32.setText(lsBrBank);
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField32.setText("");
                                 return;
                             }
                             initFields(pnEditMode);
@@ -1574,8 +1568,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox71.setOnAction(e
-                -> {
+        comboBox71.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTrans.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
                 if (comboBox71.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1825,8 +1818,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     @Override
     @SuppressWarnings("unchecked")
     public void clearFields() {
-        CustomCommonUtil.setText("", txtField02, txtField03, txtField04, txtField06, txtField07, txtField08,
-                txtField10, txtField11, txtField12, txtField13, txtField14, txtField16, txtField18,
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03, txtField04, txtField06, txtField07, txtField08,
+                txtField10, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16, txtField18,
                 txtField19, txtField20, txtField21, txtField22, txtField23, txtField24, txtField25, txtField32, txtField36,
                 txtField62, txtField65, txtField75, txtField81);
 
@@ -2448,6 +2441,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 double ldVhclSRP = Double.parseDouble(txtField30.getText().replace(",", ""));
                 switch (comboBox29.getSelectionModel().getSelectedIndex()) {
                     case 0:
+                        comboBox71.getSelectionModel().select(0);
                         CustomCommonUtil.setDisable(true, txtField31, txtField59, comboBox71);
                         CustomCommonUtil.setDisable(!lbShow, txtField51, txtField54, txtField56);
                         break;
@@ -2762,8 +2756,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 for (Tab tab : tabpane.getTabs()) {
                     if (tab.getText().equals(lsFormName)) {
                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                "You have opened Vehicle Sales Proposal.\n"
-                                + "Are you sure you want to convert this vsp for a new sales job order record?")) {
+                                "You have opened Sales Job Order.\n"
+                                + "Are you sure you want to add Sales Job Order?")) {
 
                             tabpane.getSelectionModel().select(tab);
                             poUnload.unloadForm(AnchorMain, oApp, lsFormName); // Unload current form

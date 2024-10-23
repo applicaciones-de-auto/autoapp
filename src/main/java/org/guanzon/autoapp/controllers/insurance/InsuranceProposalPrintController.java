@@ -107,6 +107,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             case "btnPrint":
                 try {
                 if (JasperPrintManager.printReport(poJasperPrint, true)) {
+
                     ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
                     CommonUtils.closeStage(btnClose);
                 } else {
