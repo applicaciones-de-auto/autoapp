@@ -114,6 +114,7 @@ public class VGPPrintController implements Initializable, ScreenInterface, GPrin
             case "btnPrint":
                 try {
                 if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                    oTransPrint.getMasterModel().getMasterModel().setPrinted("1");
                     ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
                     CommonUtils.closeStage(btnClose);
                 } else {
@@ -203,12 +204,12 @@ public class VGPPrintController implements Initializable, ScreenInterface, GPrin
                 switch (String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemType())) {
                     case "l":
                         lsItem = "LABOR";
-                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getLaborCde());
+                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                         lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
                         break;
                     case "p":
                         lsItem = "PARTS";
-                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getStockID());
+                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                         lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
                         break;
                 }

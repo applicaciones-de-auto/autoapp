@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -87,7 +93,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
     @FXML
     private Button btnAdd, btnEdit, btnSave, btnBrowse, btnCancel, btnPrint, btnActivityHistory, btnActCancel, btnClose, btnAddSource, btnAddRowTasks, btnRemoveTasks, btnAddRowBudget, btnRemoveBudget, btnTabAdd, btnTabRem;
     @FXML
-    private Label lblApprovedBy, lblApprovedDate, lblCancelStatus, lblActivityID, lblActivityIDValue;
+    private Label lblApprovedDate, lblCancelStatus, lblActivityID, lblActivityIDValue;
     @FXML
     private TabPane tabPaneMain;
     @FXML
@@ -141,8 +147,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
         initTextFieldFocus();
         initTextKeyPressed();
         initButtonsClick();
-        initComboBoxItems();
         initFieldsAction();
+        initComboBoxItems();
         initTextFieldsProperty();
         clearFields();
         clearTables();
@@ -188,7 +194,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     break;
             }
         }
-        txtField06.setText(oTrans.getModel().getModel().getActTypDs());
+        txtField06.setText(oTrans.getModel().getModel().getActTypDs().trim());
         textArea07.setText(oTrans.getModel().getModel().getActTitle());
         textArea08.setText(oTrans.getModel().getModel().getActDesc());
         textArea09.setText(oTrans.getModel().getModel().getLogRemrk());
@@ -199,19 +205,16 @@ public class ActivityInformationController implements Initializable, ScreenInter
         txtField14.setText(oTrans.getModel().getModel().getLocation());
         txtField15.setText(String.valueOf(oTrans.getModel().getModel().getTrgtClnt()));
         txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
-
-//        if (oTrans.getModel().getModel().getApproved() != null) {
-//            lblApprovedBy.setText(oTrans.getModel().getModel().getApproved());
-//            if (oTrans.getModel().getModel().getApprovedDte() != null && !oTrans.getModel().getModel().getApprovedDte().toString().isEmpty()) {
-//                lblApprovedDate.setText(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApprovedDte()));//dApproved
-//            }
-//        } else {
-//            lblApprovedBy.setText("");
-//            lblApprovedDate.setText("");//dApproved
-//        }
+        String lsApprvDate = "";
+        if (oTrans.getModel().getModel().getApproveDte() != null) {
+            lsApprvDate = CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApproveDte());//dApproved
+        }
+        lblApprovedDate.setText(lsApprvDate);
         switch (oTrans.getModel().getModel().getTranStat()) {
+            case "0":
+                lblCancelStatus.setText("Deactivated");
             case "1":
-                lblCancelStatus.setText("Active");
+                lblCancelStatus.setText("For Approval");
                 break;
             case "2":
                 lblCancelStatus.setText("Cancelled");
@@ -326,60 +329,70 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField06":
-                        loJSON = oTrans.searchEventType(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField06.setText(oTrans.getModel().getModel().getActTypDs());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField06.setText("");
-                            return;
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField06":
+                                loJSON = oTrans.searchEventType(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField06.setText(oTrans.getModel().getModel().getActTypDs());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField06.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField11":
+                                loJSON = oTrans.searchDepartment(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField11.setText(oTrans.getModel().getModel().getDeptName());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField11.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField12":
+                                loJSON = oTrans.searchEmployee(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField12.setText(oTrans.getModel().getModel().getEmpInCharge());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField12.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField13":
+                                loJSON = oTrans.searchBranch(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField13.setText(oTrans.getModel().getModel().getBranchNm());
+                                    txtField14.setText(oTrans.getModel().getModel().getLocation());
+                                    checkExistingActivityInformation();
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField13.setText("");
+                                    return;
+                                }
+                                break;
                         }
+                        initFields(pnEditMode);
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
-                    case "txtField11":
-                        loJSON = oTrans.searchDepartment(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField11.setText(oTrans.getModel().getModel().getDeptName());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField11.setText("");
-                            return;
-                        }
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         break;
-                    case "txtField12":
-                        loJSON = oTrans.searchEmployee(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField12.setText(oTrans.getModel().getModel().getEmpInCharge());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField12.setText("");
-                            return;
-                        }
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
-                    case "txtField13":
-                        loJSON = oTrans.searchBranch(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField13.setText(oTrans.getModel().getModel().getBranchNm());
-                            txtField14.setText(oTrans.getModel().getModel().getLocation());
-                            checkExistingActivityInformation();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField13.setText("");
-                            return;
-                        }
+                    default:
                         break;
                 }
-                initFields(pnEditMode);
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
     }
@@ -679,8 +692,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
                             oTrans.getModel().getModel().setActSrce("");
                             txtField06.setText("");
                             break;
-                        default:
-                            break;
                     }
                     checkExistingActivityInformation();
                 }
@@ -697,8 +708,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
-                                oTrans.getModel().getModel().setActTypDs("");
                                 oTrans.getModel().getModel().setActSrce("");
+                                oTrans.getModel().getModel().setActTypDs("");
                             }
                         }
                     }
@@ -767,9 +778,9 @@ public class ActivityInformationController implements Initializable, ScreenInter
                 txtField11, txtField12, txtField13, txtField14);
         CustomCommonUtil.setText("", textArea07, textArea08,
                 textArea09, textArea10);
-        CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate, lblApprovedBy);
-        dateFrom03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
-        dateTo04.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate())));
+        CustomCommonUtil.setText("", lblCancelStatus, lblApprovedDate);
+        dateFrom03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        dateTo04.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         comboBox05.setValue("");
         txtField15.setText("0");
         txtField16.setText("0.00");
@@ -924,7 +935,6 @@ public class ActivityInformationController implements Initializable, ScreenInter
 
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/parameters/ActivitySourceType.fxml"));
-
             ActivitySourceTypeController loControl = new ActivitySourceTypeController();
             loControl.setGRider(oApp);
             fxmlLoader.setController(loControl);
@@ -1042,6 +1052,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }
@@ -1125,6 +1136,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }
@@ -1204,6 +1216,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             }
             if (event.getClickCount() == 1) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             }
         }
     }

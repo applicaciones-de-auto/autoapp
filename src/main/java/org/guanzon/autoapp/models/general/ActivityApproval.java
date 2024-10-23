@@ -9,22 +9,23 @@ import javafx.scene.control.CheckBox;
 
 /**
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class ActivityApproval {
 
-    private SimpleStringProperty tblindex01; // Row
+    private SimpleStringProperty tblindex01;
     private CheckBox select;
-    private SimpleStringProperty tblindex02; //ActNo
-    private SimpleStringProperty tblindex03; //ActPeriod From
-    private SimpleStringProperty tblindex04; //Activity Title
-    private SimpleStringProperty tblindex05; //Person in Charge
-    private SimpleStringProperty tblindex06; //Department
-    private SimpleStringProperty tblindex07; //Branch in Charge
-    private SimpleStringProperty tblindex08; //Activity Location
-    private SimpleStringProperty tblindex09; //Budget Proposal
-    private SimpleStringProperty tblindex10; //ActPeriod From To
-    private SimpleStringProperty tblindex11; //Activity Type Source
+    private SimpleStringProperty tblindex02;
+    private SimpleStringProperty tblindex03;
+    private SimpleStringProperty tblindex04;
+    private SimpleStringProperty tblindex05;
+    private SimpleStringProperty tblindex06;
+    private SimpleStringProperty tblindex07;
+    private SimpleStringProperty tblindex08;
+    private SimpleStringProperty tblindex09;
+    private SimpleStringProperty tblindex10;
+    private SimpleStringProperty tblindex11;
+    private SimpleStringProperty tblindex12;
 
     public ActivityApproval(String tblindex01,
             String tblindex02,
@@ -36,7 +37,8 @@ public class ActivityApproval {
             String tblindex08,
             String tblindex09,
             String tblindex10,
-            String tblindex11
+            String tblindex11,
+            String tblindex12
     ) {
         this.tblindex01 = new SimpleStringProperty(tblindex01);
         this.select = new CheckBox();
@@ -50,6 +52,7 @@ public class ActivityApproval {
         this.tblindex09 = new SimpleStringProperty(tblindex09);
         this.tblindex10 = new SimpleStringProperty(tblindex10);
         this.tblindex11 = new SimpleStringProperty(tblindex11);
+        this.tblindex12 = new SimpleStringProperty(tblindex12);
     }
 
     public String getTblindex01() {
@@ -146,6 +149,14 @@ public class ActivityApproval {
 
     public void setTblindex11(String tblindex11) {
         this.tblindex11.set(tblindex11);
+    }
+
+    public String getTblindex12() {
+        return tblindex12.get();
+    }
+
+    public void setTblindex12(String tblindex12) {
+        this.tblindex12.set(tblindex12);
     }
 
 }

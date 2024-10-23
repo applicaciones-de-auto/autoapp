@@ -19,6 +19,7 @@ D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\mode
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\insurance\InsuranceProposalPrintController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\ActivityLocationController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\LetMeInn.java
+D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\sales\VehicleReservationAdvancesApprovalController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parameters\VehicleColorController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\sales\VehicleTestDriveController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\ActivityInformationController.java
@@ -31,6 +32,7 @@ D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\mode
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parts\ItemInfoModelController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parameters\BinController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\sales\VSPReservationInquirers.java
+D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\sales\InquiryApproval.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\service\TechnicianServiceController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\utils\ExcelExporterUtil.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\VehicleOwnerHistory.java
@@ -56,6 +58,7 @@ D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\mode
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\ActivityInformation.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\components\ViewPhotoController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\ActivityApprovalController.java
+D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\sales\VehicleInquiryApprovalController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\sales\JOVSPAccessoriesController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\VehicleComponents.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\sales\InquiryVehicleBankApplications.java
@@ -67,6 +70,7 @@ D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\mode
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\CustomerSocialMediaController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\ActivityPrintController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parts\ItemInfoExpandModelController.java
+D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\sales\VSPApproval.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\ActivityVehicle.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\sales\InquiryVehicleSalesAdvances.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parameters\SectionController.java
@@ -87,6 +91,7 @@ D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\inte
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\CustomerMobile.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\CustomerVehicleInfo.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\models\general\CustomerSocialMedia.java
+D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\insurance\InsuranceProposalApprovalController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\parameters\VehicleDescriptionController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\CustomerVehicleInfoController.java
 D:\Guanzon\GMC SEG Folder - Maven\autoapp\src\main\java\org\guanzon\autoapp\controllers\general\TechnicianController.java

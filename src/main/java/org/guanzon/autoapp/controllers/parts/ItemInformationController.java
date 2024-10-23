@@ -411,7 +411,7 @@ public class ItemInformationController implements Initializable, ScreenInterface
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Inventory Information");
+                        poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     } else {
                         ShowMessageFX.Warning(null, "Warning", "Please notify the system administrator to configure the null value at the close button.");
                     }

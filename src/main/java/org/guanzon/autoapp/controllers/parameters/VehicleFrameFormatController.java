@@ -172,9 +172,9 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
             switch (lnIndex) {
                 case 4:
                     if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                        oTrans.getModel().getModel().setFrmePtrn(lsValue);
-                    } else {
                         oTransMakeFrameFormat.getModel().getModel().setFrmePtrn(lsValue);
+                    } else {
+                        oTrans.getModel().getModel().setFrmePtrn(lsValue);
                     }
                     break;
                 case 5:
@@ -213,15 +213,6 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                         switch (txtFieldID) {
                             case "txtField02":
                                 if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                                    loJSON = oTrans.searchMake(lsValue, true);
-                                    if (!"error".equals(loJSON.get("result"))) {
-                                        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
-                                    } else {
-                                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                                        txtField02.setText("");
-                                        return;
-                                    }
-                                } else {
                                     loJSON = oTransMakeFrameFormat.searchMake(lsValue, true);
                                     if (!"error".equals(loJSON.get("result"))) {
                                         txtField02.setText(oTransMakeFrameFormat.getModel().getModel().getMakeDesc());
@@ -230,10 +221,19 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                                         txtField02.setText("");
                                         return;
                                     }
+                                } else {
+                                    loJSON = oTrans.searchMake(lsValue, true);
+                                    if (!"error".equals(loJSON.get("result"))) {
+                                        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
+                                    } else {
+                                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                        txtField02.setText("");
+                                        return;
+                                    }
                                 }
                                 break;
                             case "txtField03":
-                                if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
+                                if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
                                     loJSON = oTrans.searchModel(lsValue);
                                     if (!"error".equals(loJSON.get("result"))) {
                                         txtField03.setText(oTrans.getModel().getModel().getModelDsc());
@@ -284,6 +284,19 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                 if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
                     clearFields();
                     if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
+                        oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
+                        loJSON = oTransMakeFrameFormat.newRecord();
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            if (pbOpenEvent) {
+                                oTransMakeFrameFormat.getModel().getModel().setMakeID(psMakeID);
+                                oTransMakeFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
+                            }
+                            loadMasterFields();
+                            pnEditMode = oTransMakeFrameFormat.getEditMode();
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        }
+                    } else {
                         oTrans = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
                         loJSON = oTrans.newRecord();
                         if ("success".equals((String) loJSON.get("result"))) {
@@ -295,19 +308,6 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                             }
                             loadMasterFields();
                             pnEditMode = oTrans.getEditMode();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        }
-                    } else {
-                        oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
-                        loJSON = oTransMakeFrameFormat.newRecord();
-                        if ("success".equals((String) loJSON.get("result"))) {
-                            if (pbOpenEvent) {
-                                oTransMakeFrameFormat.getModel().getModel().setMakeID(psMakeID);
-                                oTransMakeFrameFormat.getModel().getModel().setMakeDesc(psMakeDesc);
-                            }
-                            loadMasterFields();
-                            pnEditMode = oTransMakeFrameFormat.getEditMode();
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         }
@@ -337,7 +337,7 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                         if (ShowMessageFX.YesNo(null, "Vehicle Frame Format Information Saving....", "Are you sure, do you want to save?")) {
                             loJSON = oTransMakeFrameFormat.saveRecord();
                             if ("success".equals((String) loJSON.get("result"))) {
-                                ShowMessageFX.Information(null, "Vehicle FrameFormat Information", (String) loJSON.get("message"));
+                                ShowMessageFX.Information(null, "Vehicle Frame Format Information", (String) loJSON.get("message"));
                                 loJSON = oTransMakeFrameFormat.openRecord(oTransMakeFrameFormat.getModel().getModel().getMakeID(), oTransMakeFrameFormat.getModel().getModel().getEntryNo());
                                 if ("success".equals((String) loJSON.get("result"))) {
                                     loadMasterFields();
@@ -446,12 +446,13 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                         if (newValue != null) {
                             if (newValue.isEmpty()) {
                                 if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
-                                    oTrans.getModel().getModel().setMakeID("");
-                                    oTrans.getModel().getModel().setModelDsc("");
-                                    txtField03.setText("");
-                                } else {
-                                    oTransMakeFrameFormat.getModel().getModel().setMakeID("");
-
+                                    if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
+                                        oTransMakeFrameFormat.getModel().getModel().setMakeID("");
+                                    } else {
+                                        oTrans.getModel().getModel().setMakeID("");
+                                        oTrans.getModel().getModel().setModelDsc("");
+                                        txtField03.setText("");
+                                    }
                                 }
                             }
                         }
@@ -474,6 +475,7 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
     }
 
     @Override
+
     public void clearTables() {
 
     }

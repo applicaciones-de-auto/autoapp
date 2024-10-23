@@ -1,6 +1,8 @@
 package org.guanzon.autoapp.controllers.general;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.sales.Activity;
+import org.guanzon.autoapp.interfaces.GApprovalInterface;
 import org.guanzon.autoapp.models.general.ActivityApproval;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
@@ -36,32 +40,27 @@ import org.json.simple.JSONObject;
  *
  * @author John Dave
  */
-public class ActivityApprovalController implements Initializable, ScreenInterface {
+public class ActivityApprovalController implements Initializable, ScreenInterface, GApprovalInterface {
 
     private GRider oApp;
-//    private Activity oTransApproval;
-    private int poCtr = 0;
+    private Activity oTrans;
     private final String pxeModuleName = "Activity Approval"; //Form Title
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    ObservableList<String> cFilter = FXCollections.observableArrayList("Activity No.", "Activity Date", "Activity Title", "Activity Type",
-            "Person in Charge", "Department");
-    ObservableList<String> cType = FXCollections.observableArrayList("EVENT", "PROMO", "SALES");
+    ObservableList<String> cComboFilter = FXCollections.observableArrayList("ACTIVITY NO", "ACTIVITY DATE", "ACTIVITY TITLE", "ACTIVITY TYPE",
+            "PERSON IN CHARGE", "DEPARTMENT");
+    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
 
-    private ObservableList<ActivityApproval> actApprovalData = FXCollections.observableArrayList();
+    private ObservableList<ActivityApproval> poActApprovalData = FXCollections.observableArrayList();
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnApproved, btnClose, btnActNo, btnActTitle, btnPerson, btnDepart, btnDate, btnType;
-    @FXML
-    private ComboBox<String> comboFilter, comboType;
+    private Button btnApproved;
     @FXML
     private TextField txtFieldSearch;
     @FXML
-    private Label lFrom, lTo, lbTotalBudget;
+    private Label lbTotalBudget;
     @FXML
-    private DatePicker fromDate, toDate;
-    @FXML
-    private Button btnRefresh;
+    private Button btnRefresh, btnFilter, btnClose;
     @FXML
     private TableView<ActivityApproval> tblViewActApproval;
     @FXML
@@ -70,6 +69,12 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
     private TableColumn<ActivityApproval, Boolean> tblindexselect;
     @FXML
     private CheckBox selectAllCheckBox;
+    @FXML
+    private ComboBox<String> comboBoxFilter;
+    @FXML
+    private Label lblFrom, lblTo;
+    @FXML
+    private DatePicker datePickerFrom, datePickerTo;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -81,354 +86,281 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        initActApprovalTable();
-//        initOtherUtils();
-//        initCombo();
-//        loadActApprovalTable();
-//        initButtons();
+        oTrans = new Activity(oApp, false, oApp.getBranchCode());
+        comboBoxFilter.setItems(cComboFilter);
+        CustomCommonUtil.setCapsLockBehavior(txtFieldSearch);
+        initLoadTable();
+        loadTable();
+        initButtonsClick();
+        initFields();
     }
 
-    private void initOtherUtils() {
-        btnActNo.setVisible(false);
-        btnActNo.setManaged(false);
-        btnActTitle.setVisible(false);
-        btnActTitle.setManaged(false);
-        btnDate.setVisible(false);
-        btnDate.setManaged(false);
-        btnPerson.setVisible(false);
-        btnPerson.setManaged(false);
-        btnDepart.setVisible(false);
-        btnDepart.setManaged(false);
-        btnType.setVisible(false);
-        btnType.setManaged(false);
-        txtFieldSearch.setVisible(false);
-        txtFieldSearch.setManaged(false);
-        lFrom.setManaged(false);
-        lFrom.setVisible(false);
-        fromDate.setVisible(false);
-        fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-        fromDate.setManaged(false);
-        lTo.setVisible(false);
-        lTo.setManaged(false);
-        toDate.setVisible(false);
-        toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-        toDate.setManaged(false);
-        comboType.setVisible(false);
-        comboType.setManaged(false);
-        comboFilter.setItems(cFilter);
-        comboType.setItems(cType);
-    }
-
-    public void initCombo() {
-        comboFilter.setOnAction(e -> {
-            String selectedFilter = comboFilter.getSelectionModel().getSelectedItem();
-            // Hide all controls first
-            txtFieldSearch.setVisible(false);
-            txtFieldSearch.setManaged(false);
-            btnActNo.setVisible(false);
-            btnActNo.setManaged(false);
-            btnActTitle.setVisible(false);
-            btnActTitle.setManaged(false);
-            btnDate.setVisible(false);
-            btnDate.setManaged(false);
-            btnPerson.setVisible(false);
-            btnPerson.setManaged(false);
-            btnDepart.setVisible(false);
-            btnDepart.setManaged(false);
-            btnType.setVisible(false);
-            btnType.setManaged(false);
-            txtFieldSearch.setVisible(false);
-            txtFieldSearch.setManaged(false);
-            lFrom.setManaged(false);
-            lFrom.setVisible(false);
-            fromDate.setVisible(false);
-            fromDate.setManaged(false);
-            lTo.setVisible(false);
-            lTo.setManaged(false);
-            toDate.setVisible(false);
-            toDate.setManaged(false);
-            comboType.setVisible(false);
-            comboType.setManaged(false);
-
-            // Show relevant controls based on selected filter
-            switch (selectedFilter) {
-                case "Activity No.":
-                    txtFieldSearch.setText("");
-                    txtFieldSearch.setVisible(true);
-                    txtFieldSearch.setManaged(true);
-                    btnActNo.setVisible(true);
-                    btnActNo.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-
-                    break;
-                case "Activity Date":
-                    btnDate.setVisible(true);
-                    btnDate.setManaged(true);
-                    lFrom.setVisible(true);
-                    lFrom.setManaged(true);
-
-                    fromDate.setVisible(true);
-                    fromDate.setManaged(true);
-                    lTo.setVisible(true);
-                    lTo.setManaged(true);
-                    toDate.setVisible(true);
-                    toDate.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-                    break;
-                case "Activity Type":
-                    comboType.setVisible(true);
-                    comboType.setManaged(true);
-                    btnType.setVisible(true);
-                    btnType.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-                    break;
-                case "Activity Title":
-                    txtFieldSearch.setText("");
-                    txtFieldSearch.setVisible(true);
-                    txtFieldSearch.setManaged(true);
-                    btnActTitle.setVisible(true);
-                    btnActTitle.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-                    break;
-                case "Person in Charge":
-                    txtFieldSearch.setText("");
-                    txtFieldSearch.setVisible(true);
-                    txtFieldSearch.setManaged(true);
-                    btnPerson.setVisible(true);
-                    btnPerson.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-
-                    break;
-                case "Department":
-                    txtFieldSearch.setText("");
-                    txtFieldSearch.setVisible(true);
-                    txtFieldSearch.setManaged(true);
-                    btnDepart.setVisible(true);
-                    btnDepart.setManaged(true);
-                    tblViewActApproval.setItems(actApprovalData);
-                    break;
-
-            }
-        });
-    }
-
-    private void initButtons() {
-        List<Button> buttons = Arrays.asList(btnApproved, btnClose, btnActNo, btnActTitle, btnPerson, btnDepart, btnDate, btnType);
-
+    @Override
+    public void initButtonsClick() {
+        List<Button> buttons = Arrays.asList(btnApproved, btnClose, btnFilter, btnRefresh);
         buttons.forEach(e -> e.setOnAction(this::handleButtonAction));
     }
 
-    private void handleButtonAction(ActionEvent event) {
-        JSONObject loJson = new JSONObject();
+    @Override
+    public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
-            case "btnClose": //close tab
+            case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Activity Approval");
+                        poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     } else {
-                        ShowMessageFX.Warning(null, "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                     }
                 }
-                break;
-            case "btnActNo":
-                filterTable(txtFieldSearch.getText(), "ActNo");
-                break;
-            case "btnActTitle":
-                filterTable(txtFieldSearch.getText(), "ActTitle");
-                break;
-            case "btnPerson":
-                filterTable(txtFieldSearch.getText(), "Person");
-                break;
-            case "btnDepart":
-                filterTable(txtFieldSearch.getText(), "Depart");
-                break;
-            case "btnType": //btn filter for comboBox
-                String lsSelectedType = comboType.getValue();
-                if (lsSelectedType == null) {
-                    // No type selected, show all data
-                    tblViewActApproval.setItems(actApprovalData);
-                } else {
-                    // Filter data based on selected type
-                    ObservableList<ActivityApproval> filteredCombo = FXCollections.observableArrayList();
-                    for (ActivityApproval actData : actApprovalData) {
-                        if (actData.getTblindex11().equals(lsSelectedType)) {
-                            filteredCombo.add(actData);
-                        }
-                    }
-                    tblViewActApproval.setItems(filteredCombo);
-                    if (filteredCombo.isEmpty()) {
-                        ShowMessageFX.Information(null, pxeModuleName, "No record found!");
-                    }
-                }
-                break;
-            case "btnDate": //btn filter for Activity Date
-                LocalDate loFilterFromDate = fromDate.getValue();
-                LocalDate loFilterToDate = toDate.getValue();
-                ObservableList<ActivityApproval> filteredDate = FXCollections.observableArrayList();
-                for (ActivityApproval actData : actApprovalData) {
-                    LocalDate actDateFrom = LocalDate.parse(actData.getTblindex06());
-                    LocalDate actDateTo = LocalDate.parse(actData.getTblindex07());
 
-                    if (loFilterFromDate == null || actDateFrom.isAfter(loFilterFromDate.minusDays(1))) {
-                        if (loFilterToDate == null || actDateTo.isBefore(loFilterToDate.plusDays(1))) {
-                            filteredDate.add(actData);
+                break;
+            case "btnFilter":
+                String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
+                FilteredList<ActivityApproval> filteredData = new FilteredList<>(poActApprovalData, p -> true);
+                switch (lsSelectedFilter) {
+                    case "ACTIVITY DATE":
+                        if (datePickerFrom.getValue() != null && datePickerTo.getValue() != null) {
+                            LocalDate fromDate = datePickerFrom.getValue();
+                            LocalDate toDate = datePickerTo.getValue();
+                            filteredData.setPredicate(item -> {
+                                LocalDate itemDate;
+                                itemDate = CustomCommonUtil.strToDate(item.getTblindex04());
+                                return (itemDate != null && !itemDate.isBefore(fromDate) && !itemDate.isAfter(toDate));
+                            });
+                        } else {
+                            ShowMessageFX.Information(null, "Filter Error", "Please select both a 'From' and 'To' date.");
+                            selectAllCheckBox.setSelected(false);
                         }
-                    }
+                        break;
+                    case "ACTIVITY NO":
+                        String lsActivityNoSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsActivityNoSearch.isEmpty()) {
+                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                        } else {
+                            filteredData.setPredicate(item
+                                    -> item.getTblindex02().toLowerCase().contains(lsActivityNoSearch)
+                            );
+                        }
+                        break;
+                    case "ACTIVITY TITLE":
+                        String lsActivityTitleSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsActivityTitleSearch.isEmpty()) {
+                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                        } else {
+                            filteredData.setPredicate(item
+                                    -> item.getTblindex06().toLowerCase().contains(lsActivityTitleSearch));
+                        }
+                        break;
+                    case "ACTIVITY TYPE":
+                        String lsActivityTypeSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsActivityTypeSearch.isEmpty()) {
+                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                        } else {
+                            filteredData.setPredicate(item
+                                    -> item.getTblindex05().toLowerCase().contains(lsActivityTypeSearch));
+                        }
+                        break;
+                    case "DEPARTMENT":
+                        String lsDepartSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsDepartSearch.isEmpty()) {
+                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                            loadTable();
+                        } else {
+                            filteredData.setPredicate(item
+                                    -> item.getTblindex08().toLowerCase().contains(lsDepartSearch));
+                        }
+                        break;
+                    case "PERSON IN CHARGE":
+                        String lsPersonInChargeSearch = txtFieldSearch.getText().toLowerCase();
+                        if (lsPersonInChargeSearch.isEmpty()) {
+                            ShowMessageFX.Information(null, "Filter Error", "Please enter a value first.");
+                            selectAllCheckBox.setSelected(false);
+                            loadTable();
+                        } else {
+                            filteredData.setPredicate(item
+                                    -> item.getTblindex07().toLowerCase().contains(lsPersonInChargeSearch));
+                        }
+                        break;
                 }
-                tblViewActApproval.setItems(filteredDate);
-                LocalDate loDateFrom = fromDate.getValue();
-                LocalDate loDateTo = toDate.getValue();
-                if (loDateFrom != null && loDateTo != null && loDateTo.isBefore(loDateFrom)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
-                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                    loadActApprovalTable();
-                    return;
+                int rowNumber = 1;
+                for (ActivityApproval item : filteredData) {
+                    item.setTblindex01(String.valueOf(rowNumber)); // Reset the row number for filtered items
+                    rowNumber++;
                 }
-                if (loDateFrom != null && loDateTo != null && loDateFrom.isAfter(loDateTo)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Please enter a valid date.");
-                    loadActApprovalTable();
-                    fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                    toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                    loadActApprovalTable();
-                    return;
-                }
-                if (filteredDate.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No record found!");
+                tblViewActApproval.setItems(filteredData);
+                if (filteredData.isEmpty()) {
+                    ShowMessageFX.Information(null, "No Records", "No records found for the selected criteria.");
+                    selectAllCheckBox.setSelected(false);
+                    lbTotalBudget.setText("₱ " + poGetDecimalFormat.format(0.00));
                 }
                 break;
-            case "btnApproved": //btn for approval
+            case "btnApproved":
                 ObservableList<ActivityApproval> selectedItems = FXCollections.observableArrayList();
+
                 for (ActivityApproval item : tblViewActApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);
                     }
                 }
+
                 if (selectedItems.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to approve.");
+                    ShowMessageFX.Information(null, pxeModuleName, "No items selected.");
                     return;
                 }
 
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to approve?")) {
                     return;
                 }
-                int approvedCount = 0;
-//                for (ActivityApproval item : selectedItems) {
-//                    String fsTransNox = item.getTblindex01(); // Assuming there is a method to retrieve the transaction number
-//                    loJSON = oTrans.ApproveActivity(fsTransNox);
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        approvedCount++;
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, "Failed to approve activity.");
-//                        loadActApprovalTable();
-//                        selectAllCheckBox.setSelected(false);
-//                    }
-//                }
-                if (approvedCount > 0) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Activity approved successfully.");
+
+                int lnApprovedCount = 0;
+                String lsMessage = "";
+
+                for (ActivityApproval selectedItem : selectedItems) {
+                    String activityNo = selectedItem.getTblindex02();
+
+                    ActivityApproval originalItem = poActApprovalData.stream()
+                            .filter(item -> item.getTblindex02().equals(activityNo))
+                            .findFirst()
+                            .orElse(null);
+                    if (originalItem != null) {
+                        int originalIndex = poActApprovalData.indexOf(originalItem);
+                        JSONObject loJSON = oTrans.approveActivity(originalIndex);
+
+                        if (!"error".equals((String) loJSON.get("result"))) {
+                            lsMessage = "Approved successfully.";
+                            lnApprovedCount++;
+                        } else {
+                            lsMessage = "Approve failed, Please try again or contact support.";
+                        }
+                    }
                 }
-                loadActApprovalTable();
+
+                if (lnApprovedCount > 0) {
+                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, lsMessage);
+                }
+                loadTable();
                 selectAllCheckBox.setSelected(false);
-                tblViewActApproval.getItems().removeAll(selectedItems);
-                btnRefresh.fire();
                 break;
-            case "btnRefresh": //btn for refresh
-                comboType.getSelectionModel()
-                        .clearSelection();
-                txtFieldSearch.clear();
+            case "btnRefresh":
+                tblViewActApproval.refresh();
+                datePickerFrom.setValue(null);
+                datePickerTo.setValue(null);
+                txtFieldSearch.setText("");
+                selectAllCheckBox.setSelected(false);
+                loadTable();
+                break;
 
-                fromDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                toDate.setValue(CustomCommonUtil.strToDate(oApp.getServerDate().toString()));
-                loadActApprovalTable();
-
-                selectAllCheckBox.setSelected(
-                        false);
-
+            default:
+                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
         }
     }
 
-    private void filterTable(String searchText, String fieldType) {
-        String filterText = searchText.trim().toLowerCase();
-        FilteredList<ActivityApproval> filteredList = new FilteredList<>(actApprovalData);
-        filteredList.setPredicate(clients -> {
-            if (filterText.isEmpty()) {
-                return true;
-            } else {
-                String fieldValue;
-                switch (fieldType) {
-                    case "ActNo":
-                        fieldValue = clients.getTblindex01().toLowerCase();
-                        break;
-                    case "ActTitle":
-                        fieldValue = clients.getTblindex02().toLowerCase();
-                        break;
-                    case "Person":
-                        fieldValue = clients.getTblindex05().toLowerCase();
-                        break;
-                    case "Depart":
-                        fieldValue = clients.getTblindex06().toLowerCase();
-                        break;
-                    default:
-                        return false;
+    @Override
+    public void loadTable() {
+        poActApprovalData.clear();
+        String lsActivityNo = "";
+        String lsActivityType = "";
+        String lsDateFrom = "";
+        String lsDateThru = "";
+        String lsActivityTitle = "";
+        String lsPersonCharge = "";
+        String lsDepartment = "";
+        String lsBranchInCharge = "";
+        String lsActLocation = "";
+        String lsBudgetProposal = "";
+        double lnTotalBudget = 0.00;
+
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.loadActivityForApproval();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTrans.getActivityList().size() - 1; lnCtr++) {
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getActTitle() != null) {
+                    lsActivityNo = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getActNo());
                 }
-                return fieldValue.contains(filterText);
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getActTitle() != null) {
+                    lsActivityTitle = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getActTitle());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getEventTyp() != null && !oTrans.getActivityModel().getDetailModel(lnCtr).getEventTyp().trim().isEmpty()) {
+                    switch (String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getEventTyp())) {
+                        case "eve":
+                            lsActivityType = "EVENT";
+                            break;
+                        case "sal":
+                            lsActivityType = "SALES CALL";
+                            break;
+                        case "pro":
+                            lsActivityType = "PROMO";
+                            break;
+                    }
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getDateFrom() != null) {
+                    lsDateFrom = CustomCommonUtil.xsDateShort(oTrans.getActivityModel().getDetailModel(lnCtr).getDateFrom());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getDateThru() != null) {
+                    lsDateThru = CustomCommonUtil.xsDateShort(oTrans.getActivityModel().getDetailModel(lnCtr).getDateThru());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getEmpInCharge() != null) {
+                    lsPersonCharge = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getEmpInCharge());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getDeptName() != null) {
+                    lsDepartment = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getDeptName());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getBranchNm() != null) {
+                    lsBranchInCharge = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getBranchNm());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getLocation() != null) {
+                    lsActLocation = String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getLocation());
+                }
+                if (oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt() != null) {
+                    lsBudgetProposal = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt())));
+                    lnTotalBudget += oTrans.getActivityModel().getDetailModel(lnCtr).getRcvdBdgt();
+                }
+
+                poActApprovalData.add(new ActivityApproval(
+                        String.valueOf(lnCtr + 1),
+                        lsActivityNo.toUpperCase(),
+                        String.valueOf(oTrans.getActivityModel().getDetailModel(lnCtr).getActvtyID()),
+                        lsDateFrom,
+                        lsActivityType.toUpperCase(),
+                        lsActivityTitle.toUpperCase(),
+                        lsPersonCharge.toUpperCase(),
+                        lsDepartment.toUpperCase(),
+                        lsBranchInCharge.toUpperCase(),
+                        lsActLocation.toUpperCase(),
+                        lsBudgetProposal,
+                        lsDateThru));
             }
-        });
-        tblViewActApproval.setItems(filteredList);
-        if (filteredList.isEmpty()) {
-            ShowMessageFX.Information(null, pxeModuleName, "No record found!");
+
+            lsActivityNo = "";
+            lsDateFrom = "";
+            lsDateThru = "";
+            lsActivityTitle = "";
+            lsPersonCharge = "";
+            lsDepartment = "";
+            lsBranchInCharge = "";
+            lsActLocation = "";
+            lsBudgetProposal = "";
+            lbTotalBudget.setText("₱ " + poGetDecimalFormat.format(lnTotalBudget));
+            tblViewActApproval.setItems(poActApprovalData);
         }
     }
 
-    private void loadActApprovalTable() {
-        actApprovalData.clear();
-        double lnTotalBudg = 0;
-//        if (oTrans.loadActForApproval()) {
-//            for (poCtr = 0; poCtr <= oTrans.getItemList().size() - 1; poCtr++) {
-//                // Iterate over the data and count the approved item
-//                String lsAmountString = oTrans.getDetail(poCtr, "nPropBdgt").toString();
-//                // Convert the amount to a decimal value
-//                double lnAmount = Double.parseDouble(lsAmountString);
-//                // Format the decimal value with decimal separators
-//                DecimalFormat loDecimalFormat = new DecimalFormat("#,##0.0");
-//                String lsFormattedAmount = loDecimalFormat.format(lnAmount);
-//                String res = oTrans.getDetail(poCtr, "sEventTyp").toString();
-//                if (res.equals("sal")) {
-//                    res = "SALES";
-//                }
-//                if (res.equals("pro")) {
-//                    res = "PROMO";
-//                }
-//                if (res.equals("eve")) {
-//                    res = "EVENT";
-//                }
-//
-//                actApprovalData.add(new ActivityApproval(
-//                        String.valueOf(poCtr),
-//                        oTrans.getDetail(poCtr, "cTranStat").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sActvtyID").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sActTitle").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sActDescx").toString().toUpperCase(),
-//                        res.toUpperCase(),
-//                        oTrans.getDetail(poCtr, "dDateFrom").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "dDateThru").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sLocation").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sCompnynx").toString().toUpperCase(),
-//                        oTrans.getDetail(poCtr, "sActSrcex").toString().toUpperCase()
-//                ));
-//                lnTotalBudg = lnTotalBudg + Double.parseDouble(oTrans.getDetail(poCtr, "nPropBdgt").toString());
-//            }
-//            lbTotalBudget.setText((CommonUtils.NumberFormat((Number) lnTotalBudg, "₱ " + "#,##0.00")));
-//            tblViewActApproval.setItems(actApprovalData);
-//        }
-
-    }
-
-    private void initActApprovalTable() {
-        tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblRow"));  //Row
-        // Set up listener for "Select All" checkbox
+    @Override
+    public void initLoadTable() {
+        tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
         tblindexselect.setCellValueFactory(new PropertyValueFactory<>("select"));
         tblViewActApproval.getItems().forEach(item -> {
             CheckBox loSelectCheckBox = item.getSelect();
@@ -444,28 +376,70 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
             boolean lbNewValue = selectAllCheckBox.isSelected();
             tblViewActApproval.getItems().forEach(item -> item.getSelect().setSelected(lbNewValue));
         });
+
         tblindex02.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
         tblindex03.setCellValueFactory(cellData -> {
             // Get the data for the current row
             ActivityApproval rowData = cellData.getValue();
 
             // Get the values you want to concatenate
-            String value1 = rowData.getTblindex03(); //from date
-            String value2 = rowData.getTblindex10(); //to date
+            String lsDateFrom = rowData.getTblindex04();
+            String lsDateThru = rowData.getTblindex12();
 
             // Concatenate the values
-            String concatenatedValue = value1 + " - " + value2;
+            String concatenatedValue = lsDateFrom + " - " + lsDateThru;
 
             // Create a new ObservableValue containing the concatenated value
             ObservableValue<String> observableValue = new SimpleStringProperty(concatenatedValue);
 
             return observableValue;
         });
-        tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex04"));
-        tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
-        tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
-        tblindex07.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
-        tblindex08.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
-        tblindex09.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
+
+        tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex06"));
+        tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex07"));
+        tblindex06.setCellValueFactory(new PropertyValueFactory<>("tblindex08"));
+        tblindex07.setCellValueFactory(new PropertyValueFactory<>("tblindex09"));
+        tblindex08.setCellValueFactory(new PropertyValueFactory<>("tblindex05"));
+        tblindex09.setCellValueFactory(new PropertyValueFactory<>("tblindex11"));
+        tblViewActApproval.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewActApproval.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+    }
+
+    @Override
+    public void initFields() {
+        CustomCommonUtil.setVisible(false, txtFieldSearch, lblFrom, lblTo, datePickerFrom, datePickerTo, btnFilter);
+        CustomCommonUtil.setManaged(false, txtFieldSearch, lblFrom, lblTo, datePickerFrom, datePickerTo, btnFilter);
+        comboBoxFilter.setOnAction(e -> {
+            CustomCommonUtil.setVisible(false, txtFieldSearch, lblFrom, lblTo, datePickerFrom, datePickerTo, btnFilter);
+            CustomCommonUtil.setManaged(false, txtFieldSearch, lblFrom, lblTo, datePickerFrom, datePickerTo, btnFilter);
+            String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
+            switch (lsSelectedFilter) {
+                case "ACTIVITY DATE":
+                    CustomCommonUtil.setVisible(true, datePickerFrom, datePickerTo, btnFilter);
+                    CustomCommonUtil.setManaged(true, datePickerFrom, datePickerTo, btnFilter);
+                    txtFieldSearch.setText("");
+                    tblViewActApproval.setItems(poActApprovalData);
+                    break;
+                case "ACTIVITY NO":
+                case "ACTIVITY TITLE":
+                case "PERSON IN CHARGE":
+                case "ACTIVITY TYPE":
+                case "DEPARTMENT":
+                    txtFieldSearch.setText("");
+                    CustomCommonUtil.setVisible(true, txtFieldSearch, btnFilter);
+                    CustomCommonUtil.setManaged(true, txtFieldSearch, btnFilter);
+                    datePickerFrom.setValue(null);
+                    datePickerTo.setValue(null);
+                    tblViewActApproval.setItems(poActApprovalData);
+                    break;
+            }
+            selectAllCheckBox.setSelected(false);
+            loadTable();
+        });
+
     }
 }

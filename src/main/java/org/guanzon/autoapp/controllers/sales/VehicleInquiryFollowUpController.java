@@ -23,7 +23,6 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -125,28 +124,25 @@ public class VehicleInquiryFollowUpController implements Initializable {
             txtField01.setText(CustomCommonUtil.xsDateShort(master.getTransactDte()));
 
             if (master.getMethodCd() != null) {
-                String lnMethod = "";
+                int lnMethod = -1;
                 switch (master.getMethodCd()) {
                     case "TEXT":
-                        lnMethod = "0";
+                        lnMethod = 0;
                         break;
                     case "CALL":
-                        lnMethod = "1";
+                        lnMethod = 1;
                         break;
                     case "SOCIAL MEDIA":
-                        lnMethod = "2";
+                        lnMethod = 2;
                         break;
                     case "EMAIL":
-                        lnMethod = "3";
+                        lnMethod = 3;
                         break;
                     case "VIBER":
-                        lnMethod = "4";
-                        break;
-                    default:
-                        lnMethod = "-1";
+                        lnMethod = 4;
                         break;
                 }
-                comboBox02.getSelectionModel().select(Integer.parseInt(lnMethod));
+                comboBox02.getSelectionModel().select(lnMethod);
             }
 
             if (master.getFollowUpDte() != null) {
@@ -216,17 +212,27 @@ public class VehicleInquiryFollowUpController implements Initializable {
 
     private void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textAreaID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                default:
+                    break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
         }
     }
 
@@ -458,6 +464,10 @@ public class VehicleInquiryFollowUpController implements Initializable {
     };
 
     private void initFields() {
+        CustomCommonUtil.setDisable(true, datePicker03, txtField07,
+                comboBox02, textArea05, textArea06, txtField04);
+        btnSave.setVisible(false);
+        btnSave.setManaged(false);
         if (pbState) {
             CustomCommonUtil.setDisable(false, datePicker03, txtField07,
                     comboBox02, textArea05, textArea06);
@@ -465,14 +475,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
             btnSave.setManaged(true);
             if (comboBox02.getSelectionModel().getSelectedIndex() == 2) {
                 txtField04.setDisable(false);
-            } else {
-                txtField04.setDisable(true);
             }
-        } else {
-            CustomCommonUtil.setDisable(true, datePicker03, txtField07,
-                    comboBox02, textArea05, textArea06);
-            btnSave.setVisible(false);
-            btnSave.setManaged(false);
         }
     }
 

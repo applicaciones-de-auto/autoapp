@@ -6,7 +6,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -14,7 +13,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -129,12 +127,11 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         initVehicleComponentsTable();
 
         initCapitalizationFields();
-        initFieldAction();
         initButtonsClick();
+        initComboBoxItems();
+        initFieldAction();
         clearTables();
         clearFields();
-        initFields(pnEditMode);
-
         Platform.runLater(() -> {
             JSONObject loJSON = new JSONObject();
             if (!pbIsClicked) {
@@ -147,8 +144,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                         pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     } else {
-                        clearFields();
-                        clearTables();
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        CommonUtils.closeStage(btnClose);
                     }
                 }
             } else {
@@ -159,10 +156,12 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("result"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
             }
         });
+        initFields(pnEditMode);
+
     }
 
     @Override
@@ -365,7 +364,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
     @Override
     public void initComboBoxItems() {
-
+        comboBox03.setItems(cVhclSrc);
+        comboBox04.setItems(cPurpose);
     }
 
     @Override
@@ -447,17 +447,20 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             switch (String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType())) {
                 case "l":
                     lsItem = "LABOR";
-                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborCde());
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
+                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
+                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
+                    }
                     break;
                 case "p":
                     lsItem = "PARTS";
-                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockID());
+                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                     lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
+                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
+                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
+                    }
                     break;
-            }
-            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
-                lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
             }
             jobDoneData.add(new JobDone(
                     String.valueOf(lnCtr + 1),
@@ -472,12 +475,10 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             lsItem = "";
             lsDescID = "";
             lsDesc = "";
+            lsJoNo = "";
 
         }
         tblViewJobDone.setItems(jobDoneData);
-        jobDoneData.stream()
-                .filter(jd -> jd.getTblindex04_done().startsWith("s"))
-                .forEach(e -> System.out.println("Job Done Value: " + e));
     }
 
     private void initJobDoneTable() {
@@ -527,12 +528,9 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 yOffset = event.getSceneY();
             });
 
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
             });
 
             //set the main interface as the scene

@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
         <StackPane layoutX="91.0" layoutY="88.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -87,7 +87,7 @@
                                     </rowConstraints>
                                     <children>
                                         <ComboBox fx:id="comboBox01" prefWidth="170.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtField02" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <TextField fx:id="txtField02" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtField04" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="6" GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets />
@@ -121,11 +121,11 @@
                                         <Label id="LabelDesc" text="Approved By" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                         <Label id="LabelDesc" text="Advance Date" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                         <Label id="LabelDesc" text="Amount" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtField06" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                        <TextField fx:id="txtField07" disable="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                        <TextField fx:id="txtField08" disable="true" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+                                        <TextField fx:id="txtField06" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                        <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                        <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                         <Label id="LabelDesc" text="Approved Date" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-                                        <TextField fx:id="txtField03" disable="true" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtField03" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

@@ -1,5 +1,6 @@
 package org.guanzon.autoapp.utils;
 
+import java.io.File;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -7,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import javafx.stage.FileChooser;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
  * A utility class for exporting data to an Excel file.
@@ -30,17 +33,21 @@ public class ExcelExporterUtil {
      * @throws IOException if an I/O error occurs while writing the Excel file
      */
     public void exportData(String filePath, List<String> headers, List<Map<String, Object>> data) throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet();
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet();
+            // Create header row
+            createHeaderRow(sheet, headers, workbook);
+            // Fill data rows
+            fillDataRows(sheet, headers, data);
+            // Adjust column width based on content
+            for (int i = 0; i < headers.size(); i++) {
+                sheet.autoSizeColumn(i);  // Auto-size each column
 
-        createHeaderRow(sheet, headers);
-        fillDataRows(sheet, headers, data);
-
-        try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-            workbook.write(fileOut);
+            }
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                workbook.write(fileOut);
+            }
         }
-
-        workbook.close();
     }
 
     /**
@@ -49,11 +56,24 @@ public class ExcelExporterUtil {
      * @param sheet the sheet in which the header row will be created
      * @param headers a list of headers for the columns in the Excel file
      */
-    private void createHeaderRow(Sheet sheet, List<String> headers) {
-        Row headerRow = sheet.createRow(0);
-        for (int i = 0; i < headers.size(); i++) {
+    private void createHeaderRow(Sheet foSheet, List<String> fsHeaders, Workbook foWorkBook) {
+        Row headerRow = foSheet.createRow(0);
+
+        // Create a bold font for the header
+        Font headerFont = foWorkBook.createFont();
+        headerFont.setBold(true);
+
+        // Create a cell style for the header
+        CellStyle headerCellStyle = foWorkBook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+        headerCellStyle.setAlignment(HorizontalAlignment.CENTER); // Center text horizontally
+        headerCellStyle.setVerticalAlignment(VerticalAlignment.CENTER); // Center text vertically
+
+        // Set header row
+        for (int i = 0; i < fsHeaders.size(); i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers.get(i));
+            cell.setCellValue(fsHeaders.get(i));
+            cell.setCellStyle(headerCellStyle); // Apply the style to the header cells
         }
     }
 
@@ -77,4 +97,41 @@ public class ExcelExporterUtil {
             }
         }
     }
+
+    /**
+     * Exports the given data to an Excel file using a FileChooser dialog for
+     * saving the file. The file is saved with the provided title as part of the
+     * filename and formatted with headers.
+     *
+     * @param fsTitleHeaders the list of headers for the columns in the Excel
+     * file
+     * @param foData a list of maps, where each map represents a row of data
+     * with the keys corresponding to the headers
+     * @param fsTitleName the title used for the default filename and dialog box
+     */
+    public static void exportDataToExcel(List<String> fsTitleHeaders, List<Map<String, Object>> foData, String fsTitleName) {
+        ExcelExporterUtil exporter = new ExcelExporterUtil();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Excel File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+
+        String defaultFileName = fsTitleName.replace(" ", "_") + "_Data" + ".xlsx";
+        fileChooser.setInitialFileName(defaultFileName);
+
+        // Show the Save dialog
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                exporter.exportData(file.getAbsolutePath(), fsTitleHeaders, foData);
+                System.out.println("Data exported to " + file.getAbsolutePath());
+                ShowMessageFX.Information(null, fsTitleName, "Exported in Excel Successfully!");
+            } catch (IOException e) {
+            }
+        } else {
+            ShowMessageFX.Warning(null, fsTitleName, "Exporting in Excel Failed!");
+        }
+    }
+
 }

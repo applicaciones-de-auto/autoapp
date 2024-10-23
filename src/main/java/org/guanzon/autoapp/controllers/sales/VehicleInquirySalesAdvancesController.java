@@ -27,6 +27,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
@@ -93,6 +94,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         initComboBoxItems();
         initCapitalizationFields();
         loadMasterFields();
+        initFields();
     }
 
     private void initCapitalizationFields() {
@@ -103,21 +105,16 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     }
 
     private void loadMasterFields() {
-        comboBox01.getSelectionModel().select(Integer.parseInt(oTrans.getReservation(pnRow, "cResrvTyp").toString())); //VSA Type
-        txtField02.setText(oTrans.getReservation(pnRow, "sReferNox").toString());
+        comboBox01.getSelectionModel().select(Integer.parseInt(oTrans.getReservationModel().getDetailModel(pnRow).getResrvTyp())); //VSA Type
+        txtField02.setText(oTrans.getReservationModel().getDetailModel(pnRow).getReferNo());
         if (pbState) { //Add
             txtField03.setText(CustomCommonUtil.xsDateShort((Date) oApp.getServerDate()));
             txtField06.setText("FOR APPROVAL");
         } else {
-            txtField03.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dTransact")));
-            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
-            switch (oTrans.getReservation(pnRow, "cTranStat").toString()) {
-                case "0":
-                    txtField06.setText("CANCELLED");
-                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
-                            textArea05, btnApply);
-                    break;
-                case "1":
+            txtField03.setText(CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(pnRow).getTransactDte()));
+            txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getAmount()))));
+            switch (oTrans.getReservationModel().getDetailModel(pnRow).getTranStat()) {
+                case TransactionStatus.STATE_OPEN:
                     txtField06.setText("FOR APPROVAL");
                     switch (pnIinqStat) {
                         case 0: //For Follow up
@@ -142,19 +139,28 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                             break;
                     }
                     break;
-                case "2":
+                case TransactionStatus.STATE_CLOSED:
                     txtField06.setText("APPROVED");
                     CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
                             textArea05, btnApply);
                     break;
-                default:
-                    txtField06.setText("");
+                case TransactionStatus.STATE_CANCELLED:
+                    txtField06.setText("CANCELLED");
+                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                            textArea05, btnApply);
+                    break;
+                case TransactionStatus.STATE_POSTED:
+                    txtField06.setText("POSTED");
                     break;
             }
-            txtField07.setText((String) oTrans.getReservation(pnRow, "sApproved"));
-            txtField08.setText(CustomCommonUtil.xsDateShort((Date) oTrans.getReservation(pnRow, "dApproved")));
-            textArea05.setText((String) oTrans.getReservation(pnRow, "sRemarksx"));
         }
+        String lsApprover = "";
+        if (oTrans.getReservationModel().getDetailModel(pnRow).getApprover() != null) {
+            lsApprover = String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getApprover());
+        }
+        txtField07.setText(lsApprover);
+        txtField08.setText(CustomCommonUtil.xsDateShort(oTrans.getReservationModel().getDetailModel(pnRow).getApproveDte()));
+        textArea05.setText(oTrans.getReservationModel().getDetailModel(pnRow).getRemarks());
     }
 
     public void initPatternFields() {
@@ -208,8 +214,8 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                         lsValue = "0.00";
                     }
                     try {
-                        oTrans.setReservation(pnRow, "nAmountxx", Double.valueOf(txtField04.getText().replace(",", "")));
-                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservation(pnRow, "nAmountxx")))));
+                        oTrans.getReservationModel().getDetailModel(pnRow).setAmount(Double.valueOf(txtField04.getText().replace(",", "")));
+                        txtField04.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getReservationModel().getDetailModel(pnRow).getAmount()))));
                     } catch (NumberFormatException e) {
                         System.out.print(e);
                     }
@@ -276,6 +282,13 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
         comboBox01.setItems(cSlipType);
     }
 
+    private void initFields() {
+        CustomCommonUtil.setDisable(true, comboBox01, txtField02, txtField03, txtField04, textArea05);
+        if (!oTrans.getReservationModel().getDetailModel(pnRow).getTranStat().equals("2")) {
+            CustomCommonUtil.setDisable(false, comboBox01, txtField04, textArea05);
+        }
+    }
+
     private boolean setToClass() {
         if (txtField04.getText().matches("[^0-9].*") || txtField04.getText().matches(".*\\.$")) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid amount.");
@@ -285,21 +298,25 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter value amount.");
             return false;
         }
+        String lsStat = "";
         switch (txtField06.getText()) {
             case "CANCELLED":
-                oTrans.setReservation(pnRow, "cTranStat", "0");
+                lsStat = TransactionStatus.STATE_CANCELLED;
                 break;
             case "FOR APPROVAL":
-                oTrans.setReservation(pnRow, "cTranStat", "1");
+                lsStat = TransactionStatus.STATE_OPEN;
                 break;
             case "APPROVED":
-                oTrans.setReservation(pnRow, "cTranStat", "2");
+                lsStat = TransactionStatus.STATE_CLOSED;
+                break;
+            case "POSTED":
+                lsStat = TransactionStatus.STATE_POSTED;
                 break;
         }
-
-        oTrans.setReservation(pnRow, "dTransact", SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
-        oTrans.setReservation(pnRow, "sRemarksx", textArea05.getText());
-        oTrans.setReservation(pnRow, "cResrvTyp", String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
+        oTrans.getReservationModel().getDetailModel(pnRow).setTranStat(lsStat);
+        oTrans.getReservationModel().getDetailModel(pnRow).setTransactDte(SQLUtil.toDate(txtField03.getText(), SQLUtil.FORMAT_SHORT_DATE));
+        oTrans.getReservationModel().getDetailModel(pnRow).setRemarks(textArea05.getText());
+        oTrans.getReservationModel().getDetailModel(pnRow).setResrvTyp(String.valueOf(comboBox01.getSelectionModel().getSelectedIndex()));
         return true;
     }
 
@@ -308,9 +325,9 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     private boolean setSelection() {
         if (comboBox01.getSelectionModel().getSelectedIndex() < 0) {
             ShowMessageFX.Warning("No `Slip Type` selected.", pxeModuleName, "Please select `Slip Type` value.");
-            comboBox01.requestFocus();
             return false;
         }
         return true;
     }
+
 }

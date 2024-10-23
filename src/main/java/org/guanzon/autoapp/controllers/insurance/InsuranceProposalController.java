@@ -39,6 +39,7 @@ import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.insurance.InsurancePolicyProposal;
@@ -176,7 +177,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         }
         comboBox10.getSelectionModel().select(lnType);
         if (oTrans.getMasterModel().getMasterModel().getDelvryDt() != null) {
-            datePicker11.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getDelvryDt())));
+            datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getDelvryDt(), SQLUtil.FORMAT_SHORT_DATE)));
         }
         txtField12.setText("");
         textArea13.setText(oTrans.getMasterModel().getMasterModel().getRemarks());
@@ -188,7 +189,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 lsInsBranc = oTrans.getMasterModel().getMasterModel().getInsurNme() + " " + oTrans.getMasterModel().getMasterModel().getBrInsNme();
             }
         }
-        txtField16.setText(lsInsBranc);
+        txtField16.setText(lsInsBranc.trim());
         int appType = -1;
         if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {
             switch (oTrans.getMasterModel().getMasterModel().getIsNew()) {
@@ -271,6 +272,9 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     break;
                 case TransactionStatus.STATE_POSTED:
                     lblIPStatus.setText("Posted");
+                    break;
+                case TransactionStatus.STATE_VOID:
+                    lblIPStatus.setText("Disapproved");
                     break;
                 default:
                     lblIPStatus.setText("");
@@ -582,28 +586,31 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             lsValue = lsTxtField.getText();
         }
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField02":
-                    if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
-                        loJSON = oTrans.searchGeneralClient(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            loadMasterFields();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        }
-                    } else {
-                        loJSON = oTrans.searchVSP(lsValue, false, String.valueOf(comboBox18.getSelectionModel().getSelectedIndex()));
-                        if (!"error".equals(loJSON.get("result"))) {
-                            loadMasterFields();
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        }
-                    }
-                    break;
-                case "txtField14":
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField02":
+                            if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
+                                loJSON = oTrans.searchGeneralClient(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    loadMasterFields();
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    return;
+                                }
+                            } else {
+                                loJSON = oTrans.searchVSP(lsValue, false, String.valueOf(comboBox18.getSelectionModel().getSelectedIndex()));
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    loadMasterFields();
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    return;
+                                }
+                            }
+                            break;
+                        case "txtField14":
 //                    loJSON = oTrans.searchSubCompany(lsValue);
 //                    if (!"error".equals(loJSON.get("result"))) {
 //                        loadMasterFields();
@@ -611,29 +618,33 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
 //                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
 //                        return;
 //                    }
-                    ShowMessageFX.Warning(null, pxeModuleName, "THIS SEARCH TEXTFIELD IS UNDER DEVELOPMENT");
-                    break;
-                case "txtField16":
-                    loJSON = oTrans.searchInsurance(lsValue.trim());
-                    if (!"error".equals(loJSON.get("result"))) {
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
+                            ShowMessageFX.Warning(null, pxeModuleName, "THIS SEARCH TEXTFIELD IS UNDER DEVELOPMENT");
+                            break;
+                        case "txtField16":
+                            loJSON = oTrans.searchInsurance(lsValue.trim());
+                            if (!"error".equals(loJSON.get("result"))) {
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            break;
                     }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    initFields(pnEditMode);
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-            initFields(pnEditMode);
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -1157,7 +1168,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         rectangleOverlay.setManaged(false);
         CustomCommonUtil.setDisable(!lbShow, comboBox01, textArea13, txtField35);
         if (lbShow) {
-            if (lsClientSource == "1") {
+            if ("1".equals(lsClientSource)) {
                 rectangleOverlay.setDisable(!lbShow);
                 rectangleOverlay.setVisible(true);
                 rectangleOverlay.setManaged(true);
@@ -1239,17 +1250,18 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
             }
         }
         if (fnValue == EditMode.READY) {
-            if (!lblIPStatus.getText().equals("Cancelled")) {
+            if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)
+                    && !oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_VOID)) {
                 CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnIPCancel);
                 CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnIPCancel);
             }
-            if (lblIPStatus.getText().equals("Approved")) {
-                CustomCommonUtil.setVisible(false, btnEdit, btnIPCancel);
-                CustomCommonUtil.setManaged(false, btnEdit, btnIPCancel);
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_OPEN)) {
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
             }
-            if (!lblIPStatus.getText().equals("Approved")) {
-                CustomCommonUtil.setVisible(false, btnPrint);
-                CustomCommonUtil.setManaged(false, btnPrint);
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+                btnEdit.setVisible(false);
+                btnEdit.setManaged(false);
             }
         }
     }

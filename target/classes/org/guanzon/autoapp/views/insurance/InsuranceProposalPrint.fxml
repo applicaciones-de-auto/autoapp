@@ -45,7 +45,7 @@
                                                 <Font size="16.0" />
                                             </font>
                                         </Label>
-                                        <Label text="(Note: Please don't do anything while loading insurance proposal !!!)" textFill="#d30909">
+                                        <Label text="(Note: Please don't do anything while loading insurance proposal!!!)" textFill="#d30909">
                                             <font>
                                                 <Font size="14.0" />
                                             </font>
