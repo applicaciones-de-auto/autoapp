@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="300.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -145,9 +145,9 @@
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Service">
                                                             <items>
-                                                                <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" />
                                                                 <MenuItem fx:id="mnuServiceAdvisor" mnemonicParsing="false" onAction="#mnuServiceAdvisorClick" text="Service Advisor" />
                                                                 <MenuItem fx:id="mnuServiceTech" mnemonicParsing="false" onAction="#mnuServiceTechClick" text="Service Technician" />
+                                                                <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" />
                                                             </items>
                                                         </Menu>
                                                         <Menu fx:id="menusales" mnemonicParsing="false" text="Vehicle Sales">
