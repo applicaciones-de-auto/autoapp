@@ -35,6 +35,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -241,7 +246,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
 //        if (oTrans.getModel().getModel().getEducAttain!= null && !oTransferal.getModel().getModel().getgetEducAttain().trim().isEmpty()) {
 //            comboBox11.getSelectionModel().select(Integer.parseInt(oTransferal.getModel().getModel().getgetEducAttain()));
 //        }
-
+        comboBox11.setValue("");
         txtField12.setText(oTrans.getModel().getModel().getProfessn());
         txtField13.setText(oTrans.getModel().getModel().getCompany());
         txtField14.setText(oTrans.getModel().getModel().getPosition());
