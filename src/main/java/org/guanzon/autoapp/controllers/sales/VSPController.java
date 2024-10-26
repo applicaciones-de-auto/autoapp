@@ -105,6 +105,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     ObservableList<String> cCompYearType2 = FXCollections.observableArrayList("1", "2", "3", "4");
     ObservableList<String> cLTOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE");
     ObservableList<String> cHMOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE", "C/o BANK");
+
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
     private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
     @FXML
@@ -471,15 +472,12 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             default:
                 lblVSPStatus.setText("");
                 break;
-        } //            if (oTrans.getMasterModel().getMasterModel().getApprovedDte() != null && !oTrans.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
-        //                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApprovedDte()));
-        //            }
-        //    }
-        //        else {
-        //            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-        //        return false;
-        //    }
-
+        }
+        String lsApprvDte = "";
+        if (oTrans.getMasterModel().getMasterModel().getApproveDte() != null) {
+            lsApprvDte = SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getApproveDte(), SQLUtil.FORMAT_SHORT_DATE);
+        }
+        lblApproveDate.setText(lsApprvDte);
         return true;
     }
 
@@ -1307,6 +1305,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             case "btnAddReservation":
                 try {
                 loadAddReservationWindowDialog();
+
             } catch (IOException ex) {
                 Logger.getLogger(VSPController.class
                         .getName()).log(Level.SEVERE, null, ex);
@@ -2177,7 +2176,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
             if (oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
                 BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
-                int lsQuan = Integer.valueOf(oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                int lsQuan = oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity();
                 lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
             }
             if (oTrans.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
@@ -2648,7 +2647,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             btnRemoveReservation.setDisable(false);
             tabAddOns.setDisable(false);
             tabDetails.setDisable(false);
-            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)
+                    && oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_POSTED)) {
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
             }
