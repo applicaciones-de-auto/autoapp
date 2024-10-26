@@ -341,6 +341,7 @@ public class VSPAccessoriesController implements Initializable {
                 txtField05.setDisable(false);
             }
         } else {
+            txtField05.setDisable(txtField04.getText().isEmpty() || txtField04.getText().equals("0.00"));
             if (psJO.isEmpty()) {
                 switch (comboBox03.getSelectionModel().getSelectedIndex()) {
                     case 0:
