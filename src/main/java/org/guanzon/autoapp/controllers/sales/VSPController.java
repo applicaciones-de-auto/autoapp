@@ -2648,7 +2648,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             tabAddOns.setDisable(false);
             tabDetails.setDisable(false);
             if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)
-                    && oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_POSTED)) {
+                    || oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_POSTED)) {
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
             }
