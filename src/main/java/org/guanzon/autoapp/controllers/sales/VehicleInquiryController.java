@@ -986,7 +986,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 } else {
                     return;
                 }
-
                 break;
             case "btnSndMngerApprov":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to send this to manager for approval?")) {
@@ -1665,55 +1664,64 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             if (oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
                 loControl.setInquiryTrans(oTrans.getMasterModel().getMasterModel().getTransNo());
             }
-            fxmlLoader.setController(loControl);
-            Parent parent = fxmlLoader.load();
-            AnchorPane otherAnchorPane = loControl.AnchorMain;
 
-            // Get the parent of the TabContent node
+            fxmlLoader.setController(loControl);
             Node tabContent = AnchorMain.getParent();
             Parent tabContentParent = tabContent.getParent();
 
-            // If the parent is a TabPane, you can work with it directly
             if (tabContentParent instanceof TabPane) {
                 TabPane tabpane = (TabPane) tabContentParent;
-
-                for (Tab tab : tabpane.getTabs()) {
-                    if (tab.getText().equals(lsFormName)) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "You have opened Vehicle Sales Proposal Form. Are you sure you want to convert this inquiry for a new vsp record?")) {
-                            tabpane.getSelectionModel().select(tab);
-                            poUnload.unloadForm(AnchorMain, oApp, lsFormName);
-                            loadVSPWindow();
-                        } else {
-                            return;
-                        }
+                Tab existingTab = tabpane.getTabs().stream().
+                        filter(tabPane -> tabPane.getText().equals(lsFormName))
+                        .findFirst().orElse(null);
+                if (existingTab != null) {
+                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                            "Vehicle Sales Proposal is already open.\n"
+                            + "Do you want to switch to the existing tab and convert it into a Vehicle Sales Proposal?")) {
+                        tabpane.getSelectionModel().select(existingTab);
+                        Parent parent = fxmlLoader.load();
+                        existingTab.setContent(parent);
+                        closeVSPTab(existingTab, loControl, lsFormName);
+                        return;
+                    } else {
                         return;
                     }
                 }
+                Parent parent = fxmlLoader.load();
+                // Create a new tab and set its content
                 Tab loNewTab = new Tab(lsFormName, parent);
                 loNewTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: arial;");
                 loNewTab.setContextMenu(fdController.createContextMenu(tabpane, loNewTab, oApp));
                 tabpane.getTabs().add(loNewTab);
                 tabpane.getSelectionModel().select(loNewTab);
-                loNewTab.setOnCloseRequest(event -> {
-                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
-                        if (poUnload != null) {
-                            poUnload.unloadForm(otherAnchorPane, oApp, lsFormName);
-                        } else {
-                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-                        }
-                    } else {
-                        // Cancel the close request
-                        event.consume();
-                    }
-
-                });
-
+                closeVSPTab(loNewTab, loControl, lsFormName);
             }
-
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1);
         }
+    }
+
+    private void closeVSPTab(Tab foTab, VSPController foController, String fsFormName) {
+        foTab.setOnCloseRequest(event -> {
+            if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this tab?")) {
+                if (poUnload == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                    return;
+                }
+                if (foController.AnchorMain == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "AnchorMain is not initialized properly. Cannot unload form.");
+                    return;
+                }
+                try {
+                    poUnload.unloadForm(foController.AnchorMain, oApp, fsFormName);
+                } catch (Exception e) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Error unloading form: " + e.getMessage());
+                }
+            } else {
+                event.consume();
+            }
+        }
+        );
     }
 
     /*INQUIRY PROCESS: PRINT VEHICLE SALES ADVANCES*/

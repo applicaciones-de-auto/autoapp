@@ -2713,85 +2713,70 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/SalesJobOrder.fxml"));
             SalesJobOrderController loControl = new SalesJobOrderController();
-
-            // Ensure oApp is not null before proceeding
-            if (oApp != null) {
-                loControl.setGRider(oApp);
-            } else {
-                ShowMessageFX.Warning(getStage(), "GRider is null, unable to load Sales Job Order.", "Warning", pxeModuleName);
-                return;
-            }
-
+            loControl.setGRider(oApp);
             loControl.setIsVSPState(true);
-
-            if (oTrans != null && oTrans.getMasterModel() != null
-                    && oTrans.getMasterModel().getMasterModel() != null
-                    && oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
+            if (oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
                 loControl.setVSPTrans(oTrans.getMasterModel().getMasterModel().getTransNo());
             }
 
             fxmlLoader.setController(loControl);
-            Parent parent = fxmlLoader.load();
-
-            AnchorPane otherAnchorPane = loControl.AnchorMain;
-            if (otherAnchorPane == null) {
-                ShowMessageFX.Warning(getStage(), "AnchorMain is null in SalesJobOrderController.", "Warning", pxeModuleName);
-                return;
-            }
-
-            // Get the parent of the TabContent node
             Node tabContent = AnchorMain.getParent();
-            if (tabContent == null) {
-                ShowMessageFX.Warning(getStage(), "AnchorMain parent is null.", "Warning", pxeModuleName);
-                return;
-            }
-
             Parent tabContentParent = tabContent.getParent();
 
-            // Check if the parent is a TabPane
             if (tabContentParent instanceof TabPane) {
                 TabPane tabpane = (TabPane) tabContentParent;
-
-                // Check for duplicate tabs
-                for (Tab tab : tabpane.getTabs()) {
-                    if (tab.getText().equals(lsFormName)) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                "You have opened Sales Job Order.\n"
-                                + "Are you sure you want to add Sales Job Order?")) {
-
-                            tabpane.getSelectionModel().select(tab);
-                            poUnload.unloadForm(AnchorMain, oApp, lsFormName); // Unload current form
-                            loadSJOWindow(); // Avoid recursive call by reworking this logic
-                        }
+                Tab existingTab = tabpane.getTabs().stream().
+                        filter(tabPane -> tabPane.getText().equals(lsFormName))
+                        .findFirst().orElse(null);
+                if (existingTab != null) {
+                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                            "Sales Job Order is already open.\n"
+                            + "Do you want to switch to the existing tab and create a new Sales Job Order?")) {
+                        tabpane.getSelectionModel().select(existingTab);
+                        Parent parent = fxmlLoader.load();
+                        existingTab.setContent(parent);
+                        closeSalesJobTab(existingTab, loControl, lsFormName);
+                        return;
+                    } else {
                         return;
                     }
                 }
-
+                Parent parent = fxmlLoader.load();
                 // Create a new tab and set its content
                 Tab loNewTab = new Tab(lsFormName, parent);
                 loNewTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: arial;");
                 loNewTab.setContextMenu(fdController.createContextMenu(tabpane, loNewTab, oApp));
                 tabpane.getTabs().add(loNewTab);
                 tabpane.getSelectionModel().select(loNewTab);
-
-                // Handle tab close request
-                loNewTab.setOnCloseRequest(event -> {
-                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
-                        if (poUnload != null) {
-                            poUnload.unloadForm(otherAnchorPane, oApp, lsFormName);
-                        } else {
-                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-                        }
-                    } else {
-                        event.consume(); // Cancel close request
-                    }
-                });
+                closeSalesJobTab(loNewTab, loControl, lsFormName);
             }
-
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1); // Consider replacing this with a more graceful exit or logging
         }
+    }
+
+    private void closeSalesJobTab(Tab foTab, SalesJobOrderController foController, String fsFormName) {
+        foTab.setOnCloseRequest(event -> {
+            if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this tab?")) {
+                if (poUnload == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                    return;
+                }
+                // Ensure loControl.AnchorMain is initialized before calling unload
+                if (foController.AnchorMain == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "AnchorMain is not initialized properly. Cannot unload form.");
+                    return;
+                }
+                try {
+                    poUnload.unloadForm(foController.AnchorMain, oApp, fsFormName);
+                } catch (Exception e) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Error unloading form: " + e.getMessage());
+                }
+            } else {
+                event.consume(); // Prevent tab close
+            }
+        }
+        );
     }
 
     private void loadGatePassWindow(boolean fbIsClicked) {
