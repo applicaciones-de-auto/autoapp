@@ -20,7 +20,7 @@ import org.guanzon.appdriver.base.GRider;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author John Dave
  */
 public class ViewPhotoController implements Initializable {
 

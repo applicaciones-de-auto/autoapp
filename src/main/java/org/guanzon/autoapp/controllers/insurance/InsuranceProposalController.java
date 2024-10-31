@@ -111,7 +111,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         initFieldsAction();
         initTextFieldsProperty();
         clearFields();
-        pnEditMode = EditMode.UNKNOWN;
+        pnEditMode = oTrans.getEditMode();
         initFields(pnEditMode);
     }
 

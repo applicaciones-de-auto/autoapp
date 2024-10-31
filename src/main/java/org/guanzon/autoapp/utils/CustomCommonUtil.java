@@ -75,6 +75,28 @@ public class CustomCommonUtil {
     }
 
     /**
+     * Converts a {@link Date} object to a string in "yyyy-MM-dd" format.
+     *
+     * This method formats a {@link Date} object (e.g., from a timestamp) to a
+     * string in the "yyyy-MM-dd" format, commonly used for database entries or
+     * display.
+     *
+     * @param fdValue The {@link Date} object to be formatted.
+     * @return A string representing the date in "yyyy-MM-dd" format.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * LocalDate now = new LocalDate();
+     * String formattedDate = xsDateShort(now);
+     * System.out.println(formattedDate); // Outputs: Current date in yyyy-MM-dd format
+     * }</pre>
+     */
+    public static String xsDateShort(LocalDate fdValue) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return fdValue.format(formatter);
+    }
+
+    /**
      * Converts a date string from the "MMMM dd, yyyy" format to "yyyy-MM-dd".
      *
      * This method takes a string formatted with the month name (e.g., "October

@@ -214,7 +214,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface, 
             params.put("actRcvdBdgt", formatAmount(oTransPrint.getMaster("nRcvdBdgt").toString()));
             params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
             params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
-            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApproved"));
+            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApprovex"));
             String lsFrom = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
             String lsTo = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
             String duration = lsFrom + " - " + lsTo;

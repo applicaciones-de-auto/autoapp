@@ -451,8 +451,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     }
 
     @Override
-    public void textArea_KeyPressed(KeyEvent event
-    ) {
+    public void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
         if (null != event.getCode()) {
             switch (event.getCode()) {
@@ -486,8 +485,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     }
 
     @Override
-    public void handleButtonAction(ActionEvent event
-    ) {
+    public void handleButtonAction(ActionEvent event) {
         JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         iTabIndex = tabPCustCont.getSelectionModel().getSelectedIndex();
@@ -558,12 +556,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
                         }
                         if (age.getYears() < 18) {
                             ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Less than 18 years old is not allowed.");
-                            datePicker11.requestFocus();
                             return;
                         }
                         if (age.getYears() >= 100) {
                             ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Greater than 100 years old is not allowed.");
-                            datePicker11.requestFocus();
                             return;
                         }
                         if (comboBox09.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() == 1) {

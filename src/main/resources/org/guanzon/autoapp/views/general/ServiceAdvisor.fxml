@@ -162,14 +162,6 @@
                                                 <Insets />
                                             </HBox.margin>
                                         </Button>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnDeactivate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" text="Deactivate">
                                             <effect>
                                                 <Blend />
@@ -187,6 +179,14 @@
                                             </effect>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="CHECK" size="19.5" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" mnemonicParsing="false" prefHeight="48.0" prefWidth="65.0" text="Browse">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="19.8" />
                                             </graphic>
                                         </Button>
                                     </children>
