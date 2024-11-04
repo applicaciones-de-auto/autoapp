@@ -1240,7 +1240,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     pnEditMode = oTrans.getEditMode();
                 }
                 break;
-
             case "btnAdditionalLabor":
                 try {
                 oTrans.addVSPLabor();
@@ -1737,6 +1736,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         if (!oTrans.getVSPFinanceList().isEmpty()) {
                             oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
                             oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
+                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setDiscount(new BigDecimal(0.00));
                         }
                         txtField33.setText("0.00");
                     }

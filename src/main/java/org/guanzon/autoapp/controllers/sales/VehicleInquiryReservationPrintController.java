@@ -259,11 +259,11 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
 
             }
         }
-        String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/reserve.jasper";
         String printFileName = null;
         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(vhlApprovalPrintData);
         try {
-            poJasperPrint = JasperFillManager.fillReport(sourceFileName, params, beanColDataSource);
+
+            poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "InquiryReservation.jasper", params, beanColDataSource);
             printFileName = poJasperPrint.toString();
             if (printFileName != null) {
                 showReport();

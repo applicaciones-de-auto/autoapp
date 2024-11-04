@@ -270,7 +270,7 @@
                                                                                                         <AnchorPane />
                                                                                                         <TableView fx:id="tblViewTrans" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
-                                                                                                                <TableColumn fx:id="tblindexTrans01" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                                                                                                                <TableColumn fx:id="tblindexTrans01" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexTrans02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Form Type" />
                                                                                                                 <TableColumn fx:id="tblindexTrans03" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Acct Title" />
                                                                                                                 <TableColumn fx:id="tblindexTrans04" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Ref No" />
@@ -325,7 +325,7 @@
                                                                                                         </AnchorPane>
                                                                                                         <TableView fx:id="tblViewCheck" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
-                                                                                                                <TableColumn fx:id="tblindexCheck01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" />
+                                                                                                                <TableColumn fx:id="tblindexCheck01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexCheck02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Pay Mode" />
                                                                                                                 <TableColumn fx:id="tblindexCheck03" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No." />
                                                                                                                 <TableColumn fx:id="tblindexCheck04" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Date" />

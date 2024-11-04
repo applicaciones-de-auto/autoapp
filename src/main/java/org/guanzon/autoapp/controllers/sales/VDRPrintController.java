@@ -219,10 +219,9 @@ public class VDRPrintController implements Initializable, ScreenInterface, GPrin
             params.put("frameNo", getValueReport("frameNo", "sFrameNox"));
             params.put("engineNo", getValueReport("engineNo", "sEngineNo"));
             params.put("color", getValueReport("color", "sColorDsc"));
-            String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vdr.jasper";
             String printFileName = null;
             try {
-                poJasperPrint = JasperFillManager.fillReport(sourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "VehicleDeliveryReceipt.jasper", params, new JREmptyDataSource());
                 printFileName = poJasperPrint.toString();
                 if (printFileName != null) {
                     showReport();

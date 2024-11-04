@@ -60,7 +60,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
     private final String pxeModuleName = "Cashier Receivables"; //Form Title
     UnloadForm poUnload = new UnloadForm(); //Used in Close Button
     ObservableList<String> cFormType = FXCollections.observableArrayList("CREATE ACKNOWLEDGEMENT RECEIPT", "CREATE COLLECTION RECEIPT", "CREATE SERVICE INVOICE",
-            "CREATE PARTS SSALES INVOICE", "CREATE BILLING STATEMENT", "CONVERT TO SOA");
+            "CREATE PARTS SALES INVOICE", "CREATE BILLING STATEMENT", "CONVERT TO SOA");
     ObservableList<String> cComboFilter = FXCollections.observableArrayList("CAR NO",
             "CUSTOMER NAME",
             "REFERENCE NO");
@@ -297,6 +297,14 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnFilter":
+                if (tblViewCAR.getItems().isEmpty()) {
+                    ShowMessageFX.Warning(null, "No Records", "No records found to filter.");
+                    return;
+                }
+                if (comboBoxFilter.getSelectionModel().getSelectedIndex() < 0) {
+                    ShowMessageFX.Warning(null, "No Records", "Please select filter criteria before filter.");
+                    return;
+                }
                 String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();
                 FilteredList<Cashier_Receivables> filteredData = new FilteredList<>(poCARData, p -> true); // Start with all items
                 switch (lsSelectedFilter) {
@@ -307,7 +315,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                             selectAllCheckBox.setSelected(false);
                         } else {
                             filteredData.setPredicate(item
-                                    -> item.getTblindex03().toLowerCase().contains(carNoSearch)
+                                    -> item.getTblindex02().toLowerCase().contains(carNoSearch)
                             );
                         }
                         break;
@@ -388,6 +396,10 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     case 5:
                         ShowMessageFX.Warning(null, pxeModuleName, "SOA is underdevelopment");
                         break;
+                    default:
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select receipt options to proceed");
+                        break;
+
                 }
                 break;
             case "btnPrint":

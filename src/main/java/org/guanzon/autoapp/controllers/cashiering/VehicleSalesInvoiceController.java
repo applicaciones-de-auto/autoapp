@@ -389,7 +389,6 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(null, "Search VSI Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
-
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
                     CommonUtils.closeStage(btnClose);
@@ -521,7 +520,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSiPrint.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSIPrint.fxml"));
             VSIPrintController loControl = new VSIPrintController();
             loControl.setGRider(oApp);
             loControl.setVSIObject(oTrans);

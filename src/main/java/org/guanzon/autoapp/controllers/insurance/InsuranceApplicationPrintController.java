@@ -267,10 +267,9 @@ public class InsuranceApplicationPrintController implements Initializable, GPrin
             params.put("preparedBy", "");
             params.put("taxAmount", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTaxAmt())));
             params.put("notedBy", "");
-            String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/insapplication.jasper";
             String printFileName = null;
             try {
-                poJasperPrint = JasperFillManager.fillReport(sourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "InsuranceApplication.jasper", params, new JREmptyDataSource());
                 printFileName = poJasperPrint.toString();
                 if (printFileName != null) {
                     showReport();

@@ -258,10 +258,9 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
             double lnTPLPrem = Double.parseDouble(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTPLPrem()));
             double lnBasicPremium = lnOwdtcPrem + lnAoncPrem + lnBdyCPrem + lnPrdcPrem + lnPacCPrem + lnTPLPrem;
             params.put("basicPremium", getValueNumberReport(String.valueOf(lnBasicPremium)));
-            String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/insproposal.jasper";
             String printFileName = null;
             try {
-                poJasperPrint = JasperFillManager.fillReport(sourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "InsuranceProposal.jasper", params, new JREmptyDataSource());
                 printFileName = poJasperPrint.toString();
                 if (printFileName != null) {
                     showReport();

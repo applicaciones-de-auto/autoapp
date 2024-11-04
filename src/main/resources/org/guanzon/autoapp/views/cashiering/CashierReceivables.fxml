@@ -75,7 +75,7 @@
                                                                                 <FontAwesomeIconView glyphName="RETWEET" />
                                                                             </graphic>
                                                                         </Button>
-                                                                        <Label alignment="CENTER" minWidth="15.0" text="-" GridPane.columnIndex="3">
+                                                                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="-" GridPane.columnIndex="3">
                                                                             <font>
                                                                                 <Font name="Arial Bold" size="21.0" />
                                                                             </font>

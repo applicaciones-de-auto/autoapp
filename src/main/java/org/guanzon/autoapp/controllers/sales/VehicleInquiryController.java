@@ -650,6 +650,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 }
                 loJSON = oTrans.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
+                    CustomCommonUtil.switchToTab(tabCustomerInquiry, tabPaneMain);
                     clearFields();
                     clearTables();
                     loadMasterFields();
@@ -1559,7 +1560,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     break;
                 case "2": // LOST SALE
                 case "4": // SOLD
-                    CustomCommonUtil.setDisable(false, btnASprint, btnASCancel);
+                    if (!tblAdvanceSlip.getItems().isEmpty()) {
+                        CustomCommonUtil.setDisable(false, btnASprint, btnASCancel);
+                    }
                     break;
                 case "1": // ON PROCESS
                 case "6": //FOR APPROVAL
@@ -2361,10 +2364,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                                 case "0":
                                     lsStatus = "ON-GOING";
                                     break;
-                                case "1":
+                                case "4":
                                     lsStatus = "DECLINE";
                                     break;
-                                case "2":
+                                case "1":
                                     lsStatus = "APPROVED";
                                     break;
                             }

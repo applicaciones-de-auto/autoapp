@@ -100,16 +100,13 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     @FXML
     private TableView<TransInvoice> tblViewTrans;
     @FXML
-    private TableColumn<TransInvoice, ?> tblindexTrans01;
-    @FXML
-    private TableColumn<TransInvoice, String> tblindexTrans02, tblindexTrans03, tblindexTrans04, tblindexTrans05, tblindexTrans06, tblindexTrans07, tblindexTrans08, tblindexTrans09,
+    private TableColumn<TransInvoice, String> tblindexTrans01, tblindexTrans02, tblindexTrans03, tblindexTrans04, tblindexTrans05, tblindexTrans06, tblindexTrans07, tblindexTrans08, tblindexTrans09,
             tblindexTrans10;
     @FXML
     private TableView<CheckInvoice> tblViewCheck;
+
     @FXML
-    private TableColumn<CheckInvoice, ?> tblindexCheck01;
-    @FXML
-    private TableColumn<CheckInvoice, String> tblindexCheck02, tblindexCheck03, tblindexCheck04, tblindexCheck05, tblindexCheck06, tblindexCheck07, tblindexCheck08;
+    private TableColumn<CheckInvoice, String> tblindexCheck01, tblindexCheck02, tblindexCheck03, tblindexCheck04, tblindexCheck05, tblindexCheck06, tblindexCheck07, tblindexCheck08;
     @FXML
     private TextArea textArea14, textArea16;
 
@@ -350,8 +347,87 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public void handleButtonAction(ActionEvent event) {
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
+            case "btnAdd":
+                clearFields();
+                clearTables();
+//                oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+//                loJSON = oTrans.newTransaction();
+//                if ("success".equals((String) loJSON.get("result"))) {
+//                    loadMasterFields();
+//                    pnEditMode = oTrans.getEditMode();
+//                    initFields(pnEditMode);
+//                } else {
+//                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                }
+                break;
+            case "btnEdit":
+//                loJSON = oTrans.updateTransaction();
+//                pnEditMode = oTrans.getEditMode();
+//                if ("error".equals((String) loJSON.get("result"))) {
+//                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+//                }
+                break;
+            case "btnCancel":
+                if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
+                    clearFields();
+                    clearTables();
+//                    CustomCommonUtil.switchToTab(tabMain, ImTabPane);// Load fields, clear them, and set edit mode
+//                    oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+//                    pnEditMode = EditMode.UNKNOWN;
+                }
+                break;
+            case "btnBrowse":
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (ShowMessageFX.YesNo(null, "Search " + pxeModuleName + "Confirmation", "You have unsaved data. Are you sure you want to browse a new record?")) {
+                    } else {
+                        return;
+                    }
+                }
+//                loJSON = oTrans.searchTransaction("");
+//                if ("success".equals((String) loJSON.get("result"))) {
+//                    loadMasterFields();
+//                    initFields(pnEditMode);
+//                    pnEditMode = oTrans.getEditMode();
+//                } else {
+//                    ShowMessageFX.Warning(null, "Search " + pxeModuleName + "Confirmation", (String) loJSON.get("message"));
+//                }
+                break;
+            case "btnSave":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
+//                    loJSON = oTrans.saveTransaction();
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        ShowMessageFX.Information(null, pxeModuleName + " Information", (String) loJSON.get("message"));
+//                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+//                        if ("success".equals((String) loJSON.get("result"))) {
+//                            loadMasterFields();
+//                            initFields(pnEditMode);
+//                            pnEditMode = oTrans.getEditMode();
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                        return;
+//                    }
+                }
+                break;
+            case "btnInvCancel":
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VSI?")) {
+//                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                    }
+//                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        loadMasterFields();
+//                        pnEditMode = oTrans.getEditMode();
+//                        initFields(pnEditMode);
+//                    }
+                }
+                break;
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
                     if (poUnload != null) {
@@ -359,10 +435,15 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     } else {
                         ShowMessageFX.Warning(null, "Warning", "Please notify the system administrator to configure the null value at the close button.");
                     }
-                    break;
                 } else {
                     return;
                 }
+                break;
+            case "btnInstTransDetail":
+            case "btnInsertRemarks ":
+            case "btnInsertAdvances ":
+            case "btnInsCheckDetail":
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
@@ -527,7 +608,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         CustomCommonUtil.setDisable(!lbShow, txtField03,
                 checkBoxNoPymnt, checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck,
-                textArea14, txtField12, txtField13);
+                comboBox11, textArea14, txtField12, txtField13, btnInstTransDetail, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
         txtField05.setDisable(!(lbShow && !comboBox04.getValue().isEmpty()));
         txtField10.setDisable(!(lbShow && !txtField05.getText().isEmpty()));
 
