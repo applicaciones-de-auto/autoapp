@@ -29,7 +29,7 @@
                                     <left>
                                         <ImageView fitHeight="30.0" fitWidth="377.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                                             <image>
-                                                <Image url="@images/header-1.png" />
+                                                <Image url="@images/Header-Logo.png" />
                                             </image>
                                         </ImageView>
                                     </left>
@@ -88,9 +88,9 @@
                                                                 </Menu>
                                                                 <MenuItem fx:id="mnuCustomerInfo" mnemonicParsing="false" onAction="#mnuCustomerInfoClick" text="Customer" />
                                                                 <MenuItem fx:id="mnuCustVhclInfo" mnemonicParsing="false" onAction="#mnuCustVhclInfoClick" text="Customer Vehicle Information" />
-                                                                <MenuItem fx:id="mnuSupplierInfo" mnemonicParsing="false" onAction="#mnuSupplierInfoClick" text="Supplier" />
-                                                                <MenuItem mnemonicParsing="false" text="VIP Programs" />
-                                                                <MenuItem mnemonicParsing="false" text="VIP Program Member Registration" />
+                                                                <MenuItem fx:id="mnuSupplierInfo" mnemonicParsing="false" onAction="#mnuSupplierInfoClick" text="Supplier" visible="false" />
+                                                                <MenuItem mnemonicParsing="false" text="VIP Programs" visible="false" />
+                                                                <MenuItem mnemonicParsing="false" text="VIP Program Member Registration" visible="false" />
                                                             </items>
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Parameters">
@@ -139,7 +139,7 @@
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Parts">
                                                             <items>
-                                                                <MenuItem fx:id="mnuItemEntry" mnemonicParsing="false" onAction="#mnuItemEntryClicked" text="Item Information" />
+                                                                <MenuItem fx:id="mnuItemEntry" mnemonicParsing="false" onAction="#mnuItemEntryClicked" text="Item Information" visible="false" />
                                                                 <MenuItem fx:id="mnuSalesPartsRequest" mnemonicParsing="false" onAction="#mnuSalesPartsRequestClicked" text="Sales Parts Request" />
                                                             </items>
                                                         </Menu>
@@ -147,7 +147,7 @@
                                                             <items>
                                                                 <MenuItem fx:id="mnuServiceAdvisor" mnemonicParsing="false" onAction="#mnuServiceAdvisorClick" text="Service Advisor" />
                                                                 <MenuItem fx:id="mnuServiceTech" mnemonicParsing="false" onAction="#mnuServiceTechClick" text="Service Technician" />
-                                                                <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" />
+                                                                <MenuItem fx:id="mnuServiceJobOrder" mnemonicParsing="false" onAction="#mnuJobOrderClick" text="Job Order" visible="false" />
                                                             </items>
                                                         </Menu>
                                                         <Menu fx:id="menusales" mnemonicParsing="false" text="Vehicle Sales">
@@ -162,7 +162,7 @@
                                                                 <MenuItem fx:id="mnuVSPApproval" mnemonicParsing="false" onAction="#mnuVSPApprovalClick" text="VSP Approval" visible="false" />
                                                                 <MenuItem fx:id="mnuSalesJobOrder" mnemonicParsing="false" onAction="#mnuSalesJobOrderClick" text="Sales Job Order" />
                                                                 <MenuItem fx:id="mnuVchlDeliveryReceipt" mnemonicParsing="false" onAction="#mnuVchlDeliveryReceiptClick" text="Vehicle Delivery Receipt" />
-                                                                <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" />
+                                                                <MenuItem fx:id="mnuUnitRecv" mnemonicParsing="false" onAction="#mnuUnitRecvClick" text="Unit Receiving" visible="false" />
                                                             </items>
                                                         </Menu>
                                                         <Menu fx:id="menusales1" mnemonicParsing="false" text="Insurance">
@@ -171,16 +171,17 @@
                                                                 <MenuItem fx:id="mnuInsPropApp" mnemonicParsing="false" onAction="#mnuInsPropAppClick" text="Insurance Proposal Approval" />
                                                                 <MenuItem fx:id="mnuInsApplication" mnemonicParsing="false" onAction="#mnuInsApplicationClick" text="Insurance Application" />
                                                                 <MenuItem fx:id="mnuInsPolicy" mnemonicParsing="false" onAction="#mnuInsPolicyClick" text="Insurance Policy" />
-                                                                <MenuItem fx:id="mnuFollowUp" mnemonicParsing="false" onAction="#mnuFollowUpClick" text="Follow Up List" />
+                                                                <MenuItem fx:id="mnuFollowUp" mnemonicParsing="false" onAction="#mnuFollowUpClick" text="Follow Up List" visible="false" />
                                                             </items>
                                                         </Menu>
                                                         <Menu mnemonicParsing="false" text="Cashiering">
                                                             <items>
-                                                                <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" />
-                                                                <MenuItem fx:id="mnuBillingStmt" mnemonicParsing="false" onAction="#mnuBillingStmtClick" text="Billing Statement" />
-                                                                <MenuItem fx:id="mnuColReceipt" mnemonicParsing="false" onAction="#mnuColReceiptClick" text="Collection Receipt" />
-                                                                <MenuItem fx:id="mnuOfcReceipt" mnemonicParsing="false" onAction="#mnuOfcReceiptClick" text="Official Receipt" />
-                                                                <MenuItem fx:id="mnuPartsSalesInv" mnemonicParsing="false" onAction="#mnuPartsSalesInvClick" text="Parts Sales Invoice" />
+                                                                <MenuItem fx:id="mnuCashRecv" mnemonicParsing="false" onAction="#mnuCashRecvClick" text="Cashier Receivables" visible="false" />
+                                                                <MenuItem fx:id="mnuAckReceipt" mnemonicParsing="false" onAction="#mnuAckReceiptClick" text="Acknowledgement Receipt" visible="false" />
+                                                                <MenuItem fx:id="mnuBillingStmt" mnemonicParsing="false" onAction="#mnuBillingStmtClick" text="Billing Statement" visible="false" />
+                                                                <MenuItem fx:id="mnuColReceipt" mnemonicParsing="false" onAction="#mnuColReceiptClick" text="Collection Receipt" visible="false" />
+                                                                <MenuItem fx:id="mnuOfcReceipt" mnemonicParsing="false" onAction="#mnuOfcReceiptClick" text="Service Invoice" visible="false" />
+                                                                <MenuItem fx:id="mnuPartsSalesInv" mnemonicParsing="false" onAction="#mnuPartsSalesInvClick" text="Parts Sales Invoice" visible="false" />
                                                                 <MenuItem fx:id="mnuVhclSalesInv" mnemonicParsing="false" onAction="#mnuVhclSalesInvClick" text="Vehicle Sales Invoice" />
                                                             </items>
                                                         </Menu>

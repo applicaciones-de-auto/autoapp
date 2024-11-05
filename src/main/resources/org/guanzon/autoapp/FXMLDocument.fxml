@@ -206,44 +206,51 @@
                     <bottom>
                         <StackPane prefHeight="25.0" style="-fx-background-color: #F1F1F1;" BorderPane.alignment="CENTER">
                             <children>
-                                <BorderPane prefHeight="25.0">
+                                <BorderPane>
                                     <left>
                                         <HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="5.0" BorderPane.alignment="CENTER">
                                             <children>
-                                                <FontAwesomeIconView fill="#3f3f3f" glyphName="USER" size="14" wrappingWidth="12.999998092651367" />
-                                                <Label fx:id="AppUser" prefHeight="17.0" text="Arsiela Lavarias- MIS | Rank &amp; File" textFill="#3f3f3f">
+                                                <FontAwesomeIconView fill="#3f3f3f" glyphName="USER" size="14" style="-fx-fill: #3f3f3f;" wrappingWidth="12.999998092651367" />
+                                                <Label fx:id="AppUser" prefHeight="17.0" text="Arsiela Lavarias - MIS" textFill="#3f3f3f">
                                                     <font>
                                                         <Font name="Arial" size="12.0" />
                                                     </font>
                                                 </Label>
                                             </children>
                                             <BorderPane.margin>
-                                                <Insets left="18.0" />
+                                                <Insets left="15.0" />
                                             </BorderPane.margin>
                                         </HBox>
                                     </left>
                                     <right>
-                                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                        <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="199.0" spacing="4.0" BorderPane.alignment="CENTER">
                                             <children>
-                                                <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
-                                                    <image>
-                                                        <Image url="@images/ic-clock.png" />
-                                                    </image>
-                                                    <HBox.margin>
-                                                        <Insets right="4.0" />
-                                                    </HBox.margin>
-                                                </ImageView>
-                                                <Label fx:id="DateAndTime" text="January 28, 2023 2:38:40 PM">
+                                    <FontAwesomeIconView glyphName="CLOCK_ALT" size="14" style="-fx-fill: #3f3f3f;" />
+                                                <Label fx:id="DateAndTime" prefHeight="15.0" prefWidth="189.0" text="January 28, 2023 2:38:40 PM">
                                                     <font>
                                                         <Font name="Arial" size="12.0" />
                                                     </font>
                                                 </Label>
                                             </children>
                                             <BorderPane.margin>
-                                                <Insets right="18.0" />
+                                                <Insets />
                                             </BorderPane.margin>
                                         </HBox>
                                     </right>
+                                    <center>
+                                        <AnchorPane prefHeight="25.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <Label fx:id="BranchName" alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="400.0" text="GGC Honda Pangasinan" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <font>
+                                                        <Font name="Arial Bold" size="12.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </AnchorPane>
+                                    </center>
+                                    <StackPane.margin>
+                                        <Insets />
+                                    </StackPane.margin>
                                 </BorderPane>
                             </children>
                         </StackPane>

@@ -48,8 +48,13 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
 import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
 import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
+import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -240,6 +245,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuVSPApproval;
     @FXML
     private MenuItem mnuCashRecv;
+    @FXML
+    private Label BranchName;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -281,7 +288,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         name = oApp.executeQuery(lsQuery);
         try {
             if (name.next()) {
-                AppUser.setText(name.getString("sCompnyNm") + " || " + oApp.getBranchName());
+                AppUser.setText(name.getString("sCompnyNm"));
+                BranchName.setText(oApp.getBranchName());
                 System.setProperty("user.name", name.getString("sCompnyNm"));
             }
         } catch (SQLException ex) {

@@ -475,7 +475,9 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         }
         String lsApprvDte = "";
         if (oTrans.getMasterModel().getMasterModel().getApproveDte() != null) {
-            lsApprvDte = SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getApproveDte(), SQLUtil.FORMAT_SHORT_DATE);
+            if (!CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApproveDte()).equals("1900-01-01")) {
+                lsApprvDte = SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getApproveDte(), SQLUtil.FORMAT_SHORT_DATE);
+            }
         }
         lblApproveDate.setText(lsApprvDte);
         return true;

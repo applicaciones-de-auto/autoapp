@@ -213,8 +213,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
         }
         lblJobOrderStatus.setText(lsStatus);
         String lsDateCompleted = "";
-        if (oTrans.getMasterModel().getMasterModel() != null) {
-            lsDateCompleted = "";
+        if (oTrans.getMasterModel().getMasterModel().getCompleteDte() != null) {
+            if (!CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getCompleteDte()).equals("1900-01-01")) {
+                lsDateCompleted = CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getCompleteDte());
+            }
         }
         lblCompleteStatus.setText(lsDateCompleted);
         return true;
@@ -580,8 +582,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
-                btnDone.setVisible(false);
-                btnDone.setManaged(false);
+                CustomCommonUtil.setVisible(false, btnEdit, btnDone);
+                CustomCommonUtil.setManaged(false, btnEdit, btnDone);
             }
         }
         if (!tblViewLabor.getItems().isEmpty()) {
