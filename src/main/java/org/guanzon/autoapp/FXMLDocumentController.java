@@ -49,9 +49,14 @@ import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
 import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
 import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
+import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
@@ -71,6 +76,7 @@ import org.guanzon.autoapp.controllers.insurance.InsuranceProposalController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
+import org.guanzon.autoapp.controllers.parameters.BarangayController;
 import org.guanzon.autoapp.controllers.parameters.BinController;
 import org.guanzon.autoapp.controllers.parameters.BrandController;
 import org.guanzon.autoapp.controllers.parameters.CategoryController;
@@ -79,7 +85,9 @@ import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.ItemLocationController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
+import org.guanzon.autoapp.controllers.parameters.ProvinceController;
 import org.guanzon.autoapp.controllers.parameters.SectionController;
+import org.guanzon.autoapp.controllers.parameters.TownController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
@@ -247,6 +255,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuCashRecv;
     @FXML
     private Label BranchName;
+    @FXML
+    private MenuItem mnuProvince;
+    @FXML
+    private MenuItem mnuTown;
+    @FXML
+    private MenuItem mnuBarangay;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -727,6 +741,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new VSPAccessoriesRequestController();
         } else if (fsValue.contains("ItemLocation.fxml")) {
             return new ItemLocationController();
+        } else if (fsValue.contains("Province.fxml")) {
+            return new ProvinceController();
+        } else if (fsValue.contains("Town.fxml")) {
+            return new TownController();
+        } else if (fsValue.contains("Barangay.fxml")) {
+            return new BarangayController();
         } else if (fsValue.contains("Bin.fxml")) {
             return new BinController();
         } else if (fsValue.contains("Section.fxml")) {
@@ -1266,6 +1286,24 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuSalesPartsRequestClicked(ActionEvent event) {
         String sformname = "VSPAccessoriesRequest.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psPartsPath);
+    }
+
+    @FXML
+    private void mnuProvinceClick(ActionEvent event) {
+        String sformname = "Province.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+    }
+
+    @FXML
+    private void mnuTownClick(ActionEvent event) {
+        String sformname = "Town.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+    }
+
+    @FXML
+    private void mnuBarangayClick(ActionEvent event) {
+        String sformname = "Barangay.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML
