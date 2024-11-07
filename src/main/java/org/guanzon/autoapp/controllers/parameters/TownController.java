@@ -138,6 +138,7 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
             switch (lnIndex) {
                 case 3:
                     oTrans.getModel().getModel().setTownName(lsValue);
+                    break;
                 case 4:
                     oTrans.getModel().getModel().setZippCode(lsValue);
                     break;
@@ -309,7 +310,6 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
                         ShowMessageFX.Information(null, "Town Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Town Information", (String) loJSON.get("message"));
-                        return;
                     }
                     loJSON = oTrans.openRecord(oTrans.getModel().getModel().getTownID());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -381,15 +381,15 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
     @Override
     public void clearFields() {
         cboxActivate.setSelected(false);
-        CustomCommonUtil.setText("", txtField01, txtField02, txtField03);
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03, txtField04);
     }
 
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         CustomCommonUtil.setDisable(!lbShow, txtField02);
         txtField03.setDisable(!(lbShow && !txtField02.getText().isEmpty()));
+        txtField04.setDisable(!(lbShow && !txtField03.getText().isEmpty()));
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);

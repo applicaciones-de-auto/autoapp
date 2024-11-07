@@ -73,9 +73,9 @@
                                         <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                         <Label id="LabelDesc" layoutX="20.0" layoutY="46.0" text="Town Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                         <Button fx:id="btnProvince" mnemonicParsing="false" text="..." GridPane.columnIndex="7" GridPane.rowIndex="1" />
                               <Label id="LabelDesc" text="Zip Code" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

@@ -67,10 +67,10 @@
                                             </font>
                                         </Label>
                                         <Label id="LabelDesc" text="Region Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtField01" disable="true" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="3" />
+                                        <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="3" />
                                         <TextField fx:id="txtField02" promptText="Search: F3" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
-                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                         <Label id="LabelDesc" layoutX="20.0" layoutY="46.0" text="Province Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                         <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="2" />
                                     </children>
                                     <opaqueInsets>

@@ -316,7 +316,6 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
                         ShowMessageFX.Information(null, "Barangay Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Barangay Information", (String) loJSON.get("message"));
-                        return;
                     }
                     loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrgyID());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -417,7 +416,6 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         CustomCommonUtil.setDisable(!lbShow, txtField02);
         txtField03.setDisable(!(lbShow && !txtField02.getText().isEmpty()));
         txtField05.setDisable(!(lbShow && !txtField03.getText().isEmpty()));

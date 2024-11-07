@@ -18,7 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -284,7 +283,6 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
                         ShowMessageFX.Information(null, "Province Information", (String) loJSON.get("message"));
                     } else {
                         ShowMessageFX.Warning(null, "Province Information", (String) loJSON.get("message"));
-                        return;
                     }
                     loJSON = oTrans.openRecord(oTrans.getModel().getModel().getProvID());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -355,7 +353,6 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03);
         txtField03.setDisable(!(lbShow && !txtField02.getText().isEmpty()));
         btnAdd.setVisible(!lbShow);
