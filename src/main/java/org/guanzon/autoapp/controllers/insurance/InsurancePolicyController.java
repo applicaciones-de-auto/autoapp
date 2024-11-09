@@ -745,30 +745,36 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
             lsValue = lsTxtField.getText();
         }
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField01":
-                    loJSON = oTrans.searchPolicyApplication(lsValue);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        loadMasterFields();
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField01":
+                            loJSON = oTrans.searchPolicyApplication(lsValue);
+                            if (!"error".equals(loJSON.get("result"))) {
+                                loadMasterFields();
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                return;
+                            }
+                            initFields(pnEditMode);
+                            break;
                     }
-                    initFields(pnEditMode);
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-            initFields(pnEditMode);
-        } else if (event.getCode()
-                == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -804,13 +810,12 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 oTrans = new InsurancePolicy(oApp, false, oApp.getBranchCode());
                 loJSON = oTrans.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
-
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -818,6 +823,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Insurance Policy Information Saving....", "Are you sure, do you want to save?")) {
@@ -845,6 +851,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                     oTrans = new InsurancePolicy(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -860,13 +867,12 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                     CustomCommonUtil.switchToTab(mainTab, tabPane);
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Policy Information Confirmation", (String) loJSON.get("message"));
                     pnEditMode = oTrans.getEditMode();
                 }
+                initFields(pnEditMode);
                 break;
-
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
@@ -907,7 +913,6 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -958,13 +963,11 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     public void initTextFieldsProperty() {
         txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        clearPolicyAppInformation();
-                        clearPolicyAppFields();
-                    }
-                    initFields(pnEditMode);
+                if (newValue.isEmpty()) {
+                    clearPolicyAppInformation();
+                    clearPolicyAppFields();
                 }
+                initFields(pnEditMode);
             }
         });
     }
@@ -1137,7 +1140,7 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
 //            loControl.setObject(oTrans);
 //            loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
 //            fxmlLoader.setController(loControl);
-//            //load the main interface
+            //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {
                 xOffset = event.getSceneX();

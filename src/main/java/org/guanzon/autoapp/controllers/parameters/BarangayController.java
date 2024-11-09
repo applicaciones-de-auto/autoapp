@@ -377,7 +377,7 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null && newValue.isEmpty()) {
+                if (newValue.isEmpty()) {
                     oTrans.getModel().getModel().setProvID("");
                     oTrans.getModel().getModel().setProvName("");
                     oTrans.getModel().getModel().setTownID("");
@@ -386,20 +386,19 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
                     txtField03.setText("");
                     txtField04.setText("");
                 }
+                initFields(pnEditMode);
             }
-        }
-        );
+        });
         txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null && newValue.isEmpty()) {
+                if (newValue.isEmpty()) {
                     oTrans.getModel().getModel().setTownID("");
                     oTrans.getModel().getModel().setTownName("");
                     oTrans.getModel().getModel().setZippCode("");
                     txtField04.setText("");
                 }
             }
-        }
-        );
+        });
     }
 
     @Override
@@ -416,9 +415,8 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(!lbShow, txtField02);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField05);
         txtField03.setDisable(!(lbShow && !txtField02.getText().isEmpty()));
-        txtField05.setDisable(!(lbShow && !txtField03.getText().isEmpty()));
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);

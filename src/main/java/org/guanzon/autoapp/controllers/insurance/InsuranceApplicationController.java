@@ -476,10 +476,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -487,6 +487,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 LocalDate loDateFrom = datePicker05.getValue();
@@ -512,13 +513,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                             initFields(pnEditMode);
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
-                } else {
-                    return;
                 }
                 break;
             case "btnCancel":
@@ -527,6 +525,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                     oTrans = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
@@ -539,10 +538,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Application Information Confirmation", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -583,7 +582,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -638,23 +636,19 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     public void initTextFieldsProperty() {
         txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        clearPolicyPropsInformation();
-                        clearPolicyPropsFields();
-                    }
-                    initFields(pnEditMode);
+                if (newValue.isEmpty()) {
+                    clearPolicyPropsInformation();
+                    clearPolicyPropsFields();
                 }
+                initFields(pnEditMode);
             }
         });
         txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setBrBankID("");
-                        oTrans.getMasterModel().getMasterModel().setBankName("");
-                        oTrans.getMasterModel().getMasterModel().setBrBankNm("");
-                    }
+                if (newValue.isEmpty()) {
+                    oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                    oTrans.getMasterModel().getMasterModel().setBankName("");
+                    oTrans.getMasterModel().getMasterModel().setBrBankNm("");
                 }
             }
         });

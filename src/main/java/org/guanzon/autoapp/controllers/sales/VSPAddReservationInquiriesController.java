@@ -114,7 +114,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
         String lsTransNo = "";
         String lsTransID = "";
         loJSON = oTransReserve.loadOTHReservationList();
-        if ("success".equals((String) loJSON.get("result"))) {
+        if (!"error".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTransReserve.getOTHReservationList().size() - 1; lnCtr++) {
                 if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate() != null) {
                     lsDate = CustomCommonUtil.xsDateShort(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSIDate());

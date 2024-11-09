@@ -364,13 +364,12 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null && newValue.isEmpty()) {
+                if (newValue.isEmpty()) {
                     oTrans.getModel().getModel().setProvID("");
                     oTrans.getModel().getModel().setProvName("");
                 }
             }
-        }
-        );
+        });
     }
 
     @Override
@@ -388,8 +387,6 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         CustomCommonUtil.setDisable(!lbShow, txtField02);
-        txtField03.setDisable(!(lbShow && !txtField02.getText().isEmpty()));
-        txtField04.setDisable(!(lbShow && !txtField03.getText().isEmpty()));
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);

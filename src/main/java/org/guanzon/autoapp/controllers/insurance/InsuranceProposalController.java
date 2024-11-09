@@ -680,10 +680,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -691,6 +691,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Insurance Proposal Information Saving....", "Are you sure, do you want to save?")) {
@@ -722,6 +723,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     oTrans = new InsurancePolicyProposal(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -736,11 +738,11 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Proposal Information Confirmation", (String) loJSON.get("message"));
                     pnEditMode = oTrans.getEditMode();
                 }
+                initFields(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -778,7 +780,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -1057,20 +1058,18 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setVSPTranNo("");
-                        oTrans.getMasterModel().getMasterModel().setClientID("");
-                        oTrans.getMasterModel().getMasterModel().setOwnrNm("");
-                        oTrans.getMasterModel().getMasterModel().setAddress("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        clearVSPFields();
-                        initFields(pnEditMode);
-                    }
+                if (newValue.isEmpty()) {
+                    oTrans.getMasterModel().getMasterModel().setVSPTranNo("");
+                    oTrans.getMasterModel().getMasterModel().setClientID("");
+                    oTrans.getMasterModel().getMasterModel().setOwnrNm("");
+                    oTrans.getMasterModel().getMasterModel().setAddress("");
+                    oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                    oTrans.getMasterModel().getMasterModel().setCSNo("");
+                    oTrans.getMasterModel().getMasterModel().setEngineNo("");
+                    oTrans.getMasterModel().getMasterModel().setFrameNo("");
+                    oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+                    clearVSPFields();
+                    initFields(pnEditMode);
                 }
             }
         });
@@ -1079,31 +1078,27 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if (comboBox01.getValue().equals("VSP")) {
                     if (comboBox18.getSelectionModel().getSelectedIndex() < 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "You've selected VSP. Please select policy type first.");
-                        return;
                     }
                 }
             }
         });
         txtField16.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setInsurNme("");
-                        oTrans.getMasterModel().getMasterModel().setBrInsNme("");
-                        clearCoveragePremium();
-                        CustomCommonUtil.setText("0.00", txtField19, txtField20,
-                                txtField28, txtField21,
-                                txtField22, txtField29,
-                                txtField23, txtField30,
-                                txtField24, txtField31,
-                                txtField25, txtField32,
-                                txtField26, txtField33);
-                        initFields(pnEditMode);
-                    }
+                if (newValue.isEmpty()) {
+                    oTrans.getMasterModel().getMasterModel().setInsurNme("");
+                    oTrans.getMasterModel().getMasterModel().setBrInsNme("");
+                    clearCoveragePremium();
+                    CustomCommonUtil.setText("0.00", txtField19, txtField20,
+                            txtField28, txtField21,
+                            txtField22, txtField29,
+                            txtField23, txtField30,
+                            txtField24, txtField31,
+                            txtField25, txtField32,
+                            txtField26, txtField33);
+                    initFields(pnEditMode);
                 }
             }
         });
-
     }
 
     public void clearVSPFields() {

@@ -377,7 +377,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         textArea28.setText(oTrans.getMasterModel().getMasterModel().getDescript());
         txtField29.setText(oTrans.getMasterModel().getMasterModel().getApprover());
         if (oTrans.getMasterModel().getMasterModel().getApproveDte() != null && !oTrans.getMasterModel().getMasterModel().getApproveDte().toString().isEmpty()) {
-            txtField30.setText(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApproveDte()));
+            if (!CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApproveDte()).equals("1900-01-01")) {
+                txtField30.setText(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApproveDte()));
+            }
         }
         return true;
     }
