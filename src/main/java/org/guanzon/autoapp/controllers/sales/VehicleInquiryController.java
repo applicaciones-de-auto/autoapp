@@ -1132,15 +1132,17 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField03.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setClientID("");
-                            if (oTrans.getMasterModel().getMasterModel().getClientTp().equals("0")) {
-                                oTrans.getMasterModel().getMasterModel().setContctID("");
-                                oTrans.getMasterModel().getMasterModel().setContctNm("");
-                                txtField05.setText("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setClientID("");
+                                if (oTrans.getMasterModel().getMasterModel().getClientTp().equals("0")) {
+                                    oTrans.getMasterModel().getMasterModel().setContctID("");
+                                    oTrans.getMasterModel().getMasterModel().setContctNm("");
+                                    txtField05.setText("");
+                                }
+                                textArea04.setText("");
+                                CustomCommonUtil.setText("", txtField06, txtField07, txtField08);
                             }
-                            textArea04.setText("");
-                            CustomCommonUtil.setText("", txtField06, txtField07, txtField08);
                         }
                     }
                     initFields(pnEditMode);
@@ -1148,10 +1150,11 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField05.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setContctID("");
-                            oTrans.getMasterModel().getMasterModel().setContctNm("");
-
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setContctID("");
+                                oTrans.getMasterModel().getMasterModel().setContctNm("");
+                            }
                         }
                     }
                 }
@@ -1159,25 +1162,31 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField09.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setSalesExe("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setSalesExe("");
 
+                            }
                         }
                     }
                 }
                 );
         txtField11.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getMasterModel().getMasterModel().setPlatform("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getMasterModel().getMasterModel().setPlatform("");
+                    }
                 }
             }
         });
         txtField12.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setActvtyID("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setActvtyID("");
+                            }
                         }
                     }
                 }
@@ -1185,8 +1194,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField13.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setSalesAgn("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setSalesAgn("");
+                            }
                         }
                     }
                 }
@@ -1194,9 +1205,11 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField14.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setBranchCd("");
-                            oTrans.getMasterModel().getMasterModel().setBranchNm("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setBranchCd("");
+                                oTrans.getMasterModel().getMasterModel().setBranchNm("");
+                            }
                         }
                     }
                 }
@@ -1204,9 +1217,10 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField20.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setTestModl("");
-
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setTestModl("");
+                            }
                         }
                     }
                 }
@@ -1214,11 +1228,13 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField27.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            oTrans.getMasterModel().getMasterModel().setCSNo("");
-                            oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                            oTrans.getMasterModel().getMasterModel().setVhclID("");
-                            textArea28.setText("");
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setCSNo("");
+                                oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                                oTrans.getMasterModel().getMasterModel().setVhclID("");
+                                textArea28.setText("");
+                            }
                         }
                     }
                 }

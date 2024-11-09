@@ -1058,18 +1058,20 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getMasterModel().getMasterModel().setVSPTranNo("");
-                    oTrans.getMasterModel().getMasterModel().setClientID("");
-                    oTrans.getMasterModel().getMasterModel().setOwnrNm("");
-                    oTrans.getMasterModel().getMasterModel().setAddress("");
-                    oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                    oTrans.getMasterModel().getMasterModel().setCSNo("");
-                    oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                    oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                    oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                    clearVSPFields();
-                    initFields(pnEditMode);
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getMasterModel().getMasterModel().setVSPTranNo("");
+                        oTrans.getMasterModel().getMasterModel().setClientID("");
+                        oTrans.getMasterModel().getMasterModel().setOwnrNm("");
+                        oTrans.getMasterModel().getMasterModel().setAddress("");
+                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                        oTrans.getMasterModel().getMasterModel().setCSNo("");
+                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
+                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
+                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+                        clearVSPFields();
+                        initFields(pnEditMode);
+                    }
                 }
             }
         });
@@ -1084,18 +1086,20 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         });
         txtField16.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getMasterModel().getMasterModel().setInsurNme("");
-                    oTrans.getMasterModel().getMasterModel().setBrInsNme("");
-                    clearCoveragePremium();
-                    CustomCommonUtil.setText("0.00", txtField19, txtField20,
-                            txtField28, txtField21,
-                            txtField22, txtField29,
-                            txtField23, txtField30,
-                            txtField24, txtField31,
-                            txtField25, txtField32,
-                            txtField26, txtField33);
-                    initFields(pnEditMode);
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getMasterModel().getMasterModel().setInsurNme("");
+                        oTrans.getMasterModel().getMasterModel().setBrInsNme("");
+                        clearCoveragePremium();
+                        CustomCommonUtil.setText("0.00", txtField19, txtField20,
+                                txtField28, txtField21,
+                                txtField22, txtField29,
+                                txtField23, txtField30,
+                                txtField24, txtField31,
+                                txtField25, txtField32,
+                                txtField26, txtField33);
+                        initFields(pnEditMode);
+                    }
                 }
             }
         });

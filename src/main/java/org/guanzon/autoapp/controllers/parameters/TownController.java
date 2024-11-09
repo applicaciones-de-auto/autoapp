@@ -364,9 +364,11 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getModel().getModel().setProvID("");
-                    oTrans.getModel().getModel().setProvName("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setProvID("");
+                        oTrans.getModel().getModel().setProvName("");
+                    }
                 }
             }
         });

@@ -1666,9 +1666,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         });
         txtField20.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    setVchlClass(txtField21, txtField22, txtField23,
-                            txtField25);
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        setVchlClass(txtField21, txtField22, txtField23,
+                                txtField25);
+                    }
                 }
             }
         }
@@ -1676,9 +1678,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         txtField21.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            setVchlClass(txtField20, txtField22, txtField23,
-                                    txtField25);
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField22, txtField23,
+                                        txtField25);
+                            }
                         }
                     }
                 }
@@ -1686,9 +1690,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         txtField22.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            setVchlClass(txtField20, txtField21, txtField23,
-                                    txtField25);
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField21, txtField23,
+                                        txtField25);
+                            }
                         }
                     }
                 }
@@ -1696,9 +1702,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         txtField23.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue.isEmpty()) {
-                            setVchlClass(txtField20, txtField21, txtField22,
-                                    txtField25);
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField21, txtField22,
+                                        txtField25);
+                            }
                         }
                     }
                 }

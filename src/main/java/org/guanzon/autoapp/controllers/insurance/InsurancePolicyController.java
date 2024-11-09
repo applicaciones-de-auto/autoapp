@@ -963,9 +963,11 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     public void initTextFieldsProperty() {
         txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    clearPolicyAppInformation();
-                    clearPolicyAppFields();
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        clearPolicyAppInformation();
+                        clearPolicyAppFields();
+                    }
                 }
                 initFields(pnEditMode);
             }

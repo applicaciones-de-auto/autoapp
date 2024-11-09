@@ -377,25 +377,29 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getModel().getModel().setProvID("");
-                    oTrans.getModel().getModel().setProvName("");
-                    oTrans.getModel().getModel().setTownID("");
-                    oTrans.getModel().getModel().setTownName("");
-                    oTrans.getModel().getModel().setZippCode("");
-                    txtField03.setText("");
-                    txtField04.setText("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setProvID("");
+                        oTrans.getModel().getModel().setProvName("");
+                        oTrans.getModel().getModel().setTownID("");
+                        oTrans.getModel().getModel().setTownName("");
+                        oTrans.getModel().getModel().setZippCode("");
+                        txtField03.setText("");
+                        txtField04.setText("");
+                    }
                 }
                 initFields(pnEditMode);
             }
         });
         txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getModel().getModel().setTownID("");
-                    oTrans.getModel().getModel().setTownName("");
-                    oTrans.getModel().getModel().setZippCode("");
-                    txtField04.setText("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setTownID("");
+                        oTrans.getModel().getModel().setTownName("");
+                        oTrans.getModel().getModel().setZippCode("");
+                        txtField04.setText("");
+                    }
                 }
             }
         });

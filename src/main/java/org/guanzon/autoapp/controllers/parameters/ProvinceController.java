@@ -330,9 +330,11 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
     public void initTextFieldsProperty() {
         txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getModel().getModel().setRegionID("");
-                    oTrans.getModel().getModel().setRegionNm("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getModel().getModel().setRegionID("");
+                        oTrans.getModel().getModel().setRegionNm("");
+                    }
                 }
             }
         });

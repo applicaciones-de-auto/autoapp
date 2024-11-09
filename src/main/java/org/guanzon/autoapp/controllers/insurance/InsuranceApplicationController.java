@@ -636,19 +636,23 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     public void initTextFieldsProperty() {
         txtField01.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    clearPolicyPropsInformation();
-                    clearPolicyPropsFields();
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        clearPolicyPropsInformation();
+                        clearPolicyPropsFields();
+                    }
                 }
                 initFields(pnEditMode);
             }
         });
         txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue.isEmpty()) {
-                    oTrans.getMasterModel().getMasterModel().setBrBankID("");
-                    oTrans.getMasterModel().getMasterModel().setBankName("");
-                    oTrans.getMasterModel().getMasterModel().setBrBankNm("");
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getMasterModel().getMasterModel().setBrBankID("");
+                        oTrans.getMasterModel().getMasterModel().setBankName("");
+                        oTrans.getMasterModel().getMasterModel().setBrBankNm("");
+                    }
                 }
             }
         });
