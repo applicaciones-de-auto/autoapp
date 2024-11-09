@@ -1124,8 +1124,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 tabPinEditMode = iTabIndex;
             }
             initFields(pnEditMode);
-        }
-        );
+        });
     }
 
     @Override
@@ -1133,63 +1132,52 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField03.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setClientID("");
-                                if (oTrans.getMasterModel().getMasterModel().getClientTp().equals("0")) {
-                                    oTrans.getMasterModel().getMasterModel().setContctID("");
-                                    oTrans.getMasterModel().getMasterModel().setContctNm("");
-                                    txtField05.setText("");
-                                }
-                                textArea04.setText("");
-                                CustomCommonUtil.setText("", txtField06, txtField07, txtField08);
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setClientID("");
+                            if (oTrans.getMasterModel().getMasterModel().getClientTp().equals("0")) {
+                                oTrans.getMasterModel().getMasterModel().setContctID("");
+                                oTrans.getMasterModel().getMasterModel().setContctNm("");
+                                txtField05.setText("");
                             }
+                            textArea04.setText("");
+                            CustomCommonUtil.setText("", txtField06, txtField07, txtField08);
                         }
                     }
                     initFields(pnEditMode);
-                }
-                );
-        txtField05.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
+                });
+        txtField05.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setContctID("");
-                                oTrans.getMasterModel().getMasterModel().setContctNm("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setContctID("");
+                            oTrans.getMasterModel().getMasterModel().setContctNm("");
+
                         }
                     }
                 }
-                );
+        );
         txtField09.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setSalesExe("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setSalesExe("");
+
                         }
                     }
                 }
                 );
-        txtField11.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setPlatform("");
-                            }
-                        }
-                    }
+        txtField11.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue.isEmpty()) {
+                    oTrans.getMasterModel().getMasterModel().setPlatform("");
                 }
-                );
+            }
+        });
         txtField12.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setActvtyID("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setActvtyID("");
                         }
                     }
                 }
@@ -1197,10 +1185,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField13.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setSalesAgn("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setSalesAgn("");
                         }
                     }
                 }
@@ -1208,11 +1194,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField14.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setBranchCd("");
-                                oTrans.getMasterModel().getMasterModel().setBranchNm("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setBranchCd("");
+                            oTrans.getMasterModel().getMasterModel().setBranchNm("");
                         }
                     }
                 }
@@ -1220,10 +1204,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField20.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setTestModl("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setTestModl("");
+
                         }
                     }
                 }
@@ -1231,13 +1214,11 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         txtField27.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setCSNo("");
-                                oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                                oTrans.getMasterModel().getMasterModel().setVhclID("");
-                                textArea28.setText("");
-                            }
+                        if (newValue.isEmpty()) {
+                            oTrans.getMasterModel().getMasterModel().setCSNo("");
+                            oTrans.getMasterModel().getMasterModel().setPlateNo("");
+                            oTrans.getMasterModel().getMasterModel().setVhclID("");
+                            textArea28.setText("");
                         }
                     }
                 }
@@ -1269,16 +1250,13 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
     }
 
     @Override
-    public void initFields(int fnValue
-    ) {
+    public void initFields(int fnValue) {
         pnRow = 0;
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         //Inquiry button
         CustomCommonUtil.setVisible(lbShow, btnTargetVhclAdd, btnPromoAdd, btnTargetVhclRemove);
         CustomCommonUtil.setManaged(lbShow, btnTargetVhclAdd, btnPromoAdd, btnTargetVhclRemove);
         //Inquiry General Button
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
         CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
         CustomCommonUtil.setVisible(false, btnEdit, btnConvertSales, btnFollowUp, btnLostSale);
@@ -1376,80 +1354,93 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                             btnEdit.setManaged(true);
                             break;
                     }
-                    initBtnProcess(pnEditMode);
+                    btnAdd.setVisible(false);
+                    btnAdd.setManaged(false);
                     break;
             }
-        }
 
-        if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
-            if (tabPinEditMode == 1) {
-                initCustomerInquiryFieldsFalse();
-                initInquiryProcessFieldsTrue();
-            } else {
-                initCustomerInquiryFieldsTrue();
-                initInquiryProcessFieldsFalse();
+            if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
+                if (tabPinEditMode == 1) {
+                    initCustomerInquiryFieldsFalse();
+                    initInquiryProcessFieldsTrue();
+                } else {
+                    initCustomerInquiryFieldsTrue();
+                    initInquiryProcessFieldsFalse();
+                }
+
             }
+            //disable fields according to the tab index
+            if (fnValue == EditMode.UPDATE) {
+                switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
+                    default:
+                        tabCustomerInquiry.setDisable(false);
+                        tabInquiryProcess.setDisable(false);
+                        tabBankHistory.setDisable(false);
+                        tabFollowingHistory.setDisable(false);
+                        break;
+                }
+                if (oTrans.getMasterModel().getMasterModel().getTranStat().equals("3")) {
+                    comboBox21.setDisable(true);
+                }
+                txtField03.setDisable(true);
+                txtField09.setDisable(true);
+            }
+            if (oTrans.getMasterModel()
+                    .getMasterModel().getTranStat().equals("0")) {
+                btnSndMngerApprov.setDisable(false);
+            }
+            switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
+                case "0":
+                case "1":
+                case "3":
+                case "6":
+                    if (fnValue == EditMode.READY) {
+                        if (!tblAdvanceSlip.getItems().isEmpty()) {
+                            vsasCheck01.setVisible(true);
+                        }
+                    }
+                    if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
+                        if (tabPinEditMode == 1) {
+                            initCustomerInquiryFieldsFalse();
+                            initInquiryProcessFieldsTrue();
 
-        }
-        //disable fields according to the tab index
-        if (fnValue == EditMode.UPDATE) {
-            switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
-                default:
-                    tabCustomerInquiry.setDisable(false);
-                    tabInquiryProcess.setDisable(false);
-                    tabBankHistory.setDisable(false);
-                    tabFollowingHistory.setDisable(false);
+                        } else {
+                            initCustomerInquiryFieldsTrue();
+                            initInquiryProcessFieldsFalse();
+                        }
+
+                    }
                     break;
-            }
-            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals("3")) {
-                comboBox21.setDisable(true);
-            }
-            txtField03.setDisable(true);
-            txtField09.setDisable(true);
-        }
-        if (oTrans.getMasterModel()
-                .getMasterModel().getTranStat().equals("0")) {
-            btnSndMngerApprov.setDisable(false);
-        }
-        switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
-            case "0":
-            case "1":
-            case "3":
-            case "6":
-                if (fnValue == EditMode.READY) {
+                case "2":
+                case "4":
                     if (!tblAdvanceSlip.getItems().isEmpty()) {
                         vsasCheck01.setVisible(true);
                     }
-                }
-                if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
-                    if (tabPinEditMode == 1) {
-                        initCustomerInquiryFieldsFalse();
-                        initInquiryProcessFieldsTrue();
-
-                    } else {
-                        initCustomerInquiryFieldsTrue();
-                        initInquiryProcessFieldsFalse();
-                    }
-
-                }
-                break;
-            case "2":
-            case "4":
-                if (!tblAdvanceSlip.getItems().isEmpty()) {
-                    vsasCheck01.setVisible(true);
-                }
-                break;
-            case "5":
-                vsasCheck01.setVisible(false);
-                break;
-        }
-
-        if (fnValue == EditMode.ADDNEW) {
-            if (oApp.isMainOffice()) {
-                txtField14.setDisable(false); // Branch Name
-            } else {
-                txtField14.setDisable(true); // Branch Name
+                    break;
+                case "5":
+                    vsasCheck01.setVisible(false);
+                    break;
             }
+
+            if (fnValue == EditMode.ADDNEW) {
+                if (oApp.isMainOffice()) {
+                    txtField14.setDisable(false); // Branch Name
+                } else {
+                    txtField14.setDisable(true); // Branch Name
+                }
+            }
+        }
+        if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+        }
+        switch (tabPaneMain.getSelectionModel().getSelectedIndex()) {
+            case 0:
+            case 2:
+            case 3:
+                btnAdd.setVisible(!lbShow);
+                btnAdd.setManaged(!lbShow);
+                break;
         }
     }
 

@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -80,15 +80,15 @@
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" vgrow="ALWAYS" />
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
                                                                                             </rowConstraints>
                                                                                             <children>
@@ -144,35 +144,35 @@
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" vgrow="ALWAYS" />
+                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" vgrow="ALWAYS" />
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
                                                                                             </rowConstraints>
                                                                                             <children>
-                                                                                                <TextField fx:id="txtField17" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                                                                <TextField fx:id="txtField17" alignment="CENTER_RIGHT" promptText="0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="7" />
                                                                                                 <Label id="LabelDesc" text="Plate No" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Frame No" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Vehicle Description" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                                                                <Label id="LabelDesc" text="Vehicle Size" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-                                                                                                <Label id="LabelDesc" text="Authorize Capacity" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                                                <Label id="LabelDesc" text="Vehicle Size" visible="false" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+                                                                                                <Label id="LabelDesc" text="Authorize Capacity" visible="false" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                                                                 <TextField fx:id="txtField16" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                                                 <TextField fx:id="txtField15" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                                                <ComboBox fx:id="comboBox22" prefHeight="24.0" prefWidth="227.0" GridPane.columnIndex="5" GridPane.rowIndex="8" />
+                                                                                                <ComboBox fx:id="comboBox22" prefHeight="24.0" prefWidth="227.0" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="8" />
                                                                                                 <Label id="LabelDesc" text="CS No." GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                                                 <TextField fx:id="txtField20" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                                                 <Label id="LabelDesc" text="Engine No" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                                                                 <TextField fx:id="txtField19" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                                                 <TextField fx:id="txtField47" disable="true" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="6" />
-                                                                                                <Label id="LabelDesc" text="Vehicle Type" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                                                                                <ComboBox fx:id="comboBox21" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-                                                                                                <Label id="LabelDesc" text="Type of Body" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8" />
-                                                                                                <ComboBox fx:id="comboBox18" disable="true" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                                                                                                <Label id="LabelDesc" text="Vehicle Type" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                                                <ComboBox fx:id="comboBox21" prefWidth="150.0" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+                                                                                                <Label id="LabelDesc" text="Type of Body" visible="false" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8" />
+                                                                                                <ComboBox fx:id="comboBox18" disable="true" prefWidth="150.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                                                                                                 <Label text="Customer Name" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="11.5" />
