@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="620.0" prefWidth="1376.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="620.0" prefWidth="1376.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -157,15 +157,15 @@
                                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                             </columnConstraints>
                                                                                                                             <rowConstraints>
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="35.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="25.0" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="25.0" prefHeight="25.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="ALWAYS" />
+                                                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="ALWAYS" />
                                                                                                                                 <RowConstraints />
                                                                                                                             </rowConstraints>
                                                                                                                             <children>
@@ -181,16 +181,16 @@
                                                                                                                                 <Label id="LabelDesc" text="Engine No" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                                                                                                                                 <TextField fx:id="txtField27" disable="true" editable="false" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                                                                                                 <TextField fx:id="txtField23" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="5" />
-                                                                                                                                <TextField fx:id="txtField24" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                                                                                                <ComboBox fx:id="comboBox28" disable="true" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+                                                                                                                                <TextField fx:id="txtField24" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                                                                                                <ComboBox fx:id="comboBox28" disable="true" prefWidth="150.0" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="6" />
                                                                                                                                 <Label id="LabelDesc" text="Plate No" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                                                                                 <Label id="LabelDesc" text="Vehicle Description" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                                                                                <Label id="LabelDesc" text="Vehicle Size" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-                                                                                                                                <ComboBox fx:id="comboBox25" disable="true" maxWidth="150.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                                                                                                                <ComboBox fx:id="comboBox29" disable="true" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-                                                                                                                                <Label id="LabelDesc" text="Authorize Capacity" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                                                                                                <Label id="LabelDesc" text="Vehicle Type" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                                                                                                <Label id="LabelDesc" text="Type of Body" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+                                                                                                                                <Label id="LabelDesc" text="Vehicle Size" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                                                                                                                                <ComboBox fx:id="comboBox25" disable="true" maxWidth="150.0" prefWidth="150.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                                                                                                                                <ComboBox fx:id="comboBox29" disable="true" prefWidth="150.0" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+                                                                                                                                <Label id="LabelDesc" text="Authorize Capacity" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                                                                                <Label id="LabelDesc" text="Vehicle Type" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                                                                                <Label id="LabelDesc" text="Type of Body" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="7" />
                                                                                                                             </children>
                                                                                                                         </GridPane>
                                                                                                                     </children>
@@ -486,14 +486,6 @@
                                                 <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnPrint" contentDisplay="TOP" layoutX="294.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="PRINT" size="20" />
-                                            </graphic>
-                                        </Button>
                                         <Button fx:id="btnInsPolCancel" contentDisplay="TOP" layoutX="223.0" layoutY="10.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="161.0" text="Insurance Policy Cancel">
                                             <effect>
                                                 <Blend />
@@ -502,7 +494,15 @@
                                                 <FontAwesomeIconView glyphName="TIMES" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnPrintCOC" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print COC">
+                                        <Button fx:id="btnPrint" contentDisplay="TOP" layoutX="294.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print" visible="false">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="btnPrintCOC" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print COC" visible="false">
                                             <effect>
                                                 <Blend />
                                             </effect>

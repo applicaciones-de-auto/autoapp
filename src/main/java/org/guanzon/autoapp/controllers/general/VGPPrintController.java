@@ -227,13 +227,12 @@ public class VGPPrintController implements Initializable, ScreenInterface, GPrin
                 lsDescID = "";
                 lsDesc = "";
             }
-            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/VehicleGatePass.jasper";
             JRBeanCollectionDataSource jobDoneData = new JRBeanCollectionDataSource(vgpData);
             System.out.println("vehicle: " + jobDoneData.getData());
             params.put(
                     "jobDoneData", jobDoneData);
             try {
-                poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "VehicleGatePass.jasper", params, new JREmptyDataSource());
                 if (poJasperPrint != null) {
                     showReport();
                 }

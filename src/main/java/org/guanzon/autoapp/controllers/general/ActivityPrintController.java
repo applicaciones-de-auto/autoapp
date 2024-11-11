@@ -214,7 +214,7 @@ public class ActivityPrintController implements Initializable, ScreenInterface, 
             params.put("actRcvdBdgt", formatAmount(oTransPrint.getMaster("nRcvdBdgt").toString()));
             params.put("actPropBdgt", formatAmount(oTransPrint.getMaster("nPropBdgt").toString()));
             params.put("actEntryDate", getValueDateReport("actEntryDate", "dEntryDte"));
-            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApproved"));
+            params.put("actApprovDte", getValueDateReport("actApprovDte", "dApprovex"));
             String lsFrom = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateFrom"));
             String lsTo = CustomCommonUtil.xsDateShort((Date) oTransPrint.getMaster("dDateThru"));
             String duration = lsFrom + " - " + lsTo;
@@ -258,8 +258,6 @@ public class ActivityPrintController implements Initializable, ScreenInterface, 
                         oTransPrint.getActVehicle(lnCtr, "sCSNoxxxx").toString().toUpperCase(),
                         oTransPrint.getActVehicle(lnCtr, "sDescript").toString().toUpperCase()));
             }
-
-            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/ActivityReport.jasper";
             JRBeanCollectionDataSource vehicle = new JRBeanCollectionDataSource(actVhclModelData);
             JRBeanCollectionDataSource actlocation = new JRBeanCollectionDataSource(locationData);
             JRBeanCollectionDataSource member = new JRBeanCollectionDataSource(actMembersData);
@@ -271,10 +269,11 @@ public class ActivityPrintController implements Initializable, ScreenInterface, 
             params.put(
                     "member", member);
             try {
-                poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "Activity.jasper", params, new JREmptyDataSource());
                 if (poJasperPrint != null) {
                     showReport();
                 }
+                System.out.println(oApp.getReportPath());
             } catch (JRException ex) {
                 running = false;
                 vbProgress.setVisible(false);

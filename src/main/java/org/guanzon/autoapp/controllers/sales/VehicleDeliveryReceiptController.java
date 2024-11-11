@@ -11,6 +11,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -365,11 +366,13 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
         comboBox02.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTrans.getMasterModel().getMasterModel().setCustType(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
                     if (comboBox02.getSelectionModel().getSelectedIndex() == 1) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose customer to proceed.");
-                        return;
+                        Platform.runLater(() -> {
+                            comboBox02.getSelectionModel().select(0);
+                        });
                     }
+                    oTrans.getMasterModel().getMasterModel().setCustType(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
                     initFields(pnEditMode);
                 }
             }

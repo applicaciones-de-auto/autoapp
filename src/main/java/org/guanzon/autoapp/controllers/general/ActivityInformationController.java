@@ -54,6 +54,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
@@ -207,26 +208,25 @@ public class ActivityInformationController implements Initializable, ScreenInter
         txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
         String lsApprvDate = "";
         if (oTrans.getModel().getModel().getApproveDte() != null) {
-            lsApprvDate = CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApproveDte());//dApproved
+            if (!CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApproveDte()).equals("1900-01-01")) {
+                lsApprvDate = CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getApproveDte());//dApproved
+            }
         }
         lblApprovedDate.setText(lsApprvDate);
         switch (oTrans.getModel().getModel().getTranStat()) {
-            case "0":
-                lblCancelStatus.setText("Deactivated");
-            case "1":
+            case TransactionStatus.STATE_OPEN:
                 lblCancelStatus.setText("For Approval");
                 break;
-            case "2":
+            case TransactionStatus.STATE_CANCELLED:
                 lblCancelStatus.setText("Cancelled");
                 break;
-            case "3":
+            case TransactionStatus.STATE_CLOSED:
                 lblCancelStatus.setText("Approved");
                 break;
             default:
                 lblCancelStatus.setText("");
                 break;
         }
-
         return true;
     }
 
@@ -795,29 +795,23 @@ public class ActivityInformationController implements Initializable, ScreenInter
         txtField06.setDisable(!(lbShow && !comboBox05.getValue().isEmpty()));
         txtField12.setDisable(!(lbShow && !txtField11.getText().isEmpty()));
 
-        CustomCommonUtil.setVisible(false, btnActCancel, btnTabRem, btnEdit, btnPrint);
-        CustomCommonUtil.setManaged(false, btnActCancel, btnTabRem, btnEdit, btnPrint);
+        CustomCommonUtil.setVisible(false, btnActCancel, btnTabRem, btnEdit, btnPrint, btnActivityHistory);
+        CustomCommonUtil.setManaged(false, btnActCancel, btnTabRem, btnEdit, btnPrint, btnActivityHistory);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel, btnTabAdd);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel, btnTabAdd);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         btnTabAdd.setDisable(!lbShow);
-//        btnActivityHistory.setVisible(false);
-//        btnActivityHistory.setManaged(false);
         if (fnValue == EditMode.READY) {
-            if (lblCancelStatus.getText().equals("Cancelled")) {
-                CustomCommonUtil.setVisible(false, btnActCancel, btnEdit, btnPrint);
-                CustomCommonUtil.setManaged(false, btnActCancel, btnEdit, btnPrint);
-//                btnActivityHistory.setVisible(true);
-//                btnActivityHistory.setManaged(true);
-            } else {
+            if (!oTrans.getModel().getModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)) {
                 CustomCommonUtil.setVisible(true, btnActCancel, btnEdit, btnPrint);
                 CustomCommonUtil.setManaged(true, btnActCancel, btnEdit, btnPrint);
-//                btnActivityHistory.setVisible(true);
-//                btnActivityHistory.setManaged(true);
+            }
+            if (oTrans.getModel().getModel().getTranStat().equals(TransactionStatus.STATE_OPEN)) {
+                CustomCommonUtil.setVisible(false, btnPrint);
+                CustomCommonUtil.setManaged(false, btnPrint);
             }
         }
-
     }
 
     private boolean checkExistingActivityInformation() {

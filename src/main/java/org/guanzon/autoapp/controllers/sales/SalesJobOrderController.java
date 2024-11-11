@@ -81,9 +81,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
     @FXML
     AnchorPane AnchorMain;
     @FXML
-    private Label lblFormTitle, lblJobOrderStatus;
+    private Label lblFormTitle, lblJobOrderStatus, lblCompleteStatus;
+
     @FXML
-    private Button btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnCancelJobOrder, btnClose, btnDone, btnAddLabor, btnAddAccessories;
+    private Button btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnCancelJobOrder, btnClose, btnAddLabor, btnAddAccessories, btnDone, btnAddTechnician;
     @FXML
     private TabPane ImTabPane;
     @FXML
@@ -110,8 +111,6 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
     private TableView<?> tblViewPaintings;
     @FXML
     private TableView<?> tblViewPaintings1;
-    @FXML
-    private Button btnAddTechnician;
     @FXML
     private TableColumn<Part, String> tblindex01_part, tblindex02_part, tblindex03_part, tblindex04_part, tblindex05_part, tblindex06_part;
 
@@ -197,23 +196,29 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
         txtField13.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
         textArea14.setText(oTrans.getMasterModel().getMasterModel().getVhclDesc());
         textArea15.setText(oTrans.getMasterModel().getMasterModel().getRemarks());
+        String lsStatus = "";
         switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
-                lblJobOrderStatus.setText("Active");
+                lsStatus = "Active";
                 break;
             case TransactionStatus.STATE_CLOSED:
-                lblJobOrderStatus.setText("Approved");
+                lsStatus = "Completed";
                 break;
             case TransactionStatus.STATE_CANCELLED:
-                lblJobOrderStatus.setText("Cancelled");
+                lsStatus = "Cancelled";
                 break;
             case TransactionStatus.STATE_POSTED:
-                lblJobOrderStatus.setText("Posted");
-                break;
-            default:
-                lblJobOrderStatus.setText("");
+                lsStatus = "Posted";
                 break;
         }
+        lblJobOrderStatus.setText(lsStatus);
+        String lsDateCompleted = "";
+        if (oTrans.getMasterModel().getMasterModel().getCompleteDte() != null) {
+            if (!CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getCompleteDte()).equals("1900-01-01")) {
+                lsDateCompleted = CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getCompleteDte());
+            }
+        }
+        lblCompleteStatus.setText(lsDateCompleted);
         return true;
     }
 
@@ -432,9 +437,9 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this SJO?")) {
                     loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "SJO Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
                     } else {
-                        ShowMessageFX.Warning(null, "SJO Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
                     loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -447,9 +452,26 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                 }
                 break;
             case "btnDone":
-                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to done this SJO?")) {
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to complete this SJO?")) {
+                    oTrans.getMasterModel().getMasterModel().setTranStat(TransactionStatus.STATE_CLOSED);
+                    loJSON = oTrans.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, "SJO completed successfully.");
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        loadLaborTable();
+                        loadAccessoriesTable();
+                        pnEditMode = oTrans.getEditMode();
+                        initFields(pnEditMode);
+                    }
                 }
                 break;
+
             case "btnAddLabor":
                 try {
                 loadLaborWindowDialog();
@@ -526,6 +548,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
         datePicker03.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         CustomCommonUtil.setText("0.00", txtField04, txtField05, txtField06);
         CustomCommonUtil.setText("", textArea08, textArea14, textArea15);
+        CustomCommonUtil.setText("", lblJobOrderStatus, lblCompleteStatus);
     }
 
     @Override
@@ -552,14 +575,15 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             txtField01.setDisable(true);
         }
         if (fnValue == EditMode.READY) {
-            if (!lblJobOrderStatus.getText().equals("Cancelled")) {
-
-                CustomCommonUtil.setVisible(true, btnEdit, btnCancelJobOrder);
-                CustomCommonUtil.setManaged(true, btnEdit, btnCancelJobOrder);
-//                btnPrint.setVisible(true);
-//                btnPrint.setManaged(true);
-//                btnDone.setVisible(true);
-//                btnDone.setManaged(true);
+            if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)) {
+                CustomCommonUtil.setVisible(true, btnEdit, btnCancelJobOrder, btnDone);
+                CustomCommonUtil.setManaged(true, btnEdit, btnCancelJobOrder, btnDone);
+            }
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+                btnPrint.setVisible(true);
+                btnPrint.setManaged(true);
+                CustomCommonUtil.setVisible(false, btnEdit, btnDone);
+                CustomCommonUtil.setManaged(false, btnEdit, btnDone);
             }
         }
         if (!tblViewLabor.getItems().isEmpty()) {
@@ -897,8 +921,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             if (event.getClickCount() == 2) {
                 try {
                     loadLaborWindowDialog(pnRow, true, false);
+
                 } catch (IOException ex) {
-                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesJobOrderController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -915,8 +941,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             if (event.getClickCount() == 2) {
                 try {
                     loadAccessoriesWindowDialog(pnRow, true, false);
+
                 } catch (IOException ex) {
-                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesJobOrderController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1054,10 +1082,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             }
             techData.add(new TechnicianLabor(
                     String.valueOf(lnCtr + 1),
-                    lsTechID,
-                    lsTechName,
-                    lsLaborCde,
-                    lsLaborDesc));
+                    lsTechID.toUpperCase(),
+                    lsTechName.toUpperCase(),
+                    lsLaborCde.toUpperCase(),
+                    lsLaborDesc.toUpperCase()));
             lsTechName = "";
             lsTechID = "";
             lsLaborCde = "";
@@ -1116,8 +1144,10 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             if (event.getClickCount() == 2) {
                 try {
                     loadTechnicianServiceWindowDialog(pnRow);
+
                 } catch (IOException ex) {
-                    Logger.getLogger(SalesJobOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesJobOrderController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

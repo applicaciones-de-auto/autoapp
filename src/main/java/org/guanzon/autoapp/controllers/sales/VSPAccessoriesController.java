@@ -323,48 +323,38 @@ public class VSPAccessoriesController implements Initializable {
     }
 
     private void initFields() {
-        txtField01.setDisable(true);
-        CustomCommonUtil.setDisable(true, txtField02, comboBox03, txtField04, txtField05, txtField07);
+        CustomCommonUtil.setDisable(true, txtField01, txtField02, comboBox03, txtField04, txtField05, txtField07);
+        CustomCommonUtil.setVisible(false, btnAdd, btnEdit);
+        CustomCommonUtil.setManaged(false, btnAdd, btnEdit);
         if (pbState) {
             CustomCommonUtil.setDisable(false, txtField02, comboBox03);
             btnAdd.setVisible(true);
             btnAdd.setManaged(true);
-            btnEdit.setVisible(false);
-            btnEdit.setManaged(false);
         } else {
-            btnAdd.setVisible(false);
-            btnAdd.setManaged(false);
             btnEdit.setVisible(true);
             btnEdit.setManaged(true);
-            if (!psJO.isEmpty()) {
-                CustomCommonUtil.setDisable(true, txtField02, comboBox03, txtField04, txtField05, txtField06);
-            }
-            if (!txtField01.getText().isEmpty()) {
-                txtField02.setDisable(true);
-            }
         }
+
         if (pbRequest) {
-            txtField01.setDisable(false);
-        }
-        if (psJO.isEmpty()) {
-            switch (comboBox03.getSelectionModel().getSelectedIndex()) {
-                case 0:
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(txtField04.getText().isEmpty());
-                    txtField07.setDisable(true);
-                    break;
-                case 1:
-                    txtField04.setDisable(false);
-                    txtField05.setDisable(txtField04.getText().isEmpty());
-                    txtField07.setDisable(txtField04.getText().isEmpty());
-                    break;
-                default:
-                    CustomCommonUtil.setDisable(true, txtField04, txtField05, txtField07);
-                    break;
+            if (psJO.isEmpty()) {
+                txtField01.setDisable(false);
+                txtField05.setDisable(false);
             }
         } else {
-            txtField05.setDisable(false);
-            txtField07.setDisable(false);
+            txtField05.setDisable(txtField04.getText().isEmpty() || txtField04.getText().equals("0.00"));
+            if (psJO.isEmpty()) {
+                switch (comboBox03.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        txtField04.setDisable(false);
+                        txtField05.setDisable(txtField04.getText().isEmpty() || txtField04.getText().equals("0.00"));
+                        break;
+                    case 1:
+                        txtField04.setDisable(false);
+                        txtField05.setDisable(txtField04.getText().isEmpty() || txtField04.getText().equals("0.00"));
+                        txtField07.setDisable(txtField04.getText().isEmpty() || txtField04.getText().equals("0.00"));
+                        break;
+                }
+            }
         }
     }
 

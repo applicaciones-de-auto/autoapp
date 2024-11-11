@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -126,9 +125,6 @@ public class VehicleInquiryLostSaleController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         lblClientName.setText(psClient);
         comboBox02.setDisable(true);
-        if (pbIsInquiry) {
-            comboBox01.getSelectionModel().select(1);
-        }
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();
@@ -137,6 +133,9 @@ public class VehicleInquiryLostSaleController implements Initializable {
         initComboBoxItems();
         initFieldsAction();
         initTextFieldsProperty();
+        if (pbIsInquiry) {
+            comboBox01.getSelectionModel().select(1);
+        }
         initFields();
     }
 
@@ -274,6 +273,44 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 } else {
                     return;
                 }
+                if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
+                    if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please select Reason.");
+                        return;
+                    }
+                }
+                if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
+                    if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
+                        switch (comboBox02.getSelectionModel().getSelectedIndex()) {
+                            case 0:
+                            case 2:
+                                if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Goods Category.");
+                                    return;
+                                }
+                                if (txtField04.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Make Competitor.");
+                                    return;
+                                }
+                                if (txtField05.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Dealer Competitor.");
+                                    return;
+                                }
+                                break;
+                            case 1:
+                                if (txtField04.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Make Competitor.");
+                                    return;
+                                }
+                                if (txtField05.getText().trim().isEmpty()) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please select Car Dealer Competitor.");
+                                    return;
+                                }
+                                break;
+                        }
+                    }
+                }
+
                 if (textArea06.getText().length() < 20) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter at least 20 characters.");
                     textArea06.requestFocus();
@@ -338,6 +375,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
         comboBox01.setOnAction(event -> {
             int selectedIndex = comboBox01.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
+                clearFields();
                 initFields();
             }
         });
@@ -348,6 +386,8 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 String lsReason = reasons[selectedIndex];
                 oTransLost.getMasterModel().getMasterModel().setMkeCmptr("");
                 oTransLost.getMasterModel().getMasterModel().setDlrCmptr("");
+                CustomCommonUtil.setText("", txtField04, txtField05);
+                comboBox03.setValue("");
                 if (selectedIndex != 1) {
                     comboBox03.setValue("");
                 } else {
@@ -386,32 +426,39 @@ public class VehicleInquiryLostSaleController implements Initializable {
         );
     }
 
+    private void clearFields() {
+        CustomCommonUtil.setText("", txtField04, txtField05);
+        CustomCommonUtil.setValue("", comboBox02, comboBox03);
+        textArea06.setText("");
+    }
+
     private void initFields() {
-        CustomCommonUtil.setDisable(true, comboBox01, comboBox03, txtField04,
-                txtField05, textArea06);
         comboBox02.setDisable(false);
+        CustomCommonUtil.setDisable(true, comboBox01, comboBox03, txtField04,
+                txtField05);
         if (!pbIsInquiry) {
             comboBox01.setDisable(false);
+            comboBox02.setDisable(true);
             switch (comboBox01.getSelectionModel().getSelectedIndex()) {
                 case 0:
-                    CustomCommonUtil.setDisable(true, comboBox01, comboBox02, comboBox03, txtField04,
+                    CustomCommonUtil.setDisable(true, comboBox02, comboBox03, txtField04,
                             txtField05);
                     textArea06.setDisable(false);
                     break;
                 case 1:
-                    CustomCommonUtil.setDisable(false, comboBox01, comboBox02, comboBox03, txtField04,
-                            txtField05, textArea06);
+                    CustomCommonUtil.setDisable(false, comboBox02, comboBox03, txtField04,
+                            txtField05);
                     break;
             }
         }
         switch (comboBox02.getSelectionModel().getSelectedIndex()) {
             case 0:
             case 2:
-                CustomCommonUtil.setDisable(false, comboBox03, txtField04, txtField05);
+                CustomCommonUtil.setDisable(comboBox02.getValue().equals(""), comboBox03, txtField04, txtField05);
                 break;
             case 1:
                 comboBox03.setDisable(true);
-                CustomCommonUtil.setDisable(false, txtField04, txtField05);
+                CustomCommonUtil.setDisable(comboBox02.getValue().equals(""), txtField04, txtField05);
                 break;
             default:
                 CustomCommonUtil.setDisable(true, comboBox03, txtField04, txtField05);
@@ -424,13 +471,11 @@ public class VehicleInquiryLostSaleController implements Initializable {
     private boolean setSelection() {
         if (comboBox01.getSelectionModel().getSelectedIndex() < 0) {
             ShowMessageFX.Warning("No `Tag` selected.", pxeModuleName, "Please select `Tag` value.");
-            comboBox01.requestFocus();
             return false;
         } else {
             if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
                 if (comboBox02.getSelectionModel().getSelectedIndex() < 0) {
                     ShowMessageFX.Warning("No `Reason` selected.", pxeModuleName, "Please select `Reason` value.");
-                    comboBox02.requestFocus();
                     return false;
                 } else {
                     int selectedIndex = comboBox02.getSelectionModel().getSelectedIndex();
@@ -445,7 +490,6 @@ public class VehicleInquiryLostSaleController implements Initializable {
                 if ((comboBox02.getSelectionModel().getSelectedIndex() != 4) && (comboBox02.getSelectionModel().getSelectedIndex() != 3)) {
                     if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
                         ShowMessageFX.Warning("No `Goods Category` selected.", pxeModuleName, "Please select `Goods Category` value.");
-                        comboBox03.requestFocus();
                         return false;
                     } else {
                         oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));

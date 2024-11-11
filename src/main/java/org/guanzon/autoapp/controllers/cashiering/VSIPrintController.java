@@ -275,9 +275,8 @@ public class VSIPrintController implements Initializable, ScreenInterface, GPrin
             params.put("addVAT", "0.00");
             params.put("vatExempSales", "0.00");
             params.put("totalAmntDue", getValueNumberReport(String.valueOf(oTransPrint.getMasterModel().getMasterModel().getTranTotl())));
-            String lsSourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vsi.jasper";
             try {
-                poJasperPrint = JasperFillManager.fillReport(lsSourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "VehicleSalesInvoice.jasper", params, new JREmptyDataSource());
                 if (poJasperPrint != null) {
                     showReport();
                 }

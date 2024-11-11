@@ -145,7 +145,7 @@
                                                                         <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" />
                                                                     </graphic>
                                                                 </TableColumn>
-                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Insurance Proposal Date" />
+                                                                <TableColumn fx:id="tblindex03" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Insurance Proposal Date" />
                                                                 <TableColumn fx:id="tblindex04" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Insurance Proposal No" />
                                                                 <TableColumn fx:id="tblindex05" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Policy Type" />
                                                                 <TableColumn fx:id="tblindex06" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Application Type" />

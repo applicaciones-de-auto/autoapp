@@ -217,7 +217,7 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
             }
 
 //            params.put("birthDate", getValueDateReport("birthDate", "dBirthDte"));
-            params.put("tinNo", getValueReport("tinNo", "sTaxIDNox"));
+            params.put("tinNo", getValueReport("tinNo", "sTaxIDNox").replaceAll("(.{3})(?=.)", "$1-"));
             if (oTransPrint.getMasterModel().getMasterModel().getOffice() != null) {
                 if (oTransPrint.getMasterModel().getMasterModel().getOffice().equals("0")) {
                     params.put("officeAddress", "");
@@ -485,10 +485,9 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
             params.put("customName", getValueReport("customName", "sBuyCltNm"));
             params.put("transNo", getValueReport("transNo", "sTransNox"));
             params.put("brancUserName", CustomCommonUtil.formatName(System.getProperty("user.name").toUpperCase()));
-            String sourceFileName = "D://GGC_Maven_Systems/reports/autoapp/vsp.jasper";
             String printFileName = null;
             try {
-                poJasperPrint = JasperFillManager.fillReport(sourceFileName, params, new JREmptyDataSource());
+                poJasperPrint = JasperFillManager.fillReport(oApp.getReportPath() + "VehicleSalesProposal.jasper", params, new JREmptyDataSource());
                 printFileName = poJasperPrint.toString();
                 if (printFileName != null) {
                     showReport();

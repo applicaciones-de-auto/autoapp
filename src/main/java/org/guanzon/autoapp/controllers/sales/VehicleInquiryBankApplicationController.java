@@ -33,6 +33,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.BankApplication;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
@@ -256,7 +257,20 @@ public class VehicleInquiryBankApplicationController implements Initializable {
             comboBox07.requestFocus();
             return false;
         } else {
-            oTransBankApp.getMasterModel().getMasterModel().setTranStat(String.valueOf(comboBox07.getSelectionModel().getSelectedIndex()));
+            String lnTransStat = "";
+            switch (comboBox07.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                    lnTransStat = TransactionStatus.STATE_OPEN;
+                    break;
+                case 1:
+                    lnTransStat = TransactionStatus.STATE_VOID;
+                    break;
+                case 2:
+                    lnTransStat = TransactionStatus.STATE_CLOSED;
+                    break;
+
+            }
+            oTransBankApp.getMasterModel().getMasterModel().setTranStat(lnTransStat);
         }
         return true;
     }
@@ -373,9 +387,22 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                 comboBox07.setValue("CANCELLED");
                 initFields(pnEditMode);
             } else {
-                if (String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getTranStat()) != null) {
-                    comboBox07.getSelectionModel().select(Integer.parseInt(oTransBankApp.getMasterModel().getMasterModel().getTranStat())); //Bank Application Status
+                int lnTransStat = -1;
+                if (oTransBankApp.getMasterModel().getMasterModel().getTranStat() != null) {
+                    switch (oTransBankApp.getMasterModel().getMasterModel().getTranStat()) {
+                        case "0":
+                            lnTransStat = 0;
+                            break;
+                        case "4":
+                            lnTransStat = 1;
+                            break;
+                        case "1":
+                            lnTransStat = 2;
+                            break;
+
+                    }
                 }
+                comboBox07.getSelectionModel().select(lnTransStat); //Bank Application Status
             }
             if (oTransBankApp.getMasterModel().getMasterModel().getAppliedDte() != null) {
                 datePicker08.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
@@ -433,9 +460,22 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                     comboBox07.setValue("CANCELLED");
                     initFields(pnEditMode);
                 } else {
-                    if (String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getTranStat()) != null) {
-                        comboBox07.getSelectionModel().select(Integer.parseInt(oTransBankApp.getMasterModel().getMasterModel().getTranStat())); //Bank Application Status
+                    int lnTransStat = -1;
+                    if (oTransBankApp.getMasterModel().getMasterModel().getTranStat() != null) {
+                        switch (oTransBankApp.getMasterModel().getMasterModel().getTranStat()) {
+                            case "0":
+                                lnTransStat = 0;
+                                break;
+                            case "4":
+                                lnTransStat = 1;
+                                break;
+                            case "1":
+                                lnTransStat = 2;
+                                break;
+
+                        }
                     }
+                    comboBox07.getSelectionModel().select(lnTransStat); //Bank Application Status
                 }
                 if (oTransBankApp.getMasterModel().getMasterModel().getAppliedDte() != null) {
                     datePicker08.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTransBankApp.getMasterModel().getMasterModel().getAppliedDte())));
@@ -539,7 +579,20 @@ public class VehicleInquiryBankApplicationController implements Initializable {
                     datePicker09.setDisable(true);
                     datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
                 }
-                oTransBankApp.getMasterModel().getMasterModel().setTranStat(String.valueOf((comboBox07.getSelectionModel().getSelectedIndex())));
+                String lnTransStat = "";
+                switch (comboBox07.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        lnTransStat = TransactionStatus.STATE_OPEN;
+                        break;
+                    case 1:
+                        lnTransStat = TransactionStatus.STATE_VOID;
+                        break;
+                    case 2:
+                        lnTransStat = TransactionStatus.STATE_CLOSED;
+                        break;
+
+                }
+                oTransBankApp.getMasterModel().getMasterModel().setTranStat(lnTransStat);
             }
             initFields(pnEditMode);
         }

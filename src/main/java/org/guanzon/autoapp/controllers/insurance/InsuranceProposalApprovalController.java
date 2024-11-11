@@ -230,12 +230,11 @@ public class InsuranceProposalApprovalController implements Initializable, Scree
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, oApp, "Follow Up List");
+                        poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                     }
                 }
-
                 break;
             case "btnFilter":
                 String lsSelectedFilter = comboBoxFilter.getSelectionModel().getSelectedItem();

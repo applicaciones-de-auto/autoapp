@@ -108,65 +108,70 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
 
     private void loadMasterTable() {
         accessoriesData.clear();
-        boolean lbChargeType = false;
-        String lsGrsAmount = "";
-        String lsQuantity = "";
-        String lsDiscAmount = "";
-        String lsTotalAmount = "";
-        String lsNetAmount = "";
-        String lsPartsDesc = "";
+        boolean lbChrgType = false;
+        String lsGrsAmnt = "";
+        String lsQntyxxx = "";
+        String lsDscAmnt = "";
+        String lsTtlAmnt = "";
+        String lsNetAmnt = "";
+        String lsPartDsc = "";
         String lsBarCode = "";
+        String lsJobOrdr = "";
         for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice() != null) {
-                lsGrsAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
+                lsGrsAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice())));
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
-                lsQuantity = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                lsQntyxxx = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
                 BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
-                int lsQuan = Integer.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
-                lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
+                int lsQuan = oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getQuantity();
+                lsTtlAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
-                lsDiscAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
+                lsDscAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount())));
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt() != null) {
-                lsNetAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
+                lsNetAmnt = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getNtPrtAmt())));
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getChrgeTyp().equals("0")) {
-                lbChargeType = true;
+                lbChrgType = true;
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc() != null) {
-                lsPartsDesc = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
+                lsPartDsc = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getPartDesc());
             }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode() != null) {
                 lsBarCode = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getBarCode());
+            }
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getDSNo() != null) {
+                lsJobOrdr = String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getDSNo());
             }
             accessoriesData.add(new Part(
                     String.valueOf(lnCtr + 1),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getTransNo()),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getStockID()),
                     String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(lnCtr).getDescript()),
-                    lsQuantity,
-                    lsGrsAmount,
-                    lsDiscAmount,
-                    lsNetAmount,
+                    lsQntyxxx,
+                    lsGrsAmnt,
+                    lsDscAmnt,
+                    lsNetAmnt,
                     lsBarCode,
                     "",
-                    "",
-                    lsPartsDesc,
-                    lsTotalAmount,
-                    lbChargeType
+                    lsJobOrdr,
+                    lsPartDsc,
+                    lsTtlAmnt,
+                    lbChrgType
             ));
-            lbChargeType = false;
-            lsGrsAmount = "";
-            lsQuantity = "";
-            lsDiscAmount = "";
-            lsTotalAmount = "";
-            lsNetAmount = "";
-            lsPartsDesc = "";
+            lbChrgType = false;
+            lsGrsAmnt = "";
+            lsQntyxxx = "";
+            lsDscAmnt = "";
+            lsTtlAmnt = "";
+            lsNetAmnt = "";
+            lsPartDsc = "";
             lsBarCode = "";
+            lsJobOrdr = "";
         }
         tblViewAccessories.setItems(accessoriesData);
     }
@@ -235,6 +240,18 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
+                    boolean lbIsEmpty = false;
+                    for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
+                        if (!oTransVSPRequest.getVSPPartsModel().getDetailModel(lnCtr).getStockID().isEmpty()) {
+                            lbIsEmpty = true;
+                            break;
+                        }
+                    }
+
+                    if (!lbIsEmpty) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "No Accessories Number detected, Please select or enter value in any row.");
+                        return;
+                    }
                     loJSON = oTransVSPRequest.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, "VSP Parts Request Information", (String) loJSON.get("message"));
@@ -306,6 +323,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 loControl.setOrigDsc(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
             }
             loControl.setStockID(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo() != null) {
+                loControl.setJO(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
+            }
 //            loControl.setJO((String) oTrans.getVSPPartsDetail(fnRow, 11));
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -361,7 +381,6 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 try {
                     loadAccessoriesWindowDialog(pnRow, false);
                     loadMasterTable();
-
                 } catch (IOException ex) {
                     Logger.getLogger(VSPAccessoriesRequestController.class
                             .getName()).log(Level.SEVERE, null, ex);

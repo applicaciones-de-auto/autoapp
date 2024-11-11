@@ -241,7 +241,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
 //        if (oTrans.getModel().getModel().getEducAttain!= null && !oTransferal.getModel().getModel().getgetEducAttain().trim().isEmpty()) {
 //            comboBox11.getSelectionModel().select(Integer.parseInt(oTransferal.getModel().getModel().getgetEducAttain()));
 //        }
-
+        comboBox11.setValue("");
         txtField12.setText(oTrans.getModel().getModel().getProfessn());
         txtField13.setText(oTrans.getModel().getModel().getCompany());
         txtField14.setText(oTrans.getModel().getModel().getPosition());

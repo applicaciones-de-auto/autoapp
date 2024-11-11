@@ -40,7 +40,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -50,7 +49,17 @@ import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
+import org.guanzon.autoapp.FXMLMainScreenController;
 import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.FXMLMenuParameterForm;
+import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
+import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
+import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
+import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
+import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
+import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -67,6 +76,7 @@ import org.guanzon.autoapp.controllers.insurance.InsuranceProposalController;
 import org.guanzon.autoapp.controllers.parameters.ActivitySourceTypeController;
 import org.guanzon.autoapp.controllers.parameters.BankController;
 import org.guanzon.autoapp.controllers.parameters.BankBranchInformationController;
+import org.guanzon.autoapp.controllers.parameters.BarangayController;
 import org.guanzon.autoapp.controllers.parameters.BinController;
 import org.guanzon.autoapp.controllers.parameters.BrandController;
 import org.guanzon.autoapp.controllers.parameters.CategoryController;
@@ -75,7 +85,9 @@ import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeController;
 import org.guanzon.autoapp.controllers.parameters.ItemLocationController;
 import org.guanzon.autoapp.controllers.parameters.MeasurementController;
+import org.guanzon.autoapp.controllers.parameters.ProvinceController;
 import org.guanzon.autoapp.controllers.parameters.SectionController;
+import org.guanzon.autoapp.controllers.parameters.TownController;
 import org.guanzon.autoapp.controllers.parameters.VehicleColorController;
 import org.guanzon.autoapp.controllers.parameters.VehicleDescriptionController;
 import org.guanzon.autoapp.controllers.parameters.VehicleEngineFormatController;
@@ -115,8 +127,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private final String psServicePath = "/org/guanzon/autoapp/views/service/";
     private final String psCashPath = "/org/guanzon/autoapp/views/cashiering/";
     // Variables to track the window movement
-    private double xOffset = 0;
-    private double yOffset = 0;
     FXMLMenuParameterForm param = new FXMLMenuParameterForm();
     List<String> tabName = new ArrayList<>();
     @FXML
@@ -141,7 +151,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuVhclDesc;
     @FXML
     private Menu menusales;
-    private MenuItem mnuVhclInquiry;
     @FXML
     private MenuItem mnuSalesAgent;
     @FXML
@@ -182,7 +191,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuCategoryEntry;
     @FXML
     private MenuItem mnuInvTypeEntry;
-    private MenuItem mnuUnitDeliveryReceipt;
     @FXML
     private MenuItem mnuAckReceipt;
     @FXML
@@ -205,7 +213,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuSalesPartsRequest;
     @FXML
     private MenuItem mnuServiceJobOrder;
-    private MenuItem mnuAddOnsApproval;
     @FXML
     private MenuItem mnuSalesExecutive;
     @FXML
@@ -244,6 +251,16 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInquiryApproval;
     @FXML
     private MenuItem mnuVSPApproval;
+    @FXML
+    private MenuItem mnuCashRecv;
+    @FXML
+    private Label BranchName;
+    @FXML
+    private MenuItem mnuProvince;
+    @FXML
+    private MenuItem mnuTown;
+    @FXML
+    private MenuItem mnuBarangay;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -285,7 +302,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         name = oApp.executeQuery(lsQuery);
         try {
             if (name.next()) {
-                AppUser.setText(name.getString("sCompnyNm") + " || " + oApp.getBranchName());
+                AppUser.setText(name.getString("sCompnyNm"));
+                BranchName.setText(oApp.getBranchName());
                 System.setProperty("user.name", name.getString("sCompnyNm"));
             }
         } catch (SQLException ex) {
@@ -467,8 +485,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "Vehicle Sales Information":
                 mnuVhclEntry.fire();
                 break;
-//            case "Supplier":
-//                break;
+            case "Supplier":
+                mnuSupplierInfo.fire();
+                break;
             /*SALES*/
             case "Referral Agent":
                 mnuSalesAgent.fire();
@@ -482,19 +501,16 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
                 break;
             case "Vehicle Inquiry":
-                mnuVhclInquiry.fire();
+                mnuInquiry.fire();
                 break;
             case "Vehicle Sales Advances Approval":
                 mnuVhclRsrvApp.fire();
                 break;
             case "Vehicle Delivery Receipt":
-                mnuUnitDeliveryReceipt.fire();
+                mnuVchlDeliveryReceipt.fire();
                 break;
             case "Vehicle Sales Proposal":
                 mnuVSPEntry.fire();
-                break;
-            case "VSP Approval":
-                mnuAddOnsApproval.fire();
                 break;
             case "Sales Job Order":
                 mnuSalesJobOrder.fire();
@@ -602,7 +618,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     public TabPane loadAnimate(String fsFormName) {
         // Initialize the TabPane if it's empty
-        if (tabpane.getTabs().size() == 0) {
+        if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
 
@@ -725,6 +741,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new VSPAccessoriesRequestController();
         } else if (fsValue.contains("ItemLocation.fxml")) {
             return new ItemLocationController();
+        } else if (fsValue.contains("Province.fxml")) {
+            return new ProvinceController();
+        } else if (fsValue.contains("Town.fxml")) {
+            return new TownController();
+        } else if (fsValue.contains("Barangay.fxml")) {
+            return new BarangayController();
         } else if (fsValue.contains("Bin.fxml")) {
             return new BinController();
         } else if (fsValue.contains("Section.fxml")) {
@@ -759,6 +781,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new VehicleInquiryApprovalController();
         } else if (fsValue.contains("VehicleReservationAdvancesApproval.fxml")) {
             return new VehicleReservationAdvancesApprovalController();
+        } else if (fsValue.contains("Invoice.fxml")) {
+            return new InvoiceController();
+        } else if (fsValue.contains("CashierReceivables.fxml")) {
+            return new CashierReceivablesController();
         } else {
             // Handle other controllers here
             ShowMessageFX.Warning(null, "Warning", "Notify System Admin to Configure Screen Interface for " + fsValue);
@@ -813,6 +839,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return null;
             }
             return sSalesInvoiceType;
+        } else if (menuaction.contains("CashierReceivables.fxml")) {
+            return "Cashier Receivables";
             /*PARTS*/
         } else if (menuaction.contains("ItemInformation.fxml")) {
             return "Item Information";
@@ -1099,9 +1127,17 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     /*CASHIERING*/
     @FXML
+    private void mnuCashRecvClick(ActionEvent event) {
+        String sformname = psCashPath + "CashierReceivables.fxml";
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
     private void mnuAckReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Acknowledgement Receipt";
-        String sformname = "Invoice.fxml";
+        String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1112,7 +1148,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuBillingStmtClick(ActionEvent event) {
         sSalesInvoiceType = "Billing Statement";
-        String sformname = "Invoice.fxml";
+        String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1122,7 +1158,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuColReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Collection Receipt";
-        String sformname = "Invoice.fxml";
+        String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1132,7 +1168,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuOfcReceiptClick(ActionEvent event) {
         sSalesInvoiceType = "Official Receipt";
-        String sformname = "Invoice.fxml";
+        String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1142,7 +1178,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPartsSalesInvClick(ActionEvent event) {
         sSalesInvoiceType = "Parts Sales Invoice";
-        String sformname = "Invoice.fxml";
+        String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -1250,6 +1286,24 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuSalesPartsRequestClicked(ActionEvent event) {
         String sformname = "VSPAccessoriesRequest.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psPartsPath);
+    }
+
+    @FXML
+    private void mnuProvinceClick(ActionEvent event) {
+        String sformname = "Province.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+    }
+
+    @FXML
+    private void mnuTownClick(ActionEvent event) {
+        String sformname = "Town.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+    }
+
+    @FXML
+    private void mnuBarangayClick(ActionEvent event) {
+        String sformname = "Barangay.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
     @FXML

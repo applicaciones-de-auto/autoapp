@@ -111,7 +111,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         initFieldsAction();
         initTextFieldsProperty();
         clearFields();
-        pnEditMode = EditMode.UNKNOWN;
+        pnEditMode = oTrans.getEditMode();
         initFields(pnEditMode);
     }
 
@@ -680,10 +680,10 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -691,6 +691,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Insurance Proposal Information Saving....", "Are you sure, do you want to save?")) {
@@ -722,6 +723,7 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                     oTrans = new InsurancePolicyProposal(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -736,11 +738,11 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Proposal Information Confirmation", (String) loJSON.get("message"));
                     pnEditMode = oTrans.getEditMode();
                 }
+                initFields(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -778,7 +780,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -1079,7 +1080,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 if (comboBox01.getValue().equals("VSP")) {
                     if (comboBox18.getSelectionModel().getSelectedIndex() < 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "You've selected VSP. Please select policy type first.");
-                        return;
                     }
                 }
             }
@@ -1103,7 +1103,6 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
                 }
             }
         });
-
     }
 
     public void clearVSPFields() {

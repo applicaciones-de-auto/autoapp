@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -30,6 +31,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -124,7 +130,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
         }
-        if (oTrans.getVSISourceList().size() > 0) {
+        if (!oTrans.getVSISourceList().isEmpty()) {
             if (oTrans.getVSISourceModel().getDetailModel().getCustType() != null) {
                 if (!oTrans.getVSISourceModel().getDetailModel().getCustType().isEmpty()) {
                     comboBox02.getSelectionModel().select(Integer.parseInt(oTrans.getVSISourceModel().getDetailModel().getCustType()));
@@ -383,7 +389,6 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(null, "Search VSI Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
-
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form?")) {
                     CommonUtils.closeStage(btnClose);
@@ -445,8 +450,14 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         comboBox02.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW) {
                 if (comboBox02.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTrans.getMasterModel().getMasterModel().setClientTp(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
+                    if (comboBox02.getSelectionModel().getSelectedIndex() == 1) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Supplier is Under Development, please choose customer to proceed.");
+                        Platform.runLater(() -> {
+                            comboBox02.getSelectionModel().select(0);
+                        });
+                    }
                 }
+                oTrans.getMasterModel().getMasterModel().setClientTp(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
                 initFields(pnEditMode);
             }
         });
@@ -509,7 +520,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSiPrint.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/VSIPrint.fxml"));
             VSIPrintController loControl = new VSIPrintController();
             loControl.setGRider(oApp);
             loControl.setVSIObject(oTrans);
@@ -544,7 +555,6 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                 @Override
                 public void updateItem(LocalDate item, boolean empty) {
                     super.updateItem(item, empty);
-                    LocalDate today = LocalDate.now();
                     setDisable(empty || item.compareTo(datePicker03.getValue()) < 0);
 
                 }

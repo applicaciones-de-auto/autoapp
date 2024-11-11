@@ -76,7 +76,6 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     private int pnRow = -1;
     private int lnCtr;
     private int iTabIndex = 0; //Set tab index
-
     /* ------------------DATA TABLES----------------------- */
     private ObservableList<CustomerAddress> addressdata = FXCollections.observableArrayList();
     private ObservableList<CustomerMobile> contactdata = FXCollections.observableArrayList();
@@ -216,8 +215,8 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     @Override
     public boolean loadMasterFields() {
         comboBox18.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getClientTp()));
-        txtField13.setText(oTrans.getModel().getModel().getTaxIDNo());
-        txtField14.setText(oTrans.getModel().getModel().getLTOID());
+        txtField13.setText(oTrans.getModel().getModel().getTaxIDNo().replaceAll("(.{3})(?=.)", "$1-"));
+        txtField14.setText(oTrans.getModel().getModel().getLTOID().replaceAll("(.{3})(.{2})(.{6})", "$1-$2-$3"));
         textArea15.setText(oTrans.getModel().getModel().getAddlInfo());
 
         if (comboBox18.getSelectionModel().getSelectedIndex() == 0) {
@@ -244,7 +243,6 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             }
             if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
                 datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getBirthDte(), SQLUtil.FORMAT_SHORT_DATE)));
-
             }
             txtField10.setText(oTrans.getModel().getModel().getCntryNme());
             txtField12.setText(oTrans.getModel().getModel().getTownName());
@@ -285,7 +283,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     public void initLimiterFields() {
         CustomCommonUtil.addTextLimiter(txtField06, 4);
         CustomCommonUtil.addTextLimiter(txtField13, 15); // tin
-        CustomCommonUtil.addTextLimiter(txtField14, 15); // lto
+        CustomCommonUtil.addTextLimiter(txtField14, 13); // lto
     }
 
     @Override
@@ -330,12 +328,24 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
                 case 6:/*spouse */
                     oTrans.getModel().getModel().setSuffixName(lsValue);
                     break;
-                case 14:
-                    oTrans.getModel().getModel().setLTOID(lsValue);
-                    break;
                 case 13:
-                    oTrans.getModel().getModel().setTaxIDNo(lsValue);
+                    String lsTinValue = lsValue.replaceAll("-", "");
+                    if (lsTinValue.length() != 9 && lsTinValue.length() != 12) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter either 9 or 12 digits.");
+                        lsTinValue = "";
+                    }
+                    oTrans.getModel().getModel().setTaxIDNo(lsTinValue);
+                    txtField13.setText(oTrans.getModel().getModel().getTaxIDNo().replaceAll("(.{3})(?=.)", "$1-"));
                     checkExistingCustomerInformation(false);
+                    break;
+                case 14:
+                    String lsLTOValue = lsValue.replaceAll("-", "");
+                    if (lsLTOValue.length() != 11) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Please enter 11 characters.");
+                        lsLTOValue = "";
+                    }
+                    oTrans.getModel().getModel().setLTOID(lsLTOValue);
+                    txtField14.setText(oTrans.getModel().getModel().getLTOID().replaceAll("(.{3})(.{2})(.{6})", "$1-$2-$3"));
                     break;
             }
         } else {
@@ -373,7 +383,8 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     }
 
     @Override
-    public void txtField_KeyPressed(KeyEvent event) {
+    public void txtField_KeyPressed(KeyEvent event
+    ) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             TextField lsTxtField = (TextField) event.getSource();
             String txtFieldID = ((TextField) event.getSource()).getId();
@@ -545,12 +556,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
                         }
                         if (age.getYears() < 18) {
                             ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Less than 18 years old is not allowed.");
-                            datePicker11.requestFocus();
                             return;
                         }
                         if (age.getYears() >= 100) {
                             ShowMessageFX.Warning(getStage(), null, pxeModuleName, "Greater than 100 years old is not allowed.");
-                            datePicker11.requestFocus();
                             return;
                         }
                         if (comboBox09.getSelectionModel().getSelectedIndex() == 1 && comboBox07.getSelectionModel().getSelectedIndex() == 1) {
@@ -894,7 +903,8 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
     }
 
     @Override
-    public void initFields(int fnValue) {
+    public void initFields(int fnValue
+    ) {
         pnRow = 0;
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         tabVhclInfo.setDisable(fnValue == EditMode.ADDNEW);

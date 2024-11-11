@@ -96,6 +96,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     private double xOffset = 0;
     private double yOffset = 0;
     private boolean pbIsInquiry = false;
+    private String pbNewSerialID = "";
     ObservableList<String> cInquiryType = FXCollections.observableArrayList("WALK-IN", "WEB INQUIRY", "PHONE-IN", "REFERRAL", "SALES CALL", "EVENT", "SERVICE", "OFFICE ACCOUNT", "CAREMITTANCE", "DATABASE", "UIO");
     ObservableList<String> cModeOfPayment = FXCollections.observableArrayList("CASH", "BANK PURCHASE ORDER", "BANK FINANCING", "COMPANY PURCHASE ORDER", "COMPANY FINANCING"); //Mode of Payment Values
     ObservableList<String> cFinPromoType = FXCollections.observableArrayList("NONE", "ALL-IN IN HOUSE", "ALL-IN PROMO");
@@ -105,6 +106,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     ObservableList<String> cCompYearType2 = FXCollections.observableArrayList("1", "2", "3", "4");
     ObservableList<String> cLTOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE");
     ObservableList<String> cHMOType = FXCollections.observableArrayList("NONE", "FOC", "CHARGE", "C/o BANK");
+
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
     private ObservableList<Part> accessoriesData = FXCollections.observableArrayList();
     @FXML
@@ -201,7 +203,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
-
+        initTableKeyPressed();
         addRowVSPLabor();
         tblViewLabor.setOnMouseClicked(this::tblLabor_Clicked);
         tblViewAccessories.setOnMouseClicked(this::tblParts_Clicked);
@@ -471,15 +473,14 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             default:
                 lblVSPStatus.setText("");
                 break;
-        } //            if (oTrans.getMasterModel().getMasterModel().getApprovedDte() != null && !oTrans.getMasterModel().getMasterModel().getApprovedDte().toString().isEmpty()) {
-        //                lblApproveDate.setText(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApprovedDte()));
-        //            }
-        //    }
-        //        else {
-        //            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-        //        return false;
-        //    }
-
+        }
+        String lsApprvDte = "";
+        if (oTrans.getMasterModel().getMasterModel().getApproveDte() != null) {
+            if (!CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getApproveDte()).equals("1900-01-01")) {
+                lsApprvDte = SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getApproveDte(), SQLUtil.FORMAT_SHORT_DATE);
+            }
+        }
+        lblApproveDate.setText(lsApprvDte);
         return true;
     }
 
@@ -979,7 +980,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField15.setText("");
-                                txtField15.requestFocus();
                                 return;
                             }
                             initFields(pnEditMode);
@@ -991,8 +991,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                                 textArea17.setText(oTrans.getMasterModel().getMasterModel().getAddress());
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+
                                 txtField16.setText("");
-                                txtField16.requestFocus();
                                 return;
                             }
                             break;
@@ -1003,18 +1003,20 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField18.setText("");
-                                txtField18.requestFocus();
-                                return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField20":
                             loJSON = oTrans.searchAvlVhcl(lsValue, "CS");
                             if (!"error".equals(loJSON.get("result"))) {
-                                txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-                                txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                if (!oTrans.getMasterModel().getMasterModel().getCSNo().isEmpty()) {
+                                    txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+                                }
+                                if (!oTrans.getMasterModel().getMasterModel().getPlateNo().isEmpty()) {
+                                    txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                }
                                 txtField22.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
                                 txtField23.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
+
                                 String lsKeyNo = "";
                                 if (oTrans.getMasterModel().getMasterModel().getKeyNo() != null) {
                                     lsKeyNo = oTrans.getMasterModel().getMasterModel().getKeyNo();
@@ -1024,16 +1026,17 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField20.setText("");
-                                txtField20.requestFocus();
-                                return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField21":
                             loJSON = oTrans.searchAvlVhcl(lsValue, "PLT");
                             if (!"error".equals(loJSON.get("result"))) {
-                                txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-                                txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                if (!oTrans.getMasterModel().getMasterModel().getCSNo().isEmpty()) {
+                                    txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+                                }
+                                if (!oTrans.getMasterModel().getMasterModel().getPlateNo().isEmpty()) {
+                                    txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                }
                                 txtField22.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
                                 txtField23.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
                                 String lsKeyNo = "";
@@ -1045,16 +1048,17 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField21.setText("");
-                                txtField21.requestFocus();
-                                return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField22":
                             loJSON = oTrans.searchAvlVhcl(lsValue, "ENG");
                             if (!"error".equals(loJSON.get("result"))) {
-                                txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-                                txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                if (!oTrans.getMasterModel().getMasterModel().getCSNo().isEmpty()) {
+                                    txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+                                }
+                                if (!oTrans.getMasterModel().getMasterModel().getPlateNo().isEmpty()) {
+                                    txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                }
                                 txtField22.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
                                 txtField23.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
                                 String lsKeyNo = "";
@@ -1066,16 +1070,17 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField22.setText("");
-                                txtField22.requestFocus();
-                                return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField23":
                             loJSON = oTrans.searchAvlVhcl(lsValue, "FRM");
                             if (!"error".equals(loJSON.get("result"))) {
-                                txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-                                txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                if (!oTrans.getMasterModel().getMasterModel().getCSNo().isEmpty()) {
+                                    txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
+                                }
+                                if (!oTrans.getMasterModel().getMasterModel().getPlateNo().isEmpty()) {
+                                    txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
+                                }
                                 txtField22.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
                                 txtField23.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
                                 String lsKeyNo = "";
@@ -1087,10 +1092,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                                 txtField23.setText("");
-                                txtField23.requestFocus();
-                                return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField32":
                             loJSON = oTrans.searchBankApp(lsValue);
@@ -1099,9 +1101,9 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                                 txtField32.setText(lsBrBank);
                             } else {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField32.setText("");
                                 return;
                             }
-                            initFields(pnEditMode);
                             break;
                         case "txtField36":
 //                    loJSON = oTrans.searchPromo(lsValue);
@@ -1140,7 +1142,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     }
                     event.consume();
                     CommonUtils.SetNextFocus((TextField) event.getSource());
-                    initFields(pnEditMode);
                     break;
                 case UP:
                     event.consume();
@@ -1248,7 +1249,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     pnEditMode = oTrans.getEditMode();
                 }
                 break;
-
             case "btnAdditionalLabor":
                 try {
                 oTrans.addVSPLabor();
@@ -1313,6 +1313,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             case "btnAddReservation":
                 try {
                 loadAddReservationWindowDialog();
+
             } catch (IOException ex) {
                 Logger.getLogger(VSPController.class
                         .getName()).log(Level.SEVERE, null, ex);
@@ -1574,8 +1575,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox71.setOnAction(e
-                -> {
+        comboBox71.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTrans.getMasterModel().getMasterModel().setChmoStat(String.valueOf(comboBox71.getSelectionModel().getSelectedIndex()));
                 if (comboBox71.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1668,152 +1668,153 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTrans.getMasterModel().getMasterModel().setKeyNo("");
-                        CustomCommonUtil.setText("", txtField21, txtField22, txtField23,
+                        setVchlClass(txtField21, txtField22, txtField23,
                                 txtField25);
-                        textArea26.setText("");
                     }
                 }
             }
-        });
-        txtField21.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTrans.getMasterModel().getMasterModel().setKeyNo("");
-                        CustomCommonUtil.setText("", txtField20, txtField22, txtField23,
-                                txtField25);
-                        textArea26.setText("");
-                    }
-                }
-            }
-        });
-        txtField22.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTrans.getMasterModel().getMasterModel().setKeyNo("");
-                        CustomCommonUtil.setText("", txtField20, txtField21, txtField23,
-                                txtField25);
-                        textArea26.setText("");
-                    }
-                }
-            }
-        });
-        txtField23.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setCSNo("");
-                        oTrans.getMasterModel().getMasterModel().setPlateNo("");
-                        oTrans.getMasterModel().getMasterModel().setEngineNo("");
-                        oTrans.getMasterModel().getMasterModel().setFrameNo("");
-                        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
-                        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
-                        oTrans.getMasterModel().getMasterModel().setKeyNo("");
-                        CustomCommonUtil.setText("", txtField20, txtField21, txtField22,
-                                txtField25);
-                        textArea26.setText("");
-                    }
-                }
-            }
-        });
-        txtField32.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
-                        oTrans.getMasterModel().getMasterModel().setBankName("");
-                        if (!oTrans.getVSPFinanceList().isEmpty()) {
-                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
-                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
+        }
+        );
+        txtField21.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField22, txtField23,
+                                        txtField25);
+                            }
                         }
-                        txtField33.setText("0.00");
                     }
                 }
-            }
-            initFields(pnEditMode);
-        });
-        txtField45.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
-                        oTrans.getMasterModel().getMasterModel().setFleetDsc(new BigDecimal(0.00));
-                        oTrans.getMasterModel().getMasterModel().setDue2Sup(0.00);
-                        oTrans.getMasterModel().getMasterModel().setDue2Dlr(0.00);
-                        CustomCommonUtil.setText("0.00", txtField45, txtField46, txtField47);
-                        initFields(pnEditMode);
+                );
+        txtField22.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField21, txtField23,
+                                        txtField25);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        txtField48.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
-                        oTrans.getMasterModel().getMasterModel().setSPFltDsc(new BigDecimal(0.00));
-                        oTrans.getMasterModel().getMasterModel().setSPFD2Sup(0.00);
-                        oTrans.getMasterModel().getMasterModel().setSPFD2Dlr(0.00);
-                        CustomCommonUtil.setText("0.00", txtField48, txtField49, txtField50);
-                        initFields(pnEditMode);
+                );
+        txtField23.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                setVchlClass(txtField20, txtField21, txtField22,
+                                        txtField25);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        txtField51.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
-                        oTrans.getMasterModel().getMasterModel().setPromoDsc(new BigDecimal(0.00));
-                        oTrans.getMasterModel().getMasterModel().setPrmD2Sup(0.00);
-                        oTrans.getMasterModel().getMasterModel().setPrmD2Dlr(0.00);
-                        CustomCommonUtil.setText("0.00", txtField51, txtField52, txtField53);
-                        initFields(pnEditMode);
+                );
+        txtField32.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
+                                oTrans.getMasterModel().getMasterModel().setBankName("");
+                                if (!oTrans.getVSPFinanceList().isEmpty()) {
+                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
+                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
+                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setDiscount(new BigDecimal(0.00));
+                                }
+                                txtField33.setText("0.00");
+                            }
+                        }
+                    }
+                    initFields(pnEditMode);
+                }
+                );
+        txtField45.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+                                oTrans.getMasterModel().getMasterModel().setFleetDsc(new BigDecimal(0.00));
+                                oTrans.getMasterModel().getMasterModel().setDue2Sup(0.00);
+                                oTrans.getMasterModel().getMasterModel().setDue2Dlr(0.00);
+                                CustomCommonUtil.setText("0.00", txtField45, txtField46, txtField47);
+                                initFields(pnEditMode);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        txtField62.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setInsTplCd("");
-                        oTrans.getMasterModel().getMasterModel().setTPLBrIns("");
-                        oTrans.getMasterModel().getMasterModel().setTPLInsNm("");
+                );
+        txtField48.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+                                oTrans.getMasterModel().getMasterModel().setSPFltDsc(new BigDecimal(0.00));
+                                oTrans.getMasterModel().getMasterModel().setSPFD2Sup(0.00);
+                                oTrans.getMasterModel().getMasterModel().setSPFD2Dlr(0.00);
+                                CustomCommonUtil.setText("0.00", txtField48, txtField49, txtField50);
+                                initFields(pnEditMode);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        txtField65.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        oTrans.getMasterModel().getMasterModel().setInsCode("");
-                        oTrans.getMasterModel().getMasterModel().setCOMInsNm("");
-                        oTrans.getMasterModel().getMasterModel().setCOMBrIns("");
+                );
+        txtField51.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+                                oTrans.getMasterModel().getMasterModel().setPromoDsc(new BigDecimal(0.00));
+                                oTrans.getMasterModel().getMasterModel().setPrmD2Sup(0.00);
+                                oTrans.getMasterModel().getMasterModel().setPrmD2Dlr(0.00);
+                                CustomCommonUtil.setText("0.00", txtField51, txtField52, txtField53);
+                                initFields(pnEditMode);
+                            }
+                        }
                     }
                 }
-            }
-        });
+                );
+        txtField62.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setInsTplCd("");
+                                oTrans.getMasterModel().getMasterModel().setTPLBrIns("");
+                                oTrans.getMasterModel().getMasterModel().setTPLInsNm("");
+                            }
+                        }
+                    }
+                }
+                );
+        txtField65.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (newValue != null) {
+                            if (newValue.isEmpty()) {
+                                oTrans.getMasterModel().getMasterModel().setInsCode("");
+                                oTrans.getMasterModel().getMasterModel().setCOMInsNm("");
+                                oTrans.getMasterModel().getMasterModel().setCOMBrIns("");
+                            }
+                        }
+                    }
+                }
+                );
 
+    }
+
+    private void setVchlClass(TextField... txtFields) {
+        oTrans.getMasterModel().getMasterModel().setSerialID("");
+        oTrans.getMasterModel().getMasterModel().setCSNo("");
+        oTrans.getMasterModel().getMasterModel().setPlateNo("");
+        oTrans.getMasterModel().getMasterModel().setEngineNo("");
+        oTrans.getMasterModel().getMasterModel().setFrameNo("");
+        oTrans.getMasterModel().getMasterModel().setVhclDesc("");
+        oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+        oTrans.getMasterModel().getMasterModel().setKeyNo("");
+        CustomCommonUtil.setText("", txtFields);
+        textArea26.setText("");
     }
 
     @Override
@@ -1825,8 +1826,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     @Override
     @SuppressWarnings("unchecked")
     public void clearFields() {
-        CustomCommonUtil.setText("", txtField02, txtField03, txtField04, txtField06, txtField07, txtField08,
-                txtField10, txtField11, txtField12, txtField13, txtField14, txtField16, txtField18,
+        CustomCommonUtil.setText("", txtField01, txtField02, txtField03, txtField04, txtField06, txtField07, txtField08,
+                txtField10, txtField11, txtField12, txtField13, txtField14, txtField15, txtField16, txtField18,
                 txtField19, txtField20, txtField21, txtField22, txtField23, txtField24, txtField25, txtField32, txtField36,
                 txtField62, txtField65, txtField75, txtField81);
 
@@ -2184,7 +2185,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
             if (oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null && oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity() != null) {
                 BigDecimal lsGrsAmt = new BigDecimal(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(lnCtr).getSelPrice()));
-                int lsQuan = Integer.valueOf(oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity());
+                int lsQuan = oTrans.getVSPPartsModel().getVSPParts(lnCtr).getQuantity();
                 lsTotalAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(lsGrsAmt.doubleValue() * lsQuan)));
             }
             if (oTrans.getVSPPartsModel().getVSPParts(lnCtr).getPartsDscount() != null) {
@@ -2448,6 +2449,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 double ldVhclSRP = Double.parseDouble(txtField30.getText().replace(",", ""));
                 switch (comboBox29.getSelectionModel().getSelectedIndex()) {
                     case 0:
+                        comboBox71.getSelectionModel().select(0);
                         CustomCommonUtil.setDisable(true, txtField31, txtField59, comboBox71);
                         CustomCommonUtil.setDisable(!lbShow, txtField51, txtField54, txtField56);
                         break;
@@ -2592,13 +2594,11 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
 //                }
 //            } else {
 //                btnJobOrderAdd.setDisable(true);
-//            }
+//            }+
         }
         if (fnValue == EditMode.UPDATE) {
-            if (oTrans.getMasterModel().getMasterModel().getSerialID() != null) {
-                if (!oTrans.getMasterModel().getMasterModel().getSerialID().isEmpty()) {
-                    CustomCommonUtil.setDisable(true, txtField20, txtField21, txtField22, txtField23);
-                }
+            if (!oTrans.getMasterModel().getMasterModel().getSerialID().isEmpty()) {
+                CustomCommonUtil.setDisable(true, txtField20, txtField21, txtField22, txtField23);
             }
 
             txtField15.setDisable(true);
@@ -2621,16 +2621,26 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 }
             }
         }
-        if (!tblViewLabor.getItems().isEmpty() || !tblViewAccessories.getItems().isEmpty()) {
+
+        if (!tblViewLabor.getItems()
+                .isEmpty() || !tblViewAccessories.getItems().isEmpty()) {
             btnJobOrderAdd.setDisable(fnValue == EditMode.ADDNEW || oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED));
         }
-        btnAdd.setVisible(!lbShow);
-        btnAdd.setManaged(!lbShow);
-        CustomCommonUtil.setVisible(false, btnEdit, btnPrint, btnCancelVSP, btnGatePass, btnApprove);
-        CustomCommonUtil.setManaged(false, btnEdit, btnPrint, btnCancelVSP, btnGatePass, btnApprove);
+
+        btnAdd.setVisible(
+                !lbShow);
+        btnAdd.setManaged(
+                !lbShow);
+        CustomCommonUtil.setVisible(
+                false, btnEdit, btnPrint, btnCancelVSP, btnGatePass, btnApprove);
+        CustomCommonUtil.setManaged(
+                false, btnEdit, btnPrint, btnCancelVSP, btnGatePass, btnApprove);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
+
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
-        btnGatePass.setVisible(false);
+
+        btnGatePass.setVisible(
+                false);
         if (fnValue == EditMode.READY) {
             if (!oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CANCELLED)) {
                 if (oTrans.getMasterModel().getMasterModel().getUDRNo() != null && !oTrans.getMasterModel().getMasterModel().getUDRNo().isEmpty()) {
@@ -2654,7 +2664,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             btnRemoveReservation.setDisable(false);
             tabAddOns.setDisable(false);
             tabDetails.setDisable(false);
-            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_CLOSED)
+                    || oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_POSTED)) {
                 btnPrint.setVisible(true);
                 btnPrint.setManaged(true);
             }
@@ -2719,85 +2730,70 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/sales/SalesJobOrder.fxml"));
             SalesJobOrderController loControl = new SalesJobOrderController();
-
-            // Ensure oApp is not null before proceeding
-            if (oApp != null) {
-                loControl.setGRider(oApp);
-            } else {
-                ShowMessageFX.Warning(getStage(), "GRider is null, unable to load Sales Job Order.", "Warning", pxeModuleName);
-                return;
-            }
-
+            loControl.setGRider(oApp);
             loControl.setIsVSPState(true);
-
-            if (oTrans != null && oTrans.getMasterModel() != null
-                    && oTrans.getMasterModel().getMasterModel() != null
-                    && oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
+            if (oTrans.getMasterModel().getMasterModel().getTransNo() != null) {
                 loControl.setVSPTrans(oTrans.getMasterModel().getMasterModel().getTransNo());
             }
 
             fxmlLoader.setController(loControl);
-            Parent parent = fxmlLoader.load();
-
-            AnchorPane otherAnchorPane = loControl.AnchorMain;
-            if (otherAnchorPane == null) {
-                ShowMessageFX.Warning(getStage(), "AnchorMain is null in SalesJobOrderController.", "Warning", pxeModuleName);
-                return;
-            }
-
-            // Get the parent of the TabContent node
             Node tabContent = AnchorMain.getParent();
-            if (tabContent == null) {
-                ShowMessageFX.Warning(getStage(), "AnchorMain parent is null.", "Warning", pxeModuleName);
-                return;
-            }
-
             Parent tabContentParent = tabContent.getParent();
 
-            // Check if the parent is a TabPane
             if (tabContentParent instanceof TabPane) {
                 TabPane tabpane = (TabPane) tabContentParent;
-
-                // Check for duplicate tabs
-                for (Tab tab : tabpane.getTabs()) {
-                    if (tab.getText().equals(lsFormName)) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                "You have opened Vehicle Sales Proposal.\n"
-                                + "Are you sure you want to convert this vsp for a new sales job order record?")) {
-
-                            tabpane.getSelectionModel().select(tab);
-                            poUnload.unloadForm(AnchorMain, oApp, lsFormName); // Unload current form
-                            loadSJOWindow(); // Avoid recursive call by reworking this logic
-                        }
+                Tab existingTab = tabpane.getTabs().stream().
+                        filter(tabPane -> tabPane.getText().equals(lsFormName))
+                        .findFirst().orElse(null);
+                if (existingTab != null) {
+                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                            "Sales Job Order is already open.\n"
+                            + "Do you want to switch to the existing tab and create a new Sales Job Order?")) {
+                        tabpane.getSelectionModel().select(existingTab);
+                        Parent parent = fxmlLoader.load();
+                        existingTab.setContent(parent);
+                        closeSalesJobTab(existingTab, loControl, lsFormName);
+                        return;
+                    } else {
                         return;
                     }
                 }
-
+                Parent parent = fxmlLoader.load();
                 // Create a new tab and set its content
                 Tab loNewTab = new Tab(lsFormName, parent);
                 loNewTab.setStyle("-fx-font-weight: bold; -fx-pref-width: 180; -fx-font-size: 10.5px; -fx-font-family: arial;");
                 loNewTab.setContextMenu(fdController.createContextMenu(tabpane, loNewTab, oApp));
                 tabpane.getTabs().add(loNewTab);
                 tabpane.getSelectionModel().select(loNewTab);
-
-                // Handle tab close request
-                loNewTab.setOnCloseRequest(event -> {
-                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
-                        if (poUnload != null) {
-                            poUnload.unloadForm(otherAnchorPane, oApp, lsFormName);
-                        } else {
-                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-                        }
-                    } else {
-                        event.consume(); // Cancel close request
-                    }
-                });
+                closeSalesJobTab(loNewTab, loControl, lsFormName);
             }
-
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1); // Consider replacing this with a more graceful exit or logging
         }
+    }
+
+    private void closeSalesJobTab(Tab foTab, SalesJobOrderController foController, String fsFormName) {
+        foTab.setOnCloseRequest(event -> {
+            if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this tab?")) {
+                if (poUnload == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
+                    return;
+                }
+                // Ensure loControl.AnchorMain is initialized before calling unload
+                if (foController.AnchorMain == null) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "AnchorMain is not initialized properly. Cannot unload form.");
+                    return;
+                }
+                try {
+                    poUnload.unloadForm(foController.AnchorMain, oApp, fsFormName);
+                } catch (Exception e) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Error unloading form: " + e.getMessage());
+                }
+            } else {
+                event.consume(); // Prevent tab close
+            }
+        }
+        );
     }
 
     private void loadGatePassWindow(boolean fbIsClicked) {

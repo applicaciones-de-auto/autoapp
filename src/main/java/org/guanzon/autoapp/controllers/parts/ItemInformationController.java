@@ -31,7 +31,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -254,60 +253,69 @@ public class ItemInformationController implements Initializable, ScreenInterface
             lsValue = lsTxtField.getText();
         }
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField03":
-                    loJSON = oTrans.searchBrand(lsValue, true);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField03.setText(oTrans.getModel().getModel().getBrandNme());
-                    } else {
-                        txtField03.clear();
-                        txtField03.requestFocus();
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField03":
+                            loJSON = oTrans.searchBrand(lsValue, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField03.setText(oTrans.getModel().getModel().getBrandNme());
+                            } else {
+                                txtField03.clear();
+                                txtField03.requestFocus();
+                                return;
+                            }
+                            break;
+                        case "txtField07":
+                            loJSON = oTrans.searchInvType(lsValue, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField07.setText(oTrans.getModel().getModel().getInvTypDs());
+                            } else {
+                                txtField07.clear();
+                                txtField07.requestFocus();
+                                return;
+                            }
+                            break;
+                        case "txtField08":
+                            loJSON = oTrans.searchInvCategory(lsValue, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField08.setText(oTrans.getModel().getModel().getCatgeDs1());
+                            } else {
+                                txtField08.clear();
+                                txtField08.requestFocus();
+                                return;
+                            }
+                            break;
+                        case "txtField10":
+                            loJSON = oTrans.searchMeasure(lsValue, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField10.setText(oTrans.getModel().getModel().getMeasurNm());
+                            } else {
+                                txtField10.clear();
+                                txtField10.requestFocus();
+                                return;
+                            }
+                            break;
+                        case "txtField13":
+                            break;
                     }
+                    initFields(pnEditMode);
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
                     break;
-                case "txtField07":
-                    loJSON = oTrans.searchInvType(lsValue, true);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField07.setText(oTrans.getModel().getModel().getInvTypDs());
-                    } else {
-                        txtField07.clear();
-                        txtField07.requestFocus();
-                        return;
-                    }
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
                     break;
-                case "txtField08":
-                    loJSON = oTrans.searchInvCategory(lsValue, true);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField08.setText(oTrans.getModel().getModel().getCatgeDs1());
-                    } else {
-                        txtField08.clear();
-                        txtField08.requestFocus();
-                        return;
-                    }
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
                     break;
-                case "txtField10":
-                    loJSON = oTrans.searchMeasure(lsValue, true);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField10.setText(oTrans.getModel().getModel().getMeasurNm());
-                    } else {
-                        txtField10.clear();
-                        txtField10.requestFocus();
-                        return;
-                    }
-                    break;
-                case "txtField13":
+                default:
                     break;
             }
-            initFields(pnEditMode);
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -557,7 +565,9 @@ public class ItemInformationController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnLoadPhoto":
-                loadPhotoWindow();
+                if (!oTrans.getModel().getModel().getFileName().isEmpty() && oTrans.getModel().getModel().getFileName() != null) {
+                    loadPhotoWindow();
+                }
                 break;
             case "btnRemoveImage":
                 break;

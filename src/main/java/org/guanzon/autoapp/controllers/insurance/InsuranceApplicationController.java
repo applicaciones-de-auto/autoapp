@@ -94,7 +94,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
     private Button btnAdd, btnEdit, btnSave, btnBrowse, btnInsAppCancel, btnCancel, btnPrint, btnClose, btnPayment;
 
     @FXML
-    private Label lblPolicyNo, lblPrintDate, lblStatus;
+    private Label lblPolicyNo, lblPrintDate, lblStatus, lblPrintBy;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -278,7 +278,11 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
             lsPolicyNo = oTrans.getMasterModel().getMasterModel().getPolicyNo();
         }
         lblPolicyNo.setText(lsPolicyNo);
-        lblPrintDate.setText("");
+        String lsPrintDate = "";
+        lblPrintDate.setText(lsPrintDate);
+        String lsPrintBy = "";
+        lblPrintBy.setText(lsPrintBy);
+
         return true;
     }
 
@@ -472,10 +476,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -483,6 +487,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 LocalDate loDateFrom = datePicker05.getValue();
@@ -508,13 +513,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                             initFields(pnEditMode);
                         } else {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
-                } else {
-                    return;
                 }
                 break;
             case "btnCancel":
@@ -523,6 +525,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                     oTrans = new InsurancePolicyApplication(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
@@ -535,10 +538,10 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Insurance Application Information Confirmation", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -579,7 +582,6 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -639,8 +641,8 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                         clearPolicyPropsInformation();
                         clearPolicyPropsFields();
                     }
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
         });
         txtField10.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -743,7 +745,7 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
                 datePicker05, datePicker06, datePicker11);
         loDatePicker.forEach(dp -> dp.setValue(LocalDate.of(1900, Month.JANUARY, 1)));
         CustomCommonUtil.setValue(null, comboBox03, comboBox04, comboBox09, comboBox12, comboBox18, comboBox21, comboBox22, comboBox28);
-        CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus);
+        CustomCommonUtil.setText("", lblPolicyNo, lblPrintDate, lblStatus, lblPrintBy);
     }
 
     @Override
