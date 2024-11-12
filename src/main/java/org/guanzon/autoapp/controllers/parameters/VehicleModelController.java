@@ -116,9 +116,9 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
         if (oTrans.getModel().getModel().getBodyType() != null && !oTrans.getModel().getModel().getBodyType().trim().isEmpty()) {
             comboBox05.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getBodyType()));
         }
-        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
-            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
-        }
+//        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
+//            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
+//        }
         if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
@@ -385,13 +385,13 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
                 }
             }
         });
-        comboBox06.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
-                }
-            }
-        });
+//        comboBox06.setOnAction(e -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
+//                    oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -468,12 +468,12 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
             } else {
                 oTrans.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
             }
-            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
-                return false;
-            } else {
-                oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
-            }
+//            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
+//                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
+//                return false;
+//            } else {
+//                oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+//            }
         }
         return true;
     }
