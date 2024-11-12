@@ -388,7 +388,7 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(!lbShow, txtField02);
+        CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03, txtField04);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
