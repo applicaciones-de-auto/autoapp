@@ -1481,8 +1481,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        comboBox64.setOnAction(event
-                -> {
+        comboBox64.setOnAction(event -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox64.getSelectionModel().getSelectedIndex() >= 0) {
                     oTrans.getMasterModel().getMasterModel().setInsCode("");
@@ -1497,11 +1496,9 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     comboBox67.setValue(null);
                 }
                 if (comboBox64.getSelectionModel().getSelectedIndex() >= 0) {
-
                     if (!comboBox67.getItems().contains("0")) {
                         comboBox67.getItems().add(0, "0");
                     }
-
                     switch (comboBox64.getSelectionModel().getSelectedIndex()) {
                         case 0:
                         case 2:
@@ -1519,11 +1516,12 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         case 3:
 //                            comboBox66.getItems().remove("NONE");
 //                            comboBox67.getItems().remove("0"); // Remove "0" when selecting indices 1-4
+                            comboBox67.setValue(null);
                             break;
                     }
                     oTrans.getMasterModel().getMasterModel().setCompStat(String.valueOf(comboBox64.getSelectionModel().getSelectedIndex()));
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
         }
         );
@@ -1547,14 +1545,13 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         comboBox67.getSelectionModel().clearSelection();
                     }
                     oTrans.getMasterModel().getMasterModel().setInsurTyp(String.valueOf(comboBox66.getSelectionModel().getSelectedIndex()));
-                    initFields(pnEditMode);
                 }
+                initFields(pnEditMode);
             }
         }
         );
 
-        comboBox67.setOnAction(e
-                -> {
+        comboBox67.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox67.getSelectionModel().getSelectedIndex() >= 0) {
                     oTrans.getMasterModel().getMasterModel().setInsurYr(Integer.valueOf(comboBox67.getValue()));
