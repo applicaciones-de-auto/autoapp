@@ -123,7 +123,7 @@
                                             <center>
                                                 <AnchorPane BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <TableView fx:id="tblViewCAR" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <TableView fx:id="tblViewCAR" onMouseClicked="#tblCAR_Clicked" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" sortable="false" text="Row" />
                                                                 <TableColumn fx:id="tblindex02" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false">

@@ -424,21 +424,9 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Status:" textFill="WHITE" GridPane.columnIndex="2">
-                                            <font>
-                                                <Font name="Arial" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text="Policy Number:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                            <font>
-                                                <Font name="Arial" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text="Print Date:" textFill="WHITE" GridPane.rowIndex="1">
-                                            <font>
-                                                <Font name="Arial" size="12.0" />
-                                            </font>
-                                        </Label>
+                                        <Label text="Status:" textFill="WHITE" GridPane.columnIndex="2" />
+                                        <Label text="Policy Number:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                        <Label text="Print Date:" textFill="WHITE" GridPane.rowIndex="1" />
                                         <Label fx:id="lblPolicyNo" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />
@@ -454,11 +442,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Label text="Print By:" textFill="WHITE">
-                                            <font>
-                                                <Font name="Arial" size="12.0" />
-                                            </font>
-                                        </Label>
+                                        <Label text="Print By:" textFill="WHITE" />
                                         <Label fx:id="lblPrintBy" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="1">
                                             <font>
                                                 <Font name="System Bold" size="12.0" />

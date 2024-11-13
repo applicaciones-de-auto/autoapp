@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import org.guanzon.autoapp.FXMLDocumentController;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,9 +45,13 @@ import org.guanzon.autoapp.utils.UnloadForm;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.guanzon.autoapp.FXMLDocumentController;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.json.simple.JSONObject;
 
 /**
@@ -66,6 +72,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             "REFERENCE NO");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private ObservableList<Cashier_Receivables> poCARData = FXCollections.observableArrayList();
+    private double xOffset = 0;
+    private double yOffset = 0;
+    private int pnRow = -1;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -589,5 +598,57 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             selectAllCheckBox.setSelected(false);
             loadTable();
         });
+    }
+
+    @FXML
+    private void tblCAR_Clicked(MouseEvent event) {
+        pnRow = tblViewCAR.getSelectionModel().getSelectedIndex();
+        if (pnRow < 0 || pnRow >= tblViewCAR.getItems().size()) {
+            ShowMessageFX.Warning(null, "Warning", "Please select valid CAR information.");
+            return;
+        }
+        if (event.getClickCount() == 2) {
+            loadCARDetailWindow(pnRow);
+        }
+    }
+
+    private void loadCARDetailWindow(int fnRow) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/CashierReceivablesDetail.fxml"));
+            CashierReceivablesDetailController loControl = new CashierReceivablesDetailController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTrans);
+            String lsTransNox = oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() != null ? oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() : "";
+            loControl.setTransNo(lsTransNox);
+            loControl.setRow(fnRow);
+            fxmlLoader.setController(loControl);
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+
+        }
     }
 }
