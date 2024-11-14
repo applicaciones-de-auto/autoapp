@@ -46,7 +46,10 @@ import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.auto.main.cashiering.CashierReceivables;
+import org.guanzon.auto.main.cashiering.SalesInvoice;
 import org.guanzon.autoapp.interfaces.GTransactionInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.CheckInvoice;
@@ -63,7 +66,8 @@ import org.json.simple.JSONObject;
 public class InvoiceController implements Initializable, ScreenInterface, GTransactionInterface {
 
     private GRider oApp;
-//    private CAR oTrans;
+    private SalesInvoice oTrans;
+    private CashierReceivables oTransCAR;
     private String pxeModuleName = "";
     private UnloadForm poUnload = new UnloadForm();
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
@@ -72,8 +76,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     private int pnEditMode = -1;
     private double xOffset = 0;
     private double yOffset = 0;
+    private String poTransNox = "";
+    private int pnRow;
     ObservableList<String> cSourcexx = FXCollections.observableArrayList("NEW", "RENEW");
-    ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CUSTOMER", "SUPPLIER");
+    ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CUSTOMER", "BANK", "INSURANCE", "SUPPLIER", "ASSOCIATE");
     private ObservableList<TransInvoice> transData = FXCollections.observableArrayList();
     private ObservableList<CheckInvoice> checkData = FXCollections.observableArrayList();
 
@@ -114,6 +120,18 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         pbIsCAR = fbValue;
     }
 
+    public void setCARObject(CashierReceivables foValue) {
+        oTransCAR = foValue;
+    }
+
+    public void setTransNo(String fsValue) {
+        poTransNox = fsValue;
+    }
+
+    public void setRow(int fnValue) {
+        pnRow = fnValue;
+    }
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -124,16 +142,33 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        initTransTable();
+        initCheckTable();
         Platform.runLater(() -> {
             if (pbIsCAR) {
                 btnAdd.fire();
+                JSONObject loJSON = new JSONObject();
+                loJSON = oTransCAR.openTransaction(poTransNox);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    oTrans.getMasterModel().getMasterModel().setClientID(oTransCAR.getMasterModel().getMasterModel().getClientID());
+                    oTrans.getMasterModel().getMasterModel().setBuyCltNm(oTransCAR.getMasterModel().getMasterModel().getPayerNme());
+                    oTrans.getMasterModel().getMasterModel().setAddress(oTransCAR.getMasterModel().getMasterModel().getAddress());
+                    for (int lnCtr = 0; lnCtr <= oTransCAR.getDetailList().size() - 1; lnCtr++) {
+                        oTrans.addSIDetail();
+//                        oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceCD(oTransCAR.getDetailModel().getDetailModel(lnCtr).get);
+                        oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranType(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTranType());
+                        oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranAmt(oTransCAR.getDetailModel().getDetailModel(lnCtr).getGrossAmt());
+////                        oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranAmt(oTransCAR.getDetailModel().getDetailModel(lnCtr).getGrossAmt());
+                    }
+                    loadMasterFields();
+                    loadTransTable();
+                }
             }
             lblInvoiceTitle.setText(getParentTabTitle());
         });
 
-//        oTrans = new Invoice(oApp, false, oApp.getBranchCode());
-        initTransTable();
-        initCheckTable();
+        oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+        oTransCAR = new CashierReceivables(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
         initPatternFields();
         initLimiterFields();
@@ -159,14 +194,16 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText("");
-        datePicker02.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
+        if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
+            datePicker02.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
         txtField03.setText("");
         comboBox04.setValue("");
-        txtField05.setText("");
-        txtField06.setText("");
+        txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
+        txtField06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField07.setText("");
-        txtField08.setText("");
+        txtField08.setText(oTrans.getMasterModel().getMasterModel().getTaxIDNo());
         txtField09.setText("");
         txtField10.setText("");
         comboBox11.setValue("");
@@ -175,19 +212,19 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         textArea14.setText("");
         txtField15.setText("");
         textArea16.setText("");
-        txtField17.setText("");
-        txtField18.setText("");
-        txtField19.setText("");
-        txtField20.setText("");
-        txtField21.setText("");
-        txtField22.setText("");
-        txtField23.setText("");
-        txtField24.setText("");
-        txtField25.setText("");
-        txtField26.setText("");
-        txtField27.setText("");
-        txtField28.setText("");
-        txtField29.setText("");
+        txtField17.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVatSales()))));
+        txtField18.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getWTRate())))); //??
+        txtField19.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVatAmt()))));
+        txtField20.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getNonVATSl()))));
+        txtField21.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getZroVATSl()))));
+        txtField22.setText("0.00");
+        txtField23.setText("0.00");
+        txtField24.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getCashAmt()))));
+        txtField25.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getChckAmt()))));
+        txtField26.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getCWTAmt()))));
+        txtField27.setText("0.00");
+        txtField28.setText("0.00");
+        txtField29.setText("0.00");
         return true;
     }
 
@@ -353,30 +390,32 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             case "btnAdd":
                 clearFields();
                 clearTables();
-//                oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
-//                loJSON = oTrans.newTransaction();
-//                if ("success".equals((String) loJSON.get("result"))) {
-//                    loadMasterFields();
-//                    pnEditMode = oTrans.getEditMode();
-//                    initFields(pnEditMode);
-//                } else {
-//                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                }
+                oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+                loJSON = oTrans.newTransaction();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    loadTransTable();
+                    loadCheckTable();
+                    pnEditMode = oTrans.getEditMode();
+                    initFields(pnEditMode);
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                }
                 break;
             case "btnEdit":
-//                loJSON = oTrans.updateTransaction();
-//                pnEditMode = oTrans.getEditMode();
-//                if ("error".equals((String) loJSON.get("result"))) {
-//                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
-//                }
+                loJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getEditMode();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
+                }
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
                     clearTables();
-//                    CustomCommonUtil.switchToTab(tabMain, ImTabPane);// Load fields, clear them, and set edit mode
-//                    oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
-//                    pnEditMode = EditMode.UNKNOWN;
+                    oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+                    pnEditMode = EditMode.UNKNOWN;
+                    initFields(pnEditMode);
                 }
                 break;
             case "btnBrowse":
@@ -386,46 +425,51 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         return;
                     }
                 }
-//                loJSON = oTrans.searchTransaction("");
-//                if ("success".equals((String) loJSON.get("result"))) {
-//                    loadMasterFields();
-//                    initFields(pnEditMode);
-//                    pnEditMode = oTrans.getEditMode();
-//                } else {
-//                    ShowMessageFX.Warning(null, "Search " + pxeModuleName + "Confirmation", (String) loJSON.get("message"));
-//                }
+                loJSON = oTrans.searchTransaction("");
+                if ("success".equals((String) loJSON.get("result"))) {
+                    loadMasterFields();
+                    initFields(pnEditMode);
+                    pnEditMode = oTrans.getEditMode();
+                } else {
+                    ShowMessageFX.Warning(null, "Search " + pxeModuleName + "Confirmation", (String) loJSON.get("message"));
+                }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
-//                    loJSON = oTrans.saveTransaction();
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, pxeModuleName + " Information", (String) loJSON.get("message"));
-//                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
-//                        if ("success".equals((String) loJSON.get("result"))) {
-//                            loadMasterFields();
-//                            initFields(pnEditMode);
-//                            pnEditMode = oTrans.getEditMode();
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                        return;
-//                    }
+                    loJSON = oTrans.saveTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName + " Information", (String) loJSON.get("message"));
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadTransTable();
+                            loadCheckTable();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        return;
+                    }
                 }
                 break;
             case "btnInvCancel":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to cancel this VSI?")) {
-//                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                    }
-//                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        loadMasterFields();
-//                        pnEditMode = oTrans.getEditMode();
-//                        initFields(pnEditMode);
-//                    }
+                    loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                    loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMasterFields();
+                        loadTransTable();
+                        loadCheckTable();
+                        pnEditMode = oTrans.getEditMode();
+                        initFields(pnEditMode);
+                    }
                 }
                 break;
             case "btnClose":
@@ -452,15 +496,15 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public void initComboBoxItems() {
-        comboBox04.setItems(cSourcexx);
-        comboBox11.setItems(cPayerxxx);
+        comboBox04.setItems(cPayerxxx);
+        comboBox11.setItems(cSourcexx);
     }
 
     @Override
     public void initFieldsAction() {
         datePicker02.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                oTrans.getModel().getModel().setDateThru(SQLUtil.toDate(datePicker02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                oTrans.getMasterModel().getMasterModel().setTransactDte(SQLUtil.toDate(datePicker02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
             }
         });
         comboBox04.setOnAction(e -> {
@@ -580,7 +624,6 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     }
 
     @Override
-
     public void clearTables() {
         transData.clear();
         checkData.clear();
@@ -609,7 +652,9 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 checkBoxNoPymnt, checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck,
                 comboBox11, textArea14, txtField12, txtField13, btnInstTransDetail, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
-        txtField05.setDisable(!(lbShow && !comboBox04.getValue().isEmpty()));
+        if (comboBox04.getValue() != null) {
+            txtField05.setDisable(!(lbShow && !comboBox04.getValue().isEmpty()));
+        }
         txtField10.setDisable(!(lbShow && !txtField05.getText().isEmpty()));
 
         CustomCommonUtil.setVisible(false, btnInvCancel, btnEdit, btnPrint);
@@ -651,7 +696,68 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     }
 
     private void loadTransTable() {
+        transData.clear();
+        String lsFormType = "";
+        String lsAcctTtle = "";
+        String lsRefNoxxx = "";
+        String lsPartculr = "";
+        String lsGrossAmt = "";
+        String lsDiscAmtx = "";
+        String lsAdvAmtxx = "";
+        String lsTtlAmtxx = "";
+        String lsFormNoxx = "";
+        String lsCARNoxxx = "";
+        for (int lnCntr = 0; lnCntr <= oTrans.getSIDetailList().size() - 1; lnCntr++) {
 
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getTranType() != null) {
+                lsAcctTtle = oTrans.getSIDetailModel().getDetailModel(lnCntr).getTranType();
+            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getReferNo() != null) {
+                lsRefNoxxx = oTrans.getSIDetailModel().getDetailModel(lnCntr).getReferNo();
+            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceCD() != null) {
+                lsPartculr = oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceCD();
+            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount() != null) {
+                lsDiscAmtx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount())));
+            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getAdvused() != null) {
+                lsAdvAmtxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getAdvused())));
+            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount() != null) {
+                lsTtlAmtxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount())));
+            }
+//            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceNo() != null) {
+//                lsFormNoxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceNo())));
+//            }
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getTransNo() != null) {
+                lsCARNoxxx = oTrans.getSIDetailModel().getDetailModel(lnCntr).getTransNo();
+            }
+            transData.add(new TransInvoice(
+                    String.valueOf(lnCntr + 1),
+                    lsFormType,
+                    lsAcctTtle,
+                    lsRefNoxxx,
+                    lsPartculr,
+                    lsGrossAmt,
+                    lsDiscAmtx,
+                    lsAdvAmtxx,
+                    lsTtlAmtxx,
+                    lsFormNoxx,
+                    lsCARNoxxx
+            ));
+            lsFormType = "";
+            lsAcctTtle = "";
+            lsRefNoxxx = "";
+            lsPartculr = "";
+            lsGrossAmt = "";
+            lsDiscAmtx = "";
+            lsAdvAmtxx = "";
+            lsTtlAmtxx = "";
+            lsFormNoxx = "";
+            lsCARNoxxx = "";
+        }
+        tblViewTrans.setItems(transData);
     }
 
     private void initCheckTable() {

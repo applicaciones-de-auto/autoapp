@@ -386,33 +386,67 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                 loadTable();
                 break;
             case "btnProceed":
+                ObservableList<Cashier_Receivables> selectedItems = FXCollections.observableArrayList();
+                for (Cashier_Receivables item : tblViewCAR.getItems()) {
+                    if (item.getSelect().isSelected()) {
+                        selectedItems.add(item);
+                    }
+                }
+
+                // Check if no items are selected
+                if (selectedItems.isEmpty()) {
+                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to proceed.");
+                    return;
+                }
+                if (selectedItems.size() >= 2) {
+                    ShowMessageFX.Information(null, pxeModuleName, "Please select 1 item.");
+                    return;
+                }
+
+                // Validate if all selected items have the same customer name
+                String lsParticu = selectedItems.get(0).getTblindex08(); // Assuming getTblindex06() is the customer name
+                for (Cashier_Receivables item : selectedItems) {
+                    if (!item.getTblindex08().equals(lsParticu)) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
+                        return;
+                    }
+                }
+
+                // Confirm with the user before proceeding
+                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to proceed?")) {
+                    return;
+                }
+                int lnRow = 0;
+                // Process selected items
+                for (Cashier_Receivables item : selectedItems) {
+                    lnRow = Integer.parseInt(item.getTblindex01()) - 1;
+                }
+                System.out.println("size:" + selectedItems.size());
                 switch (comboBoxFormType.getSelectionModel().getSelectedIndex()) {
                     case 0:
-                        proceedToOtherForm(0);
+                        loadInvoiceWindow("Acknowledge Receivables", lnRow);
                         break;
                     case 1:
-                        proceedToOtherForm(1);
+                        loadInvoiceWindow("Collection Receipt", lnRow);
                         break;
                     case 2:
-                        proceedToOtherForm(2);
+                        loadInvoiceWindow("Service Invoice", lnRow);
                         break;
                     case 3:
-                        proceedToOtherForm(3);
+                        loadInvoiceWindow("Parts Sales Invoice", lnRow);
                         break;
                     case 4:
-                        proceedToOtherForm(4);
+                        loadInvoiceWindow("Billing Statement", lnRow);
                         break;
                     case 5:
-                        ShowMessageFX.Warning(null, pxeModuleName, "SOA is underdevelopment");
+                        ShowMessageFX.Warning(null, pxeModuleName, "SOA is under development");
                         break;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Please select receipt options to proceed");
                         break;
-
                 }
                 break;
             case "btnPrint":
-
                 break;
             case "btnExcelExport":
                 ObservableList<Cashier_Receivables> cashDataToExport = FXCollections.observableArrayList();
@@ -491,31 +525,31 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         return rowData;
     }
 
-    private void proceedToOtherForm(int fnFormName) {
+    private void proceedToOtherForm(int fnFormName, int fnRow) {
         switch (fnFormName) {
             case 0:
-                loadInvoiceWindow("Acknowledge Receivables");
+                loadInvoiceWindow("Acknowledge Receivables", fnRow);
                 break;
             case 1:
-                loadInvoiceWindow("Collection Receipt");
+                loadInvoiceWindow("Collection Receipt", fnRow);
                 break;
             case 2:
-                loadInvoiceWindow("Service Invoice");
+                loadInvoiceWindow("Service Invoice", fnRow);
                 break;
             case 3:
-                loadInvoiceWindow("Parts Sales Invoice");
+                loadInvoiceWindow("Parts Sales Invoice", fnRow);
                 break;
             case 4:
-                loadInvoiceWindow("Billing Statement");
+                loadInvoiceWindow("Billing Statement", fnRow);
                 break;
             case 5:
-                loadInvoiceWindow("");
+                loadInvoiceWindow("", fnRow);
                 break;
         }
 
     }
 
-    private void loadInvoiceWindow(String fsFormName) {
+    private void loadInvoiceWindow(String fsFormName, int fnRow) {
         try {
             String lsFormName = fsFormName;
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -523,6 +557,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             InvoiceController loControl = new InvoiceController();
             loControl.setGRider(oApp);
             loControl.setIsCARState(true);
+            String lsTransNox = oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() != null ? oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() : "";
+            loControl.setTransNo(lsTransNox);
+            loControl.setCARObject(oTrans);
             fxmlLoader.setController(loControl);
             Node tabContent = AnchorMain.getParent();
             Parent tabContentParent = tabContent.getParent();
