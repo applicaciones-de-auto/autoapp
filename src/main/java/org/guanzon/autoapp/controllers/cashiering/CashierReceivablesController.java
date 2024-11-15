@@ -403,21 +403,20 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     return;
                 }
 
-                // Validate if all selected items have the same customer name
-                String lsParticu = selectedItems.get(0).getTblindex08(); // Assuming getTblindex06() is the customer name
-                for (Cashier_Receivables item : selectedItems) {
-                    if (!item.getTblindex08().equals(lsParticu)) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
-                        return;
+                if (comboBoxFormType.getSelectionModel().getSelectedIndex() != 5) {
+                    String lsParticu = selectedItems.get(0).getTblindex08();
+                    for (Cashier_Receivables item : selectedItems) {
+                        if (!item.getTblindex08().equals(lsParticu)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
+                            return;
+                        }
                     }
                 }
 
-                // Confirm with the user before proceeding
                 if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to proceed?")) {
                     return;
                 }
                 int lnRow = 0;
-                // Process selected items
                 for (Cashier_Receivables item : selectedItems) {
                     lnRow = Integer.parseInt(item.getTblindex01()) - 1;
                 }
@@ -523,30 +522,6 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         rowData.put(fsHeadersValue.get(19), fsItemValue.getTblindex22());
         rowData.put(fsHeadersValue.get(20), fsItemValue.getTblindex23());
         return rowData;
-    }
-
-    private void proceedToOtherForm(int fnFormName, int fnRow) {
-        switch (fnFormName) {
-            case 0:
-                loadInvoiceWindow("Acknowledge Receivables", fnRow);
-                break;
-            case 1:
-                loadInvoiceWindow("Collection Receipt", fnRow);
-                break;
-            case 2:
-                loadInvoiceWindow("Service Invoice", fnRow);
-                break;
-            case 3:
-                loadInvoiceWindow("Parts Sales Invoice", fnRow);
-                break;
-            case 4:
-                loadInvoiceWindow("Billing Statement", fnRow);
-                break;
-            case 5:
-                loadInvoiceWindow("", fnRow);
-                break;
-        }
-
     }
 
     private void loadInvoiceWindow(String fsFormName, int fnRow) {
