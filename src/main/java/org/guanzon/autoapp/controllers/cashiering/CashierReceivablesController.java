@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -395,13 +394,17 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
 
                 // Check if no items are selected
                 if (selectedItems.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items selected to proceed.");
+                    ShowMessageFX.Warning(null, pxeModuleName, "No items selected to proceed.");
                     return;
                 }
-                if (selectedItems.size() >= 2) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Please select 1 item.");
+                if (comboBoxFormType.getSelectionModel().getSelectedIndex() < 0) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please Form Type.");
                     return;
                 }
+//                if (selectedItems.size() >= 2) {
+//                    ShowMessageFX.Information(null, pxeModuleName, "Please select 1 item.");
+//                    return;
+//                }
 
                 if (comboBoxFormType.getSelectionModel().getSelectedIndex() != 5) {
                     String lsParticu = selectedItems.get(0).getTblindex08();
@@ -423,7 +426,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                 System.out.println("size:" + selectedItems.size());
                 switch (comboBoxFormType.getSelectionModel().getSelectedIndex()) {
                     case 0:
-                        loadInvoiceWindow("Acknowledge Receivables", lnRow);
+                        loadInvoiceWindow("Acknowledgement Receipt", lnRow);
                         break;
                     case 1:
                         loadInvoiceWindow("Collection Receipt", lnRow);

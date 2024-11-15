@@ -529,7 +529,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "Collection Receipt":
                 mnuColReceipt.fire();
                 break;
-            case "Official Receipt":
+            case "Service Invoice":
                 mnuOfcReceipt.fire();
                 break;
             case "Parts Sales Invoice":
@@ -1167,7 +1167,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuOfcReceiptClick(ActionEvent event) {
-        sSalesInvoiceType = "Official Receipt";
+        sSalesInvoiceType = "Service Invoice";
         String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
