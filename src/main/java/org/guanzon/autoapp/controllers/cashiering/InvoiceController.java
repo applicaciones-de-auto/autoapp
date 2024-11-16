@@ -85,7 +85,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     private double yOffset = 0;
     private String poTransNox = "";
     private int pnRow;
-    ObservableList<String> cSourcexx = FXCollections.observableArrayList("NEW", "RENEW");
+    ObservableList<String> cSourcexx = FXCollections.observableArrayList("STATE OF ACCOUNT", "CASHIER RECEIVABLES", "OTHERS");
     ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CUSTOMER", "BANK", "INSURANCE", "SUPPLIER", "ASSOCIATE");
     private ObservableList<TransInvoice> transData = FXCollections.observableArrayList();
     private ObservableList<CheckInvoice> checkData = FXCollections.observableArrayList();
@@ -151,7 +151,6 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     public void initialize(URL url, ResourceBundle rb) {
         initTransTable();
         initCheckTable();
-
         Platform.runLater(() -> {
             if (pbIsCAR) {
                 btnAdd.fire();
@@ -161,6 +160,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     setCARValueToSI();
                     loadMasterFields();
                     loadTransTable();
+                    loadCheckTable();
+                    loadPayModeCheckedFields();
                 }
             }
             lblInvoiceTitle.setText(getParentTabTitle());
@@ -179,6 +180,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         initTextFieldsProperty();
         clearFields();
         clearTables();
+        initTableKeyPressed();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
     }
@@ -358,7 +360,6 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 //                            }
                             break;
                     }
-                    initFields(pnEditMode);
                     event.consume();
                     CommonUtils.SetNextFocus((TextField) event.getSource());
                     break;
@@ -443,6 +444,9 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 loJSON = oTrans.searchTransaction("");
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
+                    loadTransTable();
+                    loadCheckTable();
+                    loadPayModeCheckedFields();
                     initFields(pnEditMode);
                     pnEditMode = oTrans.getEditMode();
                 } else {
@@ -460,6 +464,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                             loadMasterFields();
                             loadTransTable();
                             loadCheckTable();
+                            loadPayModeCheckedFields();
                             initFields(pnEditMode);
                             pnEditMode = oTrans.getEditMode();
                         }
@@ -482,6 +487,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         loadMasterFields();
                         loadTransTable();
                         loadCheckTable();
+                        loadPayModeCheckedFields();
                         pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
                     }
@@ -500,10 +506,16 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 break;
             case "btnInstTransDetail":
             case "btnInsertRemarks ":
+                break;
             case "btnInsertAdvances ":
+                loadAdvancesDetailWindow(0, false);
                 break;
             case "btnInsCheckDetail":
-                loadPaymentDetailWindow(0);
+                if (lsPayMode.isEmpty()) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please select paymode first to insert payment details.");
+                    return;
+                }
+                loadPaymentDetailWindow(0, false);
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
@@ -534,6 +546,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         comboBox11.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (comboBox11.getSelectionModel().getSelectedIndex() >= 0) {
+
                 }
                 initFields(pnEditMode);
             }
@@ -566,10 +579,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxCard.isSelected()) {
                     checkBoxCard.setSelected(true);
-                    lsPayMode.add("Card");
+                    lsPayMode.add("card");
                 } else {
                     checkBoxCard.setSelected(false);
-                    lsPayMode.remove("Card");
+                    lsPayMode.remove("card");
                 }
                 for (String paymode : lsPayMode) {
                     System.out.println("paymode" + paymode);
@@ -582,10 +595,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxOnlnPymntServ.isSelected()) {
                     checkBoxOnlnPymntServ.setSelected(true);
-                    lsPayMode.add("Online");
+                    lsPayMode.add("online payment");
                 } else {
                     checkBoxOnlnPymntServ.setSelected(false);
-                    lsPayMode.remove("Online");
+                    lsPayMode.remove("online payment");
                 }
 
                 initFields(pnEditMode);
@@ -606,10 +619,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxCheck.isSelected()) {
                     checkBoxCheck.setSelected(true);
-                    lsPayMode.add("Check");
+                    lsPayMode.add("check");
                 } else {
                     checkBoxCheck.setSelected(false);
-                    lsPayMode.remove("Check");
+                    lsPayMode.remove("check");
                 }
 
                 initFields(pnEditMode);
@@ -619,10 +632,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxGftCheck.isSelected()) {
                     checkBoxGftCheck.setSelected(true);
-                    lsPayMode.add("Gift");
+                    lsPayMode.add("gift check");
                 } else {
                     checkBoxGftCheck.setSelected(false);
-                    lsPayMode.remove("Gift");
+                    lsPayMode.remove("gift check");
                 }
 
                 initFields(pnEditMode);
@@ -664,6 +677,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public void clearFields() {
+        lsPayMode.clear();
         CustomCommonUtil.setText("", txtField01, txtField05, txtField06, txtField07, txtField08, txtField09, txtField10, txtField12,
                 txtField13, txtField15);
         CustomCommonUtil.setText("0.00", txtField17, txtField18, txtField19, txtField20, txtField21, txtField22, txtField23, txtField24, txtField25,
@@ -680,16 +694,39 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
+        CustomCommonUtil.setDisable(true, btnInstTransDetail, txtField12);
         CustomCommonUtil.setDisable(!lbShow, txtField03,
                 checkBoxNoPymnt, checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck,
-                comboBox11, textArea14, txtField12, txtField13, btnInstTransDetail, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
+                comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
+        if (lbShow) {
+            switch (comboBox11.getSelectionModel().getSelectedIndex()) {
+                case 0:
+                case 1:
+                    txtField12.setDisable(!lbShow);
+                    break;
+                case 2:
+                    btnInstTransDetail.setDisable(!lbShow);
+                    break;
+            }
+        }
+
         if (comboBox04.getValue() != null) {
             txtField05.setDisable(!(lbShow && !comboBox04.getValue().isEmpty()));
         }
-        txtField10.setDisable(!(lbShow && !txtField05.getText().isEmpty()));
+        if (checkBoxNoPymnt.isSelected()) {
+            lsPayMode.clear();
+            CustomCommonUtil.setSelected(false,
+                    checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
+                    checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck
+            );
+            CustomCommonUtil.setDisable(true,
+                    checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
+                    checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck
+            );
 
+        }
+        txtField10.setDisable(!(lbShow && !txtField05.getText().isEmpty()));
         CustomCommonUtil.setVisible(false, btnInvCancel, btnEdit, btnPrint);
         CustomCommonUtil.setManaged(false, btnInvCancel, btnEdit, btnPrint);
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
@@ -815,9 +852,31 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     private void loadCheckTable() {
 
+        checkData.clear();
+//
+//        checkData.add(new CheckInvoice("1",
+//                "CHECK",
+//                "",
+//                "",
+//                "",
+//                "",
+//                "",
+//                "",
+//                ""));
+//        checkData.add(new CheckInvoice("2",
+//                "GIFT CHECK",
+//                "",
+//                "",
+//                "",
+//                "",
+//                "",
+//                "",
+//                ""));
+
+        tblViewCheck.setItems(checkData);
     }
 
-    private void loadPaymentDetailWindow(int fnRow) {
+    private void loadPaymentDetailWindow(int fnRow, boolean fbIsUpdate) {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -826,6 +885,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
             loControl.setPayMode(lsPayMode);
+            loControl.setIsUpdate(fbIsUpdate);
             loControl.setRow(fnRow);
             fxmlLoader.setController(loControl);
 
@@ -849,6 +909,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+            loadCheckTable();
+            loadPayModeCheckedFields();
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
@@ -879,5 +941,141 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             }
         }
         return null;
+    }
+
+    //TableView KeyPressed
+    private void initTableKeyPressed() {
+        tblViewTrans.setOnKeyPressed(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this transaction?")) {
+                        TransInvoice selectedTrans = getTransSelectedItem();
+                        int removeCount = 0;
+                        if (selectedTrans != null) {
+                            String lsRow = selectedTrans.getTblindex01();
+                            int lnRow = Integer.parseInt(lsRow);
+                            oTrans.removeSIDetail(lnRow - 1);
+                            removeCount++;
+                        }
+                        if (removeCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed transaction successfully");
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed transaction failed");
+                        }
+                        loadMasterFields();
+                        loadTransTable();
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
+        );
+        tblViewCheck.setOnKeyPressed(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this payment details?")) {
+                        CheckInvoice selectedCheck = getCheckSelectedItem();
+                        int removeCount = 0;
+                        if (selectedCheck != null) {
+                            String lsRow = selectedCheck.getTblindex01();
+                            int lnRow = Integer.parseInt(lsRow);
+//                            oTrans.removeSIDetail(lnRow - 1);
+                            removeCount++;
+                        }
+                        if (removeCount >= 1) {
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed payment details successfully");
+                        } else {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Removed payment details failed");
+                        }
+                        loadMasterFields();
+                        loadCheckTable();
+                        loadPayModeCheckedFields();
+                    } else {
+                        return;
+                    }
+                }
+            }
+        });
+
+    }
+
+    private TransInvoice getTransSelectedItem() {
+        return tblViewTrans.getSelectionModel().getSelectedItem();
+    }
+
+    private CheckInvoice getCheckSelectedItem() {
+        return tblViewCheck.getSelectionModel().getSelectedItem();
+    }
+
+    private void loadPayModeCheckedFields() {
+        for (CheckInvoice item : tblViewCheck.getItems()) {
+            String lsPayMode = item.getTblindex02();
+            if (lsPayMode.equals("CARD")) {
+                checkBoxCard.setSelected(true);
+            }
+            if (lsPayMode.equals("CHECK")) {
+                checkBoxCheck.setSelected(true);
+            }
+            if (lsPayMode.equals("GIFT CHECK")) {
+                checkBoxGftCheck.setSelected(true);
+            }
+            if (lsPayMode.equals("ONLINE PAYMENT")) {
+                checkBoxOnlnPymntServ.setSelected(true);
+            }
+        }
+        if (!tblViewTrans.getItems().isEmpty()) {
+            checkBoxCash.setSelected(true);
+        }
+    }
+
+    @FXML
+    private void tblCheckOther_Click(MouseEvent event) {
+        if (event.getClickCount() == 2) {
+            loadPaymentDetailWindow(0, true);
+        }
+    }
+
+    @FXML
+    private void tblTrans_Click(MouseEvent event) {
+    }
+
+    private void loadAdvancesDetailWindow(int fnRow, boolean fbIsUpdate) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/PRDeductible.fxml"));
+            PRDeductibleController loControl = new PRDeductibleController();
+//            loControl.setGRider(oApp);
+////            loControl.setObject(oTrans);
+//            loControl.setIsUpdate(fbIsUpdate);
+//            loControl.setRow(fnRow);
+            fxmlLoader.setController(loControl);
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+
+        }
     }
 }

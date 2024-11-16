@@ -170,6 +170,34 @@ public class CustomCommonUtil {
     }
 
     /**
+     * Sets the behavior of a {@link TextField} to automatically convert all
+     * text input to uppercase.
+     *
+     * This method listens to changes in the {@link TextField} and converts any
+     * typed input to uppercase in real-time.
+     *
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField1 = new TextField();
+     * TextField textField2 = new TextField();
+     * setCapsLockBehavior(textField1,textField2);
+     * textField.setText("hello");
+     * System.out.println(textField.getText()); // Outputs: HELLO
+     * }</pre>
+     */
+    public static void setCapsLockBehavior(TextField... textFields) {
+        for (TextField textField : textFields) {
+            textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (textField.getText() != null) {
+                    textField.setText(newValue.toUpperCase());
+                }
+            });
+        }
+    }
+
+    /**
      * Sets the behavior of a {@link TextArea} to automatically convert all text
      * input to uppercase.
      *
@@ -192,6 +220,34 @@ public class CustomCommonUtil {
                 textArea.setText(newValue.toUpperCase());
             }
         });
+    }
+
+    /**
+     * Sets the behavior of a {@link TextArea} to automatically convert all text
+     * input to uppercase.
+     *
+     * This method listens to changes in the {@link TextArea} and converts any
+     * typed input to uppercase in real-time.
+     *
+     * @param textArea The {@link TextArea} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextArea textArea1 = new TextArea();
+     * TextArea textArea2 = new TextArea();
+     * setCapsLockBehavior(textArea1, textArea2);
+     * textArea.setText("hello world");
+     * System.out.println(textArea.getText()); // Outputs: HELLO WORLD
+     * }</pre>
+     */
+    public static void setCapsLockBehavior(TextArea... textAreas) {
+        for (TextArea textArea : textAreas) {
+            textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (textArea.getText() != null) {
+                    textArea.setText(newValue.toUpperCase());
+                }
+            });
+        }
     }
 
     /**

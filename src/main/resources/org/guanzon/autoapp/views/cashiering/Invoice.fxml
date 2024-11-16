@@ -225,7 +225,7 @@
                                                                                                             <columnConstraints>
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="5.0" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="180.0" prefWidth="200.0" />
@@ -254,7 +254,7 @@
                                                                                                                     </graphic>
                                                                                                                 </Button>
                                                                                                                 <Label id="LabelDesc" text="Source" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                                                <ComboBox fx:id="comboBox11" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                <ComboBox fx:id="comboBox11" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="22.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="Ctrl No." GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                 <TextField fx:id="txtField12" promptText="Search: F3" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <Button fx:id="btnInsertAdvances" maxWidth="130.0" minWidth="120.0" mnemonicParsing="false" prefWidth="130.0" text="Insert Advances" GridPane.columnIndex="11" GridPane.rowIndex="1">
@@ -268,7 +268,7 @@
                                                                                                             </VBox.margin>
                                                                                                         </GridPane>
                                                                                                         <AnchorPane />
-                                                                                                        <TableView fx:id="tblViewTrans" VBox.vgrow="ALWAYS">
+                                                                                                        <TableView fx:id="tblViewTrans" onMouseClicked="#tblTrans_Click" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="tblindexTrans01" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexTrans02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Form Type" />
@@ -323,7 +323,7 @@
                                                                                                                 <Insets />
                                                                                                             </VBox.margin>
                                                                                                         </AnchorPane>
-                                                                                                        <TableView fx:id="tblViewCheck" VBox.vgrow="ALWAYS">
+                                                                                                        <TableView fx:id="tblViewCheck" onMouseClicked="#tblCheckOther_Click" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="tblindexCheck01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexCheck02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Pay Mode" />
