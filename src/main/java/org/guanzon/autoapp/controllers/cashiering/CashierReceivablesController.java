@@ -447,6 +447,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                         ShowMessageFX.Warning(null, pxeModuleName, "Please select receipt options to proceed");
                         break;
                 }
+                selectAllCheckBox.setSelected(false);
                 break;
             case "btnPrint":
                 break;
@@ -460,7 +461,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
 
                 // If no items are selected, show an error message
                 if (cashDataToExport.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items to export.");
+                    ShowMessageFX.Warning(null, pxeModuleName, "No items to export.");
                     return;
                 }
 

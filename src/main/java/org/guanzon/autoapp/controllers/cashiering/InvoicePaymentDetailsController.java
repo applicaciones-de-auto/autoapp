@@ -116,19 +116,19 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (lsPayMode.size() == 1) {
             for (String paymode : lsPayMode) {
                 switch (paymode) {
-                    case "card":
+                    case "CARD":
                         comboBoxPayMde.getSelectionModel().select(0);
                         initFields();
                         break;
-                    case "check":
+                    case "CHECK":
                         comboBoxPayMde.getSelectionModel().select(1);
                         initFields();
                         break;
-                    case "gift check":
+                    case "GC":
                         comboBoxPayMde.getSelectionModel().select(2);
                         initFields();
                         break;
-                    case "online payment":
+                    case "OP":
                         comboBoxPayMde.getSelectionModel().select(3);
                         initFields();
                         break;
@@ -136,9 +136,23 @@ public class InvoicePaymentDetailsController implements Initializable {
             }
         }
         comboBoxPayMde.setOnAction(e -> {
+            final String[] lsSelectedValue = {""};
             if (comboBoxPayMde.getSelectionModel().getSelectedIndex() >= 0) {
-                String selectedValue = comboBoxPayMde.getValue().toLowerCase();
-                boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.toLowerCase().equals(selectedValue));
+                switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        lsSelectedValue[0] = "CARD";
+                        break;
+                    case 1:
+                        lsSelectedValue[0] = "CHECK";
+                        break;
+                    case 2:
+                        lsSelectedValue[0] = "GC";
+                        break;
+                    case 3:
+                        lsSelectedValue[0] = "OP";
+                        break;
+                }
+                boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
                 if (!isValid) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Invalid Payment Details");
                     Platform.runLater(() -> {

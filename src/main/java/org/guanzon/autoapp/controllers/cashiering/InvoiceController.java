@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -63,6 +64,7 @@ import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.CheckInvoice;
 import org.guanzon.autoapp.models.cashiering.TransInvoice;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
@@ -157,11 +159,13 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 JSONObject loJSON = new JSONObject();
                 loJSON = oTransCAR.openTransaction(poTransNox);
                 if (!"error".equals((String) loJSON.get("result"))) {
+                    oTrans.getMasterModel().getMasterModel().setReferNo(oTransCAR.getMasterModel().getMasterModel().getReferNo());
                     setCARValueToSI();
                     loadMasterFields();
                     loadTransTable();
                     loadCheckTable();
                     loadPayModeCheckedFields();
+
                 }
             }
             lblInvoiceTitle.setText(getParentTabTitle());
@@ -186,19 +190,22 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     }
 
     private void setCARValueToSI() {
-        oTrans.getMasterModel().getMasterModel().setClientID(oTransCAR.getMasterModel().getMasterModel().getClientID());
+        oTrans.getMasterModel().getMasterModel().setClientID(oTransCAR.getMasterModel().getMasterModel().getPayerID());
         oTrans.getMasterModel().getMasterModel().setBuyCltNm(oTransCAR.getMasterModel().getMasterModel().getPayerNme());
-        oTrans.getMasterModel().getMasterModel().setAddress(oTransCAR.getMasterModel().getMasterModel().getAddress());
+        oTrans.getMasterModel().getMasterModel().setAddress(oTransCAR.getMasterModel().getMasterModel().getPayerAdd());
         for (int lnCtr = 0; lnCtr <= oTransCAR.getDetailList().size() - 1; lnCtr++) {
             oTrans.addSIDetail();
 //                        oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceCD(oTransCAR.getDetailModel().getDetailModel(lnCtr).get);
+//            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranType(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTranType());
+//            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setReferNo(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTransNo());
+//            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranAmt(oTransCAR.getDetailModel().getDetailModel(lnCtr).getGrossAmt());
+//            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setDiscount(oTransCAR.getDetailModel().getDetailModel(lnCtr).getDiscAmt());
+//            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceNo(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTransNo());
             oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranType(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTranType());
-            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setReferNo(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTransNo());
-            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranAmt(oTransCAR.getDetailModel().getDetailModel(lnCtr).getGrossAmt());
-            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setDiscount(oTransCAR.getDetailModel().getDetailModel(lnCtr).getDiscAmt());
-            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceNo(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTransNo());
-
+            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setTranAmt(oTransCAR.getDetailModel().getDetailModel(lnCtr).getTotalAmt());
+            oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceNo(oTransCAR.getMasterModel().getMasterModel().getTransNo());
         }
+        oTrans.computeSIAmount();
     }
 
     @Override
@@ -211,11 +218,11 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
+        txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker02.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
         }
-        txtField03.setText("");
+        txtField03.setText("0");
         comboBox04.setValue("");
         txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
         txtField06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
@@ -247,7 +254,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public void initPatternFields() {
-
+        Pattern numOnly = Pattern.compile("[0-9]*");
+        txtField03.setTextFormatter(new TextFormatterUtil(numOnly));
     }
 
     @Override
@@ -579,10 +587,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxCard.isSelected()) {
                     checkBoxCard.setSelected(true);
-                    lsPayMode.add("card");
+                    lsPayMode.add("CARD");
                 } else {
                     checkBoxCard.setSelected(false);
-                    lsPayMode.remove("card");
+                    lsPayMode.remove("CARD");
                 }
                 for (String paymode : lsPayMode) {
                     System.out.println("paymode" + paymode);
@@ -595,10 +603,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxOnlnPymntServ.isSelected()) {
                     checkBoxOnlnPymntServ.setSelected(true);
-                    lsPayMode.add("online payment");
+                    lsPayMode.add("OP");
                 } else {
                     checkBoxOnlnPymntServ.setSelected(false);
-                    lsPayMode.remove("online payment");
+                    lsPayMode.remove("OP");
                 }
 
                 initFields(pnEditMode);
@@ -609,8 +617,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxCrdInv.isSelected()) {
                     checkBoxCrdInv.setSelected(true);
+                    lsPayMode.add("CM");
                 } else {
                     checkBoxCrdInv.setSelected(false);
+                    lsPayMode.add("CM");
                 }
                 initFields(pnEditMode);
             }
@@ -619,10 +629,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxCheck.isSelected()) {
                     checkBoxCheck.setSelected(true);
-                    lsPayMode.add("check");
+                    lsPayMode.add("CHECK");
                 } else {
                     checkBoxCheck.setSelected(false);
-                    lsPayMode.remove("check");
+                    lsPayMode.remove("CHECK");
                 }
 
                 initFields(pnEditMode);
@@ -632,10 +642,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (checkBoxGftCheck.isSelected()) {
                     checkBoxGftCheck.setSelected(true);
-                    lsPayMode.add("gift check");
+                    lsPayMode.add("GC");
                 } else {
                     checkBoxGftCheck.setSelected(false);
-                    lsPayMode.remove("gift check");
+                    lsPayMode.remove("GC");
                 }
 
                 initFields(pnEditMode);
@@ -767,14 +777,15 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceCD() != null) {
                 lsPartculr = oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceCD();
             }
+
             if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount() != null) {
                 lsDiscAmtx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount())));
             }
             if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getAdvused() != null) {
                 lsAdvAmtxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getAdvused())));
             }
-            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount() != null) {
-                lsTtlAmtxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getDiscount())));
+            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getTranAmt() != null) {
+                lsTtlAmtxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getTranAmt())));
             }
 //            if (oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceNo() != null) {
 //                lsFormNoxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getSIDetailModel().getDetailModel(lnCntr).getSourceNo())));
@@ -788,7 +799,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     lsAcctTtle,
                     lsRefNoxxx,
                     lsPartculr,
-                    lsGrossAmt,
+                    //                    lsGrossAmt,
+                    "0.00",
                     lsDiscAmtx,
                     lsAdvAmtxx,
                     lsTtlAmtxx,
@@ -1017,10 +1029,13 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             if (lsPayMode.equals("CHECK")) {
                 checkBoxCheck.setSelected(true);
             }
-            if (lsPayMode.equals("GIFT CHECK")) {
+            if (oTrans.getMasterModel().equals("GC")) {
                 checkBoxGftCheck.setSelected(true);
             }
-            if (lsPayMode.equals("ONLINE PAYMENT")) {
+            if (lsPayMode.equals("OP")) {
+                checkBoxOnlnPymntServ.setSelected(true);
+            }
+            if (lsPayMode.equals("CM")) {
                 checkBoxOnlnPymntServ.setSelected(true);
             }
         }

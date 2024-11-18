@@ -98,7 +98,7 @@
                                                                         <RowConstraints minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                     <children>
-                                                                        <Button fx:id="btnProceed" mnemonicParsing="false" prefWidth="125.0" text="PROCEED" GridPane.columnIndex="3">
+                                                                        <Button fx:id="btnProceed" mnemonicParsing="false" prefWidth="125.0" text="Proceed" GridPane.columnIndex="3">
                                                                             <graphic>
                                                                                 <FontAwesomeIconView glyphName="UPLOAD" />
                                                                             </graphic>
