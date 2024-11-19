@@ -44,12 +44,12 @@ import org.guanzon.autoapp.utils.CustomCommonUtil;
 public class InvoicePaymentDetailsController implements Initializable {
 
     private GRider oApp;
-    private SalesInvoice oTransPayment;
+    private SalesInvoice oTrans;
     private String pxeModuleName = "Invoice Payment Details";
     ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CARD", "CHECK", "GIFT CHECK", "ONLINE PAYMENT");
     private List<String> lsPayMode = new ArrayList<>();
     private int pnRow;
-    private boolean poIsUpdate = false;
+    private boolean pbIsUpdate = false;
     @FXML
     private Button btnAdd, btnUpdate, btnClose;
     @FXML
@@ -88,7 +88,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     public void setObject(SalesInvoice foValue) {
-        oTransPayment = foValue;
+        oTrans = foValue;
     }
 
     public void setPayMode(List<String> fsValue) {
@@ -100,7 +100,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     public void setIsUpdate(boolean fbValue) {
-        poIsUpdate = fbValue;
+        pbIsUpdate = fbValue;
     }
 
     /**
@@ -112,49 +112,66 @@ public class InvoicePaymentDetailsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboBoxPayMde.setItems(cPayerxxx);
-        initFields();
-        if (lsPayMode.size() == 1) {
-            for (String paymode : lsPayMode) {
-                switch (paymode) {
-                    case "CARD":
-                        comboBoxPayMde.getSelectionModel().select(0);
-                        initFields();
-                        break;
-                    case "CHECK":
-                        comboBoxPayMde.getSelectionModel().select(1);
-                        initFields();
-                        break;
-                    case "GC":
-                        comboBoxPayMde.getSelectionModel().select(2);
-                        initFields();
-                        break;
-                    case "OP":
-                        comboBoxPayMde.getSelectionModel().select(3);
-                        initFields();
-                        break;
+        if (!pbIsUpdate) {
+            if (lsPayMode.size() == 1) {
+                for (String paymode : lsPayMode) {
+                    switch (paymode) {
+                        case "CARD":
+                            comboBoxPayMde.getSelectionModel().select(0);
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CARD");
+                            break;
+                        case "CHECK":
+                            comboBoxPayMde.getSelectionModel().select(1);
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CHECK");
+                            break;
+                        case "GC":
+                            comboBoxPayMde.getSelectionModel().select(2);
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("GC");
+                            break;
+                        case "OP":
+                            comboBoxPayMde.getSelectionModel().select(3);
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
+                            break;
+                    }
+                    initFields();
                 }
             }
         }
+        initFieldsAction();
+        initButtonsClick();
+        initCapitalizationFields();
+        initTextFieldFocus();
+        initTextKeyPressed();
+        loadMasterFields();
+        initFields();
+    }
+
+    private void initFieldsAction() {
         comboBoxPayMde.setOnAction(e -> {
             final String[] lsSelectedValue = {""};
             if (comboBoxPayMde.getSelectionModel().getSelectedIndex() >= 0) {
                 switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
                     case 0:
                         lsSelectedValue[0] = "CARD";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CARD");
                         break;
                     case 1:
                         lsSelectedValue[0] = "CHECK";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CHECK");
                         break;
                     case 2:
                         lsSelectedValue[0] = "GC";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("GC");
                         break;
                     case 3:
                         lsSelectedValue[0] = "OP";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
                         break;
                 }
                 boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
                 if (!isValid) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Invalid Payment Details");
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("");
                     Platform.runLater(() -> {
                         comboBoxPayMde.getSelectionModel().select(-1);
                         initFields();
@@ -164,10 +181,60 @@ public class InvoicePaymentDetailsController implements Initializable {
                 }
             }
         });
-        initButtonsClick();
-        initCapitalizationFields();
-        initTextFieldFocus();
-        initTextKeyPressed();
+    }
+
+    private void loadMasterFields() {
+        if (!pbIsUpdate) {
+            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode() != null) {
+                switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+                    case "CARD":
+                        comboBoxPayMde.getSelectionModel().select(0);
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CARD");
+                        break;
+                    case "CHECK":
+                        comboBoxPayMde.getSelectionModel().select(1);
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CHECK");
+                        break;
+                    case "GC":
+                        comboBoxPayMde.getSelectionModel().select(2);
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("GC");
+                        break;
+                    case "OP":
+                        comboBoxPayMde.getSelectionModel().select(3);
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
+                        break;
+                }
+            }
+        } else {
+            switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+                case "CARD":
+                    comboBoxPayMde.getSelectionModel().select(0);
+                    break;
+                case "CHECK":
+                    comboBoxPayMde.getSelectionModel().select(1);
+                    break;
+                case "GC":
+                    comboBoxPayMde.getSelectionModel().select(2);
+                    break;
+                case "OP":
+                    comboBoxPayMde.getSelectionModel().select(3);
+                    break;
+            }
+        }
+        switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                loadCardFields();
+                break;
+            case 1:
+                loadCheckFields();
+                break;
+            case 2:
+                loadGiftFields();
+                break;
+            case 3:
+                loadOnlineFields();
+                break;
+        }
 
     }
 
@@ -450,12 +517,19 @@ public class InvoicePaymentDetailsController implements Initializable {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
-                CommonUtils.closeStage(btnAdd);
-                break;
             case "btnUpdate":
-                CommonUtils.closeStage(btnUpdate);
+                if (isValidEntry()) {
+                    if (lsButton.equals("btnAdd")) {
+                        CommonUtils.closeStage(btnAdd);
+                    } else {
+                        CommonUtils.closeStage(btnUpdate);
+                    }
+                }
                 break;
             case "btnClose":
+                if (!pbIsUpdate) {
+                    oTrans.removeSIPayment(pnRow);
+                }
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
@@ -497,7 +571,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         CustomCommonUtil.setVisible(false, gridCard, gridCheck, gridGift, gridOnline, btnAdd, btnUpdate);
         CustomCommonUtil.setManaged(false, btnAdd, btnUpdate);
         comboBoxPayMde.setDisable(false);
-        if (poIsUpdate) {
+        if (pbIsUpdate) {
             btnUpdate.setVisible(true);
             btnUpdate.setManaged(true);
             comboBoxPayMde.setDisable(true);
@@ -546,5 +620,13 @@ public class InvoicePaymentDetailsController implements Initializable {
                 lblNoFields.setManaged(true);
                 break;
         }
+    }
+
+    private boolean isValidEntry() {
+        if (comboBoxPayMde.getSelectionModel().getSelectedIndex() < 0) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please select paymode.");
+            return false;
+        }
+        return true;
     }
 }

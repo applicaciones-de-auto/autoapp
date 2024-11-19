@@ -66,7 +66,7 @@ public class PRDeductibleController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         initManuallyTable();
         initDeductiblesTable();
-
+        initButtonsClick();
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
     }
 
@@ -143,12 +143,12 @@ public class PRDeductibleController implements Initializable {
         }
     }
 
-    public void initButtonsClick() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAddDeductibles, btnRefresh, btnApplyReceipts, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    public void handleButtonAction(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAddDeductibles":

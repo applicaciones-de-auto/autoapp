@@ -188,9 +188,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid() != null) {
                         lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
                     }
-//            if (oTrans.getMasterModel().getDetailModel(lnCtr).get() != null) {
-//                lsSiNoxxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
-//            }
+//                    if (oTrans.getMasterModel().getDetailModel(lnCtr).get() != null) {
+//                        lsSiNoxxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
+//                    }
                     poCARData.add(new Cashier_Receivables(
                             String.valueOf(lnCtr + 1),
                             lsCARNoxx,
@@ -401,14 +401,18 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     ShowMessageFX.Warning(null, pxeModuleName, "Please Form Type.");
                     return;
                 }
+
 //                if (selectedItems.size() >= 2) {
 //                    ShowMessageFX.Information(null, pxeModuleName, "Please select 1 item.");
 //                    return;
 //                }
-
                 if (comboBoxFormType.getSelectionModel().getSelectedIndex() != 5) {
                     String lsParticu = selectedItems.get(0).getTblindex08();
                     for (Cashier_Receivables item : selectedItems) {
+                        if (!item.getTblindex08().equals(lsParticu)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
+                            return;
+                        }
                         if (!item.getTblindex08().equals(lsParticu)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
                             return;
@@ -420,25 +424,26 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     return;
                 }
                 int lnRow = 0;
+                String lsPayType = "";
                 for (Cashier_Receivables item : selectedItems) {
                     lnRow = Integer.parseInt(item.getTblindex01()) - 1;
+                    lsPayType = item.getTblindex05();
                 }
-                System.out.println("size:" + selectedItems.size());
                 switch (comboBoxFormType.getSelectionModel().getSelectedIndex()) {
                     case 0:
-                        loadInvoiceWindow("Acknowledgement Receipt", lnRow);
+                        loadInvoiceWindow("Acknowledgement Receipt", lnRow, lsPayType);
                         break;
                     case 1:
-                        loadInvoiceWindow("Collection Receipt", lnRow);
+                        loadInvoiceWindow("Collection Receipt", lnRow, lsPayType);
                         break;
                     case 2:
-                        loadInvoiceWindow("Service Invoice", lnRow);
+                        loadInvoiceWindow("Service Invoice", lnRow, lsPayType);
                         break;
                     case 3:
-                        loadInvoiceWindow("Parts Sales Invoice", lnRow);
+                        loadInvoiceWindow("Parts Sales Invoice", lnRow, lsPayType);
                         break;
                     case 4:
-                        loadInvoiceWindow("Billing Statement", lnRow);
+                        loadInvoiceWindow("Billing Statement", lnRow, lsPayType);
                         break;
                     case 5:
                         ShowMessageFX.Warning(null, pxeModuleName, "SOA is under development");
@@ -528,7 +533,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         return rowData;
     }
 
-    private void loadInvoiceWindow(String fsFormName, int fnRow) {
+    private void loadInvoiceWindow(String fsFormName, int fnRow, String fsPayType) {
         try {
             String lsFormName = fsFormName;
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -539,6 +544,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             String lsTransNox = oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() != null ? oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() : "";
             loControl.setTransNo(lsTransNox);
             loControl.setCARObject(oTrans);
+            loControl.setPayType(fsPayType);
             fxmlLoader.setController(loControl);
             Node tabContent = AnchorMain.getParent();
             Parent tabContentParent = tabContent.getParent();
