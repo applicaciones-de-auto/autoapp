@@ -101,7 +101,7 @@
                                                                                                 <Font name="Arial Bold" size="12.0" />
                                                                                             </font>
                                                                                         </Label>
-                                                                                        <TextField fx:id="txtField01" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                                         <Label id="LabelDesc" text="Receipt Date" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                                             <font>
                                                                                                 <Font name="Arial" size="12.0" />
@@ -154,10 +154,10 @@
                                                                                         <ComboBox fx:id="comboBox04" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" prefWidth="160.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxAllwMxPyr" mnemonicParsing="false" text="Allow Mixed Payer" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                                         <TextField fx:id="txtField05" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2" />
-                                                                                        <TextField fx:id="txtField06" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" />
-                                                                                        <TextField fx:id="txtField07" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                                        <TextField fx:id="txtField08" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                                        <TextField fx:id="txtField09" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField06" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" />
+                                                                                        <TextField fx:id="txtField07" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField08" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                        <TextField fx:id="txtField09" disable="true" editable="false" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                                                         <TextField fx:id="txtField10" promptText="Search: F3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                                         <Label id="LabelDesc" prefHeight="14.0" prefWidth="117.0" text="Payer" GridPane.rowIndex="1">
                                                                                             <font>
@@ -225,7 +225,7 @@
                                                                                                             <columnConstraints>
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="5.0" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="180.0" prefWidth="200.0" />
@@ -254,7 +254,7 @@
                                                                                                                     </graphic>
                                                                                                                 </Button>
                                                                                                                 <Label id="LabelDesc" text="Source" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                                                <ComboBox fx:id="comboBox11" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                <ComboBox fx:id="comboBox11" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="22.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="Ctrl No." GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                 <TextField fx:id="txtField12" promptText="Search: F3" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <Button fx:id="btnInsertAdvances" maxWidth="130.0" minWidth="120.0" mnemonicParsing="false" prefWidth="130.0" text="Insert Advances" GridPane.columnIndex="11" GridPane.rowIndex="1">
@@ -268,7 +268,7 @@
                                                                                                             </VBox.margin>
                                                                                                         </GridPane>
                                                                                                         <AnchorPane />
-                                                                                                        <TableView fx:id="tblViewTrans" VBox.vgrow="ALWAYS">
+                                                                                                        <TableView fx:id="tblViewTrans" onMouseClicked="#tblTrans_Click" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="tblindexTrans01" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexTrans02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Form Type" />
@@ -278,9 +278,9 @@
                                                                                                                 <TableColumn fx:id="tblindexTrans06" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
                                                                                                                 <TableColumn fx:id="tblindexTrans07" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Disc Amt" />
                                                                                                                 <TableColumn fx:id="tblindexTrans08" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Adv Amt" />
-                                                                                                                <TableColumn fx:id="tblindexTrans08" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Amount" />
-                                                                                                                <TableColumn fx:id="tblindexTrans09" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Form No" />
-                                                                                                                <TableColumn fx:id="tblindexTrans10" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="CAR No" />
+                                                                                                                <TableColumn fx:id="tblindexTrans09" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Amount" />
+                                                                                                                <TableColumn fx:id="tblindexTrans10" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Form No" />
+                                                                                                                <TableColumn fx:id="tblindexTrans11" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="CAR No" />
                                                                                                             </columns>
                                                                                                             <VBox.margin>
                                                                                                                 <Insets left="10.0" right="10.0" top="3.0" />
@@ -323,7 +323,7 @@
                                                                                                                 <Insets />
                                                                                                             </VBox.margin>
                                                                                                         </AnchorPane>
-                                                                                                        <TableView fx:id="tblViewCheck" VBox.vgrow="ALWAYS">
+                                                                                                        <TableView fx:id="tblViewCheck" onMouseClicked="#tblCheckOther_Click" VBox.vgrow="ALWAYS">
                                                                                                             <columns>
                                                                                                                 <TableColumn fx:id="tblindexCheck01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                                                                 <TableColumn fx:id="tblindexCheck02" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Pay Mode" />
@@ -440,33 +440,33 @@
                                                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="ALWAYS" />
                                                                                     </rowConstraints>
                                                                                     <children>
-                                                                                        <TextField fx:id="txtField17" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField17" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                         <Label id="LabelDesc" text="Sales" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                                         <Label id="LabelDesc" text="Vat(%)" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                                        <TextField fx:id="txtField18" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField18" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                                         <Label id="LabelDesc" text="Vat Amount (%)" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                                                                                         <Label id="LabelDesc" text="Total Sales Vat Incl" GridPane.columnIndex="17" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-                                                                                        <TextField fx:id="txtField19" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                                                                                        <TextField fx:id="txtField20" alignment="CENTER_RIGHT" layoutX="175.0" layoutY="17.0" promptText=".00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                                                                                        <TextField fx:id="txtField21" alignment="CENTER_RIGHT" layoutX="285.0" layoutY="17.0" promptText=".00" GridPane.columnIndex="13" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                                                                                        <TextField fx:id="txtField22" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="17" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField19" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField20" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="175.0" layoutY="17.0" promptText=".00" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField21" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="285.0" layoutY="17.0" promptText=".00" GridPane.columnIndex="13" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField22" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="17" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                         <Label alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="100.0" text="Receipt Total" GridPane.columnIndex="21" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                                                                             <font>
                                                                                                 <Font name="Arial Bold" size="12.0" />
                                                                                             </font>
                                                                                         </Label>
-                                                                                        <TextField fx:id="txtField23" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="21" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                        <TextField fx:id="txtField23" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="21" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                                                         <Label id="LabelDesc" layoutX="10.0" layoutY="16.0" text="Cash Total" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                                         <Label id="LabelDesc" layoutX="10.0" layoutY="41.0" text="Check Total" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                                                                                         <Label id="LabelDesc" layoutX="170.0" layoutY="41.0" text="CC Total" GridPane.columnIndex="7" GridPane.rowIndex="5" />
                                                                                         <Label id="LabelDesc" layoutX="60.0" layoutY="41.0" text="Online Pay Total" GridPane.columnIndex="11" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                                                                                        <TextField fx:id="txtField24" alignment="CENTER_RIGHT" layoutX="60.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                                        <TextField fx:id="txtField25" alignment="CENTER_RIGHT" layoutX="230.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                                                        <TextField fx:id="txtField26" alignment="CENTER_RIGHT" layoutX="20.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                                                        <TextField fx:id="txtField27" alignment="CENTER_RIGHT" layoutX="240.0" layoutY="62.0" promptText=".00" GridPane.columnIndex="11" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField24" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="60.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField25" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="230.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField26" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="20.0" layoutY="12.0" promptText=".00" GridPane.columnIndex="7" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField27" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="240.0" layoutY="62.0" promptText=".00" GridPane.columnIndex="11" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                         <Label id="LabelDesc" alignment="CENTER_RIGHT" layoutX="436.0" layoutY="88.0" prefHeight="14.0" prefWidth="100.0" text="Credit Memo Total" GridPane.columnIndex="19" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                                                                                        <TextField fx:id="txtField28" alignment="CENTER_RIGHT" promptText=".00" GridPane.columnIndex="15" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                                                        <TextField fx:id="txtField29" alignment="CENTER_RIGHT" layoutX="436.0" layoutY="62.0" promptText=".00" GridPane.columnIndex="19" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField28" alignment="CENTER_RIGHT" disable="true" editable="false" promptText=".00" GridPane.columnIndex="15" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="txtField29" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="436.0" layoutY="62.0" promptText=".00" GridPane.columnIndex="19" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                         <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="23" GridPane.rowIndex="3" />
                                                                                         <Label id="LabelDesc" layoutX="336.0" layoutY="93.0" text="Gift Check Total" GridPane.columnIndex="15" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                                                                                         <Label id="LabelDesc" layoutX="225.0" layoutY="43.0" text="Non-Vat Sales" GridPane.columnIndex="9" GridPane.columnSpan="3" GridPane.rowIndex="2" />
@@ -494,7 +494,7 @@
                     <bottom>
                         <AnchorPane prefHeight="35.0" prefWidth="738.0" BorderPane.alignment="CENTER">
                             <children>
-                                <AnchorPane prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                <AnchorPane layoutX="7.0" prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                     <children>
                                         <HBox spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                                             <children>

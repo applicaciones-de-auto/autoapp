@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
@@ -35,6 +36,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -53,7 +55,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     @FXML
     private Button btnAdd, btnUpdate, btnClose;
     @FXML
-    private TextField txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card, txtField06_Card;
+    private TextField txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card;
     @FXML
     private TextArea textArea07_Card;
     @FXML
@@ -137,50 +139,28 @@ public class InvoicePaymentDetailsController implements Initializable {
                 }
             }
         }
+        initCapitalizationFields();
+        initPatternFields();
         initFieldsAction();
         initButtonsClick();
-        initCapitalizationFields();
+        initTextFieldsProperty();
         initTextFieldFocus();
         initTextKeyPressed();
         loadMasterFields();
         initFields();
     }
 
-    private void initFieldsAction() {
-        comboBoxPayMde.setOnAction(e -> {
-            final String[] lsSelectedValue = {""};
-            if (comboBoxPayMde.getSelectionModel().getSelectedIndex() >= 0) {
-                switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
-                    case 0:
-                        lsSelectedValue[0] = "CARD";
-                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CARD");
-                        break;
-                    case 1:
-                        lsSelectedValue[0] = "CHECK";
-                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CHECK");
-                        break;
-                    case 2:
-                        lsSelectedValue[0] = "GC";
-                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("GC");
-                        break;
-                    case 3:
-                        lsSelectedValue[0] = "OP";
-                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
-                        break;
-                }
-                boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
-                if (!isValid) {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Invalid Payment Details");
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("");
-                    Platform.runLater(() -> {
-                        comboBoxPayMde.getSelectionModel().select(-1);
-                        initFields();
-                    });
-                } else {
-                    initFields();
-                }
-            }
-        });
+    private void initCapitalizationFields() {
+        CustomCommonUtil.setCapsLockBehavior(txtField03_Card, txtField04_Card, txtField05_Card,
+                txtField04_Check, txtField05_Check, txtField06_Check,
+                txtField04_Gift,
+                txtField03_Online, txtField04_Online);
+        CustomCommonUtil.setCapsLockBehavior(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
+
+    }
+
+    private void initPatternFields() {
+        CustomCommonUtil.inputIntegerOnly(txtField02_Card);
     }
 
     private void loadMasterFields() {
@@ -239,13 +219,25 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void loadCardFields() {
-        txtField01_Card.setText("");
-        txtField02_Card.setText("");
-        txtField03_Card.setText("");
-        txtField04_Card.setText("");
-        txtField05_Card.setText("");
-        txtField06_Card.setText("");
-        textArea07_Card.setText("");
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName() != null) {
+            txtField01_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName());
+        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCCardNo() != null) {
+            txtField02_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCCardNo());
+        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCApprovNo() != null) {
+            txtField03_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCApprovNo());
+        }
+
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCTraceNo() != null) {
+            txtField04_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCTraceNo());
+        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
+            txtField05_Card.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt()));
+        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCRemarks() != null) {
+            textArea07_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCRemarks());
+        }
     }
 
     private void loadCheckFields() {
@@ -274,17 +266,65 @@ public class InvoicePaymentDetailsController implements Initializable {
         textArea05_Online.setText("");
     }
 
-    private void initCapitalizationFields() {
-        CustomCommonUtil.setCapsLockBehavior(txtField03_Card, txtField04_Card, txtField05_Card, txtField06_Card,
-                txtField04_Check, txtField05_Check, txtField06_Check,
-                txtField04_Gift,
-                txtField03_Online, txtField04_Online);
-        CustomCommonUtil.setCapsLockBehavior(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
+    private void initFieldsAction() {
+        comboBoxPayMde.setOnAction(e -> {
+            final String[] lsSelectedValue = {""};
+            if (comboBoxPayMde.getSelectionModel().getSelectedIndex() >= 0) {
+                switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        lsSelectedValue[0] = "CARD";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CARD");
+                        break;
+                    case 1:
+                        lsSelectedValue[0] = "CHECK";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("CHECK");
+                        break;
+                    case 2:
+                        lsSelectedValue[0] = "GC";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("GC");
+                        break;
+                    case 3:
+                        lsSelectedValue[0] = "OP";
+                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
+                        break;
+                }
+                boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
+                if (!isValid) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Invalid Payment Details");
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("");
+                    Platform.runLater(() -> {
+                        comboBoxPayMde.getSelectionModel().select(-1);
+                        initFields();
+                    });
+                } else {
+                    initFields();
+                }
+            }
+        });
+    }
 
+    private void initTextFieldsProperty() {
+        txtField01_Card.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.isEmpty()) {
+                oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCBankID("");
+                oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCBankName("");
+            }
+        }
+        );
+        txtField01_Check.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.isEmpty()) {
+            }
+        }
+        );
+        txtField03_Gift.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.isEmpty()) {
+            }
+        }
+        );
     }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtFieldCard = Arrays.asList(txtField03_Card, txtField04_Card, txtField05_Card, txtField06_Card);
+        List<TextField> loTxtFieldCard = Arrays.asList(txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card);
         loTxtFieldCard.forEach(tf -> tf.focusedProperty().addListener(txtFieldCard_Focus));
 
         List<TextField> loTxtFieldCheck = Arrays.asList(txtField04_Check, txtField05_Check, txtField06_Check);
@@ -313,20 +353,30 @@ public class InvoicePaymentDetailsController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
+                case 2:
+                    if (lsValue.isEmpty()) {
+                        lsValue = "";
+                    }
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCCardNo(lsValue);
+                    break;
                 case 3:
                     if (lsValue.isEmpty()) {
                         lsValue = "";
                     }
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCApprovNo(lsValue);
                     break;
                 case 4:
                     if (lsValue.isEmpty()) {
                         lsValue = "";
                     }
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCTraceNo(lsValue);
                     break;
                 case 5:
-                    if (lsValue.isEmpty()) {
+                    if (lsValue.equals("0.00") || lsValue.equals("0") || lsValue.equals("0.0") || lsValue.isEmpty()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 6:
                     if (lsValue.isEmpty()) {
@@ -378,6 +428,12 @@ public class InvoicePaymentDetailsController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
+                case 1:
+                    if (lsValue.isEmpty()) {
+                        lsValue = "";
+                    }
+
+                    break;
                 case 4:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
@@ -456,22 +512,38 @@ public class InvoicePaymentDetailsController implements Initializable {
     };
 
     private void initTextKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card, txtField06_Card,
+        List<TextField> loTxtField = Arrays.asList(txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card,
                 txtField01_Check, txtField02_Check, txtField04_Check, txtField05_Check, txtField06_Check,
                 txtField01_Gift, txtField03_Gift, txtField04_Gift,
                 txtField02_Online, txtField03_Online, txtField04_Online);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-
+        txtField01_Gift.setOnKeyPressed(this::txtField_Gift_KeyPressed);
         List<TextArea> loTxtArea = Arrays.asList(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
         loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
 
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
-        String lsTxtFieldID = ((TextField) event.getSource()).getId();
+        TextField lsTxtField = (TextField) event.getSource();
+        String txtFieldID = ((TextField) event.getSource()).getId();
+        String lsValue = "";
+        if (lsTxtField.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = lsTxtField.getText();
+        }
+        JSONObject loJSON = new JSONObject();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (lsTxtFieldID) {
+            switch (txtFieldID) {
                 case "txtField01_Card":
+                    loJSON = oTrans.searchPaymentBank(lsValue, pnRow);
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField01_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField01_Card.setText("");
+                        return;
+                    }
                     break;
                 case "txtField02_Card":
                     break;
@@ -495,7 +567,40 @@ public class InvoicePaymentDetailsController implements Initializable {
         }
     }
 
-    public void textArea_KeyPressed(KeyEvent event) {
+    private void txtField_Gift_KeyPressed(KeyEvent event) {
+        TextField lsTxtField = (TextField) event.getSource();
+        String txtFieldID = ((TextField) event.getSource()).getId();
+        String lsValue = "";
+        if (lsTxtField.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = lsTxtField.getText();
+        }
+        JSONObject loJSON = new JSONObject();
+        if (event.getCode() == KeyCode.F3) {
+            switch (txtFieldID) {
+                case "txtField01_Gift":
+//                    loJSON = oTrans.searchGiftNumber(lsValue, false, pnRow);
+//                    if (!"error".equals(loJSON.get("result"))) {
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                        txtField01_Gift.setText("");
+//                        return;
+//                    }
+                    break;
+                case "txtField03_Gift":
+                    break;
+            }
+            event.consume();
+            CommonUtils.SetNextFocus((TextField) event.getSource());
+        } else if (event.getCode()
+                == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+        }
+    }
+
+    private void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (textAreaID) {
@@ -508,12 +613,12 @@ public class InvoicePaymentDetailsController implements Initializable {
         }
     }
 
-    public void initButtonsClick() {
+    private void initButtonsClick() {
         List<Button> buttons = Arrays.asList(btnAdd, btnUpdate, btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
-    public void handleButtonAction(ActionEvent event) {
+    private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
@@ -545,7 +650,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void clearCardFields() {
-        CustomCommonUtil.setText("", txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card, txtField06_Card);
+        CustomCommonUtil.setText("", txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card);
         textArea07_Card.setText("");
     }
 
@@ -625,6 +730,99 @@ public class InvoicePaymentDetailsController implements Initializable {
     private boolean isValidEntry() {
         if (comboBoxPayMde.getSelectionModel().getSelectedIndex() < 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please select paymode.");
+            return false;
+        }
+        boolean isValid = false;
+        switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                isValid = validateCard();
+                break;
+            case 1:
+                isValid = validateCheck();
+                break;
+            case 2:
+                isValid = validateGift();
+                break;
+            case 3:
+                isValid = validateOnline();
+                break;
+        }
+        return isValid;
+    }
+
+    private boolean validateCard() {
+        if (txtField01_Card.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter bank name.");
+            return false;
+        }
+        if (txtField02_Card.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter bank card no.");
+            return false;
+        }
+        if (txtField03_Card.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter approval code.");
+            return false;
+        }
+        if (txtField04_Card.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter trace no.");
+            return false;
+        }
+        if (txtField05_Card.getText().equals("0.00") || txtField05_Card.getText().equals("0.0")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid amount.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateCheck() {
+        if (txtField01_Check.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter bank name.");
+            return false;
+        }
+        if (txtField02_Check.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter check no.");
+            return false;
+        }
+        if (datePicker03_Check.getValue().equals("1900-01-01")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please select valid check date.");
+            return false;
+        }
+        if (txtField05_Check.getText().equals("0.00") || txtField05_Check.getText().equals("0.0")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid amount.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateGift() {
+        if (txtField01_Gift.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter gift check number.");
+            return false;
+        }
+        if (checkBox02_Gift.isSelected()) {
+            if (txtField03_Gift.getText().trim().isEmpty()) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please enter subsidized to.");
+                return false;
+            }
+        }
+        if (txtField04_Gift.getText().equals("0.00") || txtField04_Gift.getText().equals("0.0")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid amount.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateOnline() {
+        if (comboBox01_Online.getSelectionModel().getSelectedIndex() < 0) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please select payment source.");
+            return false;
+        }
+        if (txtField02_Online.getText().trim().isEmpty()) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter referrence no.");
+            return false;
+        }
+        if (txtField03_Online.getText().equals("0.00") || txtField03_Online.getText().equals("0.0")) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid amount.");
             return false;
         }
         return true;

@@ -18,6 +18,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="239.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
+      
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <BorderPane>

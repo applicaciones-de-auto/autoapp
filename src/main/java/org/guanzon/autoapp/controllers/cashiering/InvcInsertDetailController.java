@@ -38,15 +38,14 @@ public class InvcInsertDetailController implements Initializable {
     private SalesInvoice oTrans;
     private String pxeModuleName = "Transaction Details";
     private String psFormType = "";
-    ObservableList<String> cFormType = FXCollections.observableArrayList("SOA", "CAR", "OTHERS", "OTHERS DESCRIPTION");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow;
     @FXML
     private Button btnUpdate, btnClose;
     @FXML
-    private ComboBox<String> comboBox01;
+    private TextField txtField02, txtField03, txtField04, txtField05, txtField06, txtField07, txtField08;
     @FXML
-    private TextField txtField02, txtField03, txtField04, txtField05, txtField06, txtField07;
+    private TextField txtField01;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -74,8 +73,6 @@ public class InvcInsertDetailController implements Initializable {
         initTextFieldFocus();
         initTextKeyPressed();
         initButtonsClick();
-        initComboBoxItems();
-        initFieldsAction();
         initTextFieldsProperty();
         loadMasterFields();
         initFields();
@@ -86,27 +83,18 @@ public class InvcInsertDetailController implements Initializable {
     }
 
     private void loadMasterFields() {
-        switch (psFormType) {
-            case "SOA":
-                break;
-            case "CAR":
-                break;
-            case "OTHERS":
-                break;
-            case "OTHERS DESCRIPTION":
-                break;
-        }
-        comboBox01.setValue("");
-        txtField02.setText("");
+        txtField01.setText("");
+        txtField02.setText(oTrans.getSIDetailModel().getDetailModel(pnRow).getTranType());
         txtField03.setText("");
         txtField04.setText("");
-        txtField05.setText("0.00");
+        txtField05.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt()));
         txtField06.setText("0.00");
         txtField07.setText("0.00");
+        txtField08.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getNetAmt()));
     }
 
     private void initPatternFields() {
-        CustomCommonUtil.inputNumberOnly(txtField05, txtField06, txtField07);
+        CustomCommonUtil.inputDecimalOnly(txtField05, txtField06, txtField07);
     }
 
     private void initTextFieldFocus() {
@@ -200,27 +188,11 @@ public class InvcInsertDetailController implements Initializable {
 
     }
 
-    private void initComboBoxItems() {
-        comboBox01.setItems(cFormType);
-    }
-
-    private void initFieldsAction() {
-        comboBox01.setOnAction(event -> {
-            if (comboBox01.getSelectionModel().getSelectedIndex() >= 0) {
-            }
-        }
-        );
-    }
-
     private void initTextFieldsProperty() {
     }
 
     private void initFields() {
-        CustomCommonUtil.setDisable(true, comboBox01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07);
-
-        if (comboBox01.getValue().equals("OTH")) {
-            CustomCommonUtil.setDisable(false, txtField05, txtField06, txtField07);
-        }
+        CustomCommonUtil.setDisable(true, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07);
     }
 
     private boolean isValidEntry() {

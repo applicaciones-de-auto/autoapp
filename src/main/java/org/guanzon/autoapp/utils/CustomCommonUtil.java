@@ -1,10 +1,12 @@
 package org.guanzon.autoapp.utils;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -519,4 +521,100 @@ public class CustomCommonUtil {
     public static void switchToTab(Tab foTab, TabPane foTabPane) {
         foTabPane.getSelectionModel().select(foTab);
     }
+
+    /**
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField1 = new TextField();
+     * TextField textField2 = new TextField();
+     * inputDecimalOnly(textField1,textField2);
+     * }</pre>
+     */
+    public static void inputDecimalOnly(TextField... txtFields) {
+        Pattern pattern = Pattern.compile("[0-9,.]*");
+        for (TextField txtField : txtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatterUtil(pattern));
+            }
+        }
+    }
+
+    /**
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField1 = new TextField();
+     * TextField textField2 = new TextField();
+     * inputNumberOnly(textField1,textField2);
+     * }</pre>
+     */
+    public static void inputIntegerOnly(TextField... txtFields) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        for (TextField txtField : txtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatterUtil(pattern));
+            }
+        }
+    }
+
+    /**
+     * @param txtFields
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField1 = new TextField();
+     * TextField textField2 = new TextField();
+     * inputAlphOnly(textField1,textField2);
+     * }</pre>
+     */
+    public static void inputAlphOnly(TextField... txtFields) {
+        Pattern pattern = Pattern.compile("[a-zA-Z]*");
+        for (TextField txtField : txtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatterUtil(pattern));
+            }
+        }
+    }
+
+    /**
+     * @param txtFields
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * TextField textField1 = new TextField();
+     * TextField textField2 = new TextField();
+     * inputAlphNumOnly(textField1,textField2);
+     * }</pre>
+     */
+    public static void inputAlphNumOnly(TextField... txtFields) {
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
+        for (TextField txtField : txtFields) {
+            if (txtField != null) {
+                txtField.setTextFormatter(new TextFormatterUtil(pattern));
+            }
+        }
+    }
+
+    /**
+     * @param foObject
+     * @param textField The {@link TextField} to apply the behavior to.
+     *
+     * <b>Example:</b>
+     * <pre>{@code
+     * setDecimalFormat(object);
+     * }</pre>
+     */
+    public static String setDecimalFormat(Object foObject) {
+        DecimalFormat format = new DecimalFormat("#,##0.00");
+        if (foObject != null) {
+            return format.format(Double.parseDouble(String.valueOf(foObject)));
+        }
+        return null;
+    }
+
 }
