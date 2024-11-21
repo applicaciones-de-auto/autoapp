@@ -88,7 +88,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
     private TableView<Cashier_Receivables> tblViewCAR;
     @FXML
     private TableColumn<Cashier_Receivables, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07,
-            tblindex08, tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15, tblindex16, tblindex17,
+            tblindex08, tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15,
             tblindex18, tblindex19, tblindex20, tblindex21, tblindex22, tblindex23;
     @FXML
     private TableColumn<Cashier_Receivables, Boolean> tblindex02;
@@ -164,8 +164,8 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getPayerNme() != null) {
                         lsCustNme = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getPayerNme());
                     }
-                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getReferNo() != null) {
-                        lsRefNoxx = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getReferNo());
+                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getFormNo() != null) {
+                        lsRefNoxx = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getFormNo());
                     }
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getSourceCD() != null) {
                         lsParticu = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getSourceCD());
@@ -185,8 +185,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getDeductn() != null) {
                         lsDeAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getDeductn())));
                     }
+
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid() != null) {
-                        lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
+                        lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getGrossAmt().subtract(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid()))));
                     }
 //                    if (oTrans.getMasterModel().getDetailModel(lnCtr).get() != null) {
 //                        lsSiNoxxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
@@ -261,8 +262,6 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         tblindex13.setCellValueFactory(new PropertyValueFactory<>("tblindex13"));
         tblindex14.setCellValueFactory(new PropertyValueFactory<>("tblindex14"));
         tblindex15.setCellValueFactory(new PropertyValueFactory<>("tblindex15"));
-        tblindex16.setCellValueFactory(new PropertyValueFactory<>("tblindex16"));
-        tblindex17.setCellValueFactory(new PropertyValueFactory<>("tblindex17"));
         tblindex18.setCellValueFactory(new PropertyValueFactory<>("tblindex18"));
         tblindex19.setCellValueFactory(new PropertyValueFactory<>("tblindex19"));
         tblindex20.setCellValueFactory(new PropertyValueFactory<>("tblindex20"));

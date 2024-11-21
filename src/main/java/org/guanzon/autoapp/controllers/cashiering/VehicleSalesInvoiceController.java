@@ -543,6 +543,13 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+            JSONObject loJSON = new JSONObject();
+            loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+            if ("success".equals((String) loJSON.get("result"))) {
+                loadMasterFields();
+                pnEditMode = oTrans.getEditMode();
+                initFields(pnEditMode);
+            }
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);

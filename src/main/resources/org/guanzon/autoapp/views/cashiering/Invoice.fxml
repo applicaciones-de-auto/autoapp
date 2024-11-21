@@ -114,7 +114,7 @@
                                                                                             </font>
                                                                                         </Label>
                                                                                         <TextField fx:id="txtField03" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="22.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                                        <CheckBox id="LabelDesc" fx:id="checkBoxCash" mnemonicParsing="false" text="Cash" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                                        <CheckBox id="LabelDesc" fx:id="checkBoxCash" disable="true" mnemonicParsing="false" text="Cash" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxCard" layoutX="340.0" layoutY="49.0" mnemonicParsing="false" text="Card" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxOnlnPymntServ" layoutX="340.0" layoutY="74.0" mnemonicParsing="false" text="Online Payment Service" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxCrdInv" layoutX="340.0" layoutY="99.0" mnemonicParsing="false" text="Credit Memo / Invoice" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
@@ -494,7 +494,7 @@
                     <bottom>
                         <AnchorPane prefHeight="35.0" prefWidth="738.0" BorderPane.alignment="CENTER">
                             <children>
-                                <AnchorPane layoutX="7.0" prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                <AnchorPane layoutX="7.0" prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <HBox spacing="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                                             <children>
@@ -564,32 +564,33 @@
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                             </graphic>
                                         </Button>
-                                        <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
+                                        <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="NEVER" />
                                             </rowConstraints>
                                             <children>
-                                                <Label text="Status:" textFill="WHITE">
+                                                <Label text="Status:" textFill="WHITE" GridPane.columnIndex="2">
                                                     <font>
                                                         <Font name="Arial" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Label text="Printed:" textFill="WHITE" GridPane.rowIndex="1">
+                                                <Label text="Printed:" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="lblStatus" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="1">
+                                                <Label fx:id="lblStatus" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="3">
                                                     <font>
                                                         <Font name="Arial Bold" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="lblPrinted" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                <Label fx:id="lblPrinted" maxWidth="1.7976931348623157E308" textFill="WHITE" GridPane.columnIndex="1">
                                                     <font>
                                                         <Font name="Arial Bold" size="12.0" />
                                                     </font>

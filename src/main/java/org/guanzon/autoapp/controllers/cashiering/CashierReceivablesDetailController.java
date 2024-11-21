@@ -131,7 +131,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
                 break;
         }
         comboBox03.getSelectionModel().select(lnPyrType);
-        txtField04.setText(getCARModel().getReferNo() != null ? getCARModel().getReferNo() : "");
+        txtField04.setText(getCARModel().getFormNo() != null ? getCARModel().getFormNo() : "");
         textArea05.setText(getCARModel().getSourceCD() != null ? getCARModel().getSourceCD() : "");
         textArea06.setText("");
         txtField07.setText(getCARModel().getPayerNme() != null ? getCARModel().getPayerNme() : "");

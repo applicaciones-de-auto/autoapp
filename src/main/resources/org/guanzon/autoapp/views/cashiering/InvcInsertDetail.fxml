@@ -57,9 +57,9 @@
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <TextField fx:id="txtField02" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtField02" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtField03" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtField04" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtField04" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                         <TextField fx:id="txtField05" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                         <TextField fx:id="txtField06" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                         <TextField fx:id="txtField08" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="7" />
@@ -101,13 +101,13 @@
                                                 <Font name="Arial" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField01" GridPane.columnIndex="2" />
+                                        <TextField fx:id="txtField01" disable="true" editable="false" GridPane.columnIndex="2" />
                                         <Label id="LabelDesc" text="Advances Amount" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                             <font>
                                                 <Font name="Arial" size="12.0" />
                                             </font>
                                         </Label>
-                                        <TextField fx:id="txtField07" alignment="CENTER_RIGHT" disable="true" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                        <TextField fx:id="txtField07" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

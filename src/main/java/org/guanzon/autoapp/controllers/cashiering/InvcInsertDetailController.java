@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -11,13 +12,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -37,8 +35,6 @@ public class InvcInsertDetailController implements Initializable {
     private GRider oApp;
     private SalesInvoice oTrans;
     private String pxeModuleName = "Transaction Details";
-    private String psFormType = "";
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow;
     @FXML
     private Button btnUpdate, btnClose;
@@ -57,10 +53,6 @@ public class InvcInsertDetailController implements Initializable {
 
     public void setRow(int fnRow) {
         pnRow = fnRow;
-    }
-
-    public void setFormType(String fsValue) {
-        psFormType = fsValue;
     }
 
     /**
@@ -83,14 +75,30 @@ public class InvcInsertDetailController implements Initializable {
     }
 
     private void loadMasterFields() {
-        txtField01.setText("");
+        String lsFormType = "";
+        if (oTrans.getSIDetailModel().getDetailModel(pnRow).getSourceCD() != null) {
+            lsFormType = oTrans.getSIDetailModel().getDetailModel(pnRow).getSourceCD();
+        }
+        txtField01.setText(lsFormType);
         txtField02.setText(oTrans.getSIDetailModel().getDetailModel(pnRow).getTranType());
-        txtField03.setText("");
-        txtField04.setText("");
+        String lsRefNoxxx = "";
+        if (oTrans.getSIDetailModel().getDetailModel(pnRow).getFormNo() != null) {
+            if (lsFormType.isEmpty()) {
+                lsRefNoxxx = oTrans.getSIDetailModel().getDetailModel(pnRow).getFormNo();
+            } else {
+                lsRefNoxxx = lsFormType + "# " + oTrans.getSIDetailModel().getDetailModel(pnRow).getFormNo();
+            }
+        }
+        txtField03.setText(lsRefNoxxx);
+        txtField04.setText(oTrans.getSIDetailModel().getDetailModel(pnRow).getDescript());
         txtField05.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt()));
-        txtField06.setText("0.00");
-        txtField07.setText("0.00");
-        txtField08.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getNetAmt()));
+        txtField06.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getDiscount()));
+        txtField07.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getAdvused()));
+        double lnTotalAmount = oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt().doubleValue()
+                - oTrans.getSIDetailModel().getDetailModel(pnRow).getDiscount().doubleValue()
+                - oTrans.getSIDetailModel().getDetailModel(pnRow).getAdvused().doubleValue();
+        txtField08.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmount));
+        oTrans.getSIDetailModel().getDetailModel(pnRow).setNetAmt(new BigDecimal(lnTotalAmount));
     }
 
     private void initPatternFields() {
@@ -131,11 +139,27 @@ public class InvcInsertDetailController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount.");
+                        lsValue = "0.00";
+                    }
+                    oTrans.getSIDetailModel().getDetailModel(pnRow).setTranAmt(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 6:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    double fnGrsAmnt = oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt().doubleValue();
+
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount.");
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) > fnGrsAmnt) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Discount cannot greater than Gross Amount.");
+                        lsValue = "0.00";
+                    }
+                    oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(lsValue.replace(",", "")));
                     break;
                 case 7:
                     if (lsValue.isEmpty()) {
@@ -192,7 +216,8 @@ public class InvcInsertDetailController implements Initializable {
     }
 
     private void initFields() {
-        CustomCommonUtil.setDisable(true, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07);
+        CustomCommonUtil.setDisable(true, txtField02, txtField03, txtField04);
+        CustomCommonUtil.setDisable(false, txtField05, txtField06);
     }
 
     private boolean isValidEntry() {
