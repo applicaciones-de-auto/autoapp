@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -49,7 +49,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     private SalesInvoice oTrans;
     private String pxeModuleName = "Invoice Payment Details";
     ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CARD", "CHECK", "GIFT CHECK", "ONLINE PAYMENT");
-    private List<String> lsPayMode = new ArrayList<>();
+    private HashSet<String> psPayMode = new HashSet<>();
     private int pnRow;
     private boolean pbIsUpdate = false;
     @FXML
@@ -93,8 +93,8 @@ public class InvoicePaymentDetailsController implements Initializable {
         oTrans = foValue;
     }
 
-    public void setPayMode(List<String> fsValue) {
-        lsPayMode = fsValue;
+    public void setPayMode(HashSet<String> fsValue) {
+        psPayMode = fsValue;
     }
 
     public void setRow(int fnValue) {
@@ -115,8 +115,8 @@ public class InvoicePaymentDetailsController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         comboBoxPayMde.setItems(cPayerxxx);
         if (!pbIsUpdate) {
-            if (lsPayMode.size() == 1) {
-                for (String paymode : lsPayMode) {
+            if (psPayMode.size() == 1) {
+                for (String paymode : psPayMode) {
                     switch (paymode) {
                         case "CARD":
                             comboBoxPayMde.getSelectionModel().select(0);
@@ -141,6 +141,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         }
         initCapitalizationFields();
         initPatternFields();
+        initLimiterFields();
         initFieldsAction();
         initButtonsClick();
         initTextFieldsProperty();
@@ -161,6 +162,12 @@ public class InvoicePaymentDetailsController implements Initializable {
 
     private void initPatternFields() {
         CustomCommonUtil.inputIntegerOnly(txtField02_Card);
+    }
+
+    private void initLimiterFields() {
+        CustomCommonUtil.addTextLimiter(txtField02_Card, 16);
+        CustomCommonUtil.addTextLimiter(txtField03_Card, 10);
+        CustomCommonUtil.addTextLimiter(txtField04_Card, 10);
     }
 
     private void loadMasterFields() {
@@ -228,7 +235,6 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCApprovNo() != null) {
             txtField03_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCApprovNo());
         }
-
         if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCTraceNo() != null) {
             txtField04_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCTraceNo());
         }
@@ -288,7 +294,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                         oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("OP");
                         break;
                 }
-                boolean isValid = lsPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
+                boolean isValid = psPayMode.stream().anyMatch(payMode -> payMode.equals(lsSelectedValue[0]));
                 if (!isValid) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Invalid Payment Details");
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayMode("");
@@ -336,11 +342,11 @@ public class InvoicePaymentDetailsController implements Initializable {
         List<TextField> loTxtFieldOnline = Arrays.asList(txtField02_Online, txtField03_Online, txtField04_Online);
         loTxtFieldOnline.forEach(tf -> tf.focusedProperty().addListener(txtFieldOnline_Focus));
 
-        List<TextArea> loTxtAreaCardCheck = Arrays.asList(textArea07_Card, textArea07_Check);
-        loTxtAreaCardCheck.forEach(tf -> tf.focusedProperty().addListener(txtAreaCardCheck_Focus));
+        List<TextArea> loTxtAreaCardOnline = Arrays.asList(textArea05_Online, textArea07_Card);
+        loTxtAreaCardOnline.forEach(tf -> tf.focusedProperty().addListener(txtAreaCardOnline_Focus));
 
-        List<TextArea> loTxtAreaGiftOnline = Arrays.asList(textArea05_Online, textArea05_Gift);
-        loTxtAreaGiftOnline.forEach(tf -> tf.focusedProperty().addListener(txtAreaGiftOnline_Focus));
+        List<TextArea> loTxtAreaGiftCheck = Arrays.asList(textArea05_Gift, textArea07_Check);
+        loTxtAreaGiftCheck.forEach(tf -> tf.focusedProperty().addListener(txtAreaGiftCheck_Focus));
     }
     final ChangeListener<? super Boolean> txtFieldCard_Focus = (o, ov, nv) -> {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -354,21 +360,12 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (!nv) { // Lost Focus
             switch (lnIndex) {
                 case 2:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCCardNo(lsValue);
                     break;
                 case 3:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCApprovNo(lsValue);
                     break;
                 case 4:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCTraceNo(lsValue);
                     break;
                 case 5:
@@ -399,9 +396,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (!nv) { // Lost Focus
             switch (lnIndex) {
                 case 4:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
+
                     break;
                 case 5:
                     if (lsValue.isEmpty()) {
@@ -429,10 +424,6 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (!nv) { // Lost Focus
             switch (lnIndex) {
                 case 1:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
-
                     break;
                 case 4:
                     if (lsValue.isEmpty()) {
@@ -468,7 +459,7 @@ public class InvoicePaymentDetailsController implements Initializable {
             loadOnlineFields();
         }
     };
-    final ChangeListener<? super Boolean> txtAreaCardCheck_Focus = (o, ov, nv) -> {
+    final ChangeListener<? super Boolean> txtAreaCardOnline_Focus = (o, ov, nv) -> {
         TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
         String lsValue = loTextArea.getText();
@@ -479,17 +470,16 @@ public class InvoicePaymentDetailsController implements Initializable {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 5:
-//                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
                     break;
                 case 7:
-//                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCRemarks(lsValue);
                     break;
             }
         } else {
             loTextArea.selectAll();
         }
     };
-    final ChangeListener<? super Boolean> txtAreaGiftOnline_Focus = (o, ov, nv) -> {
+    final ChangeListener<? super Boolean> txtAreaGiftCheck_Focus = (o, ov, nv) -> {
         TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
         String lsValue = loTextArea.getText();
@@ -684,7 +674,7 @@ public class InvoicePaymentDetailsController implements Initializable {
             btnAdd.setVisible(true);
             btnAdd.setManaged(true);
         }
-        if (lsPayMode.size() == 1) {
+        if (psPayMode.size() == 1) {
             comboBoxPayMde.setDisable(true);
         }
         switch (comboBoxPayMde.getSelectionModel().getSelectedIndex()) {
@@ -757,6 +747,10 @@ public class InvoicePaymentDetailsController implements Initializable {
         }
         if (txtField02_Card.getText().trim().isEmpty()) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter bank card no.");
+            return false;
+        }
+        if (txtField02_Card.getText().length() < 16) {
+            ShowMessageFX.Warning(null, pxeModuleName, "Please enter valid card no.");
             return false;
         }
         if (txtField03_Card.getText().trim().isEmpty()) {

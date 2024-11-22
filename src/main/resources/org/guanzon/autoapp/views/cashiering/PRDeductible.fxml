@@ -6,10 +6,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -21,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="211.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="211.0" prefWidth="526.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"   >
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -86,16 +88,78 @@
                                         </Label>
                                         <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                                    <VBox.margin>
-                                                        <Insets bottom="5.0" left="25.0" right="10.0" top="15.0" />
-                                                    </VBox.margin>
+                                                <GridPane prefHeight="30.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.3333282470703" minWidth="10.0" prefWidth="158.66665649414062" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="533.3333435058594" minWidth="-Infinity" prefWidth="28.3333740234375" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="533.3333435058594" minWidth="0.0" prefWidth="0.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
                                                     <children>
-                                                        <Label id="LabelDesc" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" text="Search:" />
-                                                        <ComboBox fx:id="comboBox02" maxHeight="-Infinity" minHeight="22.0" minWidth="-Infinity" prefHeight="22.0" prefWidth="200.0" />
-                                                        <TextField fx:id="txtField03" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" promptText="Search: F3" />
+                                                        <ComboBox fx:id="comboBoxSearch" maxWidth="1.7976931348623157E308" promptText="Choose to Search">
+                                                            <stylesheets>
+                                                                <URL value="@../css/FrameStyle.css" />
+                                                                <URL value="@../css/MainPanelStyle.css" />
+                                                            </stylesheets>
+                                                            <tooltip>
+                                                                <Tooltip text="Please choose type to filter." />
+                                                            </tooltip>
+                                                        </ComboBox>
+                                                        <HBox prefHeight="34.0" prefWidth="935.0" spacing="3.0" GridPane.columnIndex="2">
+                                                            <children>
+                                                                <TextField fx:id="txtFieldSearch" prefHeight="24.0" prefWidth="297.0" promptText="Search:">
+                                                                    <HBox.margin>
+                                                                        <Insets />
+                                                                    </HBox.margin>
+                                                                    <tooltip>
+                                                                        <Tooltip text="Enter words to filter." />
+                                                                    </tooltip>
+                                                                </TextField>
+                                                                <Label fx:id="lblFrom" prefHeight="24.0" prefWidth="46.0" text="FROM">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <DatePicker fx:id="datePickerFrom" prefHeight="24.0" prefWidth="136.0">
+                                                                    <HBox.margin>
+                                                                        <Insets />
+                                                                    </HBox.margin>
+                                                                    <tooltip>
+                                                                        <Tooltip text="Pick Date From to filter." />
+                                                                    </tooltip>
+                                                                </DatePicker>
+                                                                <Label fx:id="lblTo" alignment="CENTER" prefHeight="24.0" prefWidth="33.0" text="TO">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="12.0" />
+                                                                    </font>
+                                                                </Label>
+                                                                <DatePicker fx:id="datePickerTo" prefHeight="24.0" prefWidth="136.0">
+                                                                    <tooltip>
+                                                                        <Tooltip text="Pick Date To, to filter." />
+                                                                    </tooltip>
+                                                                </DatePicker>
+                                                                <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="24.0" prefWidth="80.0" text="Search">
+                                                                    <graphic>
+                                                                        <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                                                    </graphic>
+                                                                </Button>
+                                                            </children>
+                                                            <GridPane.margin>
+                                                                <Insets />
+                                                            </GridPane.margin>
+                                                            <padding>
+                                                                <Insets bottom="5.0" top="5.0" />
+                                                            </padding>
+                                                        </HBox>
                                                     </children>
-                                                </HBox>
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" left="25.0" top="10.0" />
+                                                    </VBox.margin>
+                                                </GridPane>
                                                 <GridPane>
                                                     <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
@@ -134,7 +198,11 @@
                                                                 </HBox>
                                                             </children>
                                                         </AnchorPane>
-                                                        <Button fx:id="btnAddDeductibles" mnemonicParsing="false" prefWidth="180.0" text="Insert to Deductibles" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <Button fx:id="btnAddDeductibles" mnemonicParsing="false" prefWidth="180.0" text="Insert to Deductibles" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                            <graphic>
+                                                                <FontAwesomeIconView glyphName="PLUS" size="15" />
+                                                            </graphic>
+                                                        </Button>
                                                     </children>
                                                 </GridPane>
                                             </children>
@@ -164,9 +232,9 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <TableView fx:id="tblViewDeductibles" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                <TableView fx:id="tblViewDeductibles" onMouseClicked="#tblDeduct_Click" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                     <columns>
-                                                        <TableColumn fx:id="tblindex01_Deductibles" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Recript Row" />
+                                                        <TableColumn fx:id="tblindex01_Deductibles" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Receipt Row" />
                                                         <TableColumn fx:id="tblindex02_Deductibles" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Deduct Amount" />
                                                         <TableColumn fx:id="tblindex03_Deductibles" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Reference No" />
                                                         <TableColumn fx:id="tblindex04_Deductibles" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" resizable="false" sortable="false" text="Particulars" />

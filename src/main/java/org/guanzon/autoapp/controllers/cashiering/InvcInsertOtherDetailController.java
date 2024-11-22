@@ -5,7 +5,6 @@
 package org.guanzon.autoapp.controllers.cashiering;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -61,7 +60,6 @@ public class InvcInsertOtherDetailController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();

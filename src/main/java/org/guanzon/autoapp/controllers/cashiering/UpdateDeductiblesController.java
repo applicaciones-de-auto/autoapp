@@ -23,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.auto.main.cashiering.SalesInvoice;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
@@ -33,7 +34,9 @@ import org.guanzon.autoapp.utils.CustomCommonUtil;
 public class UpdateDeductiblesController implements Initializable {
 
     private GRider oApp;
+    private SalesInvoice oTrans;
     private String pxeModuleName = "Update Deductibles";
+    private int pnRow;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     @FXML
     private AnchorPane AnchorMain;
@@ -44,6 +47,14 @@ public class UpdateDeductiblesController implements Initializable {
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    public void setObject(SalesInvoice foValue) {
+        oTrans = foValue;
+    }
+
+    public void setRow(int fnValue) {
+        pnRow = fnValue;
     }
 
     /**

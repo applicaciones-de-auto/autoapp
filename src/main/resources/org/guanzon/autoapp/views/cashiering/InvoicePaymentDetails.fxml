@@ -355,7 +355,7 @@
                                                         <Insets />
                                                     </opaqueInsets>
                                                 </GridPane>
-                                                <Label fx:id="lblNoFields" alignment="CENTER" contentDisplay="CENTER" text="Please select payment mode to load fields." textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <Label fx:id="lblNoFields" alignment="CENTER" contentDisplay="CENTER" text="Please select payment mode to load fields." textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                             </children>
                                         </AnchorPane>
                                     </children>
