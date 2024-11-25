@@ -206,7 +206,6 @@ public class ActivityApprovalController implements Initializable, ScreenInterfac
                 break;
             case "btnApproved":
                 ObservableList<ActivityApproval> selectedItems = FXCollections.observableArrayList();
-
                 for (ActivityApproval item : tblViewActApproval.getItems()) {
                     if (item.getSelect().isSelected()) {
                         selectedItems.add(item);

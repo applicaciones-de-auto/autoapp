@@ -132,7 +132,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         String lsTransID = "";
         for (int lnCtr = 0; lnCtr <= oTransReserve.getVSPReservationList().size() - 1; lnCtr++) {
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate() != null) {
-                lsDate = CustomCommonUtil.xsDateShort((Date) oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
+                lsDate = CustomCommonUtil.xsDateShort(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
             }
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTranAmt() != null) {
                 lsTransAmount = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTranAmt())));

@@ -518,6 +518,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             VGPPrintController loControl = new VGPPrintController();
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
+            loControl.setOldPrint(oTrans.getMasterModel().getMasterModel().getPrinted());
             loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
 

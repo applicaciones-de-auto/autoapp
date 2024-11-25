@@ -116,27 +116,48 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnPrint":
-                try {
-                if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
-                        Integer lnCtr = pnRows[pnCtr];
-                        oTransPrint.getReservationModel().getReservation(lnCtr).setPrinted(1);
-                    }
-                    loJSON = oTransPrint.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                        CommonUtils.closeStage(btnClose);
+                for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
+                    Integer lnCtr = pnRows[pnCtr];
+                    loJSON = oTransPrint.saveReservationPrint(lnCtr, true);
+                }
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    try {
+                        if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                            for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
+                                Integer lnCtr = pnRows[pnCtr];
+                                loJSON = oTransPrint.saveReservationPrint(lnCtr, false);
+                            }
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Printed succesfully.");
+                                CommonUtils.closeStage(btnClose);
+                            }
+                        } else {
+                            handlePrintFailure(oTransPrint);
+                        }
+                    } catch (JRException ex) {
+                        handlePrintFailure(oTransPrint);
                     }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
+                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted : " + (String) loJSON.get("message"));
                 }
-            } catch (JRException ex) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
-            }
-            break;
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
+        }
+    }
+
+    private void handlePrintFailure(Inquiry foValue) {
+        JSONObject loJSON = new JSONObject();
+        String psOldPrint = "";
+        for (pnCtr = 0; pnCtr <= pnRows.length - 1; pnCtr++) {
+            Integer lnCtr = pnRows[pnCtr];
+            psOldPrint = String.valueOf(foValue.getReservationModel().getDetailModel(lnCtr).getPrinted());
+            foValue.getReservationModel().getDetailModel(lnCtr).setPrinted(Integer.parseInt(psOldPrint));
+        }
+        loJSON = foValue.saveTransaction();
+        if ("success".equals((String) loJSON.get("result"))) {
+            ShowMessageFX.Error(null, pxeModuleName, "Print Aborted");
         }
     }
 

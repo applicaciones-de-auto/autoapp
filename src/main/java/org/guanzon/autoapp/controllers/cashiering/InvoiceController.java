@@ -7,10 +7,8 @@ package org.guanzon.autoapp.controllers.cashiering;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -313,9 +311,6 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         if (!nv) {
             switch (lnIndex) {
                 case 1:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
                     oTrans.getMasterModel().getMasterModel().setReferNo(lsValue);
                     break;
                 case 3:
@@ -815,7 +810,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         CustomCommonUtil.setDisable(true, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12);
         CustomCommonUtil.setDisable(!lbShow, txtField01, datePicker02, txtField03,
                 checkBoxNoPymnt, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
-                checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck,
+                checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck, checkBoxAllwMxPyr,
                 comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
         if (lbShow) {
             switch (comboBox11.getSelectionModel().getSelectedIndex()) {

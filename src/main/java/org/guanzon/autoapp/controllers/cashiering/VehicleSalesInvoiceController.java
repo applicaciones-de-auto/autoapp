@@ -524,6 +524,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             VSIPrintController loControl = new VSIPrintController();
             loControl.setGRider(oApp);
             loControl.setVSIObject(oTrans);
+            loControl.setOldPrint(oTrans.getMasterModel().getMasterModel().getPrinted());
             loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface

@@ -113,25 +113,42 @@ public class ActivityPrintController implements Initializable, ScreenInterface, 
     @Override
     public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnPrint":
-                try {
-                if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                    CommonUtils.closeStage(btnClose);
+                loJSON = oTransPrint.savePrint();
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    try {
+                        if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                            loJSON = oTransPrint.savePrint();
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Printed succesfully.");
+                                CommonUtils.closeStage(btnClose);
+                            }
+                        } else {
+                            handlePrintFailure(oTransPrint);
+                        }
+                    } catch (JRException ex) {
+                        handlePrintFailure(oTransPrint);
+                    }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
+                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted : " + (String) loJSON.get("message"));
                 }
-            } catch (JRException ex) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
-            }
-            break;
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
+        }
+    }
+
+    private void handlePrintFailure(Activity foValue) {
+        JSONObject loJSON = new JSONObject();
+        loJSON = foValue.saveRecord();
+        if ("success".equals((String) loJSON.get("result"))) {
+            ShowMessageFX.Error(null, pxeModuleName, "Print Aborted");
         }
     }
 

@@ -1859,6 +1859,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             VSPPrintController loControl = new VSPPrintController();
             loControl.setGRider(oApp);
             loControl.setVSObject(oTrans);
+            loControl.setOldPrint(oTrans.getMasterModel().getMasterModel().getPrinted());
             loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface

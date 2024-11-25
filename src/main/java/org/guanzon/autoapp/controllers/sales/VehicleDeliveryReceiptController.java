@@ -471,6 +471,7 @@ public class VehicleDeliveryReceiptController implements Initializable, ScreenIn
             VDRPrintController loControl = new VDRPrintController();
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
+            loControl.setOldPrint(oTrans.getMasterModel().getMasterModel().getPrinted());
             loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
