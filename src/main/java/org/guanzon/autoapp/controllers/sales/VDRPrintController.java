@@ -109,7 +109,7 @@ public class VDRPrintController implements Initializable, ScreenInterface, GPrin
                 break;
             case "btnPrint":
                 loJSON = oTransPrint.savePrint(true);
-                if ("success".equals((String) loJSON.get("result"))) {
+                if (!"error".equals((String) loJSON.get("result"))) {
                     try {
                         if (JasperPrintManager.printReport(poJasperPrint, true)) {
                             loJSON = oTransPrint.savePrint(false);
