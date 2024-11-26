@@ -59,7 +59,6 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
     Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
-    private int pnCtr = 0;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -289,7 +288,7 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
             params.put("grsMontInst", "0.00");
             params.put("promiNtAmnt", "0.00");
             params.put("bankName", "");
-            if (oTransPrint.getVSPFinanceList().size() > 0) {
+            if (!oTransPrint.getVSPFinanceList().isEmpty()) {
                 String lsBank = "";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm() != null) {
                     lsBank = String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBankName()) + "" + String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBrBankNm());

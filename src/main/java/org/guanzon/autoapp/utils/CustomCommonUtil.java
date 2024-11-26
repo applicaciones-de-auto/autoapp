@@ -322,7 +322,9 @@ public class CustomCommonUtil {
      */
     public static void setDisable(boolean disable, Node... nodes) {
         for (Node node : nodes) {
-            node.setDisable(disable);
+            if (node != null) {
+                node.setDisable(disable);
+            }
         }
     }
 
@@ -345,7 +347,9 @@ public class CustomCommonUtil {
      */
     public static void setVisible(boolean visible, Node... nodes) {
         for (Node node : nodes) {
-            node.setVisible(visible);
+            if (node != null) {
+                node.setVisible(visible);
+            }
         }
     }
 
@@ -371,7 +375,9 @@ public class CustomCommonUtil {
      */
     public static void setManaged(boolean managed, Node... nodes) {
         for (Node node : nodes) {
-            node.setManaged(managed);
+            if (node != null) {
+                node.setManaged(managed);
+            }
         }
     }
 
@@ -391,7 +397,9 @@ public class CustomCommonUtil {
      */
     public static void setText(String fsValue, TextField... txtFields) {
         for (TextField txtField : txtFields) {
-            txtField.setText(fsValue);
+            if (txtField != null) {
+                txtField.setText(fsValue);
+            }
         }
     }
 
@@ -411,7 +419,9 @@ public class CustomCommonUtil {
      */
     public static void setText(String fsValue, TextArea... txtAreas) {
         for (TextArea txtArea : txtAreas) {
-            txtArea.setText(fsValue);
+            if (txtArea != null) {
+                txtArea.setText(fsValue);
+            }
         }
     }
 
@@ -432,7 +442,9 @@ public class CustomCommonUtil {
     @SuppressWarnings("unchecked")
     public static void setValue(String fsValue, ComboBox... comboBoxes) {
         for (ComboBox comboBox : comboBoxes) {
-            comboBox.setValue(fsValue);
+            if (comboBox != null) {
+                comboBox.setValue(fsValue);
+            }
         }
     }
 
@@ -452,7 +464,9 @@ public class CustomCommonUtil {
      */
     public static void setText(String fsValue, Label... labels) {
         for (Label label : labels) {
-            label.setText(fsValue);
+            if (label != null) {
+                label.setText(fsValue);
+            }
         }
     }
 
@@ -478,7 +492,9 @@ public class CustomCommonUtil {
      */
     public static void setSelected(boolean fbValue, CheckBox... checkBoxes) {
         for (CheckBox checkBox : checkBoxes) {
-            checkBox.setSelected(fbValue);
+            if (checkBox != null) {
+                checkBox.setSelected(fbValue);
+            }
         }
     }
 
@@ -504,7 +520,9 @@ public class CustomCommonUtil {
      */
     public static void setSelected(boolean fbValue, RadioButton... radioButtons) {
         for (RadioButton radioBtn : radioButtons) {
-            radioBtn.setSelected(fbValue);
+            if (radioBtn != null) {
+                radioBtn.setSelected(fbValue);
+            }
         }
     }
 

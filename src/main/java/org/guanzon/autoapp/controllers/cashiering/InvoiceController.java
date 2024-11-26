@@ -602,7 +602,9 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             case "btnInsertRemarks":
                 break;
             case "btnInsertAdvances":
-                loadAdvancesDetailWindow(0, false);
+                if (!tblViewTrans.getItems().isEmpty()) {
+                    loadAdvancesDetailWindow(oTrans.getSIAdvancesList().size() - 1);
+                }
                 break;
             case "btnInsCheckDetail":
                 if (psPayMode.isEmpty()) {
@@ -807,12 +809,15 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12);
+        CustomCommonUtil.setDisable(true, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12, btnInsertAdvances);
         CustomCommonUtil.setDisable(!lbShow, txtField01, datePicker02, txtField03,
                 checkBoxNoPymnt, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck, checkBoxAllwMxPyr,
-                comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsertAdvances, btnInsCheckDetail);
+                comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsCheckDetail);
         if (lbShow) {
+            if (!tblViewTrans.getItems().isEmpty()) {
+                btnInsertAdvances.setDisable(!lbShow);
+            }
             switch (comboBox11.getSelectionModel().getSelectedIndex()) {
                 case 0:
                 case 1:
@@ -1286,7 +1291,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         }
     }
 
-    private void loadAdvancesDetailWindow(int fnRow, boolean fbIsUpdate) {
+    private void loadAdvancesDetailWindow(int fnRow) {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();

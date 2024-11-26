@@ -54,7 +54,6 @@ public class VehicleInquiryReservationPrintController implements Initializable, 
     private Integer[] pnRows;
     private boolean running = false;
     private ObservableList<InquiryVehicleSalesAdvances> vhlApprovalPrintData = FXCollections.observableArrayList();
-    Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
     private int pnCtr = 0;

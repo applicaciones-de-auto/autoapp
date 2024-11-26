@@ -105,7 +105,6 @@ public class PRDeductibleController implements Initializable {
         initDeductiblesTable();
         initButtonsClick();
         initTableKeyPressed();
-        txtField01.setText(String.valueOf(pnRow));
         comboBoxSearch.setItems(cComboSearch);
         txtFieldSearch.setOnKeyPressed(this::txtField_KeyPressed);
         initFields();

@@ -637,9 +637,11 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 }
                 loJSON = oTrans.updateTransaction();
                 pnEditMode = oTrans.getEditMode();
+
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -663,14 +665,12 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     loadBankApplications();
                     loadFollowHistory();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
-                    initBtnProcess(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Inquiry Information Confirmation", (String) loJSON.get("message"));
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
-                    initBtnProcess(pnEditMode);
                 }
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Inquiry Information Saving....", "Are you sure, do you want to save?")) {
@@ -709,6 +709,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 } else {
                     return;
                 }
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
@@ -728,6 +730,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     tabPinEditMode = 0;
                     pnEditMode = EditMode.UNKNOWN;
                     initFields(pnEditMode);
+                    initBtnProcess(pnEditMode);
                 }
                 break;
             case "btnTargetVhclAdd":
@@ -754,6 +757,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     return;
                 }
                 loadVehiclePriority();
+                initFields(pnEditMode);
                 break;
             case "btnTargetVhclRemove":
                 if (ShowMessageFX.YesNo(null, "Vehicle Confirmation", "Are you sure you want to remove this Vehicle Information?")) {
@@ -763,6 +767,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 oTrans.removeVehiclePriority(pnRow);
                 pnRow = 0;
                 loadVehiclePriority();
+                initFields(pnEditMode);
                 break;
             case "btnPromoAdd":
                 loJSON = oTrans.searchPromo();
@@ -799,6 +804,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 oTrans.removePromo(pnRow);
                 pnRow = 0;
                 loadPromoOffered();
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
             case "btnTestDriveModel":
                 laodTestModelWindow();
@@ -831,7 +838,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 } else {
                     return;
                 }
-
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
             case "btnASadd":
                 try {
@@ -944,8 +952,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     }
                     loadAdvancesSlip();
                 }
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
-
             case "btnBankAppNew":
                 loJSON = oTransBank.newTransaction();
                 if ("success".equals((String) loJSON.get("result"))) {
@@ -970,6 +979,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 } else {
                     ShowMessageFX.Warning(null, "Integrated Automotive System", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnLostSale":
                 loJSON = oTransFollow.newTransaction();
@@ -982,6 +992,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 } else {
                     ShowMessageFX.Warning(null, "Integrated Automotive System", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
+                initBtnProcess(pnEditMode);
                 break;
             case "btnConvertSales":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to convert this inquiry for a new vsp record?")) {
@@ -1019,8 +1031,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
                 break;
         }
-        initFields(pnEditMode);
-        initBtnProcess(pnEditMode);
     }
 
     @Override
@@ -1308,9 +1318,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         }
 
         boolean lbTab = (fnValue == EditMode.READY);
-        tabInquiryProcess.setDisable(!lbTab);
-        tabBankHistory.setDisable(!lbTab);
-        tabFollowingHistory.setDisable(!lbTab);
+//        tabInquiryProcess.setDisable(!lbTab);
+//        tabBankHistory.setDisable(!lbTab);
+//        tabFollowingHistory.setDisable(!lbTab); 
         if (fnValue == EditMode.READY) {
             trgvIndex03.setVisible(false);
             trgvIndex04.setVisible(false);
@@ -1437,13 +1447,20 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     vsasCheck01.setVisible(false);
                     break;
             }
+        }
 
-            if (fnValue == EditMode.ADDNEW) {
-                if (oApp.isMainOffice()) {
-                    txtField14.setDisable(false); // Branch Name
-                } else {
-                    txtField14.setDisable(true); // Branch Name
-                }
+        if (fnValue == EditMode.UPDATE) {
+            if (tabPinEditMode == 1) {
+                initCustomerInquiryFieldsFalse();
+                initInquiryProcessFieldsTrue();
+            } else {
+                initCustomerInquiryFieldsTrue();
+                initInquiryProcessFieldsFalse();
+            }
+        }
+        if (fnValue == EditMode.ADDNEW) {
+            if (oApp.isMainOffice()) {
+                txtField14.setDisable(false); // Branch Name
             }
         }
         if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
@@ -1483,7 +1500,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
     private void initInquiryProcessFieldsTrue() {
         trgvIndex03.setVisible(false);
         trgvIndex04.setVisible(false);
-        CustomCommonUtil.setDisable(true, txtField05, txtField09, comboBox10, txtField11, txtField12, txtField13, comboBox21, datePicker22,
+        CustomCommonUtil.setDisable(true, txtField03, txtField05, txtField09, comboBox10, txtField11, txtField12, txtField13, comboBox21, datePicker22,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19, btnTargetVhclAdd, btnPromoAdd, btnPromoRemove, btnTestDriveModel, textArea23);
 
     }
