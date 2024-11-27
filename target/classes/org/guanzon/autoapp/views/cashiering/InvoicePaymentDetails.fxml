@@ -114,7 +114,7 @@
                                             <children>
                                                 <GridPane fx:id="gridCard" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                     </columnConstraints>
@@ -130,18 +130,12 @@
                                                     </rowConstraints>
                                                     <children>
                                                         <TextField fx:id="txtField01_Card" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                                                        <TextField fx:id="txtField02_Card" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="txtField03_Card" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtField04_Card" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="txtField02_Card" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField03_Card" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField04_Card" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                         <TextField fx:id="txtField05_Card" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                        <TextField fx:id="txtField06_Card" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                        <TextArea fx:id="textArea07_Card" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" GridPane.rowSpan="2" />
+                                                        <TextArea fx:id="textArea07_Card" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="3" />
                                                         <Label id="LabelDesc" text="Amount" GridPane.rowIndex="4">
-                                                            <font>
-                                                                <Font name="Arial" size="12.0" />
-                                                            </font>
-                                                        </Label>
-                                                        <Label id="LabelDesc" text="Allocated amount to this receipt" GridPane.rowIndex="5">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
@@ -156,7 +150,7 @@
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="6">
+                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="5">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
@@ -205,9 +199,9 @@
                                                             </font>
                                                         </Label>
                                                         <TextField fx:id="txtField01_Check" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                                                        <TextField fx:id="txtField02_Check" promptText="Search: F3" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField02_Check" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <DatePicker fx:id="datePicker03_Check" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="txtField04_Check" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                        <TextField fx:id="txtField04_Check" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                             <tooltip>
                                                                 <Tooltip text="Please fill in the VSP Labor Description." />
                                                             </tooltip>

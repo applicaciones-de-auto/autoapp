@@ -1316,12 +1316,15 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 CustomCommonUtil.setDisable(true, txtField11, txtField13);
                 break;
         }
-
-        boolean lbTab = (fnValue == EditMode.READY);
-//        tabInquiryProcess.setDisable(!lbTab);
-//        tabBankHistory.setDisable(!lbTab);
-//        tabFollowingHistory.setDisable(!lbTab); 
+        if (fnValue == EditMode.UNKNOWN) {
+            tabInquiryProcess.setDisable(true);
+            tabBankHistory.setDisable(true);
+            tabFollowingHistory.setDisable(true);
+        }
         if (fnValue == EditMode.READY) {
+            tabInquiryProcess.setDisable(false);
+            tabBankHistory.setDisable(false);
+            tabFollowingHistory.setDisable(false);
             trgvIndex03.setVisible(false);
             trgvIndex04.setVisible(false);
             switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
@@ -1332,8 +1335,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         btnProcess.setVisible(true);
                         btnProcess.setManaged(true);
                     }
-                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
                     break;
                 case "1": //On process
                     if (comboBox25.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1346,16 +1349,16 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         btnBankAppNew.setManaged(true);
                     }
                     //For Follow up
-                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
                     break;
                 case "3": //VSP
                     CustomCommonUtil.setVisible(true, btnBankAppNew, btnFollowUp);
                     CustomCommonUtil.setManaged(true, btnBankAppNew, btnFollowUp);
                     break;
                 case "6": // For FollowUp
-                    CustomCommonUtil.setVisible(lbTab, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(lbTab, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
+                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
                     break;
 
             }

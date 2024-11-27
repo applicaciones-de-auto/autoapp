@@ -860,7 +860,7 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
     public void initFields(int fnValue) {
         pnRow = 0;
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, txtField01, txtField03);
+        CustomCommonUtil.setDisable(true, txtField01, txtField03, comboBox17);
         CustomCommonUtil.setVisible(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
         CustomCommonUtil.setManaged(false, anchorPurch, gridPurch, vBoxPurchasedSold, gridSold);
         CustomCommonUtil.setVisible(false, anchorMisc, gridMisc);

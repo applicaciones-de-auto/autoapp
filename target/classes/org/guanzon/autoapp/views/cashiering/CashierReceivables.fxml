@@ -98,7 +98,7 @@
                                                                         <RowConstraints minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                     <children>
-                                                                        <Button fx:id="btnProceed" mnemonicParsing="false" prefWidth="125.0" text="PROCEED" GridPane.columnIndex="3">
+                                                                        <Button fx:id="btnProceed" mnemonicParsing="false" prefWidth="125.0" text="Proceed" GridPane.columnIndex="3">
                                                                             <graphic>
                                                                                 <FontAwesomeIconView glyphName="UPLOAD" />
                                                                             </graphic>
@@ -125,31 +125,29 @@
                                                     <children>
                                                         <TableView fx:id="tblViewCAR" onMouseClicked="#tblCAR_Clicked" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" sortable="false" text="Row" />
+                                                                <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
                                                                 <TableColumn fx:id="tblindex02" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false">
                                                                     <graphic>
                                                                         <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" prefHeight="18.0" prefWidth="16.0" />
                                                                     </graphic>
                                                                 </TableColumn>
-                                                                <TableColumn fx:id="tblindex03" maxWidth="201.0" minWidth="201.0" prefWidth="201.0" resizable="false" sortable="false" text="CAR No" />
-                                                                <TableColumn fx:id="tblindex04" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Date" />
+                                                                <TableColumn fx:id="tblindex03" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="CAR No" />
+                                                                <TableColumn fx:id="tblindex04" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Date" />
                                                                 <TableColumn fx:id="tblindex05" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="Type" />
                                                                 <TableColumn fx:id="tblindex06" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer Name" />
                                                                 <TableColumn fx:id="tblindex07" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No" />
-                                                                <TableColumn fx:id="tblindex08" maxWidth="485.0" minWidth="182.0" prefWidth="182.0" sortable="false" text="Particulars" />
-                                                                <TableColumn fx:id="tblindex09" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Location" />
-                                                                <TableColumn fx:id="tblindex10" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Gross Amount" />
-                                                                <TableColumn fx:id="tblindex11" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Discount Amount" />
-                                                                <TableColumn fx:id="tblindex12" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Trans Amount" />
-                                                                <TableColumn fx:id="tblindex13" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Deduct Amount" />
-                                                                <TableColumn fx:id="tblindex14" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Paid Amount" />
+                                                                <TableColumn fx:id="tblindex08" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Particulars" />
+                                                                <TableColumn fx:id="tblindex09" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Location" />
+                                                                <TableColumn fx:id="tblindex10" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Gross Amount" />
+                                                                <TableColumn fx:id="tblindex11" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Discount Amount" />
+                                                                <TableColumn fx:id="tblindex12" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Trans Amount" />
+                                                                <TableColumn fx:id="tblindex13" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Deduct Amount" />
+                                                                <TableColumn fx:id="tblindex14" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Balance" />
                                                                 <TableColumn fx:id="tblindex15" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="SI No" />
-                                                                <TableColumn fx:id="tblindex16" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="CC Slip No" />
-                                                                <TableColumn fx:id="tblindex17" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="PR No" />
                                                                 <TableColumn fx:id="tblindex18" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="SOA No" />
                                                                 <TableColumn fx:id="tblindex19" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Journal Entry No" />
                                                                 <TableColumn fx:id="tblindex20" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Trans From" />
-                                                                <TableColumn fx:id="tblindex21" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" sortable="false" text="Transferred By" />
+                                                                <TableColumn fx:id="tblindex21" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Transferred By" />
                                                                 <TableColumn fx:id="tblindex22" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Trans To" />
                                                                 <TableColumn fx:id="tblindex23" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Transferred Date" />
                                                             </columns>

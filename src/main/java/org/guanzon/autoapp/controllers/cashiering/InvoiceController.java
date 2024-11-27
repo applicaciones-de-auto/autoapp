@@ -199,7 +199,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     @Override
     public boolean loadMasterFields() {
-        oTrans.computeSIAmount();
+        oTrans.computeSIAmount(true);
         txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker02.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getMasterModel().getMasterModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -228,7 +228,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
         txtField06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField07.setText("");
-        txtField08.setText(oTrans.getMasterModel().getMasterModel().getTaxIDNo());
+        txtField08.setText(oTrans.getMasterModel().getMasterModel().getTaxIDNo().replaceAll("(.{3})(?=.)", "$1-"));
         txtField09.setText("");
         txtField10.setText("");
 //        comboBox11.setValue("");
@@ -419,6 +419,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                             }
                             if (!"error".equals(loJSON.get("result"))) {
                                 loadTransTable();
+                                loadMasterFields();
                             } else {
                                 ShowMessageFX.Warning(null, toTitleCase(pxeModuleName), (String) loJSON.get("message"));
                                 txtField12.setText("");
@@ -900,6 +901,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         oTrans.getMasterModel().getMasterModel().setClientID(oTransCAR.getMasterModel().getMasterModel().getPayerID());
         oTrans.getMasterModel().getMasterModel().setBuyCltNm(oTransCAR.getMasterModel().getMasterModel().getPayerNme());
         oTrans.getMasterModel().getMasterModel().setAddress(oTransCAR.getMasterModel().getMasterModel().getPayerAdd());
+        oTrans.getMasterModel().getMasterModel().setTaxIDNo(oTransCAR.getMasterModel().getMasterModel().getTaxIDNo());
         for (int lnCtr = 0; lnCtr <= oTransCAR.getDetailList().size() - 1; lnCtr++) {
             oTrans.addSIDetail();
             if (oTransCAR.getMasterModel().getMasterModel().getVSPNo() != null) {
@@ -919,7 +921,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setFormNo(oTransCAR.getMasterModel().getMasterModel().getFormNo());
             oTrans.getSIDetailModel().getDetailModel(oTrans.getSIDetailList().size() - 1).setSourceNo(oTransCAR.getMasterModel().getMasterModel().getTransNo());
         }
-        oTrans.computeSIAmount();
+        oTrans.computeSIAmount(true);
     }
 
     private void loadTransTable() {
@@ -1361,6 +1363,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setTitle("");
             stage.showAndWait();
             loadTransTable();
+            loadMasterFields();
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);
@@ -1400,6 +1403,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setTitle("");
             stage.showAndWait();
             loadTransTable();
+            loadMasterFields();
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);

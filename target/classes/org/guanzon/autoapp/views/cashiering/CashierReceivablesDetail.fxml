@@ -72,12 +72,13 @@
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="ALWAYS" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Label id="LabelDesc" text="Payer Name" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                                        <Label id="LabelDesc" style="-fx-font-weight: bold;" text="Payer Name" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
@@ -111,13 +112,13 @@
                                                         </Label>
                                                         <TextField fx:id="txtField07" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                         <ComboBox fx:id="comboBox03" disable="true" maxWidth="200.0" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                        <Label id="LabelDesc" text="Particulars" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                        <Label id="LabelDesc" alignment="TOP_LEFT" prefHeight="38.0" prefWidth="55.0" text="Particulars" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
                                                         <TextArea fx:id="textArea08" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="2" GridPane.rowSpan="2" />
-                                                        <Label id="LabelDesc" prefHeight="37.0" prefWidth="44.0" text="Location" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                                        <Label id="LabelDesc" prefHeight="37.0" prefWidth="44.0" text="Location" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="8">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
@@ -127,25 +128,25 @@
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <TextField fx:id="txtField09" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="txtField09" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                         <Label id="LabelDesc" prefHeight="125.0" prefWidth="88.0" text="Discount Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="5">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <TextField fx:id="txtField10" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                        <TextField fx:id="txtField10" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                         <Label id="LabelDesc" text="Trans Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="6">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <TextField fx:id="txtField11" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-                                                        <Label id="LabelDesc" text="Deduct Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7">
+                                                        <TextField fx:id="txtField11" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+                                                        <Label id="LabelDesc" text="Deduct Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <TextField fx:id="txtField13" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="8" />
+                                                        <TextField fx:id="txtField13" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="9" />
                                                         <Label id="LabelDesc" text="CAR Date" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
@@ -153,13 +154,13 @@
                                                         </Label>
                                                         <TextField fx:id="txtField04" disable="true" editable="false" maxWidth="200.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                         <TextArea fx:id="textArea05" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="5" GridPane.rowSpan="2" />
-                                                        <Label id="LabelDesc" text="Paid Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
+                                                        <Label id="LabelDesc" text="Paid Amount" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="9">
                                                             <font>
                                                                 <Font name="Arial" size="12.0" />
                                                             </font>
                                                         </Label>
-                                                        <TextField fx:id="txtField12" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-                                                        <TextArea fx:id="textArea06" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="7" GridPane.rowSpan="2" />
+                                                        <TextField fx:id="txtField12" alignment="CENTER_RIGHT" disable="true" editable="false" maxWidth="150.0" promptText="0.00" GridPane.columnIndex="5" GridPane.rowIndex="8" />
+                                                        <TextArea fx:id="textArea06" disable="true" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="8" GridPane.rowSpan="2" />
                                                     </children>
                                                 </GridPane>
                                             </children>
