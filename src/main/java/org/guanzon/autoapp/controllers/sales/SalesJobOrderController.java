@@ -164,6 +164,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                 }
             }
         });
+        initTableKeyPressed();
     }
 
     @Override

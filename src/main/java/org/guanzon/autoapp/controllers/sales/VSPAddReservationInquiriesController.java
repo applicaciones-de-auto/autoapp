@@ -113,6 +113,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
         String lsTransAmount = "";
         String lsTransNo = "";
         String lsTransID = "";
+        String lsSITransNo = "";
         loJSON = oTransReserve.loadOTHReservationList();
         if (!"error".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTransReserve.getOTHReservationList().size() - 1; lnCtr++) {
@@ -128,6 +129,9 @@ public class VSPAddReservationInquiriesController implements Initializable {
                 if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransID() != null) {
                     lsTransID = oTransReserve.getOTHReservationModel().getReservation(lnCtr).getTransID();
                 }
+                if (oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSITranNo() != null) {
+                    lsSITransNo = oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSITranNo();
+                }
                 reserveData.add(new VSPReservationInquirers(
                         String.valueOf(lnCtr + 1), // ROW
                         String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getSINo()),
@@ -135,10 +139,17 @@ public class VSPAddReservationInquiriesController implements Initializable {
                         String.valueOf(oTransReserve.getOTHReservationModel().getReservation(lnCtr).getCompnyNm()),
                         lsTransNo,
                         lsTransAmount,
-                        lsTransID
+                        lsTransID,
+                        lsSITransNo
                 ));
+                lsDate = "";
+                lsTransAmount = "";
+                lsTransNo = "";
+                lsTransID = "";
+                lsSITransNo = "";
             }
         }
+
         tblViewReservation.setItems(reserveData);
     }
 
@@ -241,19 +252,21 @@ public class VSPAddReservationInquiriesController implements Initializable {
                     }
                     if (selectedItems.isEmpty()) {
                         ShowMessageFX.Warning(null, pxeModuleName, "No selected Items");
+                        selectAll.setSelected(false);
                         return;
                     }
                     for (VSPReservationInquirers item : selectedItems) {
+                        String lsSITranNo = item.getTblindex08_reservation();
                         String lsTransNo = item.getTblindex05_reservation();
                         String lsTransID = item.getTblindex07_reservation();
-                        loJSON = oTransReserve.addToVSPReservation(lsTransNo, lsTransID);
-                        if ("error".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        } else {
-                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-                        }
+                        loJSON = oTransReserve.addToVSPReservation(lsTransNo, lsTransID, lsSITranNo);
                     }
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    } else {
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                    }
+                    selectAll.setSelected(false);
                 }
                 loadReservationTable();
                 break;

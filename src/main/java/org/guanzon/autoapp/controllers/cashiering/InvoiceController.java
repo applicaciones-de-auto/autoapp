@@ -1169,7 +1169,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
     //TableView KeyPressed
     private void initTableKeyPressed() {
-        tblViewTrans.setOnKeyPressed(event -> {
+        tblViewTrans.setOnKeyPressed((KeyEvent event) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
                     if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this transaction?")) {
@@ -1190,13 +1190,11 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         loadMasterFields();
                         loadTransTable();
                     }
-                } else {
-                    return;
                 }
             }
         }
         );
-        tblViewCheck.setOnKeyPressed(event -> {
+        tblViewCheck.setOnKeyPressed((KeyEvent event) -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (event.getCode().equals(KeyCode.DELETE)) {
                     if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this payment details?")) {
@@ -1217,8 +1215,6 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         loadCheckTable();
                         loadMasterFields();
                         loadPayModeCheckedFields();
-                    } else {
-                        return;
                     }
                 }
             }

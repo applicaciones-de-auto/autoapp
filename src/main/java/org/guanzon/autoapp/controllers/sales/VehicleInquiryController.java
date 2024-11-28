@@ -106,7 +106,6 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
 
     //    /* ------------------COMBO BOX ITEMS/VALUE----------------------- */
     private ObservableList<String> cInquirySourceType = FXCollections.observableArrayList("WALK-IN", "WEB INQUIRY", "PHONE-IN", "REFERRAL", "SALES CALL", "EVENT", "SERVICE", "OFFICE ACCOUNT", "CAREMITTANCE", "DATABASE", "UIO"); //Inquiry Type values
-    private ObservableList<String> cInqStatus = FXCollections.observableArrayList("FOR FOLLOW-UP", "ON PROCESS", "LOST SALE", "WITH VSP", "SOLD", "CANCELLED"); //Inquiry Type Values
     private ObservableList<String> cModeOfPayment = FXCollections.observableArrayList("CASH", "BANK PURCHASE ORDER", "BANK FINANCING", "COMPANY PURCHASE ORDER", "COMPANY FINANCING"); //Mode of Payment Values
     private ObservableList<String> cCustomerType = FXCollections.observableArrayList("BUSINESS", "EMPLOYED", "OFW", "SEAMAN", "ANY"); // Customer Type Values
     private ObservableList<String> cTargetVehcl = FXCollections.observableArrayList("BRANDNEW", "PRE-OWNED");
@@ -1998,7 +1997,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 return;
             }
             if (event.getClickCount() == 1) {
-                if (tblPromosOffered.getItems().size() > 0) {
+                if (!tblPromosOffered.getItems().isEmpty()) {
                     if (tabPinEditMode == 0) {
                         btnPromoRemove.setDisable(false);
                     }
@@ -2272,7 +2271,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
             loControl.setVSAObject(oTrans);
             loControl.setTableRows(fnRow);
             loControl.setState(isAdd);
-            loControl.setInqStat(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getTranStat()));
+            loControl.setInqStat(Integer.valueOf(oTrans.getMasterModel().getMasterModel().getTranStat()));
             loControl.setEditMode(fEditMode);
             fxmlLoader.setController(loControl);
 

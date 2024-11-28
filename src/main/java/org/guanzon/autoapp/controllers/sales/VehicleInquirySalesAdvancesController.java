@@ -118,7 +118,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                     txtField06.setText("FOR APPROVAL");
                     switch (pnIinqStat) {
                         case 0: //For Follow up
-                            CustomCommonUtil.setDisable(pbState, txtField04, comboBox01,
+                            CustomCommonUtil.setDisable(false, txtField04, comboBox01,
                                     textArea05, btnApply);
                             break;
                         case 1: //On Process
@@ -127,26 +127,26 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
                                 CustomCommonUtil.setDisable(pbState, txtField04, comboBox01,
                                         textArea05, btnApply);
                             } else {
-                                CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                                CustomCommonUtil.setDisable(false, txtField04, comboBox01,
                                         textArea05, btnApply);
                             }
                             break;
                         case 2: //Lost Sale
                         case 4: //Sold
                         case 5: //Cancelled
-                            CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                            CustomCommonUtil.setDisable(true, txtField04, comboBox01,
                                     textArea05, btnApply);
                             break;
                     }
                     break;
                 case TransactionStatus.STATE_CLOSED:
                     txtField06.setText("APPROVED");
-                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                    CustomCommonUtil.setDisable(true, txtField04, comboBox01,
                             textArea05, btnApply);
                     break;
                 case TransactionStatus.STATE_CANCELLED:
                     txtField06.setText("CANCELLED");
-                    CustomCommonUtil.setDisable(!pbState, txtField04, comboBox01,
+                    CustomCommonUtil.setDisable(true, txtField04, comboBox01,
                             textArea05, btnApply);
                     break;
                 case TransactionStatus.STATE_POSTED:
@@ -284,9 +284,11 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
 
     private void initFields() {
         CustomCommonUtil.setDisable(true, comboBox01, txtField02, txtField03, txtField04, textArea05);
-        if (!oTrans.getReservationModel().getDetailModel(pnRow).getTranStat().equals("2")) {
+        if (!oTrans.getReservationModel().getDetailModel(pnRow).getTranStat().equals(TransactionStatus.STATE_CANCELLED)
+                && !oTrans.getReservationModel().getDetailModel(pnRow).getTranStat().equals(TransactionStatus.STATE_CLOSED)) {
             CustomCommonUtil.setDisable(false, comboBox01, txtField04, textArea05);
         }
+
     }
 
     private boolean setToClass() {

@@ -5,12 +5,14 @@
 package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,14 +20,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
@@ -43,16 +47,13 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
     private ObservableList<VSPReservationInquirers> reserveData = FXCollections.observableArrayList();
     private VehicleSalesProposal oTransReserve;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
+    private int pnRow;
     @FXML
-    private Button btnRemove, btnClose;
-    @FXML
-    private TableColumn<VSPReservationInquirers, Boolean> tblindex02;
+    private Button btnClose;
     @FXML
     private TableColumn<VSPReservationInquirers, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06;
     @FXML
     private TableView<VSPReservationInquirers> tblViewReservation;
-    @FXML
-    private CheckBox selectAll;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -74,15 +75,11 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         initButtonsClick();
         initReservationTable();
         loadReservationTable();
-        if (oTransReserve.getEditMode() == 1) {
-            tblindex02.setVisible(false);
-            btnRemove.setVisible(false);
-            btnRemove.setManaged(false);
-        }
+        initTableKeyPressed();
     }
 
     private void initButtonsClick() {
-        List<Button> buttons = Arrays.asList(btnClose, btnRemove);
+        List<Button> buttons = Arrays.asList(btnClose);
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
 
@@ -130,6 +127,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
         String lsTransAmount = "";
         String lsTransNo = "";
         String lsTransID = "";
+        String lsSITransNo = "";
         for (int lnCtr = 0; lnCtr <= oTransReserve.getVSPReservationList().size() - 1; lnCtr++) {
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate() != null) {
                 lsDate = CustomCommonUtil.xsDateShort(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSIDate());
@@ -143,7 +141,9 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
             if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransID() != null) {
                 lsTransID = oTransReserve.getVSPReservationModel().getReservation(lnCtr).getTransID();
             }
-
+            if (oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSITranNo() != null) {
+                lsSITransNo = oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSITranNo();
+            }
             reserveData.add(new VSPReservationInquirers(
                     String.valueOf(lnCtr + 1), // ROW
                     String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getSINo()),
@@ -151,31 +151,20 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
                     String.valueOf(oTransReserve.getVSPReservationModel().getReservation(lnCtr).getCompnyNm()),
                     lsTransNo,
                     lsTransAmount,
-                    lsTransID
+                    lsTransID,
+                    lsSITransNo
             ));
+            lsDate = "";
+            lsTransAmount = "";
+            lsTransNo = "";
+            lsTransID = "";
+            lsSITransNo = "";
         }
         tblViewReservation.setItems(reserveData);
     }
 
     private void initReservationTable() {
         tblindex01.setCellValueFactory(new PropertyValueFactory<>("tblindex01_reservation"));
-        tblindex02.setCellValueFactory(new PropertyValueFactory<>("select"));
-        tblViewReservation.getItems().forEach(item -> {
-            CheckBox loSelectCheckBox = item.getSelect();
-            loSelectCheckBox.setOnAction(event -> {
-                if (tblViewReservation.getItems().stream().allMatch(tableItem -> tableItem.getSelect().isSelected())) {
-                    selectAll.setSelected(true);
-                } else {
-                    selectAll.setSelected(false);
-                }
-            });
-        });
-        selectAll.setOnAction(event -> {
-            boolean newValue = selectAll.isSelected();
-            if (!tblViewReservation.getItems().isEmpty()) {
-                tblViewReservation.getItems().forEach(item -> item.getSelect().setSelected(newValue));
-            }
-        });
         tblindex03.setCellValueFactory(new PropertyValueFactory<>("tblindex02_reservation"));
         tblindex04.setCellValueFactory(new PropertyValueFactory<>("tblindex03_reservation"));
         tblindex05.setCellValueFactory(new PropertyValueFactory<>("tblindex04_reservation"));
@@ -187,5 +176,44 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
             });
         });
 
+    }
+
+    private VSPReservationInquirers getResrvSelectedItem() {
+        return tblViewReservation.getSelectionModel().getSelectedItem();
+    }
+
+    private void initTableKeyPressed() {
+        tblViewReservation.setOnKeyPressed(event -> {
+            if (oTransReserve.getEditMode() == EditMode.ADDNEW || oTransReserve.getEditMode() == EditMode.UPDATE) {
+                if (event.getCode().equals(KeyCode.DELETE)) {
+                    VSPReservationInquirers selectedResrvLabor = getResrvSelectedItem();
+                    if (selectedResrvLabor != null) {
+                        // Confirm removal from the user
+                        if (ShowMessageFX.YesNo(null, "Remove Confirmation", "Are you sure you want to remove this advances?")) {
+                            String lsRow = selectedResrvLabor.getTblindex01_reservation();
+                            int lnRow = Integer.parseInt(lsRow);
+
+                            // Remove the labor from oTrans
+                            oTransReserve.removeVSPReservation(lnRow - 1);
+                            ShowMessageFX.Information(null, pxeModuleName, "Removed advances successfully");
+                            loadReservationTable();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, "No advances selected to remove.");
+                    }
+                }
+            }
+        });
+    }
+
+    @FXML
+    private void tblViewReservation_Clicked(MouseEvent event) {
+        if (oTransReserve.getEditMode() == EditMode.ADDNEW || oTransReserve.getEditMode() == EditMode.UPDATE) {
+            pnRow = tblViewReservation.getSelectionModel().getSelectedIndex();
+            if (pnRow < 0 || pnRow >= tblViewReservation.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid reservation information.");
+                return;
+            }
+        }
     }
 }

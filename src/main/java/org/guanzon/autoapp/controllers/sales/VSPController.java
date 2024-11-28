@@ -1606,13 +1606,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         comboBox37.setValue(null);
     }
 
-    private void clearDiscountFields() {
-        CustomCommonUtil.setText("0.00", txtField45, txtField46, txtField47, txtField48, txtField49,
-                txtField50, txtField51, txtField52, txtField53, txtField54, txtField56);
-        oTrans.getMasterModel().getMasterModel().setAddlDsc(new BigDecimal(0.00));
-        oTrans.getMasterModel().getMasterModel().setBndleDsc(new BigDecimal(0.00));
-    }
-
     private boolean isInquiryEmpty() {
         oTrans.getMasterModel().getMasterModel().setClientID("");
         oTrans.getMasterModel().getMasterModel().setInqCltID("");
@@ -1622,6 +1615,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         oTrans.getMasterModel().getMasterModel().setCSNo("");
         oTrans.getMasterModel().getMasterModel().setVhclDesc("");
         oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
+        oTrans.getMasterModel().getMasterModel().setEndPlate("");
         oTrans.getMasterModel().getMasterModel().setKeyNo("");
         oTrans.getMasterModel().getMasterModel().setPayMode("");
         oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
@@ -1640,6 +1634,34 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         oTrans.getMasterModel().getMasterModel().setDealrAmt(new BigDecimal(0.00));
         oTrans.getMasterModel().getMasterModel().setSlsInRte(0.00);
         oTrans.getMasterModel().getMasterModel().setSlsInAmt(new BigDecimal(0.00));
+
+        oTrans.getMasterModel().getMasterModel().setFleetDsc(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setSPFltDsc(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setPromoDsc(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setAddlDsc(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setBndleDsc(new BigDecimal(0.00));
+
+        oTrans.getMasterModel().getMasterModel().setTPLAmt(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setTPLStat("");
+        oTrans.getMasterModel().getMasterModel().setTPLBrIns("");
+        oTrans.getMasterModel().getMasterModel().setTPLInsNm("");
+
+        oTrans.getMasterModel().getMasterModel().setCompAmt(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setCompStat("");
+
+        oTrans.getMasterModel().getMasterModel().setCOMInsNm("");
+        oTrans.getMasterModel().getMasterModel().setCOMBrIns("");
+
+        oTrans.getMasterModel().getMasterModel().setInsurTyp("");
+
+        oTrans.getMasterModel().getMasterModel().setLTOAmt(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setLTOStat("");
+
+        oTrans.getMasterModel().getMasterModel().setOthrChrg(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setOthrDesc("");
+
+        oTrans.getMasterModel().getMasterModel().setChmoAmt(new BigDecimal(0.00));
+        oTrans.getMasterModel().getMasterModel().setChmoStat("");
         return true;
     }
 
@@ -1650,9 +1672,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         if (isInquiryEmpty()) {
-                            clearFields();
+                            clearInquiryFields();
                             clearFinanceFields();
-                            clearDiscountFields();
                         }
                     }
                 }
@@ -1689,91 +1710,85 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        txtField21.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                setVchlClass(txtField20, txtField22, txtField23,
-                                        txtField25);
-                            }
-                        }
+        txtField21.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        setVchlClass(txtField20, txtField22, txtField23,
+                                txtField25);
                     }
                 }
-                );
-        txtField22.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                setVchlClass(txtField20, txtField21, txtField23,
-                                        txtField25);
-                            }
-                        }
+            }
+        }
+        );
+        txtField22.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        setVchlClass(txtField20, txtField21, txtField23,
+                                txtField25);
                     }
                 }
-                );
-        txtField23.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                setVchlClass(txtField20, txtField21, txtField22,
-                                        txtField25);
-                            }
-                        }
+            }
+        }
+        );
+        txtField23.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        setVchlClass(txtField20, txtField21, txtField22,
+                                txtField25);
                     }
                 }
-                );
-        txtField32.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty()) {
-                                oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
-                                oTrans.getMasterModel().getMasterModel().setBankName("");
-                                if (!oTrans.getVSPFinanceList().isEmpty()) {
-                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
-                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
-                                    oTrans.getVSPFinanceModel().getVSPFinanceModel().setDiscount(new BigDecimal(0.00));
-                                }
-                                txtField33.setText("0.00");
-                            }
+            }
+        }
+        );
+        txtField32.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty()) {
+                        oTrans.getMasterModel().getMasterModel().setBnkAppCD("");
+                        oTrans.getMasterModel().getMasterModel().setBankName("");
+                        if (!oTrans.getVSPFinanceList().isEmpty()) {
+                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankID("");
+                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setBankname("");
+                            oTrans.getVSPFinanceModel().getVSPFinanceModel().setDiscount(new BigDecimal(0.00));
                         }
-                    }
-                    initFields(pnEditMode);
-                }
-                );
-        txtField45.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
-                                oTrans.getMasterModel().getMasterModel().setFleetDsc(new BigDecimal(0.00));
-                                oTrans.getMasterModel().getMasterModel().setDue2Sup(0.00);
-                                oTrans.getMasterModel().getMasterModel().setDue2Dlr(0.00);
-                                CustomCommonUtil.setText("0.00", txtField45, txtField46, txtField47);
-                                initFields(pnEditMode);
-                            }
-                        }
+                        txtField33.setText("0.00");
                     }
                 }
-                );
-        txtField48.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (newValue != null) {
-                            if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
-                                oTrans.getMasterModel().getMasterModel().setSPFltDsc(new BigDecimal(0.00));
-                                oTrans.getMasterModel().getMasterModel().setSPFD2Sup(0.00);
-                                oTrans.getMasterModel().getMasterModel().setSPFD2Dlr(0.00);
-                                CustomCommonUtil.setText("0.00", txtField48, txtField49, txtField50);
-                                initFields(pnEditMode);
-                            }
-                        }
+            }
+            initFields(pnEditMode);
+        }
+        );
+        txtField45.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+                        oTrans.getMasterModel().getMasterModel().setFleetDsc(new BigDecimal(0.00));
+                        oTrans.getMasterModel().getMasterModel().setDue2Sup(0.00);
+                        oTrans.getMasterModel().getMasterModel().setDue2Dlr(0.00);
+                        CustomCommonUtil.setText("0.00", txtField45, txtField46, txtField47);
+                        initFields(pnEditMode);
                     }
                 }
-                );
+            }
+        }
+        );
+        txtField48.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (newValue != null) {
+                    if (newValue.isEmpty() || newValue.equals("0.00") || newValue.equals("0.0") || newValue.equals("0")) {
+                        oTrans.getMasterModel().getMasterModel().setSPFltDsc(new BigDecimal(0.00));
+                        oTrans.getMasterModel().getMasterModel().setSPFD2Sup(0.00);
+                        oTrans.getMasterModel().getMasterModel().setSPFD2Dlr(0.00);
+                        CustomCommonUtil.setText("0.00", txtField48, txtField49, txtField50);
+                        initFields(pnEditMode);
+                    }
+                }
+            }
+        }
+        );
         txtField51.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -1827,6 +1842,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         oTrans.getMasterModel().getMasterModel().setVhclDesc("");
         oTrans.getMasterModel().getMasterModel().setVhclFDsc("");
         oTrans.getMasterModel().getMasterModel().setKeyNo("");
+        oTrans.getMasterModel().getMasterModel().setEndPlate("");
         CustomCommonUtil.setText("", txtFields);
         textArea26.setText("");
     }
@@ -1835,6 +1851,36 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     public void clearTables() {
         laborData.clear();
         accessoriesData.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void clearInquiryFields() {
+        CustomCommonUtil.setText("", txtField03, txtField04, txtField06, txtField07, txtField08,
+                txtField10, txtField11, txtField12, txtField13, txtField14, txtField16, txtField18,
+                txtField19, txtField20, txtField21, txtField22, txtField23, txtField24, txtField25, txtField32, txtField36,
+                txtField62, txtField65, txtField75, txtField81);
+
+        CustomCommonUtil.setText("", textArea17, textArea26);
+        CustomCommonUtil.setText("0.00", txtField30, txtField31, txtField33, txtField34, txtField35, txtField38,
+                txtField39, txtField40, txtField41, txtField42, txtField43, txtField44, txtField45,
+                txtField46, txtField47, txtField48, txtField49, txtField50, txtField51, txtField52, txtField53,
+                txtField54, txtField55, txtField56, txtField57, txtField58, txtField59, txtField60,
+                txtField63, txtField68, txtField70, txtField72, txtField73, txtField74, txtField76,
+                txtField77, txtField78, txtField79, txtField80, txtField82, txtField83, txtField84, txtField85);
+        txtField34.setText("0");
+        List<ComboBox> loComboBox = Arrays.asList(comboBox05, comboBox29, comboBox37, comboBox61,
+                comboBox64, comboBox66, comboBox67, comboBox69, comboBox71);
+        loComboBox.forEach(cmB -> cmB.setValue(null));
+        datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        brandNewCat.setSelected(false);
+        preOwnedCat.setSelected(false);
+        CustomCommonUtil.setSelected(false, chckBoxSpecialAccount, chckBoxRustProof,
+                chckBoxPermaShine, chckBoxUndercoat, chckBoxTint);
+        tgUnitCategory.selectToggle(null);
+
+        CustomCommonUtil.setText("", lblDRNo, lblSINo, lblVSPStatus, lblPrint,
+                lblRFNo, lblApproveDate);
+        CustomCommonUtil.switchToTab(tabMain, ImTabPane);
     }
 
     @Override
