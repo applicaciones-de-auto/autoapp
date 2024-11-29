@@ -249,7 +249,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         txtField25.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getChckAmt()));
         txtField26.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getCardAmt()));
         txtField27.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getOthrAmt()));
-        txtField28.setText("0.00");
+        txtField28.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getGiftAmt()));
         txtField29.setText("0.00");
         String lsStatus = "";
         switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
@@ -1072,6 +1072,16 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         break;
                     case "GC":
                         lsPayMdex = "GIFT CHECK";
+                        if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getGCertNo() != null) {
+                            lsRefNoxx = oTrans.getSIPaymentModel().getDetailModel(lnCtr).getGCertNo();
+                        }
+                        if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getPayAmt() != null) {
+                            lsAmountx = CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(lnCtr).getPayAmt());
+                            lsAllAmtx = CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(lnCtr).getPayAmt());
+                        }
+                        if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getGCRemrks() != null) {
+                            lsRemarks = oTrans.getSIPaymentModel().getDetailModel(lnCtr).getGCRemrks();
+                        }
                         break;
                     case "OP":
                         lsPayMdex = "ONLINE PAYMENT";

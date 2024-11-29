@@ -566,10 +566,10 @@
                                         </Button>
                                         <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="42.0" />
+                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
                                                 <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                    <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+                                                <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" vgrow="NEVER" />
@@ -580,7 +580,7 @@
                                                         <Font name="Arial" size="12.0" />
                                                     </font>
                                                 </Label>
-                                                <Label text="Printed:" textFill="WHITE">
+                                                <Label maxWidth="1.7976931348623157E308" text="Printed:" textFill="WHITE">
                                                     <font>
                                                         <Font name="Arial" size="12.0" />
                                                     </font>

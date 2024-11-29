@@ -153,7 +153,7 @@ public class InvoicePaymentDetailsController implements Initializable {
 
     private void initCapitalizationFields() {
         CustomCommonUtil.setCapsLockBehavior(txtField03_Card, txtField04_Card, txtField05_Card,
-                txtField04_Check, txtField05_Check, txtField06_Check,
+                txtField04_Check, txtField05_Check, txtField06_Check, txtField01_Gift,
                 txtField04_Gift,
                 txtField03_Online, txtField04_Online);
         CustomCommonUtil.setCapsLockBehavior(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
@@ -168,6 +168,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         CustomCommonUtil.addTextLimiter(txtField02_Card, 16);
         CustomCommonUtil.addTextLimiter(txtField03_Card, 10);
         CustomCommonUtil.addTextLimiter(txtField04_Card, 10);
+        CustomCommonUtil.addTextLimiter(txtField01_Gift, 20);
     }
 
     private void loadMasterFields() {
@@ -247,21 +248,34 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void loadCheckFields() {
-        txtField01_Check.setText("");
-        txtField02_Check.setText("");
+//            txtField01_Check.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCNumber());
+
+//            txtField02_Check.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCNumber());
         datePicker03_Check.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        txtField04_Check.setText("");
-        txtField05_Check.setText("");
-        txtField06_Check.setText("");
-        textArea07_Check.setText("");
+
+//            txtField04_Check.setText("");
+//            txtField05_Check.setText("");
+//            txtField06_Check.setText("");
+//            textArea07_Check.setText("");
     }
 
     private void loadGiftFields() {
-        txtField01_Gift.setText("");
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo() != null) {
+            txtField01_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo());
+        }
+//        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).get()  != null) {
         txtField03_Gift.setText("");
-        txtField04_Gift.setText("");
+//        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
+            txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt()));
+        }
+//        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
         checkBox02_Gift.setSelected(false);
-        textArea05_Gift.setText("");
+//        }
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks() != null) {
+            textArea05_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks());
+        }
+
     }
 
     private void loadOnlineFields() {
@@ -305,6 +319,12 @@ public class InvoicePaymentDetailsController implements Initializable {
                 } else {
                     initFields();
                 }
+            }
+        });
+
+        checkBox02_Gift.setOnAction(e -> {
+            if (checkBox02_Gift.isSelected()) {
+                initGiftFields();
             }
         });
     }
@@ -424,11 +444,17 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (!nv) { // Lost Focus
             switch (lnIndex) {
                 case 1:
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCertNo(lsValue);
                     break;
                 case 4:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    if (lsValue.equals("0.00") || lsValue.equals("0") || lsValue.equals("0.0") || lsValue.isEmpty()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
+                        lsValue = "0.00";
+                    }
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(lsValue.replace(",", "")));
                     break;
             }
             loadGiftFields();
@@ -490,10 +516,10 @@ public class InvoicePaymentDetailsController implements Initializable {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 5:
-//                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCRemrks(lsValue);
                     break;
                 case 7:
-//                    oTrans.getMasterModel().getMasterModel().setRemarks(lsValue);
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCRemrks(lsValue);
                     break;
             }
         } else {
@@ -541,9 +567,15 @@ public class InvoicePaymentDetailsController implements Initializable {
                     break;
                 case "txtField02_Check":
                     break;
-                case "txtField01_Gift":
-                    break;
                 case "txtField03_Gift":
+                    loJSON = oTrans.searchPaymentBank(lsValue, pnRow);
+                    if (!"error".equals(loJSON.get("result"))) {
+                        txtField03_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName());
+                    } else {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                        txtField03_Gift.setText("");
+                        return;
+                    }
                     break;
                 case "txtField02_Online":
                     break;
@@ -577,8 +609,6 @@ public class InvoicePaymentDetailsController implements Initializable {
 //                        txtField01_Gift.setText("");
 //                        return;
 //                    }
-                    break;
-                case "txtField03_Gift":
                     break;
             }
             event.consume();
@@ -662,6 +692,13 @@ public class InvoicePaymentDetailsController implements Initializable {
         textArea05_Online.setText("");
     }
 
+    private void initGiftFields() {
+        txtField03_Gift.setDisable(true);
+        if (checkBox02_Gift.isSelected()) {
+            txtField03_Gift.setDisable(false);
+        }
+    }
+
     private void initFields() {
         CustomCommonUtil.setVisible(false, gridCard, gridCheck, gridGift, gridOnline, btnAdd, btnUpdate);
         CustomCommonUtil.setManaged(false, btnAdd, btnUpdate);
@@ -698,6 +735,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                 clearOnlineFields();
                 setGridPaneToTrue(gridGift);
                 loadGiftFields();
+                initGiftFields();
                 break;
             case 3:
                 clearCardFields();

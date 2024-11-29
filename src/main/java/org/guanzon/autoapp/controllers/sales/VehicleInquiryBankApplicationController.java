@@ -24,7 +24,6 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -350,17 +349,27 @@ public class VehicleInquiryBankApplicationController implements Initializable {
 
     private void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textAreaID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                default:
+                    break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
         }
     }
 
