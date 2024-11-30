@@ -2695,6 +2695,10 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     btnGatePass.setVisible(true);
                 }
 
+                if (oTrans.getMasterModel().getMasterModel().getGatePsNo() != null && !oTrans.getMasterModel().getMasterModel().getGatePsNo().isEmpty()) {
+                    btnGatePass.setManaged(false);
+                    btnGatePass.setVisible(false);
+                }
                 CustomCommonUtil.setVisible(true, btnEdit, btnCancelVSP);
                 CustomCommonUtil.setManaged(true, btnEdit, btnCancelVSP);
                 if (oTrans.getMasterModel().getMasterModel().getTranStat().equals(TransactionStatus.STATE_OPEN)) {

@@ -17,15 +17,21 @@ public class VehicleComponents {
     private CheckBox select;
     private SimpleStringProperty tblindex02_vc;
     private SimpleStringProperty tblindex03_vc;
+    private SimpleStringProperty tblindex04_vc;
+    private SimpleStringProperty tblindex05_vc;
 
     public VehicleComponents(String tblindex01_vc,
             String tblindex02_vc,
-            String tblindex03_vc
+            String tblindex03_vc,
+            String tblindex04_vc,
+            String tblindex05_vc
     ) {
         this.tblindex01_vc = new SimpleStringProperty(tblindex01_vc);
         this.select = new CheckBox();
         this.tblindex02_vc = new SimpleStringProperty(tblindex02_vc);
         this.tblindex03_vc = new SimpleStringProperty(tblindex03_vc);
+        this.tblindex04_vc = new SimpleStringProperty(tblindex04_vc);
+        this.tblindex05_vc = new SimpleStringProperty(tblindex05_vc);
     }
 
     public String getTblindex01_vc() {
@@ -60,4 +66,19 @@ public class VehicleComponents {
         this.tblindex03_vc.set(tblindex03_vc);
     }
 
+    public String getTblindex04_vc() {
+        return tblindex04_vc.get();
+    }
+
+    public void setTblindex04_vc(String tblindex04_vc) {
+        this.tblindex04_vc.set(tblindex04_vc);
+    }
+
+    public String getTblindex05_vc() {
+        return tblindex05_vc.get();
+    }
+
+    public void setTblindex05_vc(String tblindex05_vc) {
+        this.tblindex05_vc.set(tblindex05_vc);
+    }
 }

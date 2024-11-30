@@ -244,7 +244,7 @@
                                                         <Insets />
                                                     </opaqueInsets>
                                                 </GridPane>
-                                                <GridPane fx:id="gridGift" prefHeight="40.0" prefWidth="505.0" vgap="3.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                <GridPane fx:id="gridGift" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                                     <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
