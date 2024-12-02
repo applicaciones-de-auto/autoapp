@@ -221,9 +221,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             }
         }
         );
-        lblRFNo.setOnMouseEntered(event -> lblRFNo.setCursor(Cursor.HAND));
-        lblRFNo.setOnMouseExited(event -> lblRFNo.setCursor(Cursor.DEFAULT));
-
     }
 
     @Override
@@ -1517,7 +1514,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         case 4:
                             oTrans.getMasterModel().getMasterModel().setInsurTyp("0");
                             comboBox66.getSelectionModel().select(0);
-//                            oTrans.getMasterModel().getMasterModel().setInsurYr(0);
                             comboBox67.setValue("0");
                             break;
                         case 1:
@@ -1526,8 +1522,6 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             comboBox67.getItems().remove("0");
                             break;
                         case 3:
-//                            comboBox66.getItems().remove("NONE");
-//                            comboBox67.getItems().remove("0"); // Remove "0" when selecting indices 1-4
                             comboBox67.setValue(null);
                             break;
                     }
@@ -1541,16 +1535,15 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 int selectedIndex = comboBox66.getSelectionModel().getSelectedIndex();
                 if (selectedIndex >= 0) {
-                    // Ensure "0" is in the comboBox67 items list before setting the value
                     if (!comboBox67.getItems().contains("0")) {
-                        comboBox67.getItems().add(0, "0"); // Add "0" at the start of the list if it's not there
+                        comboBox67.getItems().add(0, "0");
                     }
                     if (selectedIndex == 0) {
                         comboBox67.setValue("0");
                     } else if (selectedIndex >= 1 && selectedIndex <= 4) {
-                        comboBox67.getItems().remove("0"); // Remove "0" when selecting indices 1-4
+                        comboBox67.getItems().remove("0");
                         comboBox67.setValue(null);
-                        oTrans.getMasterModel().getMasterModel().setInsurYr(null); // Use null to set the insurance year to null
+                        oTrans.getMasterModel().getMasterModel().setInsurYr(null);
                         comboBox67.getSelectionModel().clearSelection();
                     }
                     oTrans.getMasterModel().getMasterModel().setInsurTyp(String.valueOf(comboBox66.getSelectionModel().getSelectedIndex()));
@@ -1678,6 +1671,16 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                     }
                 }
                 initFields(pnEditMode);
+            }
+        });
+        lblRFNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.trim().isEmpty()) {
+                lblRFNo.setOnMouseEntered(event -> lblRFNo.setCursor(Cursor.HAND));
+                lblRFNo.setOnMouseExited(event -> lblRFNo.setCursor(Cursor.DEFAULT));
+            } else {
+                lblRFNo.setOnMouseEntered(null);
+                lblRFNo.setOnMouseExited(null);
+                lblRFNo.setCursor(Cursor.DEFAULT);
             }
         });
         txtField16.textProperty().addListener((observable, oldValue, newValue) -> {

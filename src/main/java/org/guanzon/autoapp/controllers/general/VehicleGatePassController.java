@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -133,7 +130,6 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
         initJobDoneTable();
         initVehicleComponentsTable();
-
         initCapitalizationFields();
         initButtonsClick();
         initComboBoxItems();
@@ -290,10 +286,11 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     loadMasterFields();
                     loadJobDoneTable();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
+
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnEdit":
                 loJSON = oTrans.updateTransaction();
@@ -301,6 +298,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, "Warning", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
@@ -319,7 +317,9 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                         for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
                             if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lItemCode)
                                     && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lItemType)) {
-                                ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add default item, " + lItemCode + " already exist.");
+                                if (pnEditMode == EditMode.ADDNEW) {
+                                    ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add default item, " + lItemCode + " already exist.");
+                                }
                                 isItemExist = true;
                                 break;
                             }
@@ -334,19 +334,94 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     }
                     loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, "Sales Job Order Information", (String) loJSON.get("message"));
-                        CommonUtils.closeStage(btnSave);
+                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        pnEditMode = oTrans.getEditMode();
+                        initFields(pnEditMode);
+                        if (pbOpenEvent) {
+                            CommonUtils.closeStage(btnSave);
+                        }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     }
                 }
                 break;
+//            case "btnSave":
+//                if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
+//                    ObservableList<VehicleComponents> selectedItems = FXCollections.observableArrayList();
+//                    ObservableList<VehicleComponents> unselectedItems = FXCollections.observableArrayList();
+//
+//                    // Separate selected and unselected items
+//                    for (VehicleComponents item : tblViewVehicleComponents.getItems()) {
+//                        if (item.getSelect().isSelected()) {
+//                            selectedItems.add(item);
+//                        } else {
+//                            unselectedItems.add(item);
+//                        }
+//                    }
+//
+//                    // Add new items from selectedItems
+//                    for (VehicleComponents item : selectedItems) {
+//                        String lItemCode = item.getTblindex03_vc();
+//                        String lItemType = item.getTblindex04_vc();
+//                        boolean isItemExist = false;
+//
+//                        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
+//                            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lItemCode)
+//                                    && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lItemType)) {
+//                                if (pnEditMode == EditMode.ADDNEW) {
+//                                    ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add default item, " + lItemCode + " already exist.");
+//                                }
+//                                isItemExist = true;
+//                                break;
+//                            }
+//                        }
+//
+//                        if (!isItemExist) {
+//                            oTrans.addVGPItem();
+//                            int fnRow = oTrans.getVGPItemList().size() - 1;
+//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setItemType("d");
+//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setItemCode(lItemCode);
+//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setQuantity(1);
+//                        }
+//                    }
+//
+//                    // Remove unselected items
+//                    for (VehicleComponents item : unselectedItems) {
+//                        String lsItemCode = item.getTblindex03_vc();
+//                        String lsItemType = item.getTblindex04_vc();
+//
+//                        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
+//                            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lsItemCode)
+//                                    && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lsItemType)) {
+//                                oTrans.removeVGPItem(lnCtr);
+//                            }
+//                        }
+//                    }
+//
+//                    loJSON = oTrans.saveTransaction();
+//                    if ("success".equals((String) loJSON.get("result"))) {
+//                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+//                        pnEditMode = oTrans.getEditMode();
+//                        initFields(pnEditMode);
+//                        if (pbOpenEvent) {
+//                            CommonUtils.closeStage(btnSave);
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+//                    }
+//                }
+//                break;
+
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
                     clearTables();
                     oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
                     pnEditMode = EditMode.UNKNOWN;
+                }
+                initFields(pnEditMode);
+                if (pbOpenEvent) {
+                    CommonUtils.closeStage(btnCancel);
                 }
                 break;
             case "btnBrowse":
@@ -361,11 +436,13 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 loJSON = oTrans.searchTransaction("", false);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
+                    loadJobDoneTable();
+                    loadVehicleComponentsTable();
                     pnEditMode = oTrans.getEditMode();
-                    initFields(pnEditMode);
                 } else {
                     ShowMessageFX.Warning(null, "Search Vehicle Gate Pass Information", (String) loJSON.get("message"));
                 }
+                initFields(pnEditMode);
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to close this form")) {
@@ -397,7 +474,6 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                 break;
         }
-        initFields(pnEditMode);
     }
 
     @Override
@@ -431,26 +507,32 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
     }
 
     @Override
-    public void initFields(int fnValue) {
+    public void initFields(int fnValue
+    ) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05, datePicker02);
         CustomCommonUtil.setVisible(false, btnPrint, btnVGPCancel, btnEdit);
+        CustomCommonUtil.setManaged(false, btnPrint, btnVGPCancel, btnEdit);
         tblIndex01_VComp.setVisible(false);
         tblIndex02_VComp.setVisible(false);
-        CustomCommonUtil.setManaged(false, btnPrint, btnVGPCancel, btnEdit);
         if (pbOpenEvent) {
-            btnSave.setManaged(lbShow);
-            btnSave.setVisible(lbShow);
-            CustomCommonUtil.setVisible(false, btnCancel, btnAdd, btnBrowse);
-            CustomCommonUtil.setManaged(false, btnCancel, btnAdd, btnBrowse);
+            CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
+            CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
+            CustomCommonUtil.setVisible(false, btnAdd, btnBrowse);
+            CustomCommonUtil.setManaged(false, btnAdd, btnBrowse);
             CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05);
             if (fnValue == EditMode.READY) {
                 if (!lblStatus.getText().equals("Cancelled")) {
-                    CustomCommonUtil.setVisible(true, btnPrint, btnVGPCancel);
-                    CustomCommonUtil.setManaged(true, btnPrint, btnVGPCancel);
+                    CustomCommonUtil.setVisible(true, btnEdit, btnPrint, btnVGPCancel);
+                    CustomCommonUtil.setManaged(true, btnEdit, btnPrint, btnVGPCancel);
                 }
+                tblIndex02_VComp.setVisible(true);
             }
-            tblIndex01_VComp.setVisible(false);
-            tblIndex02_VComp.setVisible(true);
+
+            if (lbShow) {
+                CustomCommonUtil.setDisable(false, comboBox03, comboBox04, txtField05, datePicker02);
+                tblIndex01_VComp.setVisible(true);
+            }
         } else {
             btnAdd.setVisible(!lbShow);
             btnAdd.setManaged(!lbShow);
@@ -471,131 +553,62 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 }
 
             }
-            tblIndex01_VComp.setVisible(true);
-            tblIndex02_VComp.setVisible(false);
         }
 
-        if (pbIsClicked) {
-            btnSave.setManaged(false);
-            btnSave.setVisible(false);
-            CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05, datePicker02);
-        }
+//        if (pbIsClicked) {
+//            btnSave.setManaged(false);
+//            btnSave.setVisible(false);
+//            CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05, datePicker02);
+//        }
     }
 
-//    private void loadJobDoneTable() {
-//        jobDoneData.clear();
-//        ObservableList<JobDone> allData = FXCollections.observableArrayList();
-//
-//        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
-//            String itemType = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType());
-//            if ("d".equals(itemType)) {
-//                continue;
-//            }
-//
-//            String lsItem = "";
-//            String lsDescID = "";
-//            String lsDesc = "";
-//            String lsJoNo = "";
-//
-//            switch (itemType) {
-//                case "l": // LABOR
-//                    lsItem = "LABOR";
-//                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
-//                    lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
-//                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
-//                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
-//                    }
-//                    break;
-//                case "p": // PARTS
-//                    lsItem = "PARTS";
-//                    lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
-//                    lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
-//                    if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null) {
-//                        lsJoNo = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo());
-//                    }
-//                    break;
-//            }
-//
-//            allData.add(new JobDone(
-//                    "", // Row number will be set later
-//                    lsItem,
-//                    lsDescID,
-//                    lsDesc,
-//                    String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getQuantity()),
-//                    lsJoNo,
-//                    String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getReleased()),
-//                    "" // Any other default value
-//            ));
-//        }
-//
-//        // Use FilteredList to filter and update row numbers
-//        FilteredList<JobDone> filteredData = new FilteredList<>(allData, item -> true); // Modify predicate as needed
-//
-//        // Reset row numbers
-//        int rowNumber = 1;
-//        for (JobDone item : filteredData) {
-//            item.setTblindex01_done(String.valueOf(rowNumber)); // Assuming tblindex01 is the row number field
-//            rowNumber++;
-//        }
-//
-//        // Update the table view
-//        jobDoneData.setAll(filteredData);
-//        tblViewJobDone.setItems(jobDoneData);
-//    }
     private void loadJobDoneTable() {
         jobDoneData.clear();
         ObservableList<JobDone> allData = FXCollections.observableArrayList();
-
-        for (int lnCtr = 0; lnCtr < oTrans.getVGPItemList().size(); lnCtr++) {
+        String lsItem = "";
+        String lsDescID = "";
+        String lsDesc = "";
+        String lsJoNo = "";
+        String lsType = "";
+        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
             String itemType = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType());
             if (!"d".equals(itemType)) {
-                String lsItem = "";
-                String lsDescID = "";
-                String lsDesc = "";
-                String lsJoNo = "";
-                String lsType = "";
                 switch (itemType) {
-                    case "l": // LABOR
+                    case "l":
                         lsItem = "LABOR";
-                        lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
-                        lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc());
+                        lsDescID = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode();
+                        lsDesc = oTrans.getVGPItemModel().getDetailModel(lnCtr).getLaborDsc();
                         lsJoNo = oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null
-                                ? String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo())
+                                ? oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo()
                                 : "";
-                        lsType = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType());
+                        lsType = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType();
                         break;
-                    case "p": // PARTS
+                    case "p":
                         lsItem = "PARTS";
-                        lsDescID = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
-                        lsDesc = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
+                        lsDescID = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode();
+                        lsDesc = oTrans.getVGPItemModel().getDetailModel(lnCtr).getStockDsc();
                         lsJoNo = oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo() != null
-                                ? String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo())
+                                ? oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo()
                                 : "";
-                        lsType = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType());
+                        lsType = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType();
                         break;
                 }
 
                 allData.add(new JobDone(
-                        "", // Row number will be set later
+                        "",
                         lsItem,
                         lsDescID,
                         lsDesc,
                         String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getQuantity()),
                         lsJoNo,
                         String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getReleased()),
-                        lsType // Any other default value
+                        lsType
                 ));
             }
         }
 
-        // Debug: Print allData
-        System.out.println("All Data:");
-        allData.forEach(item -> System.out.println(item.getTblindex02_done() + " - " + item.getTblindex08_done()));
-
-        // Use FilteredList to filter and update row numbers (no exclusion by itemCode)
         FilteredList<JobDone> filteredData = new FilteredList<>(allData, item -> true);
 
-        // Reset row numbers
         int rowNumber = 1;
         for (JobDone item : filteredData) {
             item.setTblindex01_done(String.valueOf(rowNumber));
@@ -626,7 +639,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
     private void loadVehicleComponentsTable() {
         Map<String, String> lsItemCodeMap = new HashMap<>();
-        for (int lnCtr = 0; lnCtr < oTrans.getVGPItemList().size(); lnCtr++) {
+        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
             String lsItmType = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType();
             if ("d".equals(lsItmType)) {
                 String lsItemCde = oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode();
@@ -637,9 +650,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         compoData.clear();
         String lsItemDesc = "";
         String lsItemCode = "";
-        String lsReleased = "N";  // Default to "N"
+        String lsReleased = "N";
         JSONObject loJSON = oTrans.loadDefaultItem();
-
         if ("success".equals((String) loJSON.get("result"))) {
             for (int lnCtr = 0; lnCtr <= oTrans.getDefaultItemList().size() - 1; lnCtr++) {
                 if (oTrans.getDefaultItemModel().getDetailModel(lnCtr).getItemDesc() != null) {
@@ -657,26 +669,17 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                         lsReleased
                 );
 
-                // If itemCode is in the map, mark it as selected
                 if (lsItemCodeMap.containsKey(lsItemCode)) {
                     item.getSelect().setSelected(true);
+                    item.setTblindex05_vc("Y");
+                } else {
+                    item.setTblindex05_vc("N");
                 }
-
-                // Add item to data list
                 compoData.add(item);
             }
 
-            // Check if all items are selected and update `lsReleased`
-            boolean allSelected = compoData.stream().allMatch(item -> item.getSelect().isSelected());
-            lsReleased = allSelected ? "Y" : "N";
-
-            // Update the released column for each item based on the selection status
-            for (VehicleComponents item : compoData) {
-                item.setTblindex05_vc(lsReleased);
-            }
         }
 
-        // Set the table view items
         tblViewVehicleComponents.setItems(compoData);
     }
 
