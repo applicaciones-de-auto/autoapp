@@ -264,7 +264,6 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void loadGiftFields() {
-        JSONObject loJSON = new JSONObject();
         try {
             if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo() != null) {
                 txtField01_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo());
@@ -273,17 +272,20 @@ public class InvoicePaymentDetailsController implements Initializable {
             if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
                 txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt()));
             }
-//        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
-            checkBox02_Gift.setSelected(false);
-//        }
-//            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks() != null) {
-//                textArea05_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks());
-//            }
+
+            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks() != null) {
+                textArea05_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks());
+            }
+
+            JSONObject loJSON = new JSONObject();
             String ljPayload = oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod();
-            if (!ljPayload.isEmpty() || !ljPayload.trim().isEmpty()) {
+            if (!ljPayload.equals("{}")) {
                 JSONParser loParser = new JSONParser();
                 loJSON = (JSONObject) loParser.parse(ljPayload);
-//                txtField03_Gift.setText("TEST");
+                txtField03_Gift.setText((String) loJSON.get("sSubsidze"));
+            }
+            if (!ljPayload.equals("{}")) {
+                checkBox02_Gift.setSelected(true);
             }
         } catch (ParseException ex) {
             Logger.getLogger(InvoicePaymentDetailsController.class.getName()).log(Level.SEVERE, null, ex);
@@ -460,6 +462,10 @@ public class InvoicePaymentDetailsController implements Initializable {
                 case 1:
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCertNo(lsValue);
                     break;
+                case 3:
+                    loJSON.put("sSubsidze", lsValue);
+                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod(loJSON.toJSONString());
+                    break;
                 case 4:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
@@ -544,10 +550,11 @@ public class InvoicePaymentDetailsController implements Initializable {
     private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card,
                 txtField01_Check, txtField02_Check, txtField04_Check, txtField05_Check, txtField06_Check,
-                txtField01_Gift, txtField03_Gift, txtField04_Gift,
+                txtField01_Gift, txtField04_Gift,
                 txtField02_Online, txtField03_Online, txtField04_Online);
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
         txtField01_Gift.setOnKeyPressed(this::txtField_Gift_KeyPressed);
+        txtField03_Gift.setOnKeyPressed(this::txtField_Gift_KeyPressed);
         List<TextArea> loTxtArea = Arrays.asList(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
         loTxtArea.forEach(tf -> tf.setOnKeyPressed(event -> textArea_KeyPressed(event)));
 
@@ -658,8 +665,17 @@ public class InvoicePaymentDetailsController implements Initializable {
         switch (lsButton) {
             case "btnAdd":
             case "btnUpdate":
+                JSONObject loJSON = oTrans.computeSIAmount(true);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    return;
+                }
                 if (isValidEntry()) {
-                    if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod().isEmpty()) {
+                    if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod() != null) {
+                        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod().isEmpty()) {
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod("{}");
+                        }
+                    } else {
                         oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod("{}");
                     }
 
@@ -669,6 +685,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                         CommonUtils.closeStage(btnUpdate);
                     }
                 }
+
                 break;
             case "btnClose":
                 switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
@@ -738,11 +755,6 @@ public class InvoicePaymentDetailsController implements Initializable {
         txtField03_Gift.setDisable(true);
         if (checkBox02_Gift.isSelected()) {
             txtField03_Gift.setDisable(false);
-        }
-        if (pbIsUpdate) {
-            if (!txtField03_Gift.getText().isEmpty()) {
-                checkBox02_Gift.setSelected(true);
-            }
         }
     }
 

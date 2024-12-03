@@ -40,11 +40,11 @@
                                                     <children>
                                                         <StackPane prefHeight="30.0" prefWidth="50.0">
                                                             <children>
-                                                <FontAwesomeIconView glyphName="MINUS" size="20" style="-fx-fill: #F4F4F4;" wrappingWidth="14.928571701049805">
-                                                   <StackPane.margin>
-                                                      <Insets top="5.0" />
-                                                   </StackPane.margin>
-                                                </FontAwesomeIconView>
+                                                                <FontAwesomeIconView glyphName="MINUS" size="20" style="-fx-fill: #F4F4F4;" wrappingWidth="14.928571701049805">
+                                                                    <StackPane.margin>
+                                                                        <Insets top="5.0" />
+                                                                    </StackPane.margin>
+                                                                </FontAwesomeIconView>
                                                             </children>
                                                         </StackPane>
                                                     </children>
@@ -53,7 +53,7 @@
                                                     <children>
                                                         <StackPane prefHeight="30.0" prefWidth="50.0">
                                                             <children>
-                                                <FontAwesomeIconView glyphName="CLOSE" size="20" style="-fx-fill: #F4F4F4;" />
+                                                                <FontAwesomeIconView glyphName="CLOSE" size="20" style="-fx-fill: #F4F4F4;" />
                                                             </children>
                                                         </StackPane>
                                                     </children>
@@ -125,6 +125,7 @@
                                                                         <MenuItem fx:id="mnuBinEntry" mnemonicParsing="false" onAction="#mnuBinEntryClicked" text="Bin" />
                                                                         <MenuItem fx:id="mnuSectionEntry" mnemonicParsing="false" onAction="#mnuSectionEntryClicked" text="Section" />
                                                                         <MenuItem fx:id="mnuItemLocEntry" mnemonicParsing="false" onAction="#mnuItemLocEntryClicked" text="Item Location" />
+                                                                        <MenuItem fx:id="mnuDefaultRlsItem" mnemonicParsing="false" onAction="#mnuDefaultRlsItemClicked" text="Default Released Item" />
                                                                     </items>
                                                                 </Menu>
                                                                 <Menu mnemonicParsing="false" text="Vehicle Description">

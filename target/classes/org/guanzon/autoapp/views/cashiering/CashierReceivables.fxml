@@ -49,9 +49,12 @@
                                     <children>
                                         <BorderPane>
                                             <top>
-                                                <AnchorPane style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                <AnchorPane prefHeight="25.0" prefWidth="1340.0" style="-fx-background-color: #F88222;" BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets bottom="3.0" />
+                                                    </BorderPane.margin>
                                                     <children>
-                                                        <HBox prefHeight="30.0" prefWidth="964.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="376.0" AnchorPane.topAnchor="0.0">
+                                                        <HBox prefHeight="30.0" prefWidth="964.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <children>
                                                                 <GridPane>
                                                                     <columnConstraints>
@@ -115,9 +118,6 @@
                                                             </graphic>
                                                         </Button>
                                                     </children>
-                                                    <BorderPane.margin>
-                                                        <Insets bottom="3.0" />
-                                                    </BorderPane.margin>
                                                 </AnchorPane>
                                             </top>
                                             <center>
@@ -164,7 +164,7 @@
                     <bottom>
                         <AnchorPane prefHeight="50.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <HBox spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>
                                         <GridPane>
                                             <columnConstraints>
@@ -234,7 +234,7 @@
         </StackPane>
     </children>
     <stylesheets>
-        <URL value="@../../css/MainPanelStyle.css" />
         <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
     </stylesheets>
 </AnchorPane>

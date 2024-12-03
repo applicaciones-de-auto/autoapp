@@ -10,9 +10,9 @@
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ImageView fitHeight="122.0" fitWidth="569.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="314.0" fitWidth="590.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@images/anyauto-logo.png" />
+                        <Image url="@images/logo.png" />
                     </image>
                     <StackPane.margin>
                         <Insets />

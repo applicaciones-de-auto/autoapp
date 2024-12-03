@@ -4,14 +4,17 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -546,6 +549,35 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 break;
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, toTitleCase(pxeModuleName), "Are you sure, do you want to save?")) {
+                    Map<CheckBox, String> paymentTypeMap = new HashMap<>();
+                    paymentTypeMap.put(checkBoxCard, "CARD");
+                    paymentTypeMap.put(checkBoxCheck, "CHECK");
+                    paymentTypeMap.put(checkBoxGftCheck, "GIFT CHECK");
+                    paymentTypeMap.put(checkBoxOnlnPymntServ, "ONLINE PAYMENT");
+                    paymentTypeMap.put(checkBoxCrdInv, "CREDIT MEMO");
+                    // Validate each selected checkbox
+                    for (Map.Entry<CheckBox, String> entry : paymentTypeMap.entrySet()) {
+                        CheckBox checkBox = entry.getKey();
+                        String paymentType = entry.getValue();
+
+                        if (checkBox.isSelected()) {
+                            boolean hasPaymentDetails = false;
+
+                            for (CheckInvoice item : tblViewCheck.getItems()) {
+                                if (paymentType.equals(item.getTblindex02())) {
+                                    hasPaymentDetails = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasPaymentDetails) {
+                                ShowMessageFX.Warning(null, toTitleCase(pxeModuleName),
+                                        "No payment details, for " + paymentType.toLowerCase() + " payment.");
+                                return;
+                            }
+                        }
+                    }
+
                     loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, toTitleCase(pxeModuleName), (String) loJSON.get("message"));
@@ -564,6 +596,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     }
                 }
                 break;
+
             case "btnInvCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure, do you want to cancel this " + pxeModuleName + "?")) {
                     loJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
@@ -810,8 +843,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        CustomCommonUtil.setDisable(true, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12, btnInsertAdvances);
-        CustomCommonUtil.setDisable(!lbShow, txtField01, datePicker02, txtField03,
+        CustomCommonUtil.setDisable(true, txtField01, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12, btnInsertAdvances);
+        CustomCommonUtil.setDisable(!lbShow, datePicker02, txtField03,
                 checkBoxNoPymnt, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck, checkBoxAllwMxPyr,
                 comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsCheckDetail);
@@ -856,6 +889,9 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck
             );
 
+        }
+        if (pnEditMode == EditMode.ADDNEW) {
+            txtField01.setDisable(!lbShow);
         }
         CustomCommonUtil.setVisible(false, btnInvCancel, btnEdit, btnPrint);
         CustomCommonUtil.setManaged(false, btnInvCancel, btnEdit, btnPrint);
@@ -1251,17 +1287,17 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 checkBoxCheck.setSelected(true);
                 psPayMode.add("CHECK");
             }
-            if (oTrans.getMasterModel().equals("GC")) {
+            if (lsPayMode.equals("GIFT CHECK")) {
                 checkBoxGftCheck.setSelected(true);
                 psPayMode.add("GC");
             }
-            if (lsPayMode.equals("OP")) {
+            if (lsPayMode.equals("ONLINE PAYMENT")) {
                 checkBoxOnlnPymntServ.setSelected(true);
                 psPayMode.add("OP");
             }
             if (lsPayMode.equals("CM")) {
                 checkBoxCrdInv.setSelected(true);
-                psPayMode.add("OP");
+                psPayMode.add("CM");
             }
         }
         if (!tblViewTrans.getItems().isEmpty()) {

@@ -234,6 +234,10 @@ public class VGPPrintController implements Initializable, ScreenInterface, GPrin
                         lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
                         lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getStockDsc());
                         break;
+                    case "d":
+                        lsDescID = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getItemCode());
+                        lsDesc = String.valueOf(oTransPrint.getVGPItemModel().getDetailModel(lnCtr).getDefltDsc());
+                        break;
                 }
                 vgpData.add(new JobDone(
                         String.valueOf(lnCtr + 1),

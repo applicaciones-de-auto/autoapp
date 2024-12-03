@@ -303,35 +303,60 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             case "btnSave":
                 if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
                     ObservableList<VehicleComponents> selectedItems = FXCollections.observableArrayList();
+                    ObservableList<VehicleComponents> unselectedItems = FXCollections.observableArrayList();
+
+                    // Separate selected and unselected items
                     for (VehicleComponents item : tblViewVehicleComponents.getItems()) {
                         if (item.getSelect().isSelected()) {
                             selectedItems.add(item);
+                        } else {
+                            unselectedItems.add(item);
                         }
                     }
+
+                    // Add new items from selectedItems
                     for (VehicleComponents item : selectedItems) {
-                        int lnRow = Integer.parseInt(item.getTblindex01_vc()) - 1;
-                        String lItemCode = item.getTblindex03_vc();
                         String lItemDesc = item.getTblindex02_vc();
+                        String lItemCode = item.getTblindex03_vc();
                         String lItemType = item.getTblindex04_vc();
                         boolean isItemExist = false;
+
                         for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
                             if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lItemCode)
                                     && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lItemType)) {
-                                if (pnEditMode == EditMode.ADDNEW) {
+                                if (pbOpenEvent && pnEditMode == EditMode.ADDNEW) {
                                     ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add default item, " + lItemCode + " already exist.");
                                 }
                                 isItemExist = true;
                                 break;
                             }
                         }
+
                         if (!isItemExist) {
                             oTrans.addVGPItem();
                             int fnRow = oTrans.getVGPItemList().size() - 1;
+                            oTrans.getVGPItemModel().getDetailModel(fnRow).setDefltDsc(lItemDesc);
                             oTrans.getVGPItemModel().getDetailModel(fnRow).setItemType("d");
                             oTrans.getVGPItemModel().getDetailModel(fnRow).setItemCode(lItemCode);
                             oTrans.getVGPItemModel().getDetailModel(fnRow).setQuantity(1);
+                            oTrans.getVGPItemModel().getDetailModel(fnRow).setReleased(1);
                         }
                     }
+
+                    // Remove unselected items
+                    for (VehicleComponents item : unselectedItems) {
+                        String lsItemCode = item.getTblindex03_vc();
+                        String lsItemType = item.getTblindex04_vc();
+
+                        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
+                            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lsItemCode)
+                                    && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lsItemType)) {
+                                oTrans.removeVGPItem(lnCtr);
+                                break;
+                            }
+                        }
+                    }
+
                     loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
@@ -345,73 +370,6 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     }
                 }
                 break;
-//            case "btnSave":
-//                if (ShowMessageFX.YesNo(null, "Vehicle Gate Pass Information Saving....", "Are you sure, do you want to save?")) {
-//                    ObservableList<VehicleComponents> selectedItems = FXCollections.observableArrayList();
-//                    ObservableList<VehicleComponents> unselectedItems = FXCollections.observableArrayList();
-//
-//                    // Separate selected and unselected items
-//                    for (VehicleComponents item : tblViewVehicleComponents.getItems()) {
-//                        if (item.getSelect().isSelected()) {
-//                            selectedItems.add(item);
-//                        } else {
-//                            unselectedItems.add(item);
-//                        }
-//                    }
-//
-//                    // Add new items from selectedItems
-//                    for (VehicleComponents item : selectedItems) {
-//                        String lItemCode = item.getTblindex03_vc();
-//                        String lItemType = item.getTblindex04_vc();
-//                        boolean isItemExist = false;
-//
-//                        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
-//                            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lItemCode)
-//                                    && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lItemType)) {
-//                                if (pnEditMode == EditMode.ADDNEW) {
-//                                    ShowMessageFX.Error(null, pxeModuleName, "Skipping, Failed to add default item, " + lItemCode + " already exist.");
-//                                }
-//                                isItemExist = true;
-//                                break;
-//                            }
-//                        }
-//
-//                        if (!isItemExist) {
-//                            oTrans.addVGPItem();
-//                            int fnRow = oTrans.getVGPItemList().size() - 1;
-//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setItemType("d");
-//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setItemCode(lItemCode);
-//                            oTrans.getVGPItemModel().getDetailModel(fnRow).setQuantity(1);
-//                        }
-//                    }
-//
-//                    // Remove unselected items
-//                    for (VehicleComponents item : unselectedItems) {
-//                        String lsItemCode = item.getTblindex03_vc();
-//                        String lsItemType = item.getTblindex04_vc();
-//
-//                        for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
-//                            if (oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemCode().equals(lsItemCode)
-//                                    && oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType().equals(lsItemType)) {
-//                                oTrans.removeVGPItem(lnCtr);
-//                            }
-//                        }
-//                    }
-//
-//                    loJSON = oTrans.saveTransaction();
-//                    if ("success".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
-//                        pnEditMode = oTrans.getEditMode();
-//                        initFields(pnEditMode);
-//                        if (pbOpenEvent) {
-//                            CommonUtils.closeStage(btnSave);
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-//                    }
-//                }
-//                break;
-
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                     clearFields();
@@ -507,8 +465,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
     }
 
     @Override
-    public void initFields(int fnValue
-    ) {
+    public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         CustomCommonUtil.setDisable(true, comboBox03, comboBox04, txtField05, datePicker02);
         CustomCommonUtil.setVisible(false, btnPrint, btnVGPCancel, btnEdit);
@@ -572,7 +529,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
         String lsType = "";
         for (int lnCtr = 0; lnCtr <= oTrans.getVGPItemList().size() - 1; lnCtr++) {
             String itemType = String.valueOf(oTrans.getVGPItemModel().getDetailModel(lnCtr).getItemType());
-            if (!"d".equals(itemType)) {
+            if (!"d".equals(itemType) && !oTrans.getVGPItemModel().getDetailModel(lnCtr).getDSNo().isEmpty()) {
                 switch (itemType) {
                     case "l":
                         lsItem = "LABOR";
@@ -617,6 +574,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
         // Update the table view
         jobDoneData.setAll(filteredData);
+
         tblViewJobDone.setItems(jobDoneData);
     }
 
