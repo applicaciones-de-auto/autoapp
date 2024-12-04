@@ -424,7 +424,7 @@
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
-                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>

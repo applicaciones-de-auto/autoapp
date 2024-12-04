@@ -499,10 +499,21 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        oTrans = new SalesInvoice(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadTransTable();
+                            loadCheckTable();
+                            loadPayModeCheckedFields();
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                     initFields(pnEditMode);
                 }
                 break;

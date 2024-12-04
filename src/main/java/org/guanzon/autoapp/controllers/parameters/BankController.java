@@ -92,6 +92,7 @@ public class BankController implements Initializable, ScreenInterface, GRecordIn
 
     @Override
     public boolean loadMasterFields() {
+
         txtField01.setText(oTrans.getModel().getModel().getBankID());
         if (oTrans.getModel().getModel().getBankType() != null && !oTrans.getModel().getModel().getBankType().trim().isEmpty()) {
             switch ((String.valueOf(oTrans.getModel().getModel().getBankType()))) {

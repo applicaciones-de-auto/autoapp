@@ -285,8 +285,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
                     loadJobDoneTable();
+                    loadVehicleComponentsTable();
                     pnEditMode = oTrans.getEditMode();
-
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
@@ -422,9 +422,12 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMasterFields();
                         loadJobDoneTable();
+                        loadVehicleComponentsTable();
                         pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
-                        CommonUtils.closeStage(btnVGPCancel);
+                        if (pbOpenEvent) {
+                            CommonUtils.closeStage(btnVGPCancel);
+                        }
                     }
                 }
                 break;

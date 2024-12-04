@@ -208,9 +208,17 @@ public class DefaultItemReleaseListController implements Initializable, ScreenIn
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new DefaultReleasedItems_Checklist(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new DefaultReleasedItems_Checklist(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getItemCode());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

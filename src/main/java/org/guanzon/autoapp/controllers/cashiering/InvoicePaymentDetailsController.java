@@ -404,7 +404,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                     oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCTraceNo(lsValue);
                     break;
                 case 5:
-                    if (lsValue.equals("0.00") || lsValue.equals("0") || lsValue.equals("0.0") || lsValue.isEmpty()) {
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
@@ -470,7 +470,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (lsValue.equals("0.00") || lsValue.equals("0") || lsValue.equals("0.0") || lsValue.isEmpty()) {
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
@@ -668,6 +668,20 @@ public class InvoicePaymentDetailsController implements Initializable {
                 JSONObject loJSON = oTrans.computeSIAmount(true);
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                    switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+                        case "CARD":
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(0.00));
+                            txtField05_Card.setText("0.00");
+                            break;
+                        case "CHECK":
+                            break;
+                        case "GC":
+                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(0.00));
+                            txtField04_Gift.setText("0.00");
+                            break;
+                        case "OP":
+                            break;
+                    }
                     return;
                 }
                 if (isValidEntry()) {
@@ -685,7 +699,6 @@ public class InvoicePaymentDetailsController implements Initializable {
                         CommonUtils.closeStage(btnUpdate);
                     }
                 }
-
                 break;
             case "btnClose":
                 switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
