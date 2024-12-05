@@ -9,6 +9,8 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -35,7 +37,6 @@ import org.guanzon.auto.model.cashiering.Model_Cashier_Receivables_Detail;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Detail;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
-import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
 
 /**
@@ -47,9 +48,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
 
     private GRider oApp;
     private CashierReceivables oTrans;
-    private final String pxeModuleName = "Cashier Receivables"; //Form Title
-    UnloadForm poUnload = new UnloadForm(); //Used in Close Button
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
+    private final String pxeModuleName = "Cashier Receivables Details"; //Form Title
     private ObservableList<Cashier_Receivables_Detail> poCARDetailsData = FXCollections.observableArrayList();
     ObservableList<String> cPayerType = FXCollections.observableArrayList("CUSTOMER", "BANK", "INSURANCE", "SUPPLIER", "ASSOCIATE");
     private String poTransNox = "";
@@ -93,6 +92,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initLoadTable();
+        initCapitalizationFields();
         comboBox03.setItems(cPayerType);
         if (poTransNox != null) {
             if (!poTransNox.isEmpty()) {
@@ -107,64 +107,102 @@ public class CashierReceivablesDetailController implements Initializable, Screen
         btnClose.setOnAction(this::handleButtonAction);
     }
 
+    private void initCapitalizationFields() {
+        List<TextField> loTxtField = Arrays.asList(txtField01, txtField04, txtField07);
+        loTxtField.forEach(tf -> CustomCommonUtil.setCapsLockBehavior(tf));
+        List<TextArea> loTxtArea = Arrays.asList(textArea05, textArea06, textArea08);
+        loTxtArea.forEach(ta -> CustomCommonUtil.setCapsLockBehavior(ta));
+
+    }
+
     private boolean loadMasterField() {
-        txtField01.setText(getCARModel().getTransNo() != null ? getCARModel().getTransNo() : "");
-        datePicker02.setValue(getCARModel().getTransactDte() != null
-                ? CustomCommonUtil.strToDate(SQLUtil.dateFormat(getCARModel().getTransactDte(), SQLUtil.FORMAT_SHORT_DATE))
-                : LocalDate.of(1900, Month.JANUARY, 1));
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getTransNo() != null) {
+            txtField01.setText(oTrans.getMasterModel().getDetailModel(pnRow).getTransNo());
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getTransactDte() != null) {
+            datePicker02.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(
+                    oTrans.getMasterModel().getDetailModel(pnRow).getTransactDte(), SQLUtil.FORMAT_SHORT_DATE)));
+        }
         int lnPyrType = -1;
-        switch (getCARModel().getPayerCde()) {
-            case "c":
-                lnPyrType = 0;
-                break;
-            case "b":
-                lnPyrType = 1;
-                break;
-            case "i":
-                lnPyrType = 2;
-                break;
-            case "s":
-                lnPyrType = 3;
-                break;
-            case "a":
-                lnPyrType = 4;
-                break;
+
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getPayerCde() != null) {
+            switch (oTrans.getMasterModel().getDetailModel(pnRow).getPayerCde()) {
+                case "c":
+                    lnPyrType = 0;
+                    break;
+                case "b":
+                    lnPyrType = 1;
+                    break;
+                case "i":
+                    lnPyrType = 2;
+                    break;
+                case "s":
+                    lnPyrType = 3;
+                    break;
+                case "a":
+                    lnPyrType = 4;
+                    break;
+            }
         }
         comboBox03.getSelectionModel().select(lnPyrType);
-        txtField04.setText(getCARModel().getFormNo() != null ? getCARModel().getFormNo() : "");
-        textArea05.setText(getCARModel().getSourceCD() != null ? getCARModel().getSourceCD() : "");
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getTransNo() != null) {
+            txtField04.setText(oTrans.getMasterModel().getDetailModel(pnRow).getFormNo());
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getSourceCD() != null) {
+            textArea05.setText(oTrans.getMasterModel().getDetailModel(pnRow).getSourceCD());
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getPayerNme() != null) {
+            txtField07.setText(oTrans.getMasterModel().getDetailModel(pnRow).getPayerNme());
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getPayerAdd() != null) {
+            textArea08.setText(oTrans.getMasterModel().getDetailModel(pnRow).getPayerAdd());
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getGrossAmt() != null) {
+            txtField09.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getDetailModel(pnRow).getGrossAmt()));
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getDiscAmt() != null) {
+            txtField10.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getDetailModel(pnRow).getDiscAmt()));
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getTotalAmt() != null) {
+            txtField11.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getDetailModel(pnRow).getTotalAmt()));
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getDeductn() != null) {
+            txtField12.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getDetailModel(pnRow).getDeductn()));
+        }
+        if (oTrans.getMasterModel().getDetailModel(pnRow).getAmtPaid() != null) {
+            txtField13.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getDetailModel(pnRow).getAmtPaid()));
+        }
         textArea06.setText("");
-        txtField07.setText(getCARModel().getPayerNme() != null ? getCARModel().getPayerNme() : "");
-        textArea08.setText(getCARModel().getAddress() != null ? getCARModel().getAddress() : "");
-        txtField09.setText(getCARModel().getGrossAmt() != null ? getNumberToFormat(getCARModel().getGrossAmt()) : "");
-        txtField10.setText(getCARModel().getDiscAmt() != null ? getNumberToFormat(getCARModel().getDiscAmt()) : "");
-        txtField11.setText(getCARModel().getTotalAmt() != null ? getNumberToFormat(getCARModel().getTotalAmt()) : "");
-        txtField12.setText(getCARModel().getDeductn() != null ? getNumberToFormat(getCARModel().getDeductn()) : "");
-        txtField13.setText(getCARModel().getAmtPaid() != null ? getNumberToFormat(getCARModel().getAmtPaid()) : "");
         return true;
-    }
-
-    private Model_Cashier_Receivables getCARModel() {
-        return oTrans.getMasterModel().getDetailModel(pnRow);
-    }
-
-    private Model_Cashier_Receivables_Detail getCARDetailModel(int fnRow) {
-        return oTrans.getDetailModel().getDetailModel(fnRow);
-    }
-
-    private String getNumberToFormat(Object foTblClmn) {
-        return poGetDecimalFormat.format(Double.parseDouble(String.valueOf(foTblClmn)));
     }
 
     private void loadCARDetail() {
         poCARDetailsData.clear();
+        String lsParticu = "";
+        String lsGrsAmnt = "";
+        String lsDscAmnt = "";
+        String lsTtLAmnt = "";
+        String lsDeAmntx = "";
+        String lsPdAmntx = "";
         for (int lnCtr = 0; lnCtr <= oTrans.getDetailModel().getDetailList().size() - 1; lnCtr++) {
-            String lsParticu = getCARDetailModel(lnCtr).getTranType() != null ? getCARDetailModel(lnCtr).getTranType() : "";
-            String lsGrsAmnt = getCARDetailModel(lnCtr).getGrossAmt() != null ? getNumberToFormat(getCARDetailModel(lnCtr).getGrossAmt()) : "";
-            String lsDscAmnt = getCARDetailModel(lnCtr).getDiscAmt() != null ? getNumberToFormat(getCARDetailModel(lnCtr).getDiscAmt()) : "";
-            String lsTtLAmnt = getCARDetailModel(lnCtr).getTotalAmt() != null ? getNumberToFormat(getCARDetailModel(lnCtr).getTotalAmt()) : "";
-            String lsDeAmntx = getCARDetailModel(lnCtr).getDeductn() != null ? getNumberToFormat(getCARDetailModel(lnCtr).getDeductn()) : "";
-            String lsPdAmntx = getCARDetailModel(lnCtr).getAmtPaid() != null ? getNumberToFormat(getCARDetailModel(lnCtr).getAmtPaid()) : "";
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getTranType() != null) {
+                lsParticu = oTrans.getDetailModel().getDetailModel(lnCtr).getTranType();
+            }
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt() != null) {
+                lsGrsAmnt = CustomCommonUtil.setDecimalFormat(oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt());
+            }
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt() != null) {
+                lsDscAmnt = CustomCommonUtil.setDecimalFormat(oTrans.getDetailModel().getDetailModel(lnCtr).getDiscAmt());
+            }
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt() != null) {
+                lsTtLAmnt = CustomCommonUtil.setDecimalFormat(oTrans.getDetailModel().getDetailModel(lnCtr).getTotalAmt());
+            }
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt() != null) {
+                lsDeAmntx = CustomCommonUtil.setDecimalFormat(oTrans.getDetailModel().getDetailModel(lnCtr).getDeductn());
+            }
+            if (oTrans.getDetailModel().getDetailModel(lnCtr).getGrossAmt() != null) {
+                lsPdAmntx = CustomCommonUtil.setDecimalFormat(oTrans.getDetailModel().getDetailModel(lnCtr).getAmtPaid());
+            }
             poCARDetailsData.add(new Cashier_Receivables_Detail(
                     String.valueOf(lnCtr + 1),
                     lsParticu,
@@ -174,6 +212,11 @@ public class CashierReceivablesDetailController implements Initializable, Screen
                     lsDeAmntx,
                     lsPdAmntx
             ));
+            lsParticu = "";
+            lsGrsAmnt = "";
+            lsDscAmnt = "";
+            lsDeAmntx = "";
+            lsPdAmntx = "";
         }
         tblViewCARDetail.setItems(poCARDetailsData);
     }

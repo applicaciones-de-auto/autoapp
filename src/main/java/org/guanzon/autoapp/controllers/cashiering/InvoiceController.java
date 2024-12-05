@@ -4,7 +4,6 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -231,7 +230,11 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
         txtField06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField07.setText("");
-        txtField08.setText(oTrans.getMasterModel().getMasterModel().getTaxIDNo().replaceAll("(.{3})(?=.)", "$1-"));
+        String lsTinID = "";
+        if (oTrans.getMasterModel().getMasterModel().getTaxIDNo() != null) {
+            lsTinID = oTrans.getMasterModel().getMasterModel().getTaxIDNo().replaceAll("(.{3})(?=.)", "$1-");
+        }
+        txtField08.setText(lsTinID);
         txtField09.setText("");
         txtField10.setText("");
 //        comboBox11.setValue("");

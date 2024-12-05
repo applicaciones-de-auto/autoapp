@@ -289,7 +289,7 @@
                                                                                                     <children>
                                                                                                         <Label id="LabelDesc" text="Application Type" GridPane.rowIndex="2" />
                                                                                                         <Label id="LabelDesc" text="Insurance Company" GridPane.rowIndex="1" />
-                                                                                                        <TextField fx:id="txtField16" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                                                                        <TextField fx:id="txtField16" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="1" />
                                                                                                         <ComboBox fx:id="comboBox17" prefHeight="24.0" prefWidth="247.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                                                                                                         <Label id="LabelDesc" text="Own Damage/Theft" GridPane.rowIndex="5" />
                                                                                                         <TextField fx:id="txtField19" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="5" />
