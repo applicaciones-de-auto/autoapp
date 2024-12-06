@@ -104,6 +104,13 @@ public class InvcInsertDetailController implements Initializable {
         CustomCommonUtil.inputDecimalOnly(txtField05, txtField06, txtField07);
     }
 
+    private boolean setToClass() {
+        oTrans.getSIDetailModel().getDetailModel(pnRow).setTranAmt(new BigDecimal(txtField05.getText().replace(",", "")));
+        oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(txtField06.getText().replace(",", "")));
+        oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(txtField08.getText().replace(",", "")));
+        return true;
+    }
+
     private void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(txtField02, txtField03, txtField04, txtField05, txtField06, txtField07);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
@@ -112,7 +119,9 @@ public class InvcInsertDetailController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
-
+        double lnTotalAmount = Double.parseDouble(txtField05.getText().replace(",", ""))
+                - Double.parseDouble(txtField06.getText().replace(",", ""))
+                - Double.parseDouble(txtField07.getText().replace(",", ""));
         if (lsValue == null) {
             return;
         }
@@ -142,7 +151,8 @@ public class InvcInsertDetailController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount.");
                         lsValue = "0.00";
                     }
-                    oTrans.getSIDetailModel().getDetailModel(pnRow).setTranAmt(new BigDecimal(lsValue.replace(",", "")));
+                    txtField05.setText(CustomCommonUtil.setDecimalFormat(lsValue));
+                    txtField08.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmount));
                     break;
                 case 6:
                     if (lsValue.isEmpty()) {
@@ -158,15 +168,16 @@ public class InvcInsertDetailController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, "Discount cannot greater than Gross Amount.");
                         lsValue = "0.00";
                     }
-                    oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(lsValue.replace(",", "")));
+                    txtField06.setText(CustomCommonUtil.setDecimalFormat(lsValue));
+                    txtField08.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmount));
                     break;
                 case 7:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
                     break;
+
             }
-            loadMasterFields();
         }
     };
 
@@ -199,7 +210,11 @@ public class InvcInsertDetailController implements Initializable {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnUpdate":
-                CommonUtils.closeStage(btnUpdate);
+                if (isValidEntry()) {
+                    if (setToClass()) {
+                        CommonUtils.closeStage(btnUpdate);
+                    }
+                }
                 break;
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
@@ -222,6 +237,10 @@ public class InvcInsertDetailController implements Initializable {
     private boolean isValidEntry() {
         if (txtField05.getText().equals(0.00) || txtField05.getText().equals("0.00")) {
             ShowMessageFX.Warning(null, "Warning", "Please enter gross Amount.");
+            return false;
+        }
+        if (Double.parseDouble(txtField08.getText()) < 0.00) {
+            ShowMessageFX.Warning(null, "Warning", "Invalid Total Amount.");
             return false;
         }
         return true;

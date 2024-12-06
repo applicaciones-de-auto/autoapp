@@ -189,9 +189,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid() != null) {
                         lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getGrossAmt().subtract(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid()))));
                     }
-//                    if (oTrans.getMasterModel().getDetailModel(lnCtr).get() != null) {
-//                        lsSiNoxxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
-//                    }
+                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getSINo() != null) {
+                        lsSiNoxxx = oTrans.getMasterModel().getDetailModel(lnCtr).getSINo();
+                    }
                     poCARData.add(new Cashier_Receivables(
                             String.valueOf(lnCtr + 1),
                             lsCARNoxx,

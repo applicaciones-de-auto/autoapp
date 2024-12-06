@@ -52,6 +52,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     private GRider oApp;
     private SalesInvoice oTrans;
     private String pxeModuleName = "Invoice Payment Details";
+    private String psOrigBankID = "";
     ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CARD", "CHECK", "GIFT CHECK", "ONLINE PAYMENT");
     private HashSet<String> psPayMode = new HashSet<>();
     private int pnRow;
@@ -107,6 +108,10 @@ public class InvoicePaymentDetailsController implements Initializable {
 
     public void setIsUpdate(boolean fbValue) {
         pbIsUpdate = fbValue;
+    }
+
+    public void setBankOrigID(String fsValue) {
+        psOrigBankID = fsValue;
     }
 
     /**
@@ -264,27 +269,27 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void loadGiftFields() {
+
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo() != null) {
+            txtField01_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo());
+        }
+
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
+            txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt()));
+        }
+
+        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks() != null) {
+            textArea05_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks());
+        }
         try {
-            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo() != null) {
-                txtField01_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCertNo());
-            }
-
-            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt() != null) {
-                txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayAmt()));
-            }
-
-            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks() != null) {
-                textArea05_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCRemrks());
-            }
-
             JSONObject loJSON = new JSONObject();
             String ljPayload = oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod();
-            if (!ljPayload.equals("{}")) {
+            if (!ljPayload.trim().isEmpty()) {
                 JSONParser loParser = new JSONParser();
                 loJSON = (JSONObject) loParser.parse(ljPayload);
                 txtField03_Gift.setText((String) loJSON.get("sSubsidze"));
             }
-            if (!ljPayload.equals("{}")) {
+            if (!ljPayload.trim().isEmpty()) {
                 checkBox02_Gift.setSelected(true);
             }
         } catch (ParseException ex) {
@@ -377,11 +382,6 @@ public class InvoicePaymentDetailsController implements Initializable {
         List<TextField> loTxtFieldOnline = Arrays.asList(txtField02_Online, txtField03_Online, txtField04_Online);
         loTxtFieldOnline.forEach(tf -> tf.focusedProperty().addListener(txtFieldOnline_Focus));
 
-        List<TextArea> loTxtAreaCardOnline = Arrays.asList(textArea05_Online, textArea07_Card);
-        loTxtAreaCardOnline.forEach(tf -> tf.focusedProperty().addListener(txtAreaCardOnline_Focus));
-
-        List<TextArea> loTxtAreaGiftCheck = Arrays.asList(textArea05_Gift, textArea07_Check);
-        loTxtAreaGiftCheck.forEach(tf -> tf.focusedProperty().addListener(txtAreaGiftCheck_Focus));
     }
     final ChangeListener<? super Boolean> txtFieldCard_Focus = (o, ov, nv) -> {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -394,29 +394,14 @@ public class InvoicePaymentDetailsController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 2:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCCardNo(lsValue);
-                    break;
-                case 3:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCApprovNo(lsValue);
-                    break;
-                case 4:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCTraceNo(lsValue);
-                    break;
                 case 5:
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(lsValue.replace(",", "")));
-                    break;
-                case 6:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
+                    txtField05_Card.setText(CustomCommonUtil.setDecimalFormat(lsValue));
                     break;
             }
-            loadCardFields();
         }
     };
     final ChangeListener<? super Boolean> txtFieldCheck_Focus = (o, ov, nv) -> {
@@ -430,9 +415,6 @@ public class InvoicePaymentDetailsController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 4:
-
-                    break;
                 case 5:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
@@ -452,20 +434,12 @@ public class InvoicePaymentDetailsController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
-        JSONObject loJSON = new JSONObject();
         if (lsValue == null) {
             return;
         }
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 1:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCertNo(lsValue);
-                    break;
-                case 3:
-                    loJSON.put("sSubsidze", lsValue);
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod(loJSON.toJSONString());
-                    break;
                 case 4:
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
@@ -474,10 +448,9 @@ public class InvoicePaymentDetailsController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(lsValue.replace(",", "")));
+                    txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(lsValue));
                     break;
             }
-            loadGiftFields();
         }
     };
     final ChangeListener<? super Boolean> txtFieldOnline_Focus = (o, ov, nv) -> {
@@ -505,47 +478,36 @@ public class InvoicePaymentDetailsController implements Initializable {
             loadOnlineFields();
         }
     };
-    final ChangeListener<? super Boolean> txtAreaCardOnline_Focus = (o, ov, nv) -> {
-        TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
-        String lsValue = loTextArea.getText();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 5:
-                    break;
-                case 7:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCRemarks(lsValue);
-                    break;
-            }
-        } else {
-            loTextArea.selectAll();
-        }
-    };
-    final ChangeListener<? super Boolean> txtAreaGiftCheck_Focus = (o, ov, nv) -> {
-        TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(loTextArea.getId().substring(8, 10));
-        String lsValue = loTextArea.getText();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 5:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCRemrks(lsValue);
-                    break;
-                case 7:
-                    oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCRemrks(lsValue);
-                    break;
-            }
-        } else {
-            loTextArea.selectAll();
-        }
-    };
+
+    @SuppressWarnings("unchecked")
+    private boolean setGCToClass() {
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCertNo(txtField01_Gift.getText());
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(txtField04_Gift.getText().replace(",", "")));
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCRemrks(textArea05_Gift.getText());
+        JSONObject loJSON = new JSONObject();
+        loJSON.put("sSubsidze", txtField03_Gift.getText());
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod(loJSON.toJSONString());
+        return true;
+    }
+
+    private boolean setCARDToClass() {
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCCardNo(txtField02_Card.getText());
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCApprovNo(txtField03_Card.getText());
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCTraceNo(txtField04_Card.getText());
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(txtField05_Card.getText().replace(",", "")));
+        oTrans.getSIPaymentModel().getDetailModel(pnRow).setCCRemarks(textArea07_Card.getText());
+        return true;
+    }
+
+    private boolean setOPToClass() {
+
+        return true;
+    }
+
+    private boolean setCHECKToClass() {
+
+        return true;
+    }
 
     private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(txtField01_Card, txtField02_Card, txtField03_Card, txtField04_Card, txtField05_Card,
@@ -573,7 +535,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (txtFieldID) {
                 case "txtField01_Card":
-                    loJSON = oTrans.searchPaymentBank(lsValue, pnRow);
+                    loJSON = oTrans.searchPaymentBank(lsValue, pnRow, false);
                     if (!"error".equals(loJSON.get("result"))) {
                         txtField01_Card.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName());
                     } else {
@@ -589,14 +551,6 @@ public class InvoicePaymentDetailsController implements Initializable {
                 case "txtField02_Check":
                     break;
                 case "txtField03_Gift":
-                    loJSON = oTrans.searchPaymentBank(lsValue, pnRow);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        txtField03_Gift.setText(oTrans.getSIPaymentModel().getDetailModel(pnRow).getCCBankName());
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField03_Gift.setText("");
-                        return;
-                    }
                     break;
                 case "txtField02_Online":
                     break;
@@ -662,10 +616,12 @@ public class InvoicePaymentDetailsController implements Initializable {
     @SuppressWarnings("unchecked")
     private void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnAdd":
             case "btnUpdate":
-                JSONObject loJSON = oTrans.computeSIAmount(true);
+                loJSON = oTrans.computeSIAmount(true);
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
@@ -685,48 +641,65 @@ public class InvoicePaymentDetailsController implements Initializable {
                     return;
                 }
                 if (isValidEntry()) {
-                    if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod() != null) {
-                        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod().isEmpty()) {
+                    if (setToClass()) {
+                        if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod() != null) {
+                            if (oTrans.getSIPaymentModel().getDetailModel(pnRow).getGCPayLod().isEmpty()) {
+                                oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod("{}");
+                            }
+                        } else {
                             oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod("{}");
                         }
-                    } else {
-                        oTrans.getSIPaymentModel().getDetailModel(pnRow).setGCPayLod("{}");
-                    }
-
-                    if (lsButton.equals("btnAdd")) {
-                        CommonUtils.closeStage(btnAdd);
-                    } else {
-                        CommonUtils.closeStage(btnUpdate);
+                        if (lsButton.equals("btnAdd")) {
+                            CommonUtils.closeStage(btnAdd);
+                        } else {
+                            CommonUtils.closeStage(btnUpdate);
+                        }
                     }
                 }
                 break;
             case "btnClose":
-                switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
-                    case "CARD":
-                        if (txtField05_Card.getText().equals("0.00") || txtField05_Card.getText().equals("0.0") || txtField05_Card.getText().equals("0")) {
+                if (!pbIsUpdate) {
+                    switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+                        case "CARD":
+                            if (txtField05_Card.getText().equals("0.00") || txtField05_Card.getText().equals("0.0") || txtField05_Card.getText().equals("0")) {
+                                oTrans.removeSIPayment(pnRow);
+                            }
+                            break;
+                        case "CHECK":
+                            if (txtField05_Check.getText().equals("0.00") || txtField05_Check.getText().equals("0.0") || txtField05_Check.getText().equals("0")) {
+                                oTrans.removeSIPayment(pnRow);
+                            }
+                            break;
+                        case "GC":
+                            if (txtField04_Gift.getText().equals("0.00") || txtField04_Gift.getText().equals("0.0") || txtField04_Gift.getText().equals("0")) {
+                                oTrans.removeSIPayment(pnRow);
+                            }
+                            break;
+                        case "OP":
+                            if (txtField03_Online.getText().equals("0.00") || txtField03_Online.getText().equals("0.0") || txtField03_Online.getText().equals("0")) {
+                                oTrans.removeSIPayment(pnRow);
+                            }
+                            break;
+                        default:
                             oTrans.removeSIPayment(pnRow);
-                        }
-                        break;
-                    case "CHECK":
-                        if (txtField05_Check.getText().equals("0.00") || txtField05_Check.getText().equals("0.0") || txtField05_Check.getText().equals("0")) {
-                            oTrans.removeSIPayment(pnRow);
-                        }
-                        break;
-                    case "GC":
-                        if (txtField04_Gift.getText().equals("0.00") || txtField04_Gift.getText().equals("0.0") || txtField04_Gift.getText().equals("0")) {
-                            oTrans.removeSIPayment(pnRow);
-                        }
-                        break;
-                    case "OP":
-                        if (txtField03_Online.getText().equals("0.00") || txtField03_Online.getText().equals("0.0") || txtField03_Online.getText().equals("0")) {
-                            oTrans.removeSIPayment(pnRow);
-                        }
-                        break;
-                    default:
-                        oTrans.removeSIPayment(pnRow);
-                        break;
-
+                            break;
+                    }
+                } else {
+                    switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+                        case "CARD":
+                            loJSON = oTrans.searchPaymentBank(psOrigBankID, pnRow, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                            }
+                            break;
+                        case "CHECK":
+                            break;
+                        case "GC":
+                            break;
+                        case "OP":
+                            break;
+                    }
                 }
+
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
@@ -850,6 +823,25 @@ public class InvoicePaymentDetailsController implements Initializable {
         return isValid;
     }
 
+    private boolean setToClass() {
+        boolean isSetToClass = false;
+        switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
+            case "CARD":
+                isSetToClass = setCARDToClass();
+                break;
+            case "CHECK":
+                isSetToClass = setCHECKToClass();
+                break;
+            case "GC":
+                isSetToClass = setGCToClass();
+                break;
+            case "OP":
+                isSetToClass = setOPToClass();
+                break;
+        }
+        return isSetToClass;
+    }
+
     private boolean validateCard() {
         if (txtField01_Card.getText().trim().isEmpty()) {
             ShowMessageFX.Warning(null, pxeModuleName, "Please enter bank name.");
@@ -931,4 +923,5 @@ public class InvoicePaymentDetailsController implements Initializable {
         }
         return true;
     }
+
 }

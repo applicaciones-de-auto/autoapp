@@ -331,17 +331,15 @@ public class CustomerAddressController implements Initializable, ScreenInterface
                     oTransAddress.removeAddress(pnRow);
                 } else {
                     lsJSON = oTransAddress.searchProvince(psOrigProv, pnRow, true);
-                    if ("success".equals((String) lsJSON.get("result"))) {
+                    if (!"error".equals((String) lsJSON.get("result"))) {
                         lsJSON = oTransAddress.searchTown(psOrigTown, pnRow, true);
-                        if ("success".equals((String) lsJSON.get("result"))) {
+                        if (!"error".equals((String) lsJSON.get("result"))) {
                             lsJSON = oTransAddress.searchBarangay(psOrigBrgy, pnRow, true);
-                            if ("success".equals((String) lsJSON.get("result"))) {
+                            if (!"error".equals((String) lsJSON.get("result"))) {
                             }
                         }
                     }
                 }
-                CommonUtils.closeStage(btnClose);
-                break;
             default:
                 showWarning(psFormStateName, "Address Warning", "Button with name " + lsButton + " not registered.");
                 break;

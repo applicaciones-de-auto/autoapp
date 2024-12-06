@@ -384,7 +384,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                                     loJSON = oTrans.searchCustomer(lsValue);
                                     break;
                                 case 1:
-                                    loJSON = oTrans.searchBankBranch(lsValue, 0);
+                                    loJSON = oTrans.searchBankBranch(lsValue);
                                     break;
                                 case 2:
                                     loJSON = oTrans.searchInsurance(lsValue);
@@ -938,7 +938,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             case "SERVICE INVOICE":
                 oTrans.getMasterModel().getMasterModel().setDocType("2");
                 break;
-            case "PART SALES INVOICE":
+            case "PARTS SALES INVOICE":
                 oTrans.getMasterModel().getMasterModel().setDocType("5");
                 break;
             case "VEHICLE SALES INVOICE":
@@ -1101,6 +1101,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
         String lsAllAmtx = "";
         String lsPymtSrc = "";
         String lsRemarks = "";
+        String lsBanksxx = "";
         for (int lnCtr = 0; lnCtr <= oTrans.getSIPaymentList().size() - 1; lnCtr++) {
             if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getPayMode() != null) {
                 switch (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getPayMode()) {
@@ -1115,6 +1116,9 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         }
                         if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getCCRemarks() != null) {
                             lsRemarks = oTrans.getSIPaymentModel().getDetailModel(lnCtr).getCCRemarks();
+                        }
+                        if (oTrans.getSIPaymentModel().getDetailModel(lnCtr).getCCBankName() != null) {
+                            lsBanksxx = oTrans.getSIPaymentModel().getDetailModel(lnCtr).getCCBankName();
                         }
                         break;
                     case "CHECK":
@@ -1147,7 +1151,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                     lsAllAmtx,
                     lsPymtSrc,
                     lsRemarks,
-                    ""));
+                    lsBanksxx));
             lsPayMdex = "";
             lsRefNoxx = "";
             lsDatexxx = "";
@@ -1155,6 +1159,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             lsAllAmtx = "";
             lsPymtSrc = "";
             lsRemarks = "";
+            lsBanksxx = "";
         }
         tblViewCheck.setItems(checkData);
     }
@@ -1169,6 +1174,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             loControl.setObject(oTrans);
             loControl.setPayMode(psPayMode);
             loControl.setIsUpdate(fbIsUpdate);
+            loControl.setBankOrigID(oTrans.getSIPaymentModel().getDetailModel(fnRow).getCCBankID());
             loControl.setRow(fnRow);
             fxmlLoader.setController(loControl);
 

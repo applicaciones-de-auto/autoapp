@@ -80,7 +80,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
     private String psFileName = "";
     private String psFileUrl = "";
     private String imgIdentfier = "";
-
+    private boolean pbIsBrowse = false;
     private ObservableList<CustomerAddress> addressdata = FXCollections.observableArrayList();
     private ObservableList<CustomerMobile> contactdata = FXCollections.observableArrayList();
     private ObservableList<CustomerEmail> emaildata = FXCollections.observableArrayList();
@@ -597,17 +597,46 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to cancel?")) {
-                    oTransClient = new Client(oApp, false, oApp.getBranchCode());
-                    oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
-                    clearFields();
-                    clearTables();
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        oTransClient = new Client(oApp, false, oApp.getBranchCode());
+                        oTrans = new Sales_Agent(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                        clearFields();
+                        clearTables();
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loJSON = oTransClient.openRecord(oTrans.getModel().getModel().getClientID());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadMasterFields();
+                                loadAddress();
+                                loadContact();
+                                loadEmail();
+                                loadSocialMedia();
+                                loadAgentTrans();
+                                loadAgentRequirements();
+                                pnEditMode = oTransClient.getEditMode();
+                                initFields(pnEditMode);
+                            }
+                        }
+                    }
+
                 }
                 break;
             case "btnBrowse":
-                if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "You have unsaved data. Are you sure you want to browse a new record?")) {
+                        pbIsBrowse = true;
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            pnEditMode = EditMode.ADDNEW;
+                        }
+
+                        if (pnEditMode == EditMode.UPDATE) {
+                            pnEditMode = EditMode.UPDATE;
+                        }
+
                     } else {
+                        pnEditMode = oTransClient.getEditMode();
                         return;
                     }
                 }
@@ -626,6 +655,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
                         initFields(pnEditMode);
                     }
                 } else {
+                    pbIsBrowse = false;
                     ShowMessageFX.Warning(null, "Search Referral Agent Information Confirmation", (String) loJSON.get("message"));
                 }
                 break;
@@ -706,6 +736,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
                         break;
                 }
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
                 break;
             case "btnDisapprove":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to cancel this activity?") == true) {
@@ -782,8 +813,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
         datePicker09.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 oTransClient.setMaster(11, SQLUtil.toDate(datePicker09.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                if (pnEditMode == EditMode.ADDNEW) {
-                    checkExistingReferralAgentInformation();
+                if (!pbIsBrowse) {
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        checkExistingReferralAgentInformation();
+                    }
                 }
             }
         });
@@ -838,13 +871,12 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
             }
         }
         );
-        tabPCustCont.getSelectionModel()
-                .selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
-                    pnRow = 0;
-                    btnTabRem.setVisible(false);
-                }
-                );
-
+        tabPCustCont.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) -> {
+            pnRow = 0;
+            btnTabRem.setVisible(false);
+            btnTabRem.setManaged(false);
+        }
+        );
     }
 
     @Override
@@ -885,6 +917,7 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
         CustomCommonUtil.setValue(null, comboBox06, comboBox07, comboBox08,
                 comboBox10, comboBox11);
         datePicker09.setValue(LocalDate.of(1900, Month.JANUARY, 1));
+        lblStatus.setText("");
     }
 
     @Override
@@ -1102,8 +1135,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
             }
             if (oTransClient.getAddress(pnRow, "sEntryByx") == null || ((String) oTransClient.getAddress(pnRow, "sEntryByx")).isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1238,8 +1273,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
             }
             if (oTransClient.getMobile(pnRow, "sEntryByx") == null || oTransClient.getMobile(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1375,8 +1412,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
             // Check if the email entry is empty or null
             if (oTransClient.getEmail(pnRow, "sEntryByx") == null || oTransClient.getEmail(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1489,8 +1528,10 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
             }
             if (oTransClient.getSocialMed(pnRow, "sEntryByx") == null || oTransClient.getSocialMed(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
