@@ -53,6 +53,7 @@ public class InvoicePaymentDetailsController implements Initializable {
     private SalesInvoice oTrans;
     private String pxeModuleName = "Invoice Payment Details";
     private String psOrigBankID = "";
+    private boolean pbIsError = false;
     ObservableList<String> cPayerxxx = FXCollections.observableArrayList("CARD", "CHECK", "GIFT CHECK", "ONLINE PAYMENT");
     private HashSet<String> psPayMode = new HashSet<>();
     private int pnRow;
@@ -289,7 +290,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                 loJSON = (JSONObject) loParser.parse(ljPayload);
                 txtField03_Gift.setText((String) loJSON.get("sSubsidze"));
             }
-            if (!ljPayload.trim().isEmpty()) {
+            if (!ljPayload.trim().isEmpty() && !ljPayload.equals("{}")) {
                 checkBox02_Gift.setSelected(true);
             }
         } catch (ParseException ex) {
@@ -306,6 +307,7 @@ public class InvoicePaymentDetailsController implements Initializable {
         textArea05_Online.setText("");
     }
 
+    @SuppressWarnings("unchecked")
     private void initFieldsAction() {
         comboBoxPayMde.setOnAction(e -> {
             final String[] lsSelectedValue = {""};
@@ -343,9 +345,12 @@ public class InvoicePaymentDetailsController implements Initializable {
         });
 
         checkBox02_Gift.setOnAction(e -> {
-            if (checkBox02_Gift.isSelected()) {
-                initGiftFields();
+            if (!checkBox02_Gift.isSelected()) {
+                JSONObject loJSON = new JSONObject();
+                loJSON.put("sSubsidze", "{}");
+                txtField03_Gift.setText("");
             }
+            initGiftFields();
         });
     }
 
@@ -395,6 +400,9 @@ public class InvoicePaymentDetailsController implements Initializable {
         if (!nv) { // Lost Focus
             switch (lnIndex) {
                 case 5:
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
@@ -624,20 +632,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                 loJSON = oTrans.computeSIAmount(true);
                 if ("error".equals((String) loJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                    switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
-                        case "CARD":
-                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(0.00));
-                            txtField05_Card.setText("0.00");
-                            break;
-                        case "CHECK":
-                            break;
-                        case "GC":
-                            oTrans.getSIPaymentModel().getDetailModel(pnRow).setPayAmt(new BigDecimal(0.00));
-                            txtField04_Gift.setText("0.00");
-                            break;
-                        case "OP":
-                            break;
-                    }
+                    pbIsError = true;
                     return;
                 }
                 if (isValidEntry()) {
@@ -661,24 +656,16 @@ public class InvoicePaymentDetailsController implements Initializable {
                 if (!pbIsUpdate) {
                     switch (oTrans.getSIPaymentModel().getDetailModel(pnRow).getPayMode()) {
                         case "CARD":
-                            if (txtField05_Card.getText().equals("0.00") || txtField05_Card.getText().equals("0.0") || txtField05_Card.getText().equals("0")) {
-                                oTrans.removeSIPayment(pnRow);
-                            }
+                            removeRow(pbIsError, txtField05_Card);
                             break;
                         case "CHECK":
-                            if (txtField05_Check.getText().equals("0.00") || txtField05_Check.getText().equals("0.0") || txtField05_Check.getText().equals("0")) {
-                                oTrans.removeSIPayment(pnRow);
-                            }
+                            removeRow(pbIsError, txtField05_Check);
                             break;
                         case "GC":
-                            if (txtField04_Gift.getText().equals("0.00") || txtField04_Gift.getText().equals("0.0") || txtField04_Gift.getText().equals("0")) {
-                                oTrans.removeSIPayment(pnRow);
-                            }
+                            removeRow(pbIsError, txtField04_Gift);
                             break;
                         case "OP":
-                            if (txtField03_Online.getText().equals("0.00") || txtField03_Online.getText().equals("0.0") || txtField03_Online.getText().equals("0")) {
-                                oTrans.removeSIPayment(pnRow);
-                            }
+                            removeRow(pbIsError, txtField03_Online);
                             break;
                         default:
                             oTrans.removeSIPayment(pnRow);
@@ -692,6 +679,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                             }
                             break;
                         case "CHECK":
+
                             break;
                         case "GC":
                             break;
@@ -699,12 +687,21 @@ public class InvoicePaymentDetailsController implements Initializable {
                             break;
                     }
                 }
-
                 CommonUtils.closeStage(btnClose);
                 break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
+        }
+    }
+
+    private void removeRow(boolean fbisError, TextField textField) {
+        if (fbisError) {
+            oTrans.removeSIPayment(pnRow);
+        } else {
+            if (textField.getText().equals("0.00")) {
+                oTrans.removeSIPayment(pnRow);
+            }
         }
     }
 

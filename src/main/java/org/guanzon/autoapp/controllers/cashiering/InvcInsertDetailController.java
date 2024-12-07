@@ -93,11 +93,7 @@ public class InvcInsertDetailController implements Initializable {
         txtField05.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt()));
         txtField06.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getDiscount()));
         txtField07.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getAdvused()));
-        double lnTotalAmount = oTrans.getSIDetailModel().getDetailModel(pnRow).getTranAmt().doubleValue()
-                - oTrans.getSIDetailModel().getDetailModel(pnRow).getDiscount().doubleValue()
-                - oTrans.getSIDetailModel().getDetailModel(pnRow).getAdvused().doubleValue();
-        txtField08.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmount));
-        oTrans.getSIDetailModel().getDetailModel(pnRow).setNetAmt(new BigDecimal(lnTotalAmount));
+        txtField08.setText(CustomCommonUtil.setDecimalFormat(oTrans.getSIDetailModel().getDetailModel(pnRow).getNetAmt()));
     }
 
     private void initPatternFields() {
@@ -107,7 +103,7 @@ public class InvcInsertDetailController implements Initializable {
     private boolean setToClass() {
         oTrans.getSIDetailModel().getDetailModel(pnRow).setTranAmt(new BigDecimal(txtField05.getText().replace(",", "")));
         oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(txtField06.getText().replace(",", "")));
-        oTrans.getSIDetailModel().getDetailModel(pnRow).setDiscount(new BigDecimal(txtField08.getText().replace(",", "")));
+        oTrans.getSIDetailModel().getDetailModel(pnRow).setNetAmt(new BigDecimal(txtField08.getText().replace(",", "")));
         return true;
     }
 
@@ -236,10 +232,10 @@ public class InvcInsertDetailController implements Initializable {
 
     private boolean isValidEntry() {
         if (txtField05.getText().equals(0.00) || txtField05.getText().equals("0.00")) {
-            ShowMessageFX.Warning(null, "Warning", "Please enter gross Amount.");
+            ShowMessageFX.Warning(null, "Warning", "Please enter Gross Amount.");
             return false;
         }
-        if (Double.parseDouble(txtField08.getText()) < 0.00) {
+        if (Double.parseDouble(txtField08.getText().replace(",", "")) < 0.00) {
             ShowMessageFX.Warning(null, "Warning", "Invalid Total Amount.");
             return false;
         }

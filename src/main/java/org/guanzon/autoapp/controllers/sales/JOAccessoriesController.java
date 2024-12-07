@@ -153,6 +153,9 @@ public class JOAccessoriesController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
+        double lnAccesAmnt = Double.parseDouble(txtField04.getText().replace(",", ""));
+        int lnAccQuan = Integer.parseInt(txtField05.getText());
+        double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
         JSONObject loJSON = new JSONObject();
         if (lsValue == null) {
             return;
@@ -160,19 +163,12 @@ public class JOAccessoriesController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 2:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
-                    oTrans.getJOPartsModel().getJOParts(pnRow).setDescript(lsValue);
-                    break;
                 case 4:
-
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-
-                    oTrans.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
+                    txtField04.setText(CustomCommonUtil.setDecimalFormat(lsValue));
+                    txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
                     break;
                 case 5:
                     String lsOrigQuan = "0";
@@ -184,14 +180,14 @@ public class JOAccessoriesController implements Initializable {
                     }
                     loJSON = oTrans.checkVSPJOParts(oTrans.getJOPartsModel().getJOParts(pnRow).getStockID(), Integer.parseInt(lsValue), pnRow, pbState);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsValue));
+                        txtField05.setText(lsValue);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsOrigQuan));
+                        txtField05.setText(lsOrigQuan);
                     }
+                    txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
                     break;
             }
-            loadMasterFields();
         }
     };
 
@@ -227,7 +223,13 @@ public class JOAccessoriesController implements Initializable {
             case "btnEdit":
             case "btnAdd":
                 if (isValidEntry()) {
-                    CommonUtils.closeStage(btnClose);
+                    if (setToClass()) {
+                        if (lsButton.equals("btnAdd")) {
+                            CommonUtils.closeStage(btnAdd);
+                        } else {
+                            CommonUtils.closeStage(btnEdit);
+                        }
+                    }
                 } else {
                     return;
                 }
@@ -307,6 +309,13 @@ public class JOAccessoriesController implements Initializable {
             CustomCommonUtil.setDisable(false, txtField05);
             CustomCommonUtil.setDisable(true, txtField01, txtField02, comboBox03, txtField04);
         }
+    }
+
+    private boolean setToClass() {
+        oTrans.getJOPartsModel().getJOParts(pnRow).setDescript(txtField02.getText());
+        oTrans.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(txtField04.getText().replace(",", "")));
+        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.valueOf(txtField05.getText()));
+        return true;
     }
 
     private boolean isValidEntry() {

@@ -6,9 +6,6 @@ package org.guanzon.autoapp.controllers.cashiering;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,8 +29,6 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.cashiering.CashierReceivables;
-import org.guanzon.auto.model.cashiering.Model_Cashier_Receivables;
-import org.guanzon.auto.model.cashiering.Model_Cashier_Receivables_Detail;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Detail;
 import org.guanzon.autoapp.utils.CustomCommonUtil;

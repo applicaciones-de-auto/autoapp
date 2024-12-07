@@ -34,6 +34,7 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
     private String psProvID;
     private String psProvName;
     private String psEstablish;
+    private String psOrigProv, psOrigTown, psOrigBrgy = "";
     private int pnRow = 0;
     private boolean pbState = true;
     @FXML
@@ -71,6 +72,18 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         oApp = foValue;
     }
 
+    public void setOrigProv(String fsValue) {
+        psOrigProv = fsValue;
+    }
+
+    public void setOrigTown(String fsValue) {
+        psOrigTown = fsValue;
+    }
+
+    public void setOrigBrgy(String fsValue) {
+        psOrigBrgy = fsValue;
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -80,8 +93,9 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         initTextKeyPressed();
         initButtonsClick();
         initTextFieldsProperty();
+        loadMasterFields();
         initFields();
-        if (oTransLocation.getActLocationList().size() > 0) {
+        if (!oTransLocation.getActLocationList().isEmpty()) {
             if (!psProvID.isEmpty()) {
                 oTransLocation.setActLocation(pnRow, "sProvIDxx", (String) oTransLocation.getActLocation(0, "sProvIDxx"));
                 oTransLocation.setActLocation(pnRow, "sProvName", (String) oTransLocation.getActLocation(0, "sProvName"));
@@ -98,13 +112,25 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
     }
 
     private void loadMasterFields() {
-        txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
-        txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
-        txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
-        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
-        txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
-        textArea06.setText((String) oTransLocation.getActLocation(pnRow, "sCompnynx"));
+        if (oTransLocation.getActLocation(pnRow, "sAddressx") != null) {
+            txtField01.setText((String) oTransLocation.getActLocation(pnRow, "sAddressx"));
+        }
+        if (oTransLocation.getActLocation(pnRow, "sProvName") != null) {
+            txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
+        }
+        if (oTransLocation.getActLocation(pnRow, "sTownName") != null) {
+            txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
+        }
+        if (oTransLocation.getActLocation(pnRow, "sBrgyName") != null) {
+            txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
+        }
+        if (oTransLocation.getActLocation(pnRow, "sZippCode") != null) {
+            txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
+        }
+        if (oTransLocation.getActLocation(pnRow, "sCompnynx") != null) {
+            textArea06.setText((String) oTransLocation.getActLocation(pnRow, "sCompnynx"));
 
+        }
     }
 
     private void initTextKeyPressed() {
@@ -117,52 +143,59 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
         JSONObject loJSON = new JSONObject();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField02":  //Search by Province Address
-                    loJSON = oTransLocation.searchProvince(lsTxtField.getText(), pnRow, false);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField02.setText("");
-                        txtField02.focusedProperty();
-                        return;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField02":  //Search by Province Address
+                            loJSON = oTransLocation.searchProvince(lsTxtField.getText(), pnRow, false);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField02.setText((String) oTransLocation.getActLocation(pnRow, "sProvName"));
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField02.setText("");
+                                return;
+                            }
+                            break;
+                        case "txtField03":  //Search by Town Address
+                            loJSON = oTransLocation.searchTown(lsTxtField.getText(), pnRow, false);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
+                                txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField03.setText("");
+                                return;
+                            }
+                            break;
+                        case "txtField04":  //Search by Brgy Address
+                            loJSON = oTransLocation.searchBarangay(lsTxtField.getText(), pnRow, false);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                                txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField04.setText("");
+                                return;
+                            }
+                            break;
                     }
+                    initFields();
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
                     break;
-                case "txtField03":  //Search by Town Address
-                    loJSON = oTransLocation.searchTown(lsTxtField.getText(), pnRow, false);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField03.setText((String) oTransLocation.getActLocation(pnRow, "sTownName"));
-                        txtField05.setText((String) oTransLocation.getActLocation(pnRow, "sZippCode"));
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField03.setText("");
-                        txtField03.focusedProperty();
-                        return;
-                    }
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
                     break;
-                case "txtField04":  //Search by Brgy Address
-                    loJSON = oTransLocation.searchBarangay(lsTxtField.getText(), pnRow, false);
-                    if (!"error".equals((String) loJSON.get("result"))) {
-                        txtField04.setText((String) oTransLocation.getActLocation(pnRow, "sBrgyName"));
-                    } else {
-                        txtField04.setText("");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField04.focusedProperty();
-                        return;
-                    }
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            initFields();
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
@@ -207,8 +240,19 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
 //                }
                 break;
             case "btnClose":
+                JSONObject loJSON = new JSONObject();
                 if (pbState) {
                     oTransLocation.removeActLocation(pnRow);
+                } else {
+                    loJSON = oTransLocation.searchProvince(psProvID, pnRow, true);
+                    if (!"error".equals((String) loJSON.get("result"))) {
+                        loJSON = oTransLocation.searchTown(psOrigTown, pnRow, true);
+                        if (!"error".equals((String) loJSON.get("result"))) {
+                            loJSON = oTransLocation.searchBarangay(psOrigBrgy, pnRow, true);
+                            if (!"error".equals((String) loJSON.get("result"))) {
+                            }
+                        }
+                    }
                 }
                 CommonUtils.closeStage(btnClose);
                 break;
@@ -220,44 +264,41 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
     }
 
     private void initTextFieldsProperty() {
-        txtField02.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sProvIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            txtField03.setText("");
-                            txtField04.setText("");
-                            txtField05.setText("");
-                            initFields();
-                        }
-                    }
+        txtField02.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLocation.setActLocation(pnRow, "sProvIDxx", "");
+                    oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
+                    oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
+                    txtField03.setText("");
+                    txtField04.setText("");
+                    txtField05.setText("");
                 }
-                );
-        txtField03.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            txtField04.setText("");
-                            txtField05.setText("");
-                            initFields();
-                        }
-                    }
+                initFields();
+            }
+        }
+        );
+        txtField03.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLocation.setActLocation(pnRow, "sTownIDxx", "");
+                    oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
+                    txtField04.setText("");
+                    txtField05.setText("");
                 }
-                );
-        txtField04.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
-                            initFields();
-                        }
-                    }
+                initFields();
+            }
+        }
+        );
+        txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    oTransLocation.setActLocation(pnRow, "sBrgyIDxx", "");
                 }
-                );
+                initFields();
+            }
+        }
+        );
     }
 
     private void initFields() {
@@ -267,7 +308,6 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
             btnEdit.setVisible(false);
             btnEdit.setManaged(false);
         } else {
-            loadMasterFields();
             btnAdd.setVisible(false);
             btnAdd.setManaged(false);
             btnEdit.setVisible(true);

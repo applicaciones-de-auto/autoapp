@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -527,6 +528,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         return;
                     }
                 }
+
                 String lsDocType = "";
                 switch (lblInvoiceTitle.getText()) {
                     case "ACKNOWLEDGEMENT RECEIPT":
@@ -549,6 +551,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                         lsDocType = "0";
                         break;
                 }
+                psPayMode.clear();
                 loJSON = oTrans.searchTransaction("", lsDocType);
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterFields();
@@ -1297,32 +1300,58 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     }
 
     private void loadPayModeCheckedFields() {
+        // Clear previous selections from psPayMode
+        psPayMode.clear();
+
+        // Create a set to store all payment modes from tblViewCheck
+        Set<String> paymentModes = new HashSet<>();
         for (CheckInvoice item : tblViewCheck.getItems()) {
-            String lsPayMode = item.getTblindex02();
-            if (lsPayMode.equals("CARD")) {
-                checkBoxCard.setSelected(true);
-                psPayMode.add("CARD");
-            }
-            if (lsPayMode.equals("CHECK")) {
-                checkBoxCheck.setSelected(true);
-                psPayMode.add("CHECK");
-            }
-            if (lsPayMode.equals("GIFT CHECK")) {
-                checkBoxGftCheck.setSelected(true);
-                psPayMode.add("GC");
-            }
-            if (lsPayMode.equals("ONLINE PAYMENT")) {
-                checkBoxOnlnPymntServ.setSelected(true);
-                psPayMode.add("OP");
-            }
-            if (lsPayMode.equals("CM")) {
-                checkBoxCrdInv.setSelected(true);
-                psPayMode.add("CM");
-            }
+            paymentModes.add(item.getTblindex02());
         }
-        if (!tblViewTrans.getItems().isEmpty()) {
-            checkBoxCash.setSelected(true);
+
+        // Update checkboxes based on payment modes
+        if (paymentModes.contains("CARD")) {
+            checkBoxCard.setSelected(true);
+            psPayMode.add("CARD");
+        } else {
+            checkBoxCard.setSelected(false);
+            psPayMode.remove("CARD");
         }
+
+        if (paymentModes.contains("CHECK")) {
+            checkBoxCheck.setSelected(true);
+            psPayMode.add("CHECK");
+        } else {
+            checkBoxCheck.setSelected(false);
+            psPayMode.remove("CHECK");
+        }
+
+        if (paymentModes.contains("GIFT CHECK")) {
+            checkBoxGftCheck.setSelected(true);
+            psPayMode.add("GC");
+        } else {
+            checkBoxGftCheck.setSelected(false);
+            psPayMode.remove("GC");
+        }
+
+        if (paymentModes.contains("ONLINE PAYMENT")) {
+            checkBoxOnlnPymntServ.setSelected(true);
+            psPayMode.add("OP");
+        } else {
+            checkBoxOnlnPymntServ.setSelected(false);
+            psPayMode.remove("OP");
+        }
+
+        if (paymentModes.contains("CM")) {
+            checkBoxCrdInv.setSelected(true);
+            psPayMode.add("CM");
+        } else {
+            checkBoxCrdInv.setSelected(false);
+            psPayMode.remove("CM");
+        }
+
+        // Check if tblViewTrans has items and set the Cash checkbox
+        checkBoxCash.setSelected(!tblViewTrans.getItems().isEmpty());
     }
 
     @FXML

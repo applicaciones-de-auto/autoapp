@@ -340,6 +340,8 @@ public class CustomerAddressController implements Initializable, ScreenInterface
                         }
                     }
                 }
+                CommonUtils.closeStage(btnClose);
+                break;
             default:
                 showWarning(psFormStateName, "Address Warning", "Button with name " + lsButton + " not registered.");
                 break;
