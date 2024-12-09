@@ -118,14 +118,14 @@ public class PRDeductibleController implements Initializable {
         String lsTotalxx = "";
         String lsPayrNme = "";
         for (int lnCtr = 0; lnCtr <= oTrans.getSIAdvancesList().size() - 1; lnCtr++) {
-//            if (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getSourceNo()!= null) {
-//                lsRcptNox = (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getSourceNo();
+//            if (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getSourceNo() != null) {
+//                lsRcptNox = oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getSourceNo();
 //            }
 //            if (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransDate() != null) {
-//                  lsRcptDte = (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransDate();
+//                lsRcptDte = oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransDate();
 //            }
 //            if (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransType() != null) {
-//                  lsPartclr = (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransType();
+//                lsPartclr = oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getTransType();
 //            }
 //            if (oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getAdvAmt() != null) {
 //                lsTotalxx = CustomCommonUtil.setDecimalFormat(oTrans.getSIAdvancesModel().getDetailModel(lnCtr).getAdvAmt());
@@ -186,7 +186,7 @@ public class PRDeductibleController implements Initializable {
         String lsDdctAmt = "";
         String lsRefNoxx = "";
         String lsPartclr = "";
-//        for (int lnCtr = 0; lnCtr <= oTrans.getSIAdvancesList().size() - 1; lnCtr++) {
+//        for (int lnCtr = 0; lnCtr <= oTrans.getSIDeductList().size() - 1; lnCtr++) {
         deductData.add(new Deductibles(
                 //                String.valueOf(lnCtr + 1),
                 "",

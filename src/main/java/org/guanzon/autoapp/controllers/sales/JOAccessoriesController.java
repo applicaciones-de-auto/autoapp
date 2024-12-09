@@ -128,9 +128,9 @@ public class JOAccessoriesController implements Initializable {
         double lnAccesAmnt = Double.parseDouble(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getUnitPrce()));;
         int lnAccQuan = Integer.parseInt(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getQtyEstmt()));
         double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
-        txtField04.setText(poGetDecimalFormat.format(lnAccesAmnt));
+        txtField04.setText(CustomCommonUtil.setDecimalFormat(lnAccesAmnt));
         txtField05.setText(String.valueOf(lnAccQuan));
-        txtField06.setText(poGetDecimalFormat.format(lnTotalAmnt));
+        txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
         if (oTrans.getJOPartsModel().getJOParts(pnRow).getEntryNo() > 0) {
             txtField02.setDisable(true);
         }
@@ -153,9 +153,6 @@ public class JOAccessoriesController implements Initializable {
         TextField loTxtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(loTxtField.getId().substring(8, 10));
         String lsValue = loTxtField.getText();
-        double lnAccesAmnt = Double.parseDouble(txtField04.getText().replace(",", ""));
-        int lnAccQuan = Integer.parseInt(txtField05.getText());
-        double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
         JSONObject loJSON = new JSONObject();
         if (lsValue == null) {
             return;
@@ -163,13 +160,6 @@ public class JOAccessoriesController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 4:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    txtField04.setText(CustomCommonUtil.setDecimalFormat(lsValue));
-                    txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
-                    break;
                 case 5:
                     String lsOrigQuan = "0";
                     if (lsValue.isEmpty()) {
@@ -185,11 +175,18 @@ public class JOAccessoriesController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                         txtField05.setText(lsOrigQuan);
                     }
-                    txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
                     break;
             }
+            computeTotalPartsFromType();
         }
     };
+
+    private void computeTotalPartsFromType() {
+        double lnPartsAmnt = Double.parseDouble(txtField04.getText().replace(",", ""));
+        int lnQuantDscx = Integer.parseInt(txtField05.getText().replace(",", ""));
+        double lnTtlAmntxx = lnPartsAmnt * lnQuantDscx;
+        txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTtlAmntxx));
+    }
 
     private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(

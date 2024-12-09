@@ -531,25 +531,32 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
                 String lsDocType = "";
                 switch (lblInvoiceTitle.getText()) {
-                    case "ACKNOWLEDGEMENT RECEIPT":
-                        lsDocType = "7";
+                    case "VEHICLE SALES INVOICE":
+                        lsDocType = "0";
                         break;
-                    case "BILLING STATEMENT":
-                        lsDocType = "6";
+                    case "CASH PARTS SALES INVOICE":
+                        lsDocType = "1";
+                        break;
+                    case "SERVICE INVOICE":
+                        lsDocType = "2";
+                        break;
+                    case "OFFICIAL RECEIPT":
+                        lsDocType = "3";
                         break;
                     case "COLLECTION RECEIPT":
                         lsDocType = "4";
                         oTrans.getMasterModel().getMasterModel().setDocType("4");
                         break;
-                    case "SERVICE INVOICE":
-                        lsDocType = "2";
-                        break;
                     case "PART SALES INVOICE":
                         lsDocType = "5";
                         break;
-                    case "VEHICLE SALES INVOICE":
-                        lsDocType = "0";
+                    case "BILLING STATEMENT":
+                        lsDocType = "6";
                         break;
+                    case "ACKNOWLEDGEMENT RECEIPT":
+                        lsDocType = "7";
+                        break;
+
                 }
                 psPayMode.clear();
                 loJSON = oTrans.searchTransaction("", lsDocType);

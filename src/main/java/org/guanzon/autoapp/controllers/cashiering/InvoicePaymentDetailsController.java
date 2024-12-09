@@ -407,7 +407,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    txtField05_Card.setText(CustomCommonUtil.setDecimalFormat(lsValue));
+                    txtField05_Card.setText(CustomCommonUtil.setDecimalFormat(lsValue.replace(",", "")));
                     break;
             }
         }
@@ -456,7 +456,7 @@ public class InvoicePaymentDetailsController implements Initializable {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Amount");
                         lsValue = "0.00";
                     }
-                    txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(lsValue));
+                    txtField04_Gift.setText(CustomCommonUtil.setDecimalFormat(lsValue.replace(",", "")));
                     break;
             }
         }

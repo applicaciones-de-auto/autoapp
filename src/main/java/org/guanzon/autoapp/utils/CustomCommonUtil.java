@@ -626,13 +626,21 @@ public class CustomCommonUtil {
      * <pre>{@code
      * setDecimalFormat(object);
      * }</pre>
+     *
+     * @return
      */
     public static String setDecimalFormat(Object foObject) {
         DecimalFormat format = new DecimalFormat("#,##0.00");
-        if (foObject != null) {
-            return format.format(Double.parseDouble(String.valueOf(foObject)));
+        try {
+            if (foObject != null) {
+                return format.format(Double.parseDouble(String.valueOf(foObject)));
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + foObject);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
         }
-        return null;
+        return "0.00";
     }
 
 }

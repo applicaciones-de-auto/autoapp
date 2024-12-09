@@ -31,6 +31,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.cashiering.CashierReceivables;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Detail;
+import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Issue_Receipt;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
@@ -45,6 +46,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
     private CashierReceivables oTrans;
     private final String pxeModuleName = "Cashier Receivables Details"; //Form Title
     private ObservableList<Cashier_Receivables_Detail> poCARDetailsData = FXCollections.observableArrayList();
+    private ObservableList<Cashier_Receivables_Issue_Receipt> poCARIssueReceiptData = FXCollections.observableArrayList();
     ObservableList<String> cPayerType = FXCollections.observableArrayList("CUSTOMER", "BANK", "INSURANCE", "SUPPLIER", "ASSOCIATE");
     private String poTransNox = "";
     private int pnRow;
@@ -64,6 +66,10 @@ public class CashierReceivablesDetailController implements Initializable, Screen
     private TableView<Cashier_Receivables_Detail> tblViewCARDetail;
     @FXML
     private TableColumn<Cashier_Receivables_Detail, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07;
+    @FXML
+    private TableView<Cashier_Receivables_Issue_Receipt> tblViewIssueReceipt;
+    @FXML
+    private TableColumn<Cashier_Receivables_Issue_Receipt, String> tblindex01_receipt, tblindex02_receipt, tblindex03_receipt;
 
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -87,6 +93,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initLoadTable();
+        initLoadIssueTable();
         initCapitalizationFields();
         comboBox03.setItems(cPayerType);
         if (poTransNox != null) {
@@ -96,6 +103,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
                 if ("success".equals((String) loJSON.get("result"))) {
                     loadMasterField();
                     loadCARDetail();
+                    loadCARIssueReceipts();
                 }
             }
         }
@@ -227,6 +235,86 @@ public class CashierReceivablesDetailController implements Initializable, Screen
 
         tblViewCARDetail.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewCARDetail.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+    }
+
+    private void loadCARIssueReceipts() {
+        poCARIssueReceiptData.clear();
+        String lsFrmType = "";
+        String lsSiNoxxx = "";
+        String lsSiDatex = "";
+        String lsSiTotal = "";
+        JSONObject loJSON = new JSONObject();
+        loJSON = oTrans.loadReceipts();
+        if ("success".equals((String) loJSON.get("result"))) {
+            for (int lnCtr = 0; lnCtr <= oTrans.getMasterModel().getReceiptList().size() - 1; lnCtr++) {
+                if (oTrans.getMasterModel().getReceiptModel(lnCtr).getDocType() != null) {
+                    switch (oTrans.getMasterModel().getReceiptModel(lnCtr).getDocType()) {
+                        case "0":
+                            lsFrmType = "VSI";
+                            break;
+                        case "1":
+                            lsFrmType = "CPSI";
+                            break;
+                        case "2":
+                            lsFrmType = "OR";
+                            break;
+                        case "3":
+                            lsFrmType = "BSI";
+                            break;
+                        case "4":
+                            lsFrmType = "CR";
+                            break;
+                        case "5":
+                            lsFrmType = "PSI";
+                            break;
+                        case "6":
+                            lsFrmType = "BSI";
+                            break;
+                        case "7":
+                            lsFrmType = "AR";
+                            break;
+                        default:
+                            lsFrmType = "";
+                            break;
+                    }
+                }
+                if (oTrans.getMasterModel().getReceiptModel(lnCtr).getReferNo() != null) {
+                    lsSiNoxxx = oTrans.getMasterModel().getReceiptModel(lnCtr).getReferNo();
+                }
+                if (oTrans.getMasterModel().getReceiptModel(lnCtr).getTransactDte() != null) {
+                    lsSiDatex = CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getReceiptModel(lnCtr).getTransactDte());
+                }
+                if (oTrans.getMasterModel().getReceiptModel(lnCtr).getTranTotl() != null) {
+                    lsSiTotal = CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getReceiptModel(lnCtr).getTranTotl());
+                }
+                poCARIssueReceiptData.add(new Cashier_Receivables_Issue_Receipt(
+                        String.valueOf(lnCtr + 1),
+                        lsFrmType,
+                        lsSiNoxxx,
+                        lsSiDatex,
+                        lsSiTotal
+                ));
+                lsFrmType = "";
+                lsSiNoxxx = "";
+                lsSiDatex = "";
+                lsSiTotal = "";
+            }
+
+        }
+        tblViewIssueReceipt.setItems(poCARIssueReceiptData);
+    }
+
+    public void initLoadIssueTable() {
+        tblindex01_receipt.setCellValueFactory(new PropertyValueFactory<>("tblindex01"));
+        tblindex02_receipt.setCellValueFactory(new PropertyValueFactory<>("tblindex02"));
+        tblindex03_receipt.setCellValueFactory(new PropertyValueFactory<>("tblindex03"));
+        tblViewIssueReceipt.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewIssueReceipt.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
