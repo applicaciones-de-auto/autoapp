@@ -850,7 +850,8 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
 
                             // Refresh the fields and tables
                             loadMasterFields();
-                            loadLaborTable();
+                            loadTechnician();
+                            loadAccessoriesTable();
                         }
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, "No labor selected to remove.");
@@ -878,6 +879,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                             ShowMessageFX.Warning(null, pxeModuleName, "Removed accessories failed");
                         }
                         loadMasterFields();
+                        loadTechnician();
                         loadAccessoriesTable();
                     }
                 } else {
@@ -903,6 +905,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                         }
                         loadMasterFields();
                         loadTechnician();
+                        loadAccessoriesTable();
                     }
                 } else {
                 }
@@ -1105,6 +1108,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             loControl.setObject(oTrans);
             loControl.setRow(fnRow);
             loControl.setTrans(oTrans.getMasterModel().getMasterModel().getTransNo());
+            loControl.setOrigDsc(oTrans.getJOTechModel().getDetailModel(fnRow).getLaborCde());
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();

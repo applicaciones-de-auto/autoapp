@@ -2073,8 +2073,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setTitle("");
             stage.showAndWait();
             loadLaborTable();
+            loadAccessoriesTable();
             loadMasterFields();
-
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
@@ -2175,8 +2175,8 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             fxmlLoader.setController(loControl);
             loControl.setRequest(false);
             loControl.setRow(fnRow);
-            if (!oTrans.getVSPPartsModel().getVSPParts(fnRow).getDescript().isEmpty()) {
-                loControl.setOrigDsc(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
+            if (!oTrans.getVSPPartsModel().getVSPParts(fnRow).getBarCode().isEmpty()) {
+                loControl.setOrigDsc(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getBarCode()));
             }
             loControl.setStockID(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
             loControl.setJO(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
@@ -2199,6 +2199,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setTitle("");
             stage.showAndWait();
             loadAccessoriesTable();
+            loadLaborTable();
             loadMasterFields();
         } catch (IOException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -2356,6 +2357,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                             ShowMessageFX.Warning(null, pxeModuleName, "Removed labor failed");
                         }
                         loadMasterFields();
+                        loadAccessoriesTable();
                         loadLaborTable();
                     }
                 }
@@ -2386,6 +2388,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                         }
                         loadMasterFields();
                         loadAccessoriesTable();
+                        loadLaborTable();
                     }
                 }
             }

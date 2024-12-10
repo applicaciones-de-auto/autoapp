@@ -279,7 +279,7 @@ public class VSPAccessoriesController implements Initializable {
             case "btnClose":
                 JSONObject loJSON = new JSONObject();
                 if (pbState) {
-                    oTrans.removeVSPLabor(pnRow);
+                    oTrans.removeVSPParts(pnRow);
                 } else {
                     loJSON = oTrans.searchParts(psOrigDsc, pnRow, false);
                     if (!"error".equals((String) loJSON.get("result"))) {

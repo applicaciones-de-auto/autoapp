@@ -216,7 +216,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 break;
             case "btnBrowse":
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    if (ShowMessageFX.YesNo(null, "Search Vehicle Sales Accessories Request Information Confirmation", "Are you sure you want to browse a new record?")) {
+                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to browse a new record?")) {
                     } else {
                         return;
                     }
@@ -228,7 +228,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                     pnEditMode = oTransVSPRequest.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Sales Accessories Request Information Confirmation", (String) loJSON.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
@@ -239,7 +239,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
                 }
                 break;
             case "btnSave":
-                if (ShowMessageFX.YesNo(null, "VSP Parts Request Saving....", "Are you sure, do you want to save?")) {
+                if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure, do you want to save?")) {
                     boolean lbIsEmpty = false;
                     for (int lnCtr = 0; lnCtr <= oTransVSPRequest.getVSPPartsList().size() - 1; lnCtr++) {
                         if (!oTransVSPRequest.getVSPPartsModel().getDetailModel(lnCtr).getStockID().isEmpty()) {
@@ -319,9 +319,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             fxmlLoader.setController(loControl);
             loControl.setRequest(true);
             loControl.setRow(fnRow);
-            if (!oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDescript().isEmpty()) {
-                loControl.setOrigDsc(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDescript()));
-            }
+            loControl.setOrigDsc(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getBarCode()));
             loControl.setStockID(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo() != null) {
                 loControl.setJO(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));

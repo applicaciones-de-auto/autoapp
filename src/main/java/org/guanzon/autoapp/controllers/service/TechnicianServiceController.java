@@ -40,7 +40,7 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
     private ObservableList<Labor> laborData = FXCollections.observableArrayList();
     private List<TechnicianLabor> techData = new ArrayList<>();
     private String pxeModuleName = "Technician Service";
-    private String psTrans = "";
+    private String psTrans, psOrigDsc = "";
     private int pnRow = 0;
 
     @FXML
@@ -67,6 +67,10 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
 
     public void setRow(int fnRow) {
         pnRow = fnRow;
+    }
+
+    public void setOrigDsc(String fsValue) {
+        psOrigDsc = fsValue;
     }
 
     /**
@@ -110,6 +114,9 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
         JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
+                loJSON = oTransTechnician.searchVSPLabor(psOrigDsc, pnRow, true);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                }
                 if (txtField03.getText().trim().isEmpty()) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter value in labor description");
                     return;
@@ -119,7 +126,6 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
             case "btnEdit":
                 if (txtField03.getText().trim().isEmpty()) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter value for labor description.");
-                    return;
                 } else {
                     CommonUtils.closeStage(btnEdit);
                 }
@@ -147,7 +153,7 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
                 case F3:
                     switch (txtFieldID) {
                         case "txtField03":
-                            loJSON = oTransTechnician.searchVSPLabor(lsValue, pnRow);
+                            loJSON = oTransTechnician.searchVSPLabor(lsValue, pnRow, false);
                             if (!"error".equals(loJSON.get("result"))) {
                                 txtField03.setText(oTransTechnician.getJOTechModel().getDetailModel(pnRow).getLaborDsc());
                             } else {
