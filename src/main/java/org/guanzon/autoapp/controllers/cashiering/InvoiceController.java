@@ -427,6 +427,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                             if (!"error".equals(loJSON.get("result"))) {
                                 loadTransTable();
                                 loadMasterFields();
+                                loadPayModeCheckedFields();
                             } else {
                                 ShowMessageFX.Warning(null, toTitleCase(pxeModuleName), (String) loJSON.get("message"));
                                 txtField12.setText("");
@@ -601,7 +602,12 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
                             }
                         }
                     }
-
+                    if (checkBoxCash.isSelected()) {
+                        if (Double.parseDouble(txtField24.getText().replace(",", "")) <= 0.00) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid payment mode for cash.");
+                            return;
+                        }
+                    }
                     loJSON = oTrans.saveTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Information(null, toTitleCase(pxeModuleName), (String) loJSON.get("message"));
@@ -868,8 +874,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         CustomCommonUtil.setDisable(true, txtField01, comboBox04, txtField05, txtField10, btnInstTransDetail, txtField12, btnInsertAdvances);
-        CustomCommonUtil.setDisable(!lbShow, datePicker02, txtField03,
-                checkBoxNoPymnt, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
+        CustomCommonUtil.setDisable(!lbShow, datePicker02, txtField03, checkBoxNoPymnt, checkBoxCash, checkBoxCard, checkBoxOnlnPymntServ,
                 checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck, checkBoxAllwMxPyr,
                 comboBox11, textArea14, txtField13, btnInsertRemarks, btnInsCheckDetail);
         if (lbShow) {
@@ -904,15 +909,10 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
         if (checkBoxNoPymnt.isSelected()) {
             psPayMode.clear();
-            CustomCommonUtil.setSelected(false,
-                    checkBoxCash, checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
-                    checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck
-            );
-            CustomCommonUtil.setDisable(true,
+            CustomCommonUtil.setDisable(true, checkBoxCash,
                     checkBoxCheck, checkBoxCard, checkBoxOnlnPymntServ,
                     checkBoxCrdInv, checkBoxCheck, checkBoxGftCheck
             );
-
         }
         if (pnEditMode == EditMode.ADDNEW) {
             txtField01.setDisable(!lbShow);
@@ -1357,8 +1357,7 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             psPayMode.remove("CM");
         }
 
-        // Check if tblViewTrans has items and set the Cash checkbox
-        checkBoxCash.setSelected(!tblViewTrans.getItems().isEmpty());
+        checkBoxCash.setSelected(!(Double.parseDouble(txtField24.getText().replace(",", "")) <= 0.00));
     }
 
     @FXML

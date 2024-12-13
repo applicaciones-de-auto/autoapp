@@ -277,7 +277,7 @@ public class TechnicianController implements Initializable, ScreenInterface, GRe
                     loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMasterFields();
-                        pnEditMode = pnEditMode = EditMode.READY;
+                        pnEditMode = EditMode.READY;
                         initFields(pnEditMode);
                     }
                 }

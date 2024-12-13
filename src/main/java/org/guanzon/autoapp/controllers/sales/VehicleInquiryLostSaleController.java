@@ -486,16 +486,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
                     }
                 }
             }
-            if (comboBox01.getSelectionModel().getSelectedIndex() == 1) {
-                if ((comboBox02.getSelectionModel().getSelectedIndex() != 4) && (comboBox02.getSelectionModel().getSelectedIndex() != 3)) {
-                    if (comboBox03.getSelectionModel().getSelectedIndex() < 0) {
-                        ShowMessageFX.Warning("No `Goods Category` selected.", pxeModuleName, "Please select `Goods Category` value.");
-                        return false;
-                    } else {
-                        oTransLost.getMasterModel().getMasterModel().setGdsCmptr(String.valueOf(comboBox02.getSelectionModel().getSelectedIndex()));
-                    }
-                }
-            }
+
         }
         return true;
     }

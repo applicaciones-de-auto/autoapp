@@ -226,12 +226,10 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
 
     @Override
     public void initPatternFields() {
-        Pattern removeSymbols, withSpace;
+        Pattern removeSymbols;
         removeSymbols = Pattern.compile("[A-Za-z0-9]*");
-        withSpace = Pattern.compile("[A-Za-z0-9 ]*");
         List<TextField> loTxtField = Arrays.asList(txtField11, txtField12, txtField15);
         loTxtField.forEach(tf -> tf.setTextFormatter(new TextFormatterUtil(removeSymbols)));
-        txtField24.setTextFormatter(new TextFormatterUtil(withSpace)); //register
     }
 
     @Override
@@ -326,144 +324,154 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                 lsValue = lsTxtField.getText();
             }
             JSONObject loJSON = new JSONObject();
-            if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-                switch (txtFieldID) {
-                    case "txtField01":
-                        loJSON = oTrans.searchOwner(lsValue, true, false);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField01.setText(oTrans.getModel().getModel().getOwnerNmx());
-                            textArea02.setText(oTrans.getModel().getModel().getOwnerAdd());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField01.setText("");
-                            return;
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "txtField01":
+                                loJSON = oTrans.searchOwner(lsValue, true, false);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField01.setText(oTrans.getModel().getModel().getOwnerNmx());
+                                    textArea02.setText(oTrans.getModel().getModel().getOwnerAdd());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField01.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField03":
+                                loJSON = oTrans.searchOwner(lsValue, false, false);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField03.setText(oTrans.getModel().getModel().getCOwnerNm());
+                                    textArea04.setText(oTrans.getModel().getModel().getCOwnerAd());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField03.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField05":
+                                loJSON = oTrans.searchMake(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField05.setText(oTrans.getModel().getModel().getMakeDesc());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField05.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField06":
+                                if (txtField05.getText().trim().equals("")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
+                                    txtField05.requestFocus();
+                                    return;
+                                }
+                                loJSON = oTrans.searchTransMsn(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField06.setText(oTrans.getModel().getModel().getTransMsn());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField06.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField07":
+                                if (txtField05.getText().trim().equals("")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
+                                    txtField05.requestFocus();
+                                    return;
+                                }
+                                loJSON = oTrans.searchModel(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField07.setText(oTrans.getModel().getModel().getModelDsc());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField07.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField08":
+                                if (txtField05.getText().trim().equals("")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
+                                    txtField05.requestFocus();
+                                    return;
+                                }
+                                loJSON = oTrans.searchColor(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField08.setText(oTrans.getModel().getModel().getColorDsc());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField08.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField09":
+                                if (txtField05.getText().trim().equals("")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
+                                    txtField05.requestFocus();
+                                    return;
+                                }
+                                loJSON = oTrans.searchType(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField09.setText(oTrans.getModel().getModel().getTypeDesc());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField09.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField10":
+                                if (txtField05.getText().trim().equals("")) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
+                                    txtField05.requestFocus();
+                                    return;
+                                }
+                                loJSON = oTrans.searchYearModel(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField10.setText(String.valueOf(oTrans.getModel().getModel().getYearModl()));
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField10.setText("");
+                                    return;
+                                }
+                                break;
+                            case "txtField24":
+                                loJSON = oTrans.searchDealer(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField24.setText(oTrans.getModel().getModel().getDealerNm());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    return;
+                                }
+                                break;
+                            case "txtField25":
+                                loJSON = oTrans.searchRegsplace(lsValue);
+                                if (!"error".equals(loJSON.get("result"))) {
+                                    txtField25.setText(oTrans.getModel().getModel().getPlaceReg());
+                                } else {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                    txtField25.setText("");
+                                    return;
+                                }
+                                break;
                         }
+                        initFields(pnEditMode);
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
-                    case "txtField03":
-                        loJSON = oTrans.searchOwner(lsValue, false, false);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField03.setText(oTrans.getModel().getModel().getCOwnerNm());
-                            textArea04.setText(oTrans.getModel().getModel().getCOwnerAd());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField03.setText("");
-                            return;
-                        }
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         break;
-                    case "txtField05":
-                        loJSON = oTrans.searchMake(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField05.setText(oTrans.getModel().getModel().getMakeDesc());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField05.setText("");
-                            return;
-                        }
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
-                    case "txtField06":
-                        if (txtField05.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
-                            txtField05.requestFocus();
-                            return;
-                        }
-                        loJSON = oTrans.searchTransMsn(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField06.setText(oTrans.getModel().getModel().getTransMsn());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField06.setText("");
-                            return;
-                        }
-                        break;
-                    case "txtField07":
-                        if (txtField05.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
-                            txtField05.requestFocus();
-                            return;
-                        }
-                        loJSON = oTrans.searchModel(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField07.setText(oTrans.getModel().getModel().getModelDsc());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField07.setText("");
-                            return;
-                        }
-                        break;
-                    case "txtField08":
-                        if (txtField05.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
-                            txtField05.requestFocus();
-                            return;
-                        }
-                        loJSON = oTrans.searchColor(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField08.setText(oTrans.getModel().getModel().getColorDsc());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField08.setText("");
-                            return;
-                        }
-                        break;
-                    case "txtField09":
-                        if (txtField05.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
-                            txtField05.requestFocus();
-                            return;
-                        }
-                        loJSON = oTrans.searchType(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField09.setText(oTrans.getModel().getModel().getTypeDesc());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField09.setText("");
-                            return;
-                        }
-                        break;
-                    case "txtField10":
-                        if (txtField05.getText().trim().equals("")) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Please enter value make.");
-                            txtField05.requestFocus();
-                            return;
-                        }
-                        loJSON = oTrans.searchYearModel(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField10.setText(String.valueOf(oTrans.getModel().getModel().getYearModl()));
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField10.setText("");
-                            return;
-                        }
-                        break;
-                    case "txtField24":
-                        loJSON = oTrans.searchDealer(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField24.setText(oTrans.getModel().getModel().getDealerNm());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            return;
-                        }
-                        break;
-                    case "txtField25":
-                        loJSON = oTrans.searchRegsplace(lsValue);
-                        if (!"error".equals(loJSON.get("result"))) {
-                            txtField25.setText(oTrans.getModel().getModel().getPlaceReg());
-                        } else {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                            txtField25.setText("");
-                            return;
-                        }
+                    default:
                         break;
                 }
-                initFields(pnEditMode);
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.UP) {
-                event.consume();
-                CommonUtils.SetPreviousFocus((TextField) event.getSource());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                event.consume();
-                CommonUtils.SetNextFocus((TextField) event.getSource());
             }
         }
     }

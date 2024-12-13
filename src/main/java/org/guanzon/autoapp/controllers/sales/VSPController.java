@@ -373,25 +373,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         }
         if (comboBox66.getValue() != null) {
             if (oTrans.getMasterModel().getMasterModel().getInsurYr() != null) {
-                int lnYear = 0;
-                switch (String.valueOf(oTrans.getMasterModel().getMasterModel().getInsurYr())) {
-                    case "0":
-                        lnYear = 0;
-                        break;
-                    case "1":
-                        lnYear = 1;
-                        break;
-                    case "2":
-                        lnYear = 2;
-                        break;
-                    case "3":
-                        lnYear = 3;
-                        break;
-                    case "4":
-                        lnYear = 4;
-                        break;
-                }
-                comboBox67.setValue(String.valueOf(lnYear));
+                comboBox67.setValue(String.valueOf(oTrans.getMasterModel().getMasterModel().getInsurYr()));
             }
         }
         txtField68.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getLTOAmt()));
@@ -1558,7 +1540,13 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 if (comboBox67.getSelectionModel().getSelectedIndex() >= 0) {
                     oTrans.getMasterModel().getMasterModel().setInsurYr(Integer.valueOf(comboBox67.getValue()));
                 }
-                initFields(pnEditMode);
+                if (comboBox64.getSelectionModel().getSelectedIndex() == 1 || comboBox66.getSelectionModel().getSelectedIndex() != 0) {
+                    if (oTrans.getMasterModel().getMasterModel().getInsurYr() == 0 || comboBox67.getValue().equals("0")) {
+                        comboBox67.setValue(null);
+                    }
+                } else {
+                    comboBox67.setValue(String.valueOf(oTrans.getMasterModel().getMasterModel().getInsurYr()));
+                }
             }
         }
         );
@@ -2482,6 +2470,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
     @Override
     public void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+
         CustomCommonUtil.setDisable(true,
                 txtField30, txtField31, txtField32, txtField33, txtField34, txtField35, comboBox37,
                 txtField39, txtField42, txtField45,

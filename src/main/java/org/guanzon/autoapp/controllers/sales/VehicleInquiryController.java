@@ -1021,9 +1021,8 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         loadFollowHistory();
                         pnEditMode = oTrans.getEditMode();
                         initFields(pnEditMode);
+                        initBtnProcess(pnEditMode);
                     }
-                } else {
-                    return;
                 }
                 break;
             default:
@@ -1413,8 +1412,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 txtField03.setDisable(true);
                 txtField09.setDisable(true);
             }
-            if (oTrans.getMasterModel()
-                    .getMasterModel().getTranStat().equals("0")) {
+            if (oTrans.getMasterModel().getMasterModel().getTranStat().equals("0")) {
                 btnSndMngerApprov.setDisable(false);
             }
             switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
@@ -1422,21 +1420,17 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 case "1":
                 case "3":
                 case "6":
-                    if (fnValue == EditMode.READY) {
-                        if (!tblAdvanceSlip.getItems().isEmpty()) {
-                            vsasCheck01.setVisible(true);
-                        }
+                    if (!tblAdvanceSlip.getItems().isEmpty()) {
+                        vsasCheck01.setVisible(true);
                     }
                     if (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE) {
                         if (tabPinEditMode == 1) {
                             initCustomerInquiryFieldsFalse();
                             initInquiryProcessFieldsTrue();
-
                         } else {
                             initCustomerInquiryFieldsTrue();
                             initInquiryProcessFieldsFalse();
                         }
-
                     }
                     break;
                 case "2":
