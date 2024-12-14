@@ -122,6 +122,13 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
     }
 
     private void loadReservationTable() {
+        if (oTransReserve.getEditMode() == EditMode.UPDATE) {
+            JSONObject loJSON = oTransReserve.loadInqRsv();
+            if ("error".equals((String) loJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                return;
+            }
+        }
         reserveData.clear();
         String lsDate = "";
         String lsTransAmount = "";
@@ -212,7 +219,6 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
             pnRow = tblViewReservation.getSelectionModel().getSelectedIndex();
             if (pnRow < 0 || pnRow >= tblViewReservation.getItems().size()) {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid reservation information.");
-                return;
             }
         }
     }

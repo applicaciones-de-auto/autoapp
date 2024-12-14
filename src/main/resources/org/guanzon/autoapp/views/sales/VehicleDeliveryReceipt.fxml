@@ -86,8 +86,8 @@
                                                                         <Font name="Arial Bold" size="12.0" />
                                                                     </font>
                                                                 </Label>
-                                                                <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-border-radius: 4;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                <Label id="LabelDesc" prefHeight="15.0" prefWidth="143.0" text="Delivery Receipt No." GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
+                                                                <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-border-radius: 4; -fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                <Label id="LabelDesc" prefHeight="15.0" prefWidth="143.0" style="-fx-font-weight: bold;" text="Delivery Receipt No." GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                                                     <font>
                                                                         <Font name="Arial Bold" size="12.0" />
                                                                     </font>
