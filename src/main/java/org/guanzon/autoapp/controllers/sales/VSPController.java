@@ -2163,11 +2163,15 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             fxmlLoader.setController(loControl);
             loControl.setRequest(false);
             loControl.setRow(fnRow);
-            if (!oTrans.getVSPPartsModel().getVSPParts(fnRow).getBarCode().isEmpty()) {
-                loControl.setOrigDsc(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getBarCode()));
+            if (oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID() != null) {
+                loControl.setOrigDsc(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
             }
-            loControl.setStockID(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
-            loControl.setJO(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
+            if (oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID() != null) {
+                loControl.setStockID(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
+            }
+            if (oTrans.getVSPPartsModel().getVSPParts(fnRow).getDSNo() != null) {
+                loControl.setJO(String.valueOf(oTrans.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
+            }
             //load the main interface
             Parent parent = fxmlLoader.load();
             parent.setOnMousePressed((MouseEvent event) -> {

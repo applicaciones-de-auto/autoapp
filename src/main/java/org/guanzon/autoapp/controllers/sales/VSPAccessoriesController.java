@@ -248,8 +248,7 @@ public class VSPAccessoriesController implements Initializable {
             initFields();
             event.consume();
             CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode()
-                == KeyCode.UP) {
+        } else if (event.getCode() == KeyCode.UP) {
             event.consume();
             CommonUtils.SetPreviousFocus((TextField) event.getSource());
         }
@@ -281,8 +280,10 @@ public class VSPAccessoriesController implements Initializable {
                 if (pbState) {
                     oTrans.removeVSPParts(pnRow);
                 } else {
-                    loJSON = oTrans.searchParts(psOrigDsc, pnRow, false);
-                    if (!"error".equals((String) loJSON.get("result"))) {
+                    if (pbRequest) {
+                        loJSON = oTrans.searchParts(psOrigDsc, pnRow, false);
+                        if (!"error".equals((String) loJSON.get("result"))) {
+                        }
                     }
                 }
                 CommonUtils.closeStage(btnClose);

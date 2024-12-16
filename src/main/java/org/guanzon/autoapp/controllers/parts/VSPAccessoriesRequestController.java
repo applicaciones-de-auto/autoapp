@@ -319,8 +319,12 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             fxmlLoader.setController(loControl);
             loControl.setRequest(true);
             loControl.setRow(fnRow);
-            loControl.setOrigDsc(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getBarCode()));
-            loControl.setStockID(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID() != null) {
+                loControl.setOrigDsc(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
+            }
+            if (oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID() != null) {
+                loControl.setStockID(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getStockID()));
+            }
             if (oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo() != null) {
                 loControl.setJO(String.valueOf(oTransVSPRequest.getVSPPartsModel().getVSPParts(fnRow).getDSNo()));
             }
