@@ -807,7 +807,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 initBtnProcess(pnEditMode);
                 break;
             case "btnTestDriveModel":
-                laodTestModelWindow();
+                loadTestModelWindow();
                 break;
             case "btnProcess":
                 if (ShowMessageFX.YesNo(null, "Vehicle Inquiry Information Saving....", "Are you sure, do you want to process?")) {
@@ -1294,7 +1294,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel);
         CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
-                comboBox21, datePicker22, textArea23);
+                comboBox21, datePicker22, textArea23, btnTestDriveModel);
         if (fnValue == EditMode.ADDNEW) {
             trgvIndex03.setVisible(true);
             trgvIndex04.setVisible(true);
@@ -1802,7 +1802,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         }
     }
 
-    private void laodTestModelWindow() {
+    private void loadTestModelWindow() {
         /**
          * if state = true : ADD else if state = false : UPDATE *
          */

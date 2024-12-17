@@ -428,9 +428,7 @@
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                 <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="870.0" />
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -442,7 +440,7 @@
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                                             </rowConstraints>
                                                                                             <children>
-                                                                                                <TableView fx:id="tblViewVhclInfo" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                                                                <TableView fx:id="tblViewVhclInfo" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                                                                                     <columns>
                                                                                                         <TableColumn fx:id="tblVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
                                                                                                         <TableColumn fx:id="tblVhcllist02" editable="false" minWidth="80.0" resizable="false" sortable="false" text="CS No" />
@@ -453,12 +451,12 @@
                                                                                                         <TableColumn fx:id="tblVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                     </columns>
                                                                                                 </TableView>
-                                                                                                <Label text="Vehicle/s Owned" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                                                <Label text="Vehicle/s Owned" GridPane.rowIndex="1">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="12.0" />
                                                                                                     </font>
                                                                                                 </Label>
-                                                                                                <TableView fx:id="tblViewCoVhclInfo" layoutX="20.0" layoutY="254.0" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                                                                <TableView fx:id="tblViewCoVhclInfo" layoutX="20.0" layoutY="254.0" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
                                                                                                     <columns>
                                                                                                         <TableColumn fx:id="tblCoVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" sortable="false" text="Row" />
                                                                                                         <TableColumn fx:id="tblCoVhcllist02" editable="false" minWidth="80.0" sortable="false" text="CS No" />
@@ -469,7 +467,7 @@
                                                                                                         <TableColumn fx:id="tblCoVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                     </columns>
                                                                                                 </TableView>
-                                                                                                <Label text="Vehicle/s Co - Owned" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                                                                <Label text="Vehicle/s Co - Owned" GridPane.rowIndex="4">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="12.0" />
                                                                                                     </font>

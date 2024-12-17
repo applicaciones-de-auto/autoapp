@@ -572,7 +572,7 @@
                                                                                                                 <Blend />
                                                                                                             </effect>
                                                                                                             <tooltip>
-                                                                                                                <Tooltip text="Print Customer Advance Slip Button" />
+                                                                                                                <Tooltip text="Cancel Customer Advance Slip Button" />
                                                                                                             </tooltip>
                                                                                                         </Button>
                                                                                                         <TableView fx:id="tblAdvanceSlip" onMouseClicked="#tblAdvanceSlip_Clicked" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="1" GridPane.rowSpan="3">
