@@ -162,12 +162,11 @@ public class InvoicePaymentDetailsController implements Initializable {
     }
 
     private void initCapitalizationFields() {
-        CustomCommonUtil.setCapsLockBehavior(txtField03_Card, txtField04_Card, txtField05_Card,
+        CustomCommonUtil.setCapsLockBehavior(txtField01_Card, txtField03_Card, txtField04_Card, txtField05_Card,
                 txtField04_Check, txtField05_Check, txtField06_Check,
                 txtField01_Gift, txtField03_Gift,
                 txtField03_Online, txtField04_Online);
         CustomCommonUtil.setCapsLockBehavior(textArea07_Card, textArea07_Check, textArea05_Online, textArea05_Gift);
-
     }
 
     private void initPatternFields() {
