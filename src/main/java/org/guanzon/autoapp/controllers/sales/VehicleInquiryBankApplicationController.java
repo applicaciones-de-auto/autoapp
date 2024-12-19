@@ -24,7 +24,6 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -35,20 +34,18 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.BankApplication;
-import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VehicleInquiryBankApplicationController implements Initializable {
 
     private GRider oApp;
     private BankApplication oTransBankApp;
-    private Inquiry oTransInquiry;
     private int pnRow = 0;
     private String psOApplieddate = "";
     private int pnInqPayMode;
@@ -294,65 +291,85 @@ public class VehicleInquiryBankApplicationController implements Initializable {
         } else {
             lsValue = lsTxtField.getText();
         }
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (txtFieldID) {
-                case "txtField02":
-                    loJSON = oTransBankApp.searchBank(lsValue, true);
-                    if (!"error".equals(loJSON.get("result"))) {
-                        txtField02.setText(oTransBankApp.getMasterModel().getMasterModel().getBankName());
-                        if (oTransBankApp.getMasterModel().getMasterModel().getBankType() != null && !oTransBankApp.getMasterModel().getMasterModel().getBankType().trim().isEmpty()) {
-                            switch ((String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getBankType()))) {
-                                case "bank":
-                                    comboBox03.setValue("BANK");
-                                    break;
-                                case "cred":
-                                    comboBox03.setValue("CREDIT UNION");
-                                    break;
-                                case "insc":
-                                    comboBox03.setValue("INSURANCE COMPANY");
-                                    break;
-                                case "invc":
-                                    comboBox03.setValue("INVESTMENT COMPANIES");
-                                    break;
-                                default:
-                                    break;
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (txtFieldID) {
+                        case "txtField02":
+                            loJSON = oTransBankApp.searchBank(lsValue, true);
+                            if (!"error".equals(loJSON.get("result"))) {
+                                txtField02.setText(oTransBankApp.getMasterModel().getMasterModel().getBankName());
+                                if (oTransBankApp.getMasterModel().getMasterModel().getBankType() != null && !oTransBankApp.getMasterModel().getMasterModel().getBankType().trim().isEmpty()) {
+                                    switch ((String.valueOf(oTransBankApp.getMasterModel().getMasterModel().getBankType()))) {
+                                        case "bank":
+                                            comboBox03.setValue("BANK");
+                                            break;
+                                        case "cred":
+                                            comboBox03.setValue("CREDIT UNION");
+                                            break;
+                                        case "insc":
+                                            comboBox03.setValue("INSURANCE COMPANY");
+                                            break;
+                                        case "invc":
+                                            comboBox03.setValue("INVESTMENT COMPANIES");
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                txtField04.setText(oTransBankApp.getMasterModel().getMasterModel().getBrBankNm());
+                                txtField05.setText(oTransBankApp.getMasterModel().getMasterModel().getAddressx());
+                            } else {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
+                                txtField02.setText("");
+                                txtField02.requestFocus();
+                                return;
                             }
-                        }
-                        txtField04.setText(oTransBankApp.getMasterModel().getMasterModel().getBrBankNm());
-                        txtField05.setText(oTransBankApp.getMasterModel().getMasterModel().getAddressx());
-                    } else {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        txtField02.setText("");
-                        txtField02.requestFocus();
-                        return;
+                            break;
                     }
+                    initFields(pnEditMode);
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                    break;
+                default:
                     break;
             }
-            initFields(pnEditMode);
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextField) event.getSource());
         }
     }
 
     private void textArea_KeyPressed(KeyEvent event) {
         String textAreaID = ((TextArea) event.getSource()).getId();
-        if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
-            switch (textAreaID) {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (textAreaID) {
+                    }
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                case UP:
+                    event.consume();
+                    CommonUtils.SetPreviousFocus((TextArea) event.getSource());
+                    break;
+                case DOWN:
+                    event.consume();
+                    CommonUtils.SetNextFocus((TextArea) event.getSource());
+                    break;
+                default:
+                    break;
             }
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.UP) {
-            event.consume();
-            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
-        } else if (event.getCode() == KeyCode.DOWN) {
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea) event.getSource());
         }
     }
 

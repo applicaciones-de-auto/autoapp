@@ -15,6 +15,7 @@ public class LetMeInn {
 
     public static void main(String[] args) {
         String path;
+
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             path = "D:/GGC_Maven_Systems";
         } else {
@@ -23,16 +24,13 @@ public class LetMeInn {
         System.setProperty("sys.default.path.config", path);
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
 
-        GRider instance = new GRider("gRider");
+        System.out.println("Connected");
         // Use the instance
-
+        GRider instance = new GRider("gRider");
         if (!instance.logUser("gRider", "M001000001")) {
             System.err.println(instance.getErrMsg());
             System.exit(1);
         }
-
-        System.out.println("Connected");
-
         Autoapp instance_ui = new Autoapp();
         instance_ui.setGRider(instance);
         Application.launch(instance_ui.getClass());

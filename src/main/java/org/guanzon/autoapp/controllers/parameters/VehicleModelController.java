@@ -47,7 +47,7 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
 
     ObservableList<String> cUnitType = FXCollections.observableArrayList("COMMERCIAL VEHICLE", "PRIVATE VEHICLE", "LIGHT PRIVATE VEHICLE", "MEDIUM PRIVATE VEHICLE");
     ObservableList<String> cBodyType = FXCollections.observableArrayList("SEDAN", "SUV", "HATCHBACK", "MPV", "MOTORCYCLE", "TRUCK");
-    ObservableList<String> cUnitSize = FXCollections.observableArrayList("BANTAM", "SMALL", "MEDIUM", "LARGE");
+//    ObservableList<String> cUnitSize = FXCollections.observableArrayList("BANTAM", "SMALL", "MEDIUM", "LARGE");
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnClose, btnActive;
     @FXML
@@ -116,9 +116,9 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
         if (oTrans.getModel().getModel().getBodyType() != null && !oTrans.getModel().getModel().getBodyType().trim().isEmpty()) {
             comboBox05.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getBodyType()));
         }
-        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
-            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
-        }
+//        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
+//            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
+//        }
         if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
             cboxActivate.setSelected(true);
         } else {
@@ -366,7 +366,7 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
     public void initComboBoxItems() {
         comboBox04.setItems(cUnitType);
         comboBox05.setItems(cBodyType);
-        comboBox06.setItems(cUnitSize);
+//        comboBox06.setItems(cUnitSize);
     }
 
     @Override
@@ -385,13 +385,13 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
                 }
             }
         });
-        comboBox06.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
-                    oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
-                }
-            }
-        });
+//        comboBox06.setOnAction(e -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                if (comboBox06.getSelectionModel().getSelectedIndex() >= 0) {
+//                    oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -418,7 +418,7 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
     public void clearFields() {
         cboxActivate.setSelected(false);
         CustomCommonUtil.setText("", txtField01, txtField02, txtField03);
-        CustomCommonUtil.setValue(null, comboBox04, comboBox05, comboBox06);
+        CustomCommonUtil.setValue(null, comboBox04, comboBox05);
     }
 
     @Override
@@ -431,7 +431,7 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
         }
         CustomCommonUtil.setDisable(true, txtField01, cboxActivate);
         CustomCommonUtil.setDisable(!lbShow, txtField02, txtField03,
-                comboBox04, comboBox05, comboBox06);
+                comboBox04, comboBox05);
         btnAdd.setVisible(!lbShow);
         btnAdd.setManaged(!lbShow);
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
@@ -468,12 +468,12 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
             } else {
                 oTrans.getModel().getModel().setBodyType(String.valueOf((comboBox05.getSelectionModel().getSelectedIndex())));
             }
-            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
-                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
-                return false;
-            } else {
-                oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
-            }
+//            if (comboBox06.getSelectionModel().getSelectedIndex() < 0) {
+//                ShowMessageFX.Warning(null, "Vehicle  Model Size", "Please select `Vehicle  Model Size` value.");
+//                return false;
+//            } else {
+//                oTrans.getModel().getModel().setVhclSize(String.valueOf((comboBox06.getSelectionModel().getSelectedIndex())));
+//            }
         }
         return true;
     }

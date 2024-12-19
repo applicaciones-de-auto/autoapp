@@ -47,6 +47,7 @@ public class VSIPrintController implements Initializable, ScreenInterface, GPrin
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "VSI Print";
+    private String psOldPrintValue = "";
     private String psTransNox;
     private boolean running = false;
     Map<String, Object> params = new HashMap<>();
@@ -74,6 +75,10 @@ public class VSIPrintController implements Initializable, ScreenInterface, GPrin
         psTransNox = fsValue;
     }
 
+    public void setOldPrint(String fsValue) {
+        psOldPrintValue = fsValue;
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -96,25 +101,43 @@ public class VSIPrintController implements Initializable, ScreenInterface, GPrin
     @Override
     public void handleButtonAction(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
+        JSONObject loJSON = new JSONObject();
         switch (lsButton) {
             case "btnClose":
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnPrint":
-                try {
-                if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                    CommonUtils.closeStage(btnClose);
+                loJSON = oTransPrint.savePrint(true);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    try {
+                        if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                            loJSON = oTransPrint.savePrint(false);
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Printed succesfully.");
+                                CommonUtils.closeStage(btnClose);
+                            }
+                        } else {
+                            handlePrintFailure(oTransPrint);
+                        }
+                    } catch (JRException ex) {
+                        handlePrintFailure(oTransPrint);
+                    }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
+                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted : " + (String) loJSON.get("message"));
                 }
-            } catch (JRException ex) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
-            }
-            break;
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
+        }
+    }
+
+    private void handlePrintFailure(VehicleSalesInvoice foValue) {
+        JSONObject loJSON = new JSONObject();
+        foValue.getMasterModel().getMasterModel().setPrinted(psOldPrintValue);
+        loJSON = foValue.saveTransaction();
+        if ("success".equals((String) loJSON.get("result"))) {
+            ShowMessageFX.Error(null, pxeModuleName, "Print Aborted");
         }
     }
 

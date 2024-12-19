@@ -59,7 +59,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
                                                 <TextField fx:id="txtField01" disable="true" maxWidth="120.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
@@ -69,11 +69,11 @@
                                                 <Label id="LabelDesc" text="Vehicle Model Description" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="LabelDesc" text="Vehicle Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <Label id="LabelDesc" text="Body Type" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label id="LabelDesc" text="Model Size" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label id="LabelDesc" text="Model Size" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                 <ComboBox fx:id="comboBox04" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                 <ComboBox fx:id="comboBox05" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                <ComboBox fx:id="comboBox06" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                <ComboBox fx:id="comboBox06" prefWidth="150.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                                <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                 <Label id="LabelDesc" text="Vehicle Make" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                             </children>
                                         </GridPane>

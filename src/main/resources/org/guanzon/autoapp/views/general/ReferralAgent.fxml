@@ -418,11 +418,11 @@
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
-                                                                                <StackPane prefHeight="443.0" prefWidth="800.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="3.0">
+                                                                                <StackPane prefHeight="443.0" prefWidth="800.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" prefWidth="800.0" />
+                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="800.0" />
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
@@ -449,20 +449,18 @@
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                             <children>
-                                                                                <StackPane prefHeight="443.0" prefWidth="977.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                                                                <StackPane prefHeight="443.0" prefWidth="977.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
                                                                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="700.0" />
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                                             </rowConstraints>
                                                                                             <children>
-                                                                                                <TableView fx:id="tblTransaction" GridPane.columnIndex="1">
+                                                                                                <TableView fx:id="tblTransaction">
                                                                                                     <columns>
                                                                                                         <TableColumn fx:id="tblindex01" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
                                                                                                         <TableColumn fx:id="tblindex02" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="VSP Date" />

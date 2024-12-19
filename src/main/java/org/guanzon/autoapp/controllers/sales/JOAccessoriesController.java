@@ -128,9 +128,9 @@ public class JOAccessoriesController implements Initializable {
         double lnAccesAmnt = Double.parseDouble(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getUnitPrce()));;
         int lnAccQuan = Integer.parseInt(String.valueOf(oTrans.getJOPartsModel().getJOParts(pnRow).getQtyEstmt()));
         double lnTotalAmnt = lnAccesAmnt * lnAccQuan;
-        txtField04.setText(poGetDecimalFormat.format(lnAccesAmnt));
+        txtField04.setText(CustomCommonUtil.setDecimalFormat(lnAccesAmnt));
         txtField05.setText(String.valueOf(lnAccQuan));
-        txtField06.setText(poGetDecimalFormat.format(lnTotalAmnt));
+        txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTotalAmnt));
         if (oTrans.getJOPartsModel().getJOParts(pnRow).getEntryNo() > 0) {
             txtField02.setDisable(true);
         }
@@ -160,20 +160,6 @@ public class JOAccessoriesController implements Initializable {
 
         if (!nv) { // Lost Focus
             switch (lnIndex) {
-                case 2:
-                    if (lsValue.isEmpty()) {
-                        lsValue = "";
-                    }
-                    oTrans.getJOPartsModel().getJOParts(pnRow).setDescript(lsValue);
-                    break;
-                case 4:
-
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-
-                    oTrans.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(lsValue.replace(",", "")));
-                    break;
                 case 5:
                     String lsOrigQuan = "0";
                     if (lsValue.isEmpty()) {
@@ -184,16 +170,23 @@ public class JOAccessoriesController implements Initializable {
                     }
                     loJSON = oTrans.checkVSPJOParts(oTrans.getJOPartsModel().getJOParts(pnRow).getStockID(), Integer.parseInt(lsValue), pnRow, pbState);
                     if (!"error".equals((String) loJSON.get("result"))) {
-                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsValue));
+                        txtField05.setText(lsValue);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
-                        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.parseInt(lsOrigQuan));
+                        txtField05.setText(lsOrigQuan);
                     }
                     break;
             }
-            loadMasterFields();
+            computeTotalPartsFromType();
         }
     };
+
+    private void computeTotalPartsFromType() {
+        double lnPartsAmnt = Double.parseDouble(txtField04.getText().replace(",", ""));
+        int lnQuantDscx = Integer.parseInt(txtField05.getText().replace(",", ""));
+        double lnTtlAmntxx = lnPartsAmnt * lnQuantDscx;
+        txtField06.setText(CustomCommonUtil.setDecimalFormat(lnTtlAmntxx));
+    }
 
     private void initTextKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(
@@ -227,7 +220,13 @@ public class JOAccessoriesController implements Initializable {
             case "btnEdit":
             case "btnAdd":
                 if (isValidEntry()) {
-                    CommonUtils.closeStage(btnClose);
+                    if (setToClass()) {
+                        if (lsButton.equals("btnAdd")) {
+                            CommonUtils.closeStage(btnAdd);
+                        } else {
+                            CommonUtils.closeStage(btnEdit);
+                        }
+                    }
                 } else {
                     return;
                 }
@@ -307,6 +306,13 @@ public class JOAccessoriesController implements Initializable {
             CustomCommonUtil.setDisable(false, txtField05);
             CustomCommonUtil.setDisable(true, txtField01, txtField02, comboBox03, txtField04);
         }
+    }
+
+    private boolean setToClass() {
+        oTrans.getJOPartsModel().getJOParts(pnRow).setDescript(txtField02.getText());
+        oTrans.getJOPartsModel().getJOParts(pnRow).setUnitPrce(new BigDecimal(txtField04.getText().replace(",", "")));
+        oTrans.getJOPartsModel().getJOParts(pnRow).setQtyEstmt(Integer.valueOf(txtField05.getText()));
+        return true;
     }
 
     private boolean isValidEntry() {

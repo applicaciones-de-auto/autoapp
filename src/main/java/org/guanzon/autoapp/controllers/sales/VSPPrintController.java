@@ -43,7 +43,7 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author AutoGroup Programmers
+ * @author John Dave
  */
 public class VSPPrintController implements Initializable, ScreenInterface, GPrintInterface {
 
@@ -52,13 +52,13 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
     private JasperPrint poJasperPrint; //Jasper Libraries
     private JRViewer poJrViewer;
     private final String pxeModuleName = "Vehicle Sales Proposal Print";
+    private String psOldPrintValue = "";
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private boolean running = false;
     private String psTransNox = "";
     Map<String, Object> params = new HashMap<>();
     private Timeline timeline;
     private Integer timeSeconds = 3;
-    private int pnCtr = 0;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -84,6 +84,10 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
     @Override
     public void setTransNo(String fsValue) {
         psTransNox = fsValue;
+    }
+
+    public void setOldPrint(String fsValue) {
+        psOldPrintValue = fsValue;
     }
 
     /**
@@ -114,24 +118,37 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnPrint":
-                try {
-                if (JasperPrintManager.printReport(poJasperPrint, true)) {
-                    oTransPrint.getMasterModel().getMasterModel().setPrinted("1");
-                    loJSON = oTransPrint.saveTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Printed Successfully");
-                        CommonUtils.closeStage(btnClose);
+                loJSON = oTransPrint.savePrint(true);
+                if (!"error".equals((String) loJSON.get("result"))) {
+                    try {
+                        if (JasperPrintManager.printReport(poJasperPrint, true)) {
+                            loJSON = oTransPrint.savePrint(false);
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Printed succesfully.");
+                                CommonUtils.closeStage(btnClose);
+                            }
+                        } else {
+                            handlePrintFailure(oTransPrint);
+                        }
+                    } catch (JRException ex) {
+                        handlePrintFailure(oTransPrint);
                     }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
+                    ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted : " + (String) loJSON.get("message"));
                 }
-            } catch (JRException ex) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Print Aborted");
-            }
-            break;
+                break;
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 break;
+        }
+    }
+
+    private void handlePrintFailure(VehicleSalesProposal foValue) {
+        JSONObject loJSON = new JSONObject();
+        foValue.getMasterModel().getMasterModel().setPrinted(psOldPrintValue);
+        loJSON = foValue.saveTransaction();
+        if ("success".equals((String) loJSON.get("result"))) {
+            ShowMessageFX.Error(null, pxeModuleName, "Print Aborted");
         }
     }
 
@@ -271,7 +288,7 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
             params.put("grsMontInst", "0.00");
             params.put("promiNtAmnt", "0.00");
             params.put("bankName", "");
-            if (oTransPrint.getVSPFinanceList().size() > 0) {
+            if (!oTransPrint.getVSPFinanceList().isEmpty()) {
                 String lsBank = "";
                 if (oTransPrint.getVSPFinanceModel().getVSPFinanceModel().getAcctTerm() != null) {
                     lsBank = String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBankName()) + "" + String.valueOf(oTransPrint.getMasterModel().getMasterModel().getBrBankNm());

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane>
+                    <StackPane.margin>
+                        <Insets />
+                    </StackPane.margin>
+                    <top>
+                        <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER" prefHeight="17.0" text="Payment Details" textFill="#5b5b5b" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
+                                    <font>
+                                        <Font name="Arial Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </AnchorPane>
+                    </top>
+                    <bottom>
+                        <AnchorPane style="-fx-background-color: #515151;">
+                            <children>
+                                <HBox spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <Button fx:id="btnAdd" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Add">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="PLUS" size="20" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                        <Button fx:id="btnUpdate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="67.0" text="Update">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="EDIT" size="19.5" />
+                                            </graphic>
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <Button fx:id="btnClose" contentDisplay="TOP" layoutX="416.0" layoutY="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                    <effect>
+                                        <Blend />
+                                    </effect>
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </bottom>
+                    <center>
+                        <AnchorPane BorderPane.alignment="CENTER">
+                            <BorderPane.margin>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </BorderPane.margin>
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <children>
+                                        <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5;">
+                                            <children>
+                                                <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="150.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <ComboBox fx:id="comboBoxPayMde" maxWidth="170.0" GridPane.columnIndex="1" />
+                                                        <Label id="LabelDesc" text="Payment Mode">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                </GridPane>
+                                            </children>
+                                        </AnchorPane>
+                                        <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5;">
+                                            <children>
+                                                <GridPane fx:id="gridCard" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <TextField fx:id="txtField01_Card" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                                                        <TextField fx:id="txtField02_Card" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField03_Card" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField04_Card" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="txtField05_Card" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <TextArea fx:id="textArea07_Card" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="3" />
+                                                        <Label id="LabelDesc" text="Amount" GridPane.rowIndex="4">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Bank Name">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Card No" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="5">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Trace No" GridPane.rowIndex="3">
+                                                            <font>
+                                                                <Font name="Arial Bold" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Approval Code" GridPane.rowIndex="2">
+                                                            <GridPane.margin>
+                                                                <Insets />
+                                                            </GridPane.margin>
+                                                            <font>
+                                                                <Font name="Arial Bold" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                    <opaqueInsets>
+                                                        <Insets />
+                                                    </opaqueInsets>
+                                                </GridPane>
+                                                <GridPane fx:id="gridCheck" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <Label id="LabelDesc" text="Check Date" GridPane.rowIndex="2">
+                                                            <GridPane.margin>
+                                                                <Insets />
+                                                            </GridPane.margin>
+                                                            <font>
+                                                                <Font name="Arial Bold" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="txtField01_Check" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                                                        <TextField fx:id="txtField02_Check" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <DatePicker fx:id="datePicker03_Check" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField04_Check" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                            <tooltip>
+                                                                <Tooltip text="Please fill in the VSP Labor Description." />
+                                                            </tooltip>
+                                                        </TextField>
+                                                        <TextField fx:id="txtField05_Check" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                        <TextField fx:id="txtField06_Check" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                        <TextArea fx:id="textArea07_Check" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" GridPane.rowSpan="2" />
+                                                        <Label id="LabelDesc" text="Amount" GridPane.rowIndex="4">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Allocated amount to this receipt" GridPane.rowIndex="5">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Bank Name">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Check No" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="6">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Clearing Days" GridPane.rowIndex="3">
+                                                            <font>
+                                                                <Font name="Arial Bold" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                    <opaqueInsets>
+                                                        <Insets />
+                                                    </opaqueInsets>
+                                                </GridPane>
+                                                <GridPane fx:id="gridGift" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="170.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="150.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <TextField fx:id="txtField01_Gift" promptText="Search: F3" GridPane.columnIndex="1" />
+                                                        <CheckBox fx:id="checkBox02_Gift" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField03_Gift" promptText="Search: F3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField04_Gift" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextArea fx:id="textArea05_Gift" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="3" />
+                                                        <Label id="LabelDesc">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="4">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Gift Check Number">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Amount" GridPane.rowIndex="3">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Subsidized" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Subsidized to" GridPane.rowIndex="2">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                    <opaqueInsets>
+                                                        <Insets />
+                                                    </opaqueInsets>
+                                                </GridPane>
+                                                <GridPane fx:id="gridOnline" prefHeight="40.0" prefWidth="505.0" vgap="3.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <ComboBox fx:id="comboBox01_Online" maxHeight="22.0" minHeight="22.0" prefHeight="22.0" prefWidth="150.0" GridPane.columnIndex="1" />
+                                                        <TextField fx:id="txtField02_Online" promptText="Search: F3" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="txtField03_Online" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="txtField04_Online" alignment="CENTER_RIGHT" maxWidth="150.0" prefWidth="150.0" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextArea fx:id="textArea05_Online" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="2" />
+                                                        <Label id="LabelDesc" text="Allocated amount to this receipt" GridPane.rowIndex="3">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Amount" GridPane.rowIndex="2">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" prefHeight="14.0" prefWidth="167.0" text="Remarks" GridPane.rowIndex="4">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Referrence No" GridPane.rowIndex="1">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Label id="LabelDesc" text="Payment Source">
+                                                            <font>
+                                                                <Font name="Arial" size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </children>
+                                                    <opaqueInsets>
+                                                        <Insets />
+                                                    </opaqueInsets>
+                                                </GridPane>
+                                                <Label fx:id="lblNoFields" alignment="CENTER" contentDisplay="CENTER" text="Please select payment mode to load fields." textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </StackPane>
+    </children>
+    <stylesheets>
+        <URL value="@../../css/FrameStyle.css" />
+        <URL value="@../../css/MainPanelStyle.css" />
+    </stylesheets>
+</AnchorPane>

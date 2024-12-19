@@ -67,8 +67,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
     private VehicleSalesInvoice oTrans;
     private int pnEditMode = -1;
     private String pxeModuleName = "Vehicle Sales Invoice";
-    ObservableList<String> cCustomerType = FXCollections.observableArrayList("CUSTOMER", "SUPPLIER"); // Customer Type Values
-    DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
+    ObservableList<String> cCustomerType = FXCollections.observableArrayList("CUSTOMER", "SUPPLIER");
     private double xOffset = 0;
     private double yOffset = 0;
     @FXML
@@ -149,20 +148,19 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             txtField14.setText(oTrans.getVSISourceModel().getDetailModel().getFrameNo());
             textArea15.setText(oTrans.getVSISourceModel().getDetailModel().getVhclFDsc());
             if (oTrans.getVSISourceModel().getDetailModel().getUnitPrce() != null) {
-                txtField18.setText(
-                        poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSISourceModel().getDetailModel().getUnitPrce()))));
+                txtField18.setText(CustomCommonUtil.setDecimalFormat(oTrans.getVSISourceModel().getDetailModel().getUnitPrce()));
             }
-            txtField19.setText(
-                    poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getVSISourceModel().getDetailModel().getVatRate()))));
+            txtField19.setText(CustomCommonUtil.setDecimalFormat(oTrans.getVSISourceModel().getDetailModel().getVatRate()));
         }
         textArea16.setText(
                 "");
         textArea17.setText(
                 "");
 
-        txtField20.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getVatAmt()))));
-        txtField21.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getDiscount()))));
-        txtField22.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getMasterModel().getTranTotl()))));
+        txtField20.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getVatAmt()));
+        txtField21.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getDiscount()));
+        txtField22.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getNetTotal()));
+
         switch (oTrans.getMasterModel().getMasterModel().getTranStat()) {
             case TransactionStatus.STATE_OPEN:
                 lbStatus.setText("Active");
@@ -524,6 +522,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             VSIPrintController loControl = new VSIPrintController();
             loControl.setGRider(oApp);
             loControl.setVSIObject(oTrans);
+            loControl.setOldPrint(oTrans.getMasterModel().getMasterModel().getPrinted());
             loControl.setTransNo(oTrans.getMasterModel().getMasterModel().getTransNo());
             fxmlLoader.setController(loControl);
             //load the main interface
@@ -543,6 +542,13 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
+            JSONObject loJSON = new JSONObject();
+            loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+            if ("success".equals((String) loJSON.get("result"))) {
+                loadMasterFields();
+                pnEditMode = oTrans.getEditMode();
+                initFields(pnEditMode);
+            }
         } catch (IOException e) {
             ShowMessageFX.Warning(null, "Warning", e.getMessage());
             System.exit(1);

@@ -62,9 +62,11 @@ public class ExcelExporterUtil {
         // Create a bold font for the header
         Font headerFont = foWorkBook.createFont();
         headerFont.setBold(true);
-
+        headerFont.setColor(IndexedColors.WHITE.getIndex());
         // Create a cell style for the header
         CellStyle headerCellStyle = foWorkBook.createCellStyle();
+        headerCellStyle.setFillForegroundColor(IndexedColors.OLIVE_GREEN.getIndex());
+        headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerCellStyle.setFont(headerFont);
         headerCellStyle.setAlignment(HorizontalAlignment.CENTER); // Center text horizontally
         headerCellStyle.setVerticalAlignment(VerticalAlignment.CENTER); // Center text vertically

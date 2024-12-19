@@ -968,8 +968,11 @@ public class ActivityInformationController implements Initializable, ScreenInter
             loControl.setRow(fnRow);
             loControl.setState(isAdd);
             loControl.setObject(oTrans);
-            loControl.setProvID(String.valueOf(oTrans.getActLocation(0, "sProvIDxx").toString()));
             loControl.setProvName(String.valueOf(oTrans.getActLocation(0, "sProvName")));
+            loControl.setProvID(String.valueOf(oTrans.getActLocation(0, "sProvIDxx").toString()));
+            loControl.setOrigProv((String) oTrans.getActLocation(fnRow, "sProvIDxx"));
+            loControl.setOrigTown((String) oTrans.getActLocation(fnRow, "sTownIDxx"));
+            loControl.setOrigBrgy((String) oTrans.getActLocation(fnRow, "sBrgyIDxx"));
             fxmlLoader.setController(loControl);
 
             Parent parent = fxmlLoader.load();

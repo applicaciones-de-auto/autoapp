@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,10 +35,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -619,10 +626,25 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTrans = new Client(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        oTrans = new Client(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadAddress();
+                            loadContact();
+                            loadEmail();
+                            loadSocialMedia();
+                            loadVehicleInfoTable();
+                            loadCoOwnVehicleInfoTable();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":
@@ -1067,8 +1089,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             }
             if (oTrans.getAddress(pnRow, "sEntryByx") == null || ((String) oTrans.getAddress(pnRow, "sEntryByx")).isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1082,7 +1106,9 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
 
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
+
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/CustomerAddress.fxml"));
+
             CustomerAddressController loControl = new CustomerAddressController();
             loControl.setGRider(oApp);
             loControl.setObject(oTrans);
@@ -1203,8 +1229,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             }
             if (oTrans.getMobile(pnRow, "sEntryByx") == null || oTrans.getMobile(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1217,6 +1245,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             }
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
+
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/general/CustomerContact.fxml"));
             CustomerContactController loControl = new CustomerContactController();
             loControl.setGRider(oApp);
@@ -1340,8 +1369,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             // Check if the email entry is empty or null
             if (oTrans.getEmail(pnRow, "sEntryByx") == null || oTrans.getEmail(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }
@@ -1454,8 +1485,10 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             }
             if (oTrans.getSocialMed(pnRow, "sEntryByx") == null || oTrans.getSocialMed(pnRow, "sEntryByx").toString().isEmpty()) {
                 btnTabRem.setVisible(true);
+                btnTabRem.setManaged(true);
             } else {
                 btnTabRem.setVisible(false);
+                btnTabRem.setManaged(false);
             }
         }
     }

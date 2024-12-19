@@ -4,6 +4,7 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
+import org.guanzon.autoapp.FXMLDocumentController;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -43,9 +44,13 @@ import org.guanzon.autoapp.utils.UnloadForm;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.guanzon.autoapp.FXMLDocumentController;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.json.simple.JSONObject;
 
 /**
@@ -66,6 +71,9 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             "REFERENCE NO");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private ObservableList<Cashier_Receivables> poCARData = FXCollections.observableArrayList();
+    private double xOffset = 0;
+    private double yOffset = 0;
+    private int pnRow = -1;
     @FXML
     private AnchorPane AnchorMain;
     @FXML
@@ -80,7 +88,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
     private TableView<Cashier_Receivables> tblViewCAR;
     @FXML
     private TableColumn<Cashier_Receivables, String> tblindex01, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07,
-            tblindex08, tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15, tblindex16, tblindex17,
+            tblindex08, tblindex09, tblindex10, tblindex11, tblindex12, tblindex13, tblindex14, tblindex15,
             tblindex18, tblindex19, tblindex20, tblindex21, tblindex22, tblindex23;
     @FXML
     private TableColumn<Cashier_Receivables, Boolean> tblindex02;
@@ -156,8 +164,8 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getPayerNme() != null) {
                         lsCustNme = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getPayerNme());
                     }
-                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getReferNo() != null) {
-                        lsRefNoxx = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getReferNo());
+                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getFormNo() != null) {
+                        lsRefNoxx = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getFormNo());
                     }
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getSourceCD() != null) {
                         lsParticu = String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getSourceCD());
@@ -177,12 +185,13 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getDeductn() != null) {
                         lsDeAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getDeductn())));
                     }
+
                     if (oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid() != null) {
-                        lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
+                        lsPdAmntx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getTotalAmt().subtract(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid()))));
                     }
-//            if (oTrans.getMasterModel().getDetailModel(lnCtr).get() != null) {
-//                lsSiNoxxx = poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getMasterModel().getDetailModel(lnCtr).getAmtPaid())));
-//            }
+                    if (oTrans.getMasterModel().getDetailModel(lnCtr).getSINo() != null) {
+                        lsSiNoxxx = oTrans.getMasterModel().getDetailModel(lnCtr).getSINo();
+                    }
                     poCARData.add(new Cashier_Receivables(
                             String.valueOf(lnCtr + 1),
                             lsCARNoxx,
@@ -253,8 +262,6 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         tblindex13.setCellValueFactory(new PropertyValueFactory<>("tblindex13"));
         tblindex14.setCellValueFactory(new PropertyValueFactory<>("tblindex14"));
         tblindex15.setCellValueFactory(new PropertyValueFactory<>("tblindex15"));
-        tblindex16.setCellValueFactory(new PropertyValueFactory<>("tblindex16"));
-        tblindex17.setCellValueFactory(new PropertyValueFactory<>("tblindex17"));
         tblindex18.setCellValueFactory(new PropertyValueFactory<>("tblindex18"));
         tblindex19.setCellValueFactory(new PropertyValueFactory<>("tblindex19"));
         tblindex20.setCellValueFactory(new PropertyValueFactory<>("tblindex20"));
@@ -377,33 +384,76 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
                 loadTable();
                 break;
             case "btnProceed":
+                ObservableList<Cashier_Receivables> selectedItems = FXCollections.observableArrayList();
+                for (Cashier_Receivables item : tblViewCAR.getItems()) {
+                    if (item.getSelect().isSelected()) {
+                        selectedItems.add(item);
+                    }
+                }
+
+                // Check if no items are selected
+                if (selectedItems.isEmpty()) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "No items selected to proceed.");
+                    return;
+                }
+                if (comboBoxFormType.getSelectionModel().getSelectedIndex() < 0) {
+                    ShowMessageFX.Warning(null, pxeModuleName, "Please Form Type.");
+                    return;
+                }
+
+//                if (selectedItems.size() >= 2) {
+//                    ShowMessageFX.Information(null, pxeModuleName, "Please select 1 item.");
+//                    return;
+//                }
+                if (comboBoxFormType.getSelectionModel().getSelectedIndex() != 5) {
+                    String lsParticu = selectedItems.get(0).getTblindex08();
+                    for (Cashier_Receivables item : selectedItems) {
+                        if (!item.getTblindex08().equals(lsParticu)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
+                            return;
+                        }
+                        if (!item.getTblindex08().equals(lsParticu)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected items must have the same particulars to proceed.");
+                            return;
+                        }
+                    }
+                }
+
+                if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to proceed?")) {
+                    return;
+                }
+                int lnRow = 0;
+                String lsPayType = "";
+                for (Cashier_Receivables item : selectedItems) {
+                    lnRow = Integer.parseInt(item.getTblindex01()) - 1;
+                    lsPayType = item.getTblindex05();
+                }
                 switch (comboBoxFormType.getSelectionModel().getSelectedIndex()) {
                     case 0:
-                        proceedToOtherForm(0);
+                        loadInvoiceWindow("Acknowledgement Receipt", lnRow, lsPayType);
                         break;
                     case 1:
-                        proceedToOtherForm(1);
+                        loadInvoiceWindow("Collection Receipt", lnRow, lsPayType);
                         break;
                     case 2:
-                        proceedToOtherForm(2);
+                        loadInvoiceWindow("Service Invoice", lnRow, lsPayType);
                         break;
                     case 3:
-                        proceedToOtherForm(3);
+                        loadInvoiceWindow("Parts Sales Invoice", lnRow, lsPayType);
                         break;
                     case 4:
-                        proceedToOtherForm(4);
+                        loadInvoiceWindow("Billing Statement", lnRow, lsPayType);
                         break;
                     case 5:
-                        ShowMessageFX.Warning(null, pxeModuleName, "SOA is underdevelopment");
+                        ShowMessageFX.Warning(null, pxeModuleName, "SOA is under development");
                         break;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Please select receipt options to proceed");
                         break;
-
                 }
+                selectAllCheckBox.setSelected(false);
                 break;
             case "btnPrint":
-
                 break;
             case "btnExcelExport":
                 ObservableList<Cashier_Receivables> cashDataToExport = FXCollections.observableArrayList();
@@ -415,7 +465,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
 
                 // If no items are selected, show an error message
                 if (cashDataToExport.isEmpty()) {
-                    ShowMessageFX.Information(null, pxeModuleName, "No items to export.");
+                    ShowMessageFX.Warning(null, pxeModuleName, "No items to export.");
                     return;
                 }
 
@@ -482,31 +532,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
         return rowData;
     }
 
-    private void proceedToOtherForm(int fnFormName) {
-        switch (fnFormName) {
-            case 0:
-                loadInvoiceWindow("Acknowledge Receivables");
-                break;
-            case 1:
-                loadInvoiceWindow("Collection Receipt");
-                break;
-            case 2:
-                loadInvoiceWindow("Service Invoice");
-                break;
-            case 3:
-                loadInvoiceWindow("Parts Sales Invoice");
-                break;
-            case 4:
-                loadInvoiceWindow("Billing Statement");
-                break;
-            case 5:
-                loadInvoiceWindow("");
-                break;
-        }
-
-    }
-
-    private void loadInvoiceWindow(String fsFormName) {
+    private void loadInvoiceWindow(String fsFormName, int fnRow, String fsPayType) {
         try {
             String lsFormName = fsFormName;
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -514,6 +540,10 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             InvoiceController loControl = new InvoiceController();
             loControl.setGRider(oApp);
             loControl.setIsCARState(true);
+            String lsTransNox = oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() != null ? oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() : "";
+            loControl.setTransNo(lsTransNox);
+            loControl.setCARObject(oTrans);
+            loControl.setPayType(fsPayType);
             fxmlLoader.setController(loControl);
             Node tabContent = AnchorMain.getParent();
             Parent tabContentParent = tabContent.getParent();
@@ -589,5 +619,57 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             selectAllCheckBox.setSelected(false);
             loadTable();
         });
+    }
+
+    @FXML
+    private void tblCAR_Clicked(MouseEvent event) {
+        pnRow = tblViewCAR.getSelectionModel().getSelectedIndex();
+        if (pnRow < 0 || pnRow >= tblViewCAR.getItems().size()) {
+            ShowMessageFX.Warning(null, "Warning", "Please select valid CAR information.");
+            return;
+        }
+        if (event.getClickCount() == 2) {
+            loadCARDetailWindow(pnRow);
+        }
+    }
+
+    private void loadCARDetailWindow(int fnRow) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/autoapp/views/cashiering/CashierReceivablesDetail.fxml"));
+            CashierReceivablesDetailController loControl = new CashierReceivablesDetailController();
+            loControl.setGRider(oApp);
+            loControl.setObject(oTrans);
+            String lsTransNox = oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() != null ? oTrans.getMasterModel().getDetailModel(fnRow).getTransNo() : "";
+            loControl.setTransNo(lsTransNox);
+            loControl.setRow(fnRow);
+            fxmlLoader.setController(loControl);
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(null, "Warning", e.getMessage());
+            System.exit(1);
+
+        }
     }
 }

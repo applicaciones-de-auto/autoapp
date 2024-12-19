@@ -21,6 +21,7 @@ public class VSPReservationInquirers {
     private SimpleStringProperty tblindex05_reservation;
     private SimpleStringProperty tblindex06_reservation;
     private SimpleStringProperty tblindex07_reservation;
+    private SimpleStringProperty tblindex08_reservation;
 
     public VSPReservationInquirers(String tblindex01_reservation,
             String tblindex02_reservation,
@@ -28,7 +29,8 @@ public class VSPReservationInquirers {
             String tblindex04_reservation,
             String tblindex05_reservation,
             String tblindex06_reservation,
-            String tblindex07_reservation) {
+            String tblindex07_reservation,
+            String tblindex08_reservation) {
         this.tblindex01_reservation = new SimpleStringProperty(tblindex01_reservation);
         this.select = new CheckBox();
         this.tblindex02_reservation = new SimpleStringProperty(tblindex02_reservation);
@@ -37,6 +39,7 @@ public class VSPReservationInquirers {
         this.tblindex05_reservation = new SimpleStringProperty(tblindex05_reservation);
         this.tblindex06_reservation = new SimpleStringProperty(tblindex06_reservation);
         this.tblindex07_reservation = new SimpleStringProperty(tblindex07_reservation);
+        this.tblindex08_reservation = new SimpleStringProperty(tblindex08_reservation);
     }
 
     public CheckBox getSelect() {
@@ -103,4 +106,11 @@ public class VSPReservationInquirers {
         this.tblindex07_reservation.set(tblindex07_reservation);
     }
 
+    public String getTblindex08_reservation() {
+        return tblindex08_reservation.get();
+    }
+
+    public void setTblindex08_reservation(String tblindex08_reservation) {
+        this.tblindex08_reservation.set(tblindex08_reservation);
+    }
 }

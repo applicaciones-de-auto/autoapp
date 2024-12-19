@@ -48,18 +48,8 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMainScreenController;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.FXMLMenuParameterForm;
-import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
 import org.guanzon.autoapp.controllers.cashiering.CashierReceivablesController;
 import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
-import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
-import org.guanzon.autoapp.controllers.cashiering.InvoiceController;
-import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.cashiering.VehicleSalesInvoiceController;
 import org.guanzon.autoapp.controllers.general.ActivityApprovalController;
 import org.guanzon.autoapp.controllers.general.ActivityInformationController;
@@ -80,6 +70,7 @@ import org.guanzon.autoapp.controllers.parameters.BarangayController;
 import org.guanzon.autoapp.controllers.parameters.BinController;
 import org.guanzon.autoapp.controllers.parameters.BrandController;
 import org.guanzon.autoapp.controllers.parameters.CategoryController;
+import org.guanzon.autoapp.controllers.parameters.DefaultItemReleaseListController;
 import org.guanzon.autoapp.controllers.parameters.InsuranceBranchInformationController;
 import org.guanzon.autoapp.controllers.parameters.InsuranceCompanyController;
 import org.guanzon.autoapp.controllers.parameters.InvTypeController;
@@ -261,6 +252,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuTown;
     @FXML
     private MenuItem mnuBarangay;
+    @FXML
+    private MenuItem mnuDefaultRlsItem;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -529,7 +522,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "Collection Receipt":
                 mnuColReceipt.fire();
                 break;
-            case "Official Receipt":
+            case "Service Invoice":
                 mnuOfcReceipt.fire();
                 break;
             case "Parts Sales Invoice":
@@ -761,6 +754,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             return new MeasurementController();
         } else if (fsValue.contains("Brand.fxml")) {
             return new BrandController();
+        } else if (fsValue.contains("DefaultItemReleaseList.fxml")) {
+            return new DefaultItemReleaseListController();
         } else if (fsValue.contains("VehicleSalesInvoice.fxml")) {
             return new VehicleSalesInvoiceController();
         } else if (fsValue.contains("ServiceAdvisor.fxml")) {
@@ -897,7 +892,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     public TabPane getTabPane() {
         //return (TabPane) workingSpace.getChildren().add(tabpane);
         workingSpace.getChildren().clear();
-        workingSpace.getChildren().add((TabPane) tabpane);
+        workingSpace.getChildren().add(tabpane);
         //return (TabPane) workingSpace.getChildren().get(0);
         return (TabPane) workingSpace.lookup("#tabpane");
     }
@@ -1167,7 +1162,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuOfcReceiptClick(ActionEvent event) {
-        sSalesInvoiceType = "Official Receipt";
+        sSalesInvoiceType = "Service Invoice";
         String sformname = psCashPath + "Invoice.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
@@ -1352,6 +1347,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuInvTypeEntryClicked(ActionEvent event) {
         String sformname = "InvType.fxml";
+        param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
+    }
+
+    @FXML
+    private void mnuDefaultRlsItemClicked(ActionEvent event) {
+        String sformname = "DefaultItemReleaseList.fxml";
         param.FXMLMenuParameterForm(getController(sformname), oApp, sformname, psParameterPath);
     }
 
