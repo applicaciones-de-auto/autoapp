@@ -881,6 +881,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 }
                 if (selectedItems.isEmpty()) {
                     ShowMessageFX.Warning(getStage(), "No items selected!", pxeModuleName, null);
+                    return;
                 } else {
                     switch (lsButton) {
                         case "btnASCancel":
@@ -1283,15 +1284,13 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         //Inquiry General Button
         CustomCommonUtil.setVisible(lbShow, btnCancel, btnSave);
         CustomCommonUtil.setManaged(lbShow, btnCancel, btnSave);
-        CustomCommonUtil.setVisible(false, btnEdit, btnConvertSales, btnFollowUp, btnLostSale);
-        CustomCommonUtil.setManaged(false, btnEdit, btnConvertSales, btnFollowUp, btnLostSale);
+        CustomCommonUtil.setVisible(false, btnEdit, btnConvertSales, btnLostSale, btnProcess);
+        CustomCommonUtil.setManaged(false, btnEdit, btnConvertSales, btnLostSale, btnProcess);
         btnASprint.setDisable(false);
         //Bank Application
-        CustomCommonUtil.setVisible(false, btnBankAppNew, btnProcess);
-        CustomCommonUtil.setManaged(false, btnBankAppNew, btnProcess);
 
         CustomCommonUtil.setDisable(true, txtField05, txtField14, txtField11, txtField12, txtField13,
-                btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel);
+                btnPromoRemove, btnTargetVhclRemove, btnSndMngerApprov, btnTestDriveModel, btnFollowUp, btnBankAppNew);
         CustomCommonUtil.setDisable(!lbShow, txtField03, txtField09, comboBox10,
                 rdbtnHtA19, rdbtnHtB19, rdbtnHtC19,
                 comboBox21, datePicker22, textArea23, btnTestDriveModel);
@@ -1314,7 +1313,7 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                 CustomCommonUtil.setDisable(true, txtField11, txtField13);
                 break;
         }
-        if (fnValue == EditMode.UNKNOWN) {
+        if (fnValue == EditMode.UNKNOWN || fnValue == EditMode.ADDNEW) {
             tabInquiryProcess.setDisable(true);
             tabBankHistory.setDisable(true);
             tabFollowingHistory.setDisable(true);
@@ -1333,8 +1332,9 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                         btnProcess.setVisible(true);
                         btnProcess.setManaged(true);
                     }
-                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
+                    btnFollowUp.setDisable(false);
+                    btnLostSale.setVisible(true);
+                    btnLostSale.setManaged(true);
                     break;
                 case "1": //On process
                     if (comboBox25.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1343,20 +1343,21 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
                     }
                     if (comboBox25.getSelectionModel().getSelectedIndex() > 0) {
                         //Bank Application
-                        btnBankAppNew.setVisible(true);
-                        btnBankAppNew.setManaged(true);
+                        btnBankAppNew.setDisable(false);
                     }
                     //For Follow up
-                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
+                    btnFollowUp.setDisable(false);
+                    btnLostSale.setVisible(true);
+                    btnLostSale.setManaged(true);
                     break;
                 case "3": //VSP
-                    CustomCommonUtil.setVisible(true, btnBankAppNew, btnFollowUp);
-                    CustomCommonUtil.setManaged(true, btnBankAppNew, btnFollowUp);
+
+                    CustomCommonUtil.setDisable(false, btnBankAppNew, btnFollowUp);
                     break;
                 case "6": // For FollowUp
-                    CustomCommonUtil.setVisible(true, btnFollowUp, btnLostSale);
-                    CustomCommonUtil.setManaged(true, btnFollowUp, btnLostSale);
+                    btnFollowUp.setDisable(false);
+                    btnLostSale.setVisible(true);
+                    btnLostSale.setManaged(true);
                     break;
 
             }
