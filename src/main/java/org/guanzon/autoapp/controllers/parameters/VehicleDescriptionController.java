@@ -553,8 +553,8 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
         CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate, btnActive);
         if (fnValue == EditMode.READY) {
             if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-                CustomCommonUtil.setVisible(false, btnEdit, btnDeactivate);
-                CustomCommonUtil.setManaged(false, btnEdit, btnDeactivate);
+                CustomCommonUtil.setVisible(true, btnEdit, btnDeactivate);
+                CustomCommonUtil.setManaged(true, btnEdit, btnDeactivate);
             } else {
                 btnActive.setVisible(true);
                 btnActive.setManaged(true);
