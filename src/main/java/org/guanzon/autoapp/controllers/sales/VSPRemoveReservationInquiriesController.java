@@ -5,14 +5,11 @@
 package org.guanzon.autoapp.controllers.sales;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +29,11 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
+
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -48,6 +49,10 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
     private VehicleSalesProposal oTransReserve;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private int pnRow;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnClose;
     @FXML
@@ -72,6 +77,7 @@ public class VSPRemoveReservationInquiriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initButtonsClick();
         initReservationTable();
         loadReservationTable();

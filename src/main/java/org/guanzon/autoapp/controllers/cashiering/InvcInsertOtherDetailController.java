@@ -22,6 +22,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
@@ -36,6 +38,10 @@ public class InvcInsertOtherDetailController implements Initializable {
     private int pnRow;
     private String pxeModuleName = "Other Transaction Details";
     ObservableList<String> cFormType = FXCollections.observableArrayList("SOA", "CAR", "OTHERS", "OTHERS DESCRIPTION");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnInsertOther, btnClose;
     @FXML
@@ -60,6 +66,7 @@ public class InvcInsertOtherDetailController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();

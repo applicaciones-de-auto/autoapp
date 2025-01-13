@@ -17,6 +17,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -641,6 +645,30 @@ public class CustomCommonUtil {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
         return "0.00";
+    }
+
+    public static void setDropShadow(AnchorPane anchorPane, StackPane stackPane) {
+        // Set the AnchorPane background to transparent
+        anchorPane.setStyle("-fx-background-color: transparent;");
+
+        // Set the StackPane background to white
+        stackPane.setStyle("-fx-background-color: white;");
+
+        // Configure and apply DropShadow to StackPane
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setWidth(23.45);
+        dropShadow.setHeight(21.01);
+        dropShadow.setRadius(10.62);
+        dropShadow.setSpread(0.4);
+        dropShadow.setColor(Color.color(0, 0, 0, 0.36)); // Black with 36% opacity
+
+        stackPane.setEffect(dropShadow);
+
+        // Add constraints for StackPane: all sides 10
+        AnchorPane.setTopAnchor(stackPane, 10.0);
+        AnchorPane.setBottomAnchor(stackPane, 10.0);
+        AnchorPane.setLeftAnchor(stackPane, 10.0);
+        AnchorPane.setRightAnchor(stackPane, 10.0);
     }
 
 }

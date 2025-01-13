@@ -25,9 +25,11 @@ import org.guanzon.auto.main.parameter.Vehicle_MakeFramePattern;
 import org.guanzon.auto.main.parameter.Vehicle_ModelFramePattern;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
-import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -46,6 +48,10 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
     private int pnEditMode;
     private boolean pbOpenEvent = false;
     ObservableList<String> cFormtType = FXCollections.observableArrayList("MAKE FORMAT", "MODEL FORMAT");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnClose;
     @FXML
@@ -92,6 +98,7 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
         oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
@@ -373,10 +380,28 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
-                    oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Vehicle_ModelFramePattern(oApp, false, oApp.getBranchCode());
+                        oTransMakeFrameFormat = new Vehicle_MakeFramePattern(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        if (comboBox01.getSelectionModel().getSelectedIndex() == 0) {
+                            loJSON = oTransMakeFrameFormat.openRecord(oTransMakeFrameFormat.getModel().getModel().getMakeID(), oTransMakeFrameFormat.getModel().getModel().getEntryNo());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadMasterFields();
+                                initFields(pnEditMode);
+                                pnEditMode = oTransMakeFrameFormat.getEditMode();
+                            }
+                        } else {
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getModelID(), oTrans.getModel().getModel().getEntryNo());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadMasterFields();
+                                initFields(pnEditMode);
+                                pnEditMode = oTrans.getEditMode();
+                            }
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

@@ -3,7 +3,6 @@ package org.guanzon.autoapp.controllers.cashiering;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -38,7 +37,6 @@ import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -51,10 +49,13 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.cashiering.VehicleSalesInvoice;
 import org.guanzon.autoapp.interfaces.GTransactionInterface;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.json.simple.JSONObject;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -72,6 +73,8 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
     private double yOffset = 0;
     @FXML
     private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnClose, btnAdd, btnEdit, btnCancel, btnSave, btnBrowse, btnPrint, btnVSICancel;
     @FXML
@@ -96,6 +99,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new VehicleSalesInvoice(oApp, false, oApp.getBranchCode());
         datePicker03.setDayCellFactory(callB);
         initCapitalizationFields();
@@ -540,6 +544,7 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             JSONObject loJSON = new JSONObject();

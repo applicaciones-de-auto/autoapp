@@ -39,9 +39,12 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Vehicle_Description;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -57,6 +60,10 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
     private double xOffset, yOffset = 0;
     ObservableList<String> cTransmission = FXCollections.observableArrayList("AUTOMATIC", "MANUAL", "CVT");
     ObservableList<String> cModelsize = FXCollections.observableArrayList("BANTAM", "SMALL", "MEDIUM", "LARGE");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnEdit, btnSave, btnCancel, btnDeactivate, btnActive, btnBrowse, btnClose, btnMake, btnModel, btnType, btnColor;
     @FXML
@@ -80,6 +87,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Vehicle_Description(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
         initPatternFields();
@@ -346,9 +354,18 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Vehicle_Description(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Vehicle_Description(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getVhclID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":
@@ -617,6 +634,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
@@ -662,6 +680,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 
@@ -707,6 +726,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 
@@ -740,6 +760,7 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 

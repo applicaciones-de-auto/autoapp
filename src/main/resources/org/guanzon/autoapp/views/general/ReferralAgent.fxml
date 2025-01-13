@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -417,67 +417,37 @@
                                                                 <Tab style="-fx-font-family: arial; -fx-font-weight: bold;" text="Requirements Submitted">
                                                                     <content>
                                                                         <AnchorPane>
-                                                                            <children>
-                                                                                <StackPane prefHeight="443.0" prefWidth="800.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
-                                                                                    <children>
-                                                                                        <GridPane>
-                                                                                            <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="800.0" />
-                                                                                            </columnConstraints>
-                                                                                            <rowConstraints>
-                                                                                                <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="ALWAYS" />
-                                                                                            </rowConstraints>
-                                                                                            <children>
-                                                                                                <TableView fx:id="tblRequirementsInfo">
-                                                                                                    <columns>
-                                                                                                        <TableColumn fx:id="rqrmIndex01" prefWidth="33.0" sortable="false" />
-                                                                                                        <TableColumn fx:id="rqrmIndex02" editable="false" prefWidth="255.0" sortable="false" text="Requirements" />
-                                                                                                        <TableColumn fx:id="rqrmIndex03" editable="false" prefWidth="239.0" sortable="false" text="Received By" />
-                                                                                                        <TableColumn fx:id="rqrmIndex04" editable="false" prefWidth="110.0" sortable="false" text="Received Date" />
-                                                                                                    </columns>
-                                                                                                </TableView>
-                                                                                            </children>
-                                                                                        </GridPane>
-                                                                                    </children>
-                                                                                </StackPane>
-                                                                            </children>
+                                                         <children>
+                                                            <TableView fx:id="tblRequirementsInfo" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                                               <columns>
+                                                                  <TableColumn fx:id="rqrmIndex01" prefWidth="33.0" sortable="false" />
+                                                                  <TableColumn fx:id="rqrmIndex02" editable="false" prefWidth="255.0" sortable="false" text="Requirements" />
+                                                                  <TableColumn fx:id="rqrmIndex03" editable="false" prefWidth="239.0" sortable="false" text="Received By" />
+                                                                  <TableColumn fx:id="rqrmIndex04" editable="false" prefWidth="110.0" sortable="false" text="Received Date" />
+                                                               </columns>
+                                                            </TableView>
+                                                         </children>
                                                                         </AnchorPane>
                                                                     </content>
                                                                 </Tab>
                                                                 <Tab style="-fx-font-weight: bold; -fx-font-family: arial;" text="Transaction Details">
                                                                     <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                                            <children>
-                                                                                <StackPane prefHeight="443.0" prefWidth="977.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="3.0">
-                                                                                    <children>
-                                                                                        <GridPane>
-                                                                                            <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="700.0" />
-                                                                                            </columnConstraints>
-                                                                                            <rowConstraints>
-                                                                                                <RowConstraints minHeight="-Infinity" prefHeight="200.0" vgrow="ALWAYS" />
-                                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
-                                                                                            </rowConstraints>
-                                                                                            <children>
-                                                                                                <TableView fx:id="tblTransaction">
-                                                                                                    <columns>
-                                                                                                        <TableColumn fx:id="tblindex01" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
-                                                                                                        <TableColumn fx:id="tblindex02" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="VSP Date" />
-                                                                                                        <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="VSP No." />
-                                                                                                        <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer" />
-                                                                                                        <TableColumn fx:id="tblindex05" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="CS / Plate No." />
-                                                                                                        <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Vehicle Description" />
-                                                                                                        <TableColumn fx:id="tblindex07" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="DR Date" />
-                                                                                                        <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="DR No." />
-                                                                                                        <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Executive" />
-                                                                                                    </columns>
-                                                                                                </TableView>
-                                                                                            </children>
-                                                                                        </GridPane>
-                                                                                    </children>
-                                                                                </StackPane>
-                                                                            </children>
+                                                         <children>
+                                                            <TableView fx:id="tblTransaction" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                                               <columns>
+                                                                  <TableColumn fx:id="tblindex01" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
+                                                                  <TableColumn fx:id="tblindex02" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="VSP Date" />
+                                                                  <TableColumn fx:id="tblindex03" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="VSP No." />
+                                                                  <TableColumn fx:id="tblindex04" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Customer" />
+                                                                  <TableColumn fx:id="tblindex05" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="CS / Plate No." />
+                                                                  <TableColumn fx:id="tblindex06" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Vehicle Description" />
+                                                                  <TableColumn fx:id="tblindex07" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="DR Date" />
+                                                                  <TableColumn fx:id="tblindex08" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="DR No." />
+                                                                  <TableColumn fx:id="tblindex09" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Sales Executive" />
+                                                               </columns>
+                                                            </TableView>
+                                                         </children>
                                                                         </AnchorPane>
                                                                     </content>
                                                                 </Tab>

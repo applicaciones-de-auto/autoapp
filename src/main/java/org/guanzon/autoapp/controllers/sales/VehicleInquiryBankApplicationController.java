@@ -34,7 +34,10 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.BankApplication;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -59,6 +62,10 @@ public class VehicleInquiryBankApplicationController implements Initializable {
     ObservableList<String> cBankPaymode = FXCollections.observableArrayList("BANK PURCHASE ORDER", "BANK FINANCING", "COMPANY PURCHASE ORDER", "COMPANY FINANCING"); //Mode of Payment Values
     ObservableList<String> cBankStatus = FXCollections.observableArrayList("ON-GOING", "DECLINE", "APPROVED"); //Bank Application Status Values
     ObservableList<String> cBankType = FXCollections.observableArrayList("BANK", "CREDIT UNION", "INSURANCE COMPANY", "INVESTMENT COMPANIES");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnSave, btnClose, btnBACancel;
     @FXML
@@ -117,6 +124,7 @@ public class VehicleInquiryBankApplicationController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initComvoValue();
         initCmboxFieldAction();
         datePicker08.setDayCellFactory(callApplied);

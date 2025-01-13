@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="284.0" prefWidth="525.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorPane" prefHeight="284.0" prefWidth="525.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <BorderPane>
                     <StackPane.margin>
@@ -59,7 +59,6 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
                                                 <TextField fx:id="txtField01" disable="true" maxWidth="120.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
@@ -69,10 +68,8 @@
                                                 <Label id="LabelDesc" text="Vehicle Model Description" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label id="LabelDesc" text="Vehicle Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <Label id="LabelDesc" text="Body Type" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label id="LabelDesc" text="Model Size" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                 <ComboBox fx:id="comboBox04" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                 <ComboBox fx:id="comboBox05" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                <ComboBox fx:id="comboBox06" prefWidth="150.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                 <CheckBox id="LabelDesc" fx:id="cboxActivate" disable="true" mnemonicParsing="false" prefHeight="18.0" prefWidth="80.0" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                 <Label id="LabelDesc" text="Vehicle Make" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                             </children>

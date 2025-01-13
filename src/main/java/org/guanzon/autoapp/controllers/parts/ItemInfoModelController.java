@@ -30,6 +30,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -52,6 +54,10 @@ public class ItemInfoModelController implements Initializable {
     ObservableList<String> cItems = FXCollections.observableArrayList("MAKE", "MODEL");
     private ObservableList<ItemInfoModelYear> itemModeldata = FXCollections.observableArrayList();
     private ObservableList<ItemInfoModelYear> itemModelYear = FXCollections.observableArrayList();
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnClose;
     @FXML
@@ -90,6 +96,8 @@ public class ItemInfoModelController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         comboFilter.setItems(cItems);
 
         initCapitalizationFields();

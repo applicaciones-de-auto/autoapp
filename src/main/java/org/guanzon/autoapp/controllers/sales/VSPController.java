@@ -73,6 +73,7 @@ import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -1220,11 +1221,21 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    CustomCommonUtil.switchToTab(tabMain, ImTabPane);// Load fields, clear them, and set edit mode
-                    oTrans = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        CustomCommonUtil.switchToTab(tabMain, ImTabPane);// Load fields, clear them, and set edit mode
+                        oTrans = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadLaborTable();
+                            loadAccessoriesTable();
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 initFields(pnEditMode);
                 break;
@@ -1931,6 +1942,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             JSONObject loJSON = new JSONObject();
@@ -2058,6 +2070,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadLaborTable();
@@ -2188,6 +2201,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadAccessoriesTable();
@@ -2423,6 +2437,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadMasterFields();
@@ -2461,6 +2476,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadMasterFields();
@@ -2751,6 +2767,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             JSONObject loJSON = new JSONObject();
@@ -2870,6 +2887,7 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             JSONObject loJSON = new JSONObject();

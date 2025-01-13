@@ -22,6 +22,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_Warehouse;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -37,6 +39,10 @@ public class WareHouseController implements Initializable, ScreenInterface, GRec
     private Parts_Warehouse oTrans;
     private final String pxeModuleName = "Warehouse";
     private int pnEditMode;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
@@ -58,6 +64,7 @@ public class WareHouseController implements Initializable, ScreenInterface, GRec
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
         initPatternFields();
@@ -214,9 +221,18 @@ public class WareHouseController implements Initializable, ScreenInterface, GRec
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Parts_Warehouse(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getWHouseID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

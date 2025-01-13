@@ -23,6 +23,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -50,6 +52,10 @@ public class JOAccessoriesController implements Initializable {
     private JobOrder oTrans;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnEdit, btnClose;
     @FXML
@@ -98,7 +104,7 @@ public class JOAccessoriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();

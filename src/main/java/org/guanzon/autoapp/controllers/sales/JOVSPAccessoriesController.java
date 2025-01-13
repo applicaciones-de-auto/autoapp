@@ -27,6 +27,9 @@ import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.models.sales.Part;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -42,6 +45,10 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
     private String psTrans = "";
     private int pnRow = 0;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnClose;
     @FXML
@@ -76,6 +83,7 @@ public class JOVSPAccessoriesController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initAccessoriesTable();
         loadAccessoriesTable();
         initButtonsClick();

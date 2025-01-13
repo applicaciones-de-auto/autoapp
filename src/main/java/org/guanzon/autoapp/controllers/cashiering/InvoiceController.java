@@ -68,6 +68,7 @@ import org.guanzon.autoapp.models.cashiering.TransInvoice;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.UnloadForm;
 import org.json.simple.JSONObject;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -1205,6 +1206,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadCheckTable();
@@ -1419,6 +1422,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
@@ -1457,6 +1462,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadTransTable();
@@ -1497,6 +1504,8 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadTransTable();

@@ -33,6 +33,9 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -48,8 +51,11 @@ public class VehicleTestDriveController implements Initializable {
     private List<String> existingModelDescriptions = new ArrayList<>();
     private Set<String> selectedModelIDs = new HashSet<>();
     @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
+    @FXML
     private Button btnAdd, btnClose;
-
     @FXML
     private TableColumn<InquiryTestDrive, String> tblindex01, tblindex03;
     @FXML
@@ -72,6 +78,7 @@ public class VehicleTestDriveController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         loadVhclTestModelTable();
         initVehicleTestModelTable();
         initButtonsClick();

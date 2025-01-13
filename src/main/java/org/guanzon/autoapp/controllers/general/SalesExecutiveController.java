@@ -21,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -59,6 +60,8 @@ public class SalesExecutiveController implements Initializable, ScreenInterface,
     private TableColumn<SalesExecutiveTrans, String> tblindex01, tblindex02, tblindex03, tblindex04, tblindex05, tblindex06, tblindex07, tblindex08, tblindex09;
     @FXML
     private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
 
     /**
      * Initializes the controller class.
@@ -74,6 +77,8 @@ public class SalesExecutiveController implements Initializable, ScreenInterface,
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
+
         oTrans = new Sales_Executive(oApp, false, oApp.getBranchCode());
 
         initSalesTransaction();
@@ -258,10 +263,18 @@ public class SalesExecutiveController implements Initializable, ScreenInterface,
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    transData.clear();
-                    oTrans = new Sales_Executive(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        transData.clear();
+                        oTrans = new Sales_Executive(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            pnEditMode = EditMode.READY;
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

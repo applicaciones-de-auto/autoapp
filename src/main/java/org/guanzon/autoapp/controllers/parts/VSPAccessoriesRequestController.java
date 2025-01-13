@@ -27,6 +27,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -58,7 +60,9 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
     private double xOffset = 0;
     private double yOffset = 0;
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnClose, btnCancel, btnBrowse, btnEdit, btnSave;
     @FXML
@@ -80,6 +84,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTransVSPRequest = new VehicleSalesProposal(oApp, false, oApp.getBranchCode());
         initMasterTable();
         initCapitalizationFields();
@@ -345,6 +350,7 @@ public class VSPAccessoriesRequestController implements Initializable, ScreenInt
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 //            JSONObject loJSON = new JSONObject();

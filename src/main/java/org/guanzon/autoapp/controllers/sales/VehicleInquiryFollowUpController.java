@@ -32,6 +32,8 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.model.sales.Model_Inquiry_FollowUp;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
@@ -52,6 +54,10 @@ public class VehicleInquiryFollowUpController implements Initializable {
     private String psBranchCd = "";
     private final String pxeModuleName = "Inquiry Follow Up";
     ObservableList<String> cMedium = FXCollections.observableArrayList("TEXT", "CALL", "SOCIAL MEDIA", "EMAIL", "VIBER");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnSave, btnClose;
     @FXML
@@ -96,6 +102,7 @@ public class VehicleInquiryFollowUpController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         datePicker03.setDayCellFactory(callDate);
         initCapitalizationFields();
         initTextKeyPressed();

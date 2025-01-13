@@ -26,6 +26,8 @@ import org.guanzon.autoapp.models.service.TechnicianLabor;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -42,7 +44,10 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
     private String pxeModuleName = "Technician Service";
     private String psTrans, psOrigDsc = "";
     private int pnRow = 0;
-
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnEdit, btnClose;
     @FXML
@@ -79,6 +84,7 @@ public class TechnicianServiceController implements Initializable, ScreenInterfa
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();

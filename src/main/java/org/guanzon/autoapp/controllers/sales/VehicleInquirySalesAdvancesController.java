@@ -30,6 +30,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
@@ -48,6 +50,10 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
     private int pnIinqStat;
     private int pnIEditMode;
     private boolean pbState = false;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnApply, btnClose;
     @FXML
@@ -86,6 +92,7 @@ public class VehicleInquirySalesAdvancesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initPatternFields();
         initTextKeyPressed();

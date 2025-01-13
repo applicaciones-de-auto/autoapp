@@ -12,6 +12,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -35,6 +37,10 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
     private String psProvName;
     private String psEstablish;
     private String psOrigProv, psOrigTown, psOrigBrgy = "";
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     private int pnRow = 0;
     private boolean pbState = true;
     @FXML
@@ -89,6 +95,7 @@ public class ActivityLocationController implements Initializable, ScreenInterfac
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();

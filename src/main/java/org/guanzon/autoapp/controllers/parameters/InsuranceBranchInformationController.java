@@ -41,6 +41,9 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.InsuranceBranch;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -59,6 +62,10 @@ public class InsuranceBranchInformationController implements Initializable, Scre
     private double xOffset = 0;
     private double yOffset = 0;
     ObservableList<String> cInsurType = FXCollections.observableArrayList("NON IN HOUSE", "IN HOUSE (DIRECT)", "SUB-IN HOUSE (ACCREDITED)");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private GridPane branchFields;
     @FXML
@@ -86,6 +93,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new InsuranceBranch(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
         initPatternFields();
@@ -298,9 +306,18 @@ public class InsuranceBranchInformationController implements Initializable, Scre
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(getStage(), "Are you sure you want to cancel?", pxeModuleName, null) == true) {
-                        clearFields();
-                        oTrans = new InsuranceBranch(oApp, false, oApp.getBranchCode());
-                        pnEditMode = EditMode.UNKNOWN;
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            clearFields();
+                            oTrans = new InsuranceBranch(oApp, false, oApp.getBranchCode());
+                            pnEditMode = EditMode.UNKNOWN;
+                        } else {
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrInsID());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadMasterFields();
+                                initFields(pnEditMode);
+                                pnEditMode = oTrans.getEditMode();
+                            }
+                        }
                     }
                     break;
                 case "btnBrowse":
@@ -614,6 +631,7 @@ public class InsuranceBranchInformationController implements Initializable, Scre
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 

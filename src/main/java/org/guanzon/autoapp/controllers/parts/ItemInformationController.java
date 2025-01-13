@@ -34,6 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -390,10 +391,20 @@ public class ItemInformationController implements Initializable, ScreenInterface
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTrans = new InventoryInformation(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        oTrans = new InventoryInformation(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getStockID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadModelTable();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":
@@ -788,6 +799,8 @@ public class ItemInformationController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+
             stage.setTitle("");
             stage.showAndWait();
 
@@ -824,6 +837,8 @@ public class ItemInformationController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+
             stage.setTitle("");
             stage.showAndWait();
 
@@ -860,6 +875,8 @@ public class ItemInformationController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+
             stage.setTitle("");
             stage.showAndWait();
 
@@ -898,6 +915,8 @@ public class ItemInformationController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+
             stage.setTitle("");
             stage.showAndWait();
             loadModelTable();
@@ -936,6 +955,8 @@ public class ItemInformationController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+
             stage.setTitle("");
             stage.showAndWait();
 

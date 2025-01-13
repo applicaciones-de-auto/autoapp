@@ -30,6 +30,8 @@ import org.guanzon.auto.main.service.JobOrder;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -50,7 +52,10 @@ public class JOLaborController implements Initializable {
     private JobOrder oTransLabor;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
-
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAddLabor, btnEditLabor, btnCloseLabor;
     @FXML
@@ -91,6 +96,7 @@ public class JOLaborController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
 
         initCapitalizationFields();
         initPatternFields();

@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -38,6 +39,8 @@ public class TechnicianController implements Initializable, ScreenInterface, GRe
     @FXML
     private AnchorPane AnchorPane;
     @FXML
+    private StackPane stackPane;
+    @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnActive, btnClose;
     @FXML
     private TextField txtField01, txtField02;
@@ -55,7 +58,9 @@ public class TechnicianController implements Initializable, ScreenInterface, GRe
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
+
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();
@@ -232,9 +237,17 @@ public class TechnicianController implements Initializable, ScreenInterface, GRe
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Service_Mechanic(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getClientID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            pnEditMode = EditMode.READY;
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

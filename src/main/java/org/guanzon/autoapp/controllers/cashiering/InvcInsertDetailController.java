@@ -22,6 +22,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
@@ -35,6 +37,10 @@ public class InvcInsertDetailController implements Initializable {
     private SalesInvoice oTrans;
     private String pxeModuleName = "Transaction Details";
     private int pnRow;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnUpdate, btnClose;
     @FXML
@@ -59,6 +65,7 @@ public class InvcInsertDetailController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();

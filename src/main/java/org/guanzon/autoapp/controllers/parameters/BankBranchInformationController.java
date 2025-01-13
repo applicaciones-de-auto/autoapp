@@ -41,9 +41,12 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.BankBranch;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
-import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -59,7 +62,10 @@ public class BankBranchInformationController implements Initializable, ScreenInt
     private double xOffset = 0;
     private double yOffset = 0;
     ObservableList<String> cBankType = FXCollections.observableArrayList("BANK", "CREDIT UNION", "INSURANCE COMPANY", "INVESTMENT COMPANIES");
-
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private GridPane branchFields;
     @FXML
@@ -86,6 +92,7 @@ public class BankBranchInformationController implements Initializable, ScreenInt
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new BankBranch(oApp, false, oApp.getBranchCode());
 
         initCapitalizationFields();
@@ -330,9 +337,18 @@ public class BankBranchInformationController implements Initializable, ScreenInt
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(getStage(), "Are you sure you want to cancel?", pxeModuleName, null) == true) {
-                        clearFields();
-                        oTrans = new BankBranch(oApp, false, oApp.getBranchCode());
-                        pnEditMode = EditMode.UNKNOWN;
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            clearFields();
+                            oTrans = new BankBranch(oApp, false, oApp.getBranchCode());
+                            pnEditMode = EditMode.UNKNOWN;
+                        } else {
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getBrBankID());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadMasterFields();
+                                initFields(pnEditMode);
+                                pnEditMode = oTrans.getEditMode();
+                            }
+                        }
                     }
                     break;
                 case "btnBrowse":
@@ -622,6 +638,7 @@ public class BankBranchInformationController implements Initializable, ScreenInt
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 

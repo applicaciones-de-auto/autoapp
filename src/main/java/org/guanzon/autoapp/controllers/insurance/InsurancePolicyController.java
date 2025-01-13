@@ -846,10 +846,18 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    CustomCommonUtil.switchToTab(mainTab, tabPane);
-                    oTrans = new InsurancePolicy(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        CustomCommonUtil.switchToTab(mainTab, tabPane);
+                        oTrans = new InsurancePolicy(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 initFields(pnEditMode);
                 break;

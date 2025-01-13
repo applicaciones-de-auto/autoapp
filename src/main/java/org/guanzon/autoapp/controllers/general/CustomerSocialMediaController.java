@@ -24,11 +24,14 @@ import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -45,6 +48,10 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
     private int pnRow = 0;
     private boolean pbState = true;
     private ObservableList<String> cSocType = FXCollections.observableArrayList("FACEBOOK", "WHATSAPP", "INSTAGRAM", "TIKTOK", "TWITTER");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnEdit, btnClose;
     @FXML
@@ -84,6 +91,7 @@ public class CustomerSocialMediaController implements Initializable, ScreenInter
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         txtField03Socm.setOnKeyPressed(this::txtField_KeyPressed);
         comboBox04Socm.setItems(cSocType);
         if (!psFormStateName.equals("Referral Agent Information")) {

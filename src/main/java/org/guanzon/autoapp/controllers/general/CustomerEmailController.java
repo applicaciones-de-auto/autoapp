@@ -24,12 +24,15 @@ import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.clients.Client;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -46,6 +49,10 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
     private int pnRow = 0;
     private boolean pbState = true;
     private ObservableList<String> cOwnEmAd = FXCollections.observableArrayList("PERSONAL", "OFFICE", "OTHERS");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnEdit, btnClose, btnAdd;
     @FXML
@@ -90,6 +97,7 @@ public class CustomerEmailController implements Initializable, ScreenInterface {
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         comboBox04EmAd.setItems(cOwnEmAd);
         txtField03EmAd.setOnKeyPressed(this::txtField_KeyPressed);
         initButtonsClick();

@@ -23,7 +23,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -32,6 +31,8 @@ import org.guanzon.auto.main.cashiering.CashierReceivables;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Detail;
 import org.guanzon.autoapp.models.cashiering.Cashier_Receivables_Issue_Receipt;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
@@ -52,6 +53,8 @@ public class CashierReceivablesDetailController implements Initializable, Screen
     private int pnRow;
     @FXML
     private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnClose;
     @FXML
@@ -92,6 +95,7 @@ public class CashierReceivablesDetailController implements Initializable, Screen
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initLoadTable();
         initLoadIssueTable();
         initCapitalizationFields();

@@ -19,6 +19,8 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -43,6 +45,10 @@ public class CustomerAddressController implements Initializable, ScreenInterface
     private int pnRow = 0;
     private boolean pbState = true;
     private String psClientID, psOrigProv, psOrigTown, psOrigBrgy, psFormStateName = "";
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnEdit, btnClose;
     @FXML
@@ -103,6 +109,8 @@ public class CustomerAddressController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {
