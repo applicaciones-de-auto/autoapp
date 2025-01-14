@@ -16,12 +16,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.Activity;
 import org.guanzon.autoapp.models.general.ActivityVehicle;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
 /**
@@ -35,6 +38,10 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
     private final String pxeModuleName = "Activity Vehicle";
     private Activity oTransActVehicle;
     ObservableList<ActivityVehicle> actVhclModelData = FXCollections.observableArrayList();
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnClose;
     @FXML
@@ -60,6 +67,7 @@ public class ActivityVehicleController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initVehicleTable();
         loadActVhclModelTable();
         initButtonsClick();

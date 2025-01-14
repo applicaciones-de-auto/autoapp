@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="639.0" prefWidth="1025.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" prefHeight="639.0" prefWidth="1025.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -261,14 +261,14 @@
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
                                                                                                         <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="Activity Type" />
@@ -413,7 +413,7 @@
                                                                                             <children>
                                                                                                 <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                                                                     <children>
-                                                                                                        <Button fx:id="btnAddRowTasks" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="80.0" text="Add Row">
+                                                                                                        <Button fx:id="btnAddRowTasks" alignment="TOP_LEFT" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="80.0" text="Add Row">
                                                                                                             <graphic>
                                                                                                                 <FontAwesomeIconView glyphName="PLUS" />
                                                                                                             </graphic>
@@ -421,7 +421,7 @@
                                                                                                                 <Blend />
                                                                                                             </effect>
                                                                                                         </Button>
-                                                                                                        <Button fx:id="btnRemoveTasks" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove">
+                                                                                                        <Button fx:id="btnRemoveTasks" alignment="TOP_LEFT" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove">
                                                                                                             <graphic>
                                                                                                                 <FontAwesomeIconView glyphName="TRASH" />
                                                                                                             </graphic>
@@ -455,7 +455,7 @@
                                                                                             <children>
                                                                                                 <HBox alignment="CENTER_RIGHT" layoutX="429.0" layoutY="-30.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                                                                     <children>
-                                                                                                        <Button fx:id="btnAddRowBudget" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="82.0" text="Add Row">
+                                                                                                        <Button fx:id="btnAddRowBudget" alignment="TOP_LEFT" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="22.0" prefWidth="82.0" text="Add Row">
                                                                                                             <graphic>
                                                                                                                 <FontAwesomeIconView glyphName="PLUS" />
                                                                                                             </graphic>
@@ -463,7 +463,7 @@
                                                                                                                 <Blend />
                                                                                                             </effect>
                                                                                                         </Button>
-                                                                                                        <Button fx:id="btnRemoveBudget" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove">
+                                                                                                        <Button fx:id="btnRemoveBudget" alignment="TOP_LEFT" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="Remove">
                                                                                                             <graphic>
                                                                                                                 <FontAwesomeIconView glyphName="TRASH" />
                                                                                                             </graphic>

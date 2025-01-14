@@ -34,6 +34,8 @@ import org.guanzon.auto.main.sales.FollowUp;
 import org.guanzon.auto.main.sales.Inquiry;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
@@ -66,7 +68,10 @@ public class VehicleInquiryLostSaleController implements Initializable {
             "NOT PRIORITY YET ",
             "NOT APPROVED BY BANK  ");
     ObservableList<String> cGdsCat = FXCollections.observableArrayList("BRAND NEW", "PRE-OWNED");
-
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnDlost, btnTlost;
     @FXML
@@ -123,6 +128,7 @@ public class VehicleInquiryLostSaleController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         lblClientName.setText(psClient);
         comboBox02.setDisable(true);
         initCapitalizationFields();

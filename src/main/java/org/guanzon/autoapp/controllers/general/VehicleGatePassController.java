@@ -32,6 +32,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -72,7 +75,10 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
     private ObservableList<VehicleComponents> compoData = FXCollections.observableArrayList();
     ObservableList<String> cVhclSrc = FXCollections.observableArrayList("VEHICLE SALES");
     ObservableList<String> cPurpose = FXCollections.observableArrayList("DELIVER TO CUSTOMER");
-
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private TextField txtField01, txtField05, txtField06, txtField08, txtField09, txtField10, txtField11;
     @FXML
@@ -126,6 +132,8 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
 
         initJobDoneTable();
@@ -372,10 +380,20 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        oTrans = new Vehicle_Gatepass(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadJobDoneTable();
+                            loadVehicleComponentsTable();
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 initFields(pnEditMode);
                 if (pbOpenEvent) {
@@ -686,6 +704,7 @@ public class VehicleGatePassController implements Initializable, ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 

@@ -21,6 +21,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Parts_ItemLocation;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
@@ -36,6 +38,10 @@ public class ItemLocationController implements Initializable, ScreenInterface, G
     private final String pxeModuleName = "Item Location";
     private int pnEditMode;//Modifying fields
     private Parts_ItemLocation oTrans;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnBrowse, btnDeactivate, btnClose, btnActive;
     @FXML
@@ -57,6 +63,7 @@ public class ItemLocationController implements Initializable, ScreenInterface, G
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
 
         initCapitalizationFields();
@@ -253,10 +260,19 @@ public class ItemLocationController implements Initializable, ScreenInterface, G
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    oTrans.getModel().getModel().setLocatnID("");
-                    clearFields();
-                    oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        oTrans.getModel().getModel().setLocatnID("");
+                        clearFields();
+                        oTrans = new Parts_ItemLocation(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getLocatnID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

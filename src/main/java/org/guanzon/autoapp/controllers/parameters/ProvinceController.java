@@ -25,6 +25,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.Address_Province;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
 import org.json.simple.JSONObject;
@@ -41,6 +43,10 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
     private int pnEditMode;//Modifying fields
     private Address_Province oTrans;
     @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
+    @FXML
     private Button btnAdd, btnClose, btnSave, btnEdit, btnCancel, btnDeactivate, btnActive, btnBrowse;
     @FXML
     private TextField txtField01, txtField02, txtField03;
@@ -54,6 +60,7 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Address_Province(oApp, false, oApp.getBranchCode());
 
         initCapitalizationFields();
@@ -249,9 +256,18 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Address_Province(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Address_Province(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getProvID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

@@ -37,6 +37,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -395,11 +396,22 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    CustomCommonUtil.switchToTab(tabMain, ImTabPane);
-                    oTrans = new JobOrder(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        CustomCommonUtil.switchToTab(tabMain, ImTabPane);
+                        oTrans = new JobOrder(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openTransaction(oTrans.getMasterModel().getMasterModel().getTransNo());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            loadLaborTable();
+                            loadAccessoriesTable();
+                            pnEditMode = oTrans.getEditMode();
+                            initFields(pnEditMode);
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":
@@ -680,6 +692,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadLaborTable();
@@ -791,6 +804,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadAccessoriesTable();
@@ -988,6 +1002,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadLaborTable();
@@ -1041,6 +1056,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadAccessoriesTable();
@@ -1128,6 +1144,7 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadTechnician();

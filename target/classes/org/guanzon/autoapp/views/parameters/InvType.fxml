@@ -54,7 +54,7 @@
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label text="Inventory Type  ID" GridPane.columnIndex="1">
+                                        <Label text="Inventory Type ID" GridPane.columnIndex="1">
                                             <font>
                                                 <Font name="Arial Bold" size="12.0" />
                                             </font>
@@ -62,7 +62,7 @@
                                         <TextField fx:id="txtField01" disable="true" editable="false" style="-fx-font-weight: bold;" GridPane.columnIndex="2" />
                                         <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                         <CheckBox id="LabelDesc" fx:id="cboxActivate" mnemonicParsing="false" text="Active" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <Label id="LabelDesc" text="Inventory Type  Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Label id="LabelDesc" text="Inventory Type Description" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                     <opaqueInsets>
                                         <Insets />

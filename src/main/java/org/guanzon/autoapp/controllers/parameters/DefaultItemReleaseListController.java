@@ -26,7 +26,10 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.auto.main.parameter.DefaultReleasedItems_Checklist;
 import org.guanzon.autoapp.interfaces.GRecordInterface;
 import org.guanzon.autoapp.interfaces.ScreenInterface;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -40,6 +43,11 @@ public class DefaultItemReleaseListController implements Initializable, ScreenIn
     private DefaultReleasedItems_Checklist oTrans;
     private final String pxeModuleName = "Default Item Released";
     private int pnEditMode;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
+
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnBrowse, btnActive, btnClose;
     @FXML
@@ -61,6 +69,7 @@ public class DefaultItemReleaseListController implements Initializable, ScreenIn
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new DefaultReleasedItems_Checklist(oApp, false, oApp.getBranchCode());
         initCapitalizationFields();
         initPatternFields();

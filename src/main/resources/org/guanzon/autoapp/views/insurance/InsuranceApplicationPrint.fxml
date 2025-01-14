@@ -15,13 +15,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" prefHeight="660.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="AnchorPane" prefHeight="660.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane prefHeight="584.0" prefWidth="646.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="stackPane" prefHeight="584.0" prefWidth="646.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <BorderPane prefHeight="626.0" prefWidth="626.0">
                     <top>
-                        <AnchorPane prefHeight="33.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                        <AnchorPane prefHeight="33.0" prefWidth="626.0" style="-fx-background-color: #515151;" BorderPane.alignment="CENTER">
                             <children>
                                 <Label alignment="CENTER" contentDisplay="CENTER" text="INSURANCE APPLICATION PRINT" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <font>
@@ -33,7 +33,7 @@
                         </AnchorPane>
                     </top>
                     <StackPane.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets />
                     </StackPane.margin>
                     <center>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -57,7 +57,7 @@
                                         </ProgressIndicator>
                                     </children>
                                 </VBox>
-                                <AnchorPane fx:id="reportPane" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: orange; -fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                <AnchorPane fx:id="reportPane" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                             </children>
                             <BorderPane.margin>
                                 <Insets bottom="1.0" top="1.0" />
@@ -65,7 +65,7 @@
                         </AnchorPane>
                     </center>
                     <bottom>
-                        <AnchorPane prefHeight="51.0" prefWidth="626.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                        <AnchorPane prefHeight="51.0" prefWidth="626.0" style="-fx-background-color: #515151;" BorderPane.alignment="CENTER">
                             <children>
                                 <HBox prefHeight="47.0" prefWidth="142.0" spacing="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>

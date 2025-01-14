@@ -27,6 +27,8 @@ import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -53,6 +55,11 @@ public class CustomerContactController implements Initializable, ScreenInterface
     private Button btnAdd, btnEdit, btnClose;
     ObservableList<String> cOwnCont = FXCollections.observableArrayList("PERSONAL", "OFFICE", "OTHERS");
     ObservableList<String> cTypCont = FXCollections.observableArrayList("MOBILE", "TELEPHONE", "FAX");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
+
     @FXML
     private ComboBox comboBox05Cont, comboBox04Cont;
     @FXML
@@ -92,6 +99,7 @@ public class CustomerContactController implements Initializable, ScreenInterface
     @Override
     @SuppressWarnings("unchecked")
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         if (!psFormStateName.equals("Referral Agent Information")) {
             lblFormTitle.setText(pxeCustomerModuleName);
         } else {

@@ -1,11 +1,11 @@
 package org.guanzon.autoapp;
 
 import java.io.IOException;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -58,24 +58,14 @@ public class FXMLMenuParameterForm {
             fxmlLoader.setController(fxObj);
             Parent parent = fxmlLoader.load();
 
-            // Apply the CSS file
-//            // Apply the DropShadow effect to the parent node
-//            parent.setEffect(dropShadow);
-            // Add mouse event handlers for dragging the dialog
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
             });
 
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
             });
 
             // Set the parent as the scene
@@ -83,17 +73,14 @@ public class FXMLMenuParameterForm {
 
             // Configure the stage for the dialog
             stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);  // Make the stage transparent for custom styling
-            stage.initModality(Modality.APPLICATION_MODAL);  // Set the modality to block input events
-            stage.setTitle("");  // Set the title of the dialog (if any)
-            scene.getStylesheets().add(getClass().getResource("/org/guanzon/autoapp/css/FrameStyle.css").toExternalForm());
-            parent.getStyleClass().add("dialog-pane");  // Apply CSS class to the parent node
-            // Show the dialog and wait for it to be closed
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setTitle("");
+
             stage.showAndWait();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            // Show a warning message if an exception occurs
             ShowMessageFX.Warning(e.getMessage(), "Warning", null);
             System.exit(1);
         }

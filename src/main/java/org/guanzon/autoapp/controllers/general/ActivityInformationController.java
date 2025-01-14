@@ -45,6 +45,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -514,10 +515,22 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                        clearFields();
-                        clearTables();
-                        oTrans = new Activity(oApp, false, oApp.getBranchCode());
-                        pnEditMode = EditMode.UNKNOWN;
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            clearFields();
+                            clearTables();
+                            oTrans = new Activity(oApp, false, oApp.getBranchCode());
+                            pnEditMode = EditMode.UNKNOWN;
+                        } else {
+                            loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActvtyID());
+                            if ("success".equals((String) loJSON.get("result"))) {
+                                loadActivityLocationTable();
+                                loadActMembersTable();
+                                loadActivityVehicleTable();
+                                loadMasterFields();
+                                initFields(pnEditMode);
+                                pnEditMode = oTrans.getEditMode();
+                            }
+                        }
                     }
                     break;
                 case "btnBrowse":
@@ -915,6 +928,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
@@ -949,6 +963,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 
@@ -991,6 +1006,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadActivityLocationTable();
@@ -1080,6 +1096,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             Scene scene = new Scene(parent);
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
+            scene.setFill(Color.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
@@ -1165,6 +1182,7 @@ public class ActivityInformationController implements Initializable, ScreenInter
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
             loadActivityVehicleTable();

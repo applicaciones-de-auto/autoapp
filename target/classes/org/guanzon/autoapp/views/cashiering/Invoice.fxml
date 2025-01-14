@@ -114,7 +114,7 @@
                                                                                             </font>
                                                                                         </Label>
                                                                                         <TextField fx:id="txtField03" alignment="CENTER_RIGHT" layoutX="100.0" layoutY="22.0" promptText="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                                        <CheckBox id="LabelDesc" fx:id="checkBoxCash" disable="true" mnemonicParsing="false" text="Cash" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                                        <CheckBox id="LabelDesc" fx:id="checkBoxCash" mnemonicParsing="false" text="Cash" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxCard" layoutX="340.0" layoutY="49.0" mnemonicParsing="false" text="Card" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxOnlnPymntServ" layoutX="340.0" layoutY="74.0" mnemonicParsing="false" text="Online Payment Service" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                                         <CheckBox id="LabelDesc" fx:id="checkBoxCrdInv" layoutX="340.0" layoutY="99.0" mnemonicParsing="false" text="Credit Memo / Invoice" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />

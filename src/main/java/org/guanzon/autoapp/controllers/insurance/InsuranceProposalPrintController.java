@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javax.swing.AbstractButton;
@@ -53,7 +54,9 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
     private Integer timeSeconds = 3;
     private final int pnCtr = 0;
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnPrint, btnClose;
     @FXML
@@ -83,6 +86,7 @@ public class InsuranceProposalPrintController implements Initializable, GPrintIn
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         vbProgress.setVisible(true);
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);

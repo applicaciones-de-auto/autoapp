@@ -37,7 +37,10 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.models.sales.VSPReservationInquirers;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -53,6 +56,10 @@ public class VSPAddReservationInquiriesController implements Initializable {
     ObservableList<String> cFilter = FXCollections.observableArrayList("RECEIPT NO", "RECEIPT DATE", "CUSTOMER NAME");
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     private VehicleSalesProposal oTransReserve;
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAdd, btnClose, btnFilter, btnRefresh;
     @FXML
@@ -89,7 +96,7 @@ public class VSPAddReservationInquiriesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initTextKeyPressed();
         initButtonsClick();

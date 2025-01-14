@@ -28,6 +28,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.utils.TextFormatterUtil;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
 
@@ -48,6 +50,10 @@ public class VSPLaborController implements Initializable {
     private String psOrigDsc = "";
     private VehicleSalesProposal oTrans;
     ObservableList<String> cChargeType = FXCollections.observableArrayList("FREE OF CHARGE", "CHARGE");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAddLabor, btnEditLabor, btnCloseLabor;
     @FXML
@@ -94,7 +100,7 @@ public class VSPLaborController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initCapitalizationFields();
         initPatternFields();
         initTextFieldFocus();

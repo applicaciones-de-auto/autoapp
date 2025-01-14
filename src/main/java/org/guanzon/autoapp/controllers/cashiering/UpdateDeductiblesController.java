@@ -4,7 +4,6 @@
  */
 package org.guanzon.autoapp.controllers.cashiering;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -19,11 +18,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
@@ -39,7 +39,9 @@ public class UpdateDeductiblesController implements Initializable {
     private int pnRow;
     DecimalFormat poGetDecimalFormat = new DecimalFormat("#,##0.00");
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnUpdate, btnClose;
     @FXML
@@ -62,6 +64,7 @@ public class UpdateDeductiblesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         loadMasterFields();
         initButtonsClick();
         initCapitalizationFields();

@@ -21,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -43,8 +42,8 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -1135,6 +1134,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 
@@ -1269,6 +1269,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
 
@@ -1410,6 +1411,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
@@ -1528,6 +1530,7 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {

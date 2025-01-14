@@ -23,12 +23,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.parts.InventoryInformation;
 import org.guanzon.autoapp.models.parts.ItemInfoModelYear;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -41,6 +44,10 @@ public class ItemInfoExpandModelController implements Initializable {
     private InventoryInformation oTransInventoryModel;
     private final String pxeModuleName = "Item Expand Model"; //Form Title
     private ObservableList<ItemInfoModelYear> modelData = FXCollections.observableArrayList();
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnClose, btnRemove;
     @FXML
@@ -69,6 +76,7 @@ public class ItemInfoExpandModelController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initModelYearTable();
         loadModelYearTable();
         initButtonsClick();

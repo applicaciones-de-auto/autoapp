@@ -8,7 +8,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -573,7 +572,7 @@
                                                                                                                 <Blend />
                                                                                                             </effect>
                                                                                                             <tooltip>
-                                                                                                                <Tooltip text="Print Customer Advance Slip Button" />
+                                                                                                                <Tooltip text="Cancel Customer Advance Slip Button" />
                                                                                                             </tooltip>
                                                                                                         </Button>
                                                                                                         <TableView fx:id="tblAdvanceSlip" onMouseClicked="#tblAdvanceSlip_Clicked" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="1" GridPane.rowSpan="3">
@@ -625,141 +624,82 @@
                                                                     </content>
                                                                 </Tab>
                                                                 <Tab fx:id="tabBankHistory" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Bank Application History">
-                                                                    <content>
-                                                                        <AnchorPane>
-                                                                            <children>
-                                                                                <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                                    <content>
-                                                                                        <VBox>
-                                                                                            <children>
-                                                                                                <GridPane>
-                                                                                                    <columnConstraints>
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                    </columnConstraints>
-                                                                                                    <rowConstraints>
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                                                                    </rowConstraints>
-                                                                                                    <children>
-                                                                                                        <Button fx:id="btnBankAppNew" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="New" GridPane.columnIndex="1">
-                                                                                                            <graphic>
-                                                                                                                <FontAwesomeIconView glyphName="MINUS" text="" />
-                                                                                                            </graphic>
-                                                                                                            <effect>
-                                                                                                                <Blend />
-                                                                                                            </effect>
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Add Bank Application Button" />
-                                                                                                            </tooltip>
-                                                                                                        </Button>
-                                                                                                    </children>
-                                                                                                    <VBox.margin>
-                                                                                                        <Insets bottom="5.0" top="5.0" />
-                                                                                                    </VBox.margin>
-                                                                                                </GridPane>
-                                                                                                <GridPane>
-                                                                                                    <columnConstraints>
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="1000.0" prefWidth="1000.0" />
-                                                                                                    </columnConstraints>
-                                                                                                    <rowConstraints>
-                                                                                                        <RowConstraints minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
-                                                                                                    </rowConstraints>
-                                                                                                    <children>
-                                                                                                        <TableView fx:id="tblBankApplication" onMouseClicked="#tblBankAppli_Clicked" prefHeight="400.0" prefWidth="200.0" GridPane.columnIndex="1">
-                                                                                                            <columns>
-                                                                                                                <TableColumn fx:id="bankIndex01" editable="false" minWidth="34.0" prefWidth="34.0" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="bankIndex02" editable="false" minWidth="131.0" prefWidth="161.0" resizable="false" sortable="false" text="Bank Application No." />
-                                                                                                                <TableColumn fx:id="bankIndex03" editable="false" minWidth="141.0" prefWidth="163.0" resizable="false" sortable="false" text="Bank Type" />
-                                                                                                                <TableColumn fx:id="bankIndex04" editable="false" minWidth="270.0" prefWidth="465.0" resizable="false" sortable="false" text="Bank Name" />
-                                                                                                                <TableColumn fx:id="bankIndex05" editable="false" minWidth="178.0" prefWidth="199.0" resizable="false" sortable="false" text="Bank Branch" />
-                                                                                                                <TableColumn fx:id="bankIndex06" editable="false" minWidth="218.0" prefWidth="218.0" resizable="false" sortable="false" text="Payment Mode" />
-                                                                                                                <TableColumn fx:id="bankIndex07" editable="false" minWidth="76.0" prefWidth="76.0" resizable="false" sortable="false" text="Status" />
-                                                                                                                <TableColumn fx:id="bankIndex08" editable="false" minWidth="115.0" prefWidth="115.0" resizable="false" sortable="false" text="Cancelled date" />
-                                                                                                            </columns>
-                                                                                                        </TableView>
-                                                                                                    </children>
-                                                                                                    <VBox.margin>
-                                                                                                        <Insets bottom="5.0" />
-                                                                                                    </VBox.margin>
-                                                                                                </GridPane>
-                                                                                            </children>
-                                                                                        </VBox>
-                                                                                    </content>
-                                                                                </ScrollPane>
-                                                                            </children>
-                                                                        </AnchorPane>
-                                                                    </content>
+                                                   <content>
+                                                      <StackPane prefHeight="150.0" prefWidth="200.0">
+                                                         <children>
+                                                            <GridPane>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="1000.0" prefWidth="1000.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <TableView fx:id="tblBankApplication" onMouseClicked="#tblBankAppli_Clicked" prefHeight="400.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                                     <columns>
+                                                                        <TableColumn fx:id="bankIndex01" editable="false" minWidth="34.0" prefWidth="34.0" sortable="false" text="Row" />
+                                                                        <TableColumn fx:id="bankIndex02" editable="false" minWidth="131.0" prefWidth="161.0" resizable="false" sortable="false" text="Bank Application No." />
+                                                                        <TableColumn fx:id="bankIndex03" editable="false" minWidth="141.0" prefWidth="163.0" resizable="false" sortable="false" text="Bank Type" />
+                                                                        <TableColumn fx:id="bankIndex04" editable="false" minWidth="270.0" prefWidth="465.0" resizable="false" sortable="false" text="Bank Name" />
+                                                                        <TableColumn fx:id="bankIndex05" editable="false" minWidth="178.0" prefWidth="199.0" resizable="false" sortable="false" text="Bank Branch" />
+                                                                        <TableColumn fx:id="bankIndex06" editable="false" minWidth="218.0" prefWidth="218.0" resizable="false" sortable="false" text="Payment Mode" />
+                                                                        <TableColumn fx:id="bankIndex07" editable="false" minWidth="76.0" prefWidth="76.0" resizable="false" sortable="false" text="Status" />
+                                                                        <TableColumn fx:id="bankIndex08" editable="false" minWidth="115.0" prefWidth="115.0" resizable="false" sortable="false" text="Cancelled date" />
+                                                                     </columns>
+                                                                  </TableView>
+                                                                  <Button fx:id="btnBankAppNew" alignment="TOP_LEFT" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="75.0" text="New">
+                                                                     <graphic>
+                                                                        <FontAwesomeIconView glyphName="MINUS" text="" />
+                                                                     </graphic>
+                                                                     <effect>
+                                                                        <Blend />
+                                                                     </effect>
+                                                                     <tooltip>
+                                                                        <Tooltip text="Add Bank Application Button" />
+                                                                     </tooltip>
+                                                                  </Button>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </StackPane>
+                                                   </content>
                                                                 </Tab>
                                                                 <Tab fx:id="tabFollowingHistory" style="-fx-font-weight: bold; -fx-font-family: Arial;" text="Followup History">
-                                                                    <content>
-                                                                        <AnchorPane>
-                                                                            <children>
-                                                                                <ScrollPane fitToWidth="true" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                                    <content>
-                                                                                        <VBox>
-                                                                                            <children>
-                                                                                                <GridPane>
-                                                                                                    <columnConstraints>
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="10.0" />
-                                                                                                    </columnConstraints>
-                                                                                                    <rowConstraints>
-                                                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
-                                                                                                    </rowConstraints>
-                                                                                                    <children>
-                                                                                                        <Button fx:id="btnFollowUp" mnemonicParsing="false" text="Follow-Up" GridPane.columnIndex="1">
-                                                                                                            <tooltip>
-                                                                                                                <Tooltip text="Add Follow-Up History Button" />
-                                                                                                            </tooltip>
-                                                                                                        </Button>
-                                                                                                    </children>
-                                                                                                    <VBox.margin>
-                                                                                                        <Insets bottom="5.0" top="5.0" />
-                                                                                                    </VBox.margin>
-                                                                                                </GridPane>
-                                                                                                <GridPane>
-                                                                                                    <VBox.margin>
-                                                                                                        <Insets bottom="5.0" />
-                                                                                                    </VBox.margin>
-                                                                                                    <columnConstraints>
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="820.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                                    </columnConstraints>
-                                                                                                    <rowConstraints>
-                                                                                                        <RowConstraints minHeight="10.0" prefHeight="400.0" vgrow="SOMETIMES" />
-                                                                                                    </rowConstraints>
-                                                                                                    <children>
-                                                                                                        <TableView fx:id="tblFollowHistory" onMouseClicked="#tblFollowUp_Clicked" GridPane.columnIndex="1">
-                                                                                                            <columns>
-                                                                                                                <TableColumn fx:id="flwpIndex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
-                                                                                                                <TableColumn fx:id="flwpIndex02" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Referrence No." />
-                                                                                                                <TableColumn fx:id="flwpIndex03" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Followup Date" />
-                                                                                                                <TableColumn fx:id="flwpIndex04" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Next Follow-up Date" />
-                                                                                                                <TableColumn fx:id="flwpIndex05" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Next Follow-up Time" />
-                                                                                                                <TableColumn fx:id="flwpIndex06" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Medium" />
-                                                                                                                <TableColumn fx:id="flwpIndex07" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Platform" />
-                                                                                                                <TableColumn fx:id="flwpIndex08" editable="false" maxWidth="500.0" minWidth="500.0" prefWidth="500.0" resizable="false" sortable="false" text="Remarks" />
-                                                                                                            </columns>
-                                                                                                        </TableView>
-                                                                                                    </children>
-                                                                                                </GridPane>
-                                                                                            </children>
-                                                                                        </VBox>
-                                                                                    </content>
-                                                                                </ScrollPane>
-                                                                            </children>
-                                                                        </AnchorPane>
-                                                                    </content>
+                                                   <content>
+                                                      <StackPane prefHeight="150.0" prefWidth="200.0">
+                                                         <children>
+                                                            <GridPane>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="820.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                                                  <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Button fx:id="btnFollowUp" mnemonicParsing="false" text="Follow-Up">
+                                                                     <tooltip>
+                                                                        <Tooltip text="Add Follow-Up History Button" />
+                                                                     </tooltip>
+                                                                  </Button>
+                                                                  <TableView fx:id="tblFollowHistory" maxHeight="1.7976931348623157E308" onMouseClicked="#tblFollowUp_Clicked" GridPane.rowIndex="1">
+                                                                     <columns>
+                                                                        <TableColumn fx:id="flwpIndex01" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="Row" />
+                                                                        <TableColumn fx:id="flwpIndex02" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Referrence No." />
+                                                                        <TableColumn fx:id="flwpIndex03" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Followup Date" />
+                                                                        <TableColumn fx:id="flwpIndex04" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Next Follow-up Date" />
+                                                                        <TableColumn fx:id="flwpIndex05" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" text="Next Follow-up Time" />
+                                                                        <TableColumn fx:id="flwpIndex06" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Medium" />
+                                                                        <TableColumn fx:id="flwpIndex07" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Platform" />
+                                                                        <TableColumn fx:id="flwpIndex08" editable="false" maxWidth="500.0" minWidth="500.0" prefWidth="500.0" resizable="false" sortable="false" text="Remarks" />
+                                                                     </columns>
+                                                                  </TableView>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </StackPane>
+                                                   </content>
                                                                 </Tab>
                                                             </tabs>
                                                         </TabPane>

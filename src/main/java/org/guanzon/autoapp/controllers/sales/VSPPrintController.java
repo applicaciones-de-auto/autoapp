@@ -20,7 +20,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -36,7 +35,10 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.sales.VehicleSalesProposal;
 import org.guanzon.autoapp.interfaces.GPrintInterface;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.guanzon.autoapp.interfaces.ScreenInterface;
 import org.json.simple.JSONObject;
 
@@ -60,7 +62,9 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
     private Timeline timeline;
     private Integer timeSeconds = 3;
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnPrint, btnClose;
     @FXML
@@ -95,6 +99,7 @@ public class VSPPrintController implements Initializable, ScreenInterface, GPrin
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         vbProgress.setVisible(true);
         btnPrint.setVisible(false);
         btnPrint.setDisable(true);

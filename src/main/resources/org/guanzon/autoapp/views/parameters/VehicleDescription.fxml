@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="366.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorPane" prefHeight="383.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <BorderPane>
                     <StackPane.margin>
@@ -46,7 +46,7 @@
                             <children>
                                 <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5; -fx-background-color: white; -fx-background-radius: 5;" styleClass="unity-container" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                     <children>
-                                        <GridPane vgap="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                        <GridPane vgap="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                             <columnConstraints>
                                                 <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />

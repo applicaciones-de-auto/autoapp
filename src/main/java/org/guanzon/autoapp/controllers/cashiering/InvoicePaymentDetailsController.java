@@ -31,13 +31,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.autoapp.utils.CustomCommonUtil;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -85,7 +87,10 @@ public class InvoicePaymentDetailsController implements Initializable {
     @FXML
     private ComboBox<String> comboBoxPayMde;
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
+
     @FXML
     private GridPane gridCard, gridCheck, gridGift, gridOnline;
     @FXML
@@ -123,6 +128,7 @@ public class InvoicePaymentDetailsController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         comboBoxPayMde.setItems(cPayerxxx);
         if (!pbIsUpdate) {
             if (psPayMode.size() == 1) {

@@ -162,10 +162,10 @@
                                                                                                 <GridPane vgap="3.0">
                                                                                                     <columnConstraints>
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="130.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="160.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
+                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="180.0" />
+                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="95.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" />
+                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
                                                                                                         <RowConstraints maxHeight="40.0" minHeight="-Infinity" prefHeight="23.0" vgrow="ALWAYS" />
@@ -202,8 +202,7 @@
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
                                                                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="115.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
-                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="45.0" prefWidth="70.0" />
+                                                                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="100.0" />
                                                                                                     </columnConstraints>
                                                                                                     <rowConstraints>
                                                                                                         <RowConstraints maxHeight="30.0" minHeight="-Infinity" prefHeight="23.0" vgrow="ALWAYS" />
@@ -402,11 +401,11 @@
                                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                                                             </rowConstraints>
                                                                                                             <children>
-                                                                                                                <TextField fx:id="txtField14" promptText="XXX-XX-XXXXXX" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                                                                <TextField fx:id="txtField13" promptText="XXX-XXX-XXX-XXX" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="TIN ID" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" text="LTO ID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                                                                 <Label id="LabelDesc" prefHeight="36.0" prefWidth="47.0" text="Remarks" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField14" promptText="XXX-XX-XXXXXX" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                <TextField fx:id="txtField13" promptText="XXX-XXX-XXX-XXX" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                                                                 <TextArea fx:id="textArea15" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="8" GridPane.rowIndex="1" />
                                                                                                             </children>
                                                                                                         </GridPane>
@@ -424,13 +423,11 @@
                                                                     <content>
                                                                         <AnchorPane>
                                                                             <children>
-                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                <StackPane prefHeight="428.0" prefWidth="1005.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                     <children>
                                                                                         <GridPane>
                                                                                             <columnConstraints>
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                 <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="870.0" />
-                                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                             </columnConstraints>
                                                                                             <rowConstraints>
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
@@ -442,7 +439,7 @@
                                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                                             </rowConstraints>
                                                                                             <children>
-                                                                                                <TableView fx:id="tblViewVhclInfo" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                                                                <TableView fx:id="tblViewVhclInfo" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                                                                                     <columns>
                                                                                                         <TableColumn fx:id="tblVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" resizable="false" sortable="false" text="Row" />
                                                                                                         <TableColumn fx:id="tblVhcllist02" editable="false" minWidth="80.0" resizable="false" sortable="false" text="CS No" />
@@ -453,12 +450,12 @@
                                                                                                         <TableColumn fx:id="tblVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                     </columns>
                                                                                                 </TableView>
-                                                                                                <Label text="Vehicle/s Owned" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                                                <Label text="Vehicle/s Owned" GridPane.rowIndex="1">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="12.0" />
                                                                                                     </font>
                                                                                                 </Label>
-                                                                                                <TableView fx:id="tblViewCoVhclInfo" layoutX="20.0" layoutY="254.0" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                                                                <TableView fx:id="tblViewCoVhclInfo" layoutX="20.0" layoutY="254.0" onMouseClicked="#tblViewVhclInfo_Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
                                                                                                     <columns>
                                                                                                         <TableColumn fx:id="tblCoVhcllist01" editable="false" minWidth="-Infinity" prefWidth="35.0" sortable="false" text="Row" />
                                                                                                         <TableColumn fx:id="tblCoVhcllist02" editable="false" minWidth="80.0" sortable="false" text="CS No" />
@@ -469,7 +466,7 @@
                                                                                                         <TableColumn fx:id="tblCoVhcllist06" editable="false" minWidth="250.0" prefWidth="250.0" sortable="false" text="Selling Dealer" />
                                                                                                     </columns>
                                                                                                 </TableView>
-                                                                                                <Label text="Vehicle/s Co - Owned" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                                                                <Label text="Vehicle/s Co - Owned" GridPane.rowIndex="4">
                                                                                                     <font>
                                                                                                         <Font name="Arial Bold" size="12.0" />
                                                                                                     </font>

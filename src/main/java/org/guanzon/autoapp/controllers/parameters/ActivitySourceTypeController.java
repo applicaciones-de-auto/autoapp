@@ -18,6 +18,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -41,6 +43,10 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
     private Activity_Source oTrans;
     private final String pxeModuleName = "Activity Source";
     private int pnEditMode;
+    @FXML
+    private StackPane stackPane;
+    @FXML
+    private AnchorPane AnchorPane;
     ObservableList<String> cType = FXCollections.observableArrayList("EVENT", "SALES CALL", "PROMO");
     @FXML
     private Button btnAdd, btnSave, btnEdit, btnCancel, btnDeactivate, btnActive, btnBrowse, btnClose;
@@ -52,6 +58,7 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
     private ComboBox<String> comboBox02;
 
     @Override
+
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -65,6 +72,7 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
 
         initCapitalizationFields();
@@ -237,9 +245,18 @@ public class ActivitySourceTypeController implements Initializable, ScreenInterf
 
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        oTrans = new Activity_Source(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getActTypID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":

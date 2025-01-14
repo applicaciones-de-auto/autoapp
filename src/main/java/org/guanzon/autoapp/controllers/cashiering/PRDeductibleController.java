@@ -42,8 +42,11 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.auto.main.cashiering.SalesInvoice;
 import org.guanzon.autoapp.models.cashiering.Deductibles;
 import org.guanzon.autoapp.models.cashiering.ManuallyDeductibles;
-import org.guanzon.autoapp.utils.CustomCommonUtil;
 import org.json.simple.JSONObject;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -61,6 +64,10 @@ public class PRDeductibleController implements Initializable {
     private double xOffset = 0;
     private double yOffset = 0;
     ObservableList<String> cComboSearch = FXCollections.observableArrayList("RECEIPT DATE", "RECEIPT NO", "PAYER NAME");
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private Button btnAddDeductibles, btnRefresh, btnApplyReceipts, btnClose, btnSearch;
     @FXML
@@ -101,6 +108,7 @@ public class PRDeductibleController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         initManuallyTable();
         initDeductiblesTable();
         initButtonsClick();
@@ -464,6 +472,7 @@ public class PRDeductibleController implements Initializable {
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {

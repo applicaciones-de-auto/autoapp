@@ -14,8 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.autoapp.utils.CustomCommonUtil;
 
 /**
  * FXML Controller class
@@ -24,6 +26,10 @@ import org.guanzon.appdriver.base.GRider;
  */
 public class ViewPhotoController implements Initializable {
 
+    @FXML
+    private AnchorPane AnchorPane;
+    @FXML
+    private StackPane stackPane;
     private GRider oApp;
     private String psValidPhoto;
     private String psValidPhotoURL;
@@ -60,6 +66,7 @@ public class ViewPhotoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        CustomCommonUtil.setDropShadow(AnchorPane, stackPane);
         loadPhoto();
         btnClose.setOnAction(this::handleButtonAction);
 

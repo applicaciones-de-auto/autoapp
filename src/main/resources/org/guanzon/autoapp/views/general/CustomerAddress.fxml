@@ -22,14 +22,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
+      <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0">
+         <children>
                 <BorderPane>
-                    <StackPane.margin>
-                        <Insets />
-                    </StackPane.margin>
                     <top>
                         <AnchorPane style="-fx-background-color: #FACEA1; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                             <children>
@@ -96,12 +93,12 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
                                                 <Label id="LabelDesc" stylesheets="@../css/FrameStyle.css" text="House No." GridPane.columnIndex="1" GridPane.columnSpan="2" />
@@ -138,10 +135,10 @@
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
                                                 <CheckBox fx:id="checkBox14Addr" mnemonicParsing="false" text="Primary" GridPane.columnIndex="2" />
@@ -162,8 +159,8 @@
                         </AnchorPane>
                     </center>
                 </BorderPane>
-            </children>
-        </StackPane>
+         </children>
+      </StackPane>
     </children>
     <stylesheets>
         <URL value="@../../css/FrameStyle.css" />

@@ -52,6 +52,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.json.simple.JSONObject;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -664,6 +665,7 @@ public class CashierReceivablesController implements Initializable, ScreenInterf
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
             stage.setTitle("");
             stage.showAndWait();
         } catch (IOException e) {
