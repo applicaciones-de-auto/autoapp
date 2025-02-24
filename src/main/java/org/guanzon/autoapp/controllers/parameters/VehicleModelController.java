@@ -115,7 +115,12 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
     @Override
     public boolean loadMasterFields() {
         txtField01.setText(oTrans.getModel().getModel().getModelID());
-        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
+        String lsModelDsc = "";
+        if (oTrans.getModel().getModel().getMakeDesc() != null) {
+            lsModelDsc = oTrans.getModel().getModel().getMakeDesc();
+        }
+        txtField02.setText(lsModelDsc);
+
         txtField03.setText(oTrans.getModel().getModel().getModelDsc());
 
         if (oTrans.getModel().getModel().getUnitType() != null && !oTrans.getModel().getModel().getUnitType().trim().isEmpty()) {
@@ -124,13 +129,12 @@ public class VehicleModelController implements Initializable, ScreenInterface, G
         if (oTrans.getModel().getModel().getBodyType() != null && !oTrans.getModel().getModel().getBodyType().trim().isEmpty()) {
             comboBox05.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getBodyType()));
         }
-//        if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
-//            comboBox06.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
-//        }
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

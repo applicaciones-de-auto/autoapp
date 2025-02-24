@@ -113,10 +113,30 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
     @Override
     public boolean loadMasterFields() {
         txtField01.setText(oTrans.getModel().getModel().getVhclID());
-        txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
-        txtField03.setText(oTrans.getModel().getModel().getModelDsc());
-        txtField04.setText(oTrans.getModel().getModel().getTypeDesc());
-        txtField05.setText(oTrans.getModel().getModel().getColorDsc());
+        String lsMakeDes = "";
+        if (oTrans.getModel().getModel().getMakeDesc() != null) {
+            lsMakeDes = oTrans.getModel().getModel().getMakeDesc();
+        }
+        txtField02.setText(lsMakeDes);
+
+        String lsModlDes = "";
+        if (oTrans.getModel().getModel().getModelDsc() != null) {
+            lsModlDes = oTrans.getModel().getModel().getModelDsc();
+        }
+        txtField03.setText(lsModlDes);
+
+        String lsTypeDes = "";
+        if (oTrans.getModel().getModel().getTypeDesc() != null) {
+            lsTypeDes = oTrans.getModel().getModel().getTypeDesc();
+        }
+        txtField04.setText(lsTypeDes);
+
+        String lsColorDes = "";
+        if (oTrans.getModel().getModel().getColorDsc() != null) {
+            lsColorDes = oTrans.getModel().getModel().getColorDsc();
+        }
+        txtField05.setText(lsColorDes);
+
         if (oTrans.getModel().getModel().getYearModl() == null) {
             txtField06.setText("0");
         } else {
@@ -140,10 +160,13 @@ public class VehicleDescriptionController implements Initializable, ScreenInterf
         if (oTrans.getModel().getModel().getVhclSize() != null && !oTrans.getModel().getModel().getVhclSize().trim().isEmpty()) {
             comboBox08.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getVhclSize()));
         }
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

@@ -121,7 +121,18 @@ public class VehicleEngineFormatController implements Initializable, ScreenInter
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getMakeDesc());
+        String lsMakeDsc = "";
+        if (oTrans.getModel().getModel().getMakeDesc() != null) {
+            lsMakeDsc = oTrans.getModel().getModel().getMakeDesc();
+        }
+        txtField01.setText(lsMakeDsc);
+
+        String lsModelDsc = "";
+        if (oTrans.getModel().getModel().getModelDsc() != null) {
+            lsModelDsc = oTrans.getModel().getModel().getModelDsc();
+        }
+        txtField02.setText(lsModelDsc);
+
         txtField02.setText(oTrans.getModel().getModel().getModelDsc());
         txtField03.setText(oTrans.getModel().getModel().getEngnPtrn());
         if (oTrans.getModel().getModel().getEngnLen() == null) {
