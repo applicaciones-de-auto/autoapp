@@ -102,15 +102,28 @@ public class SalesExecutiveController implements Initializable, ScreenInterface,
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getClientID());
-        txtField02.setText(oTrans.getModel().getModel().getCompnyNm());
+        String lsEmplIDx = "";
+        if (oTrans.getModel().getModel().getClientID() != null) {
+            lsEmplIDx = oTrans.getModel().getModel().getClientID();
+        }
+        txtField01.setText(lsEmplIDx);
+
+        String lsEmplNmx = "";
+        if (oTrans.getModel().getModel().getCompnyNm() != null) {
+            lsEmplNmx = oTrans.getModel().getModel().getCompnyNm();
+        }
+        txtField02.setText(lsEmplNmx);
+
         textArea03.setText(oTrans.getModel().getModel().getAddress());
         txtField04.setText(oTrans.getModel().getModel().getMobileNo());
         txtField05.setText(oTrans.getModel().getModel().getEmailAdd());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }
