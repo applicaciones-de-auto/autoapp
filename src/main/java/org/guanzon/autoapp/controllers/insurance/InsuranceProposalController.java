@@ -190,7 +190,13 @@ public class InsuranceProposalController implements Initializable, ScreenInterfa
         } else {
             comboBox01.getSelectionModel().select(0);
         }
-        txtField02.setText(oTrans.getMasterModel().getMasterModel().getOwnrNm());
+
+        String lsOwnrNme = "";
+        if (oTrans.getMasterModel().getMasterModel().getOwnrNm() != null) {
+            lsOwnrNme = oTrans.getMasterModel().getMasterModel().getOwnrNm();
+        }
+        txtField02.setText(lsOwnrNme);
+
         textArea03.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField04.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
         txtField05.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());

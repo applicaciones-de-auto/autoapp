@@ -134,7 +134,12 @@ public class InsuranceApplicationController implements Initializable, ScreenInte
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.computeAmount();
         /* POLICY INFORMATION */
-        txtField01.setText(oTrans.getMasterModel().getMasterModel().getPropslNo());
+        String lsPropsNo = "";
+        if (oTrans.getMasterModel().getMasterModel().getPropslNo() != null) {
+            lsPropsNo = oTrans.getMasterModel().getMasterModel().getPropslNo();
+        }
+        txtField01.setText(lsPropsNo);
+
         txtField02.setText(oTrans.getMasterModel().getMasterModel().getTransNo());
         int lnAppType = -1;
         if (oTrans.getMasterModel().getMasterModel().getIsNew() != null) {

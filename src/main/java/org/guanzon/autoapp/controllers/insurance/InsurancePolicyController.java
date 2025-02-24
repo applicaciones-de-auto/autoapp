@@ -156,7 +156,12 @@ public class InsurancePolicyController implements Initializable, ScreenInterface
     public boolean loadMasterFields() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.computeAmount();
-        txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
+        String lsReferNo = "";
+        if (oTrans.getMasterModel().getMasterModel().getReferNo() != null) {
+            lsReferNo = oTrans.getMasterModel().getMasterModel().getReferNo();
+        }
+        txtField01.setText(lsReferNo);
+
         txtField02.setText(oTrans.getMasterModel().getMasterModel().getPolicyNo());
         txtField03.setText(oTrans.getMasterModel().getMasterModel().getORNo());
         if (oTrans.getMasterModel().getMasterModel().getApplicDte() != null) {
