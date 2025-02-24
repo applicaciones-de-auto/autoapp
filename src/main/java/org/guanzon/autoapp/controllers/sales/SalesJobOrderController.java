@@ -181,7 +181,12 @@ public class SalesJobOrderController implements Initializable, ScreenInterface, 
     public boolean loadMasterFields() {
         JSONObject loJSON = new JSONObject();
         loJSON = oTrans.computeAmount();
-        txtField01.setText(oTrans.getMasterModel().getMasterModel().getVSPNo());
+        String lsVSPNoxx = "";
+        if (oTrans.getMasterModel().getMasterModel().getVSPNo() != null) {
+            lsVSPNoxx = oTrans.getMasterModel().getMasterModel().getVSPNo();
+        }
+        txtField01.setText(lsVSPNoxx);
+
         txtField02.setText(oTrans.getMasterModel().getMasterModel().getDSNo());
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
             datePicker03.setValue(CustomCommonUtil.strToDate(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte())));
