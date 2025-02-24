@@ -127,7 +127,6 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
 
     @Override
     public boolean loadMasterFields() {
-        JSONObject loJSON = new JSONObject();
         txtField01.setText(oTrans.getMasterModel().getMasterModel().getReferNo());
 
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null) {
@@ -139,7 +138,11 @@ public class VehicleSalesInvoiceController implements Initializable, ScreenInter
                     comboBox02.getSelectionModel().select(Integer.parseInt(oTrans.getVSISourceModel().getDetailModel().getCustType()));
                 }
             }
-            txtField04.setText(oTrans.getVSISourceModel().getDetailModel().getUDRNo());
+            String lsUDRNoxx = "";
+            if (oTrans.getVSISourceModel().getDetailModel().getUDRNo() != null) {
+                lsUDRNoxx = oTrans.getVSISourceModel().getDetailModel().getUDRNo();
+            }
+            txtField04.setText(lsUDRNoxx);
             txtField05.setText(""); // NO PO GETTERS
             txtField06.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
             textArea07.setText(oTrans.getMasterModel().getMasterModel().getAddress());
