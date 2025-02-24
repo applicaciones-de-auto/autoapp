@@ -229,7 +229,11 @@ public class InvoiceController implements Initializable, ScreenInterface, GTrans
 
         }
         comboBox04.getSelectionModel().select(selectedPayType);
-        txtField05.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
+        String lsCstmrNm = "";
+        if (oTrans.getMasterModel().getMasterModel().getBuyCltNm() != null) {
+            lsCstmrNm = oTrans.getMasterModel().getMasterModel().getBuyCltNm();
+        }
+        txtField05.setText(lsCstmrNm);
         txtField06.setText(oTrans.getMasterModel().getMasterModel().getAddress());
         txtField07.setText("");
         String lsTinID = "";
