@@ -86,14 +86,31 @@ public class ItemLocationController implements Initializable, ScreenInterface, G
     @Override
     public boolean loadMasterFields() {
         txtField01.setText(oTrans.getModel().getModel().getLocatnID());
-        txtField02.setText(oTrans.getModel().getModel().getWHouseNm());
-        txtField03.setText(oTrans.getModel().getModel().getSectnNme());
-        txtField04.setText(oTrans.getModel().getModel().getBinName());
+        String lsWHousNm = "";
+        if (oTrans.getModel().getModel().getWHouseNm() != null) {
+            lsWHousNm = oTrans.getModel().getModel().getWHouseNm();
+        }
+        txtField02.setText(lsWHousNm);
+
+        String lsSectnNm = "";
+        if (oTrans.getModel().getModel().getSectnNme() != null) {
+            lsSectnNm = oTrans.getModel().getModel().getSectnNme();
+        }
+        txtField03.setText(lsSectnNm);
+
+        String lsBinNmxx = "";
+        if (oTrans.getModel().getModel().getBinName() != null) {
+            lsBinNmxx = oTrans.getModel().getModel().getBinName();
+        }
+        txtField04.setText(lsBinNmxx);
+
         txtField05.setText(oTrans.getModel().getModel().getLocatnDs());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }
