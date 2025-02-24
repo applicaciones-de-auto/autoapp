@@ -195,7 +195,12 @@ public class ReferralAgentController implements Initializable, ScreenInterface, 
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getClientID());
+        String lsRefAgnt = "";
+        if (oTrans.getModel().getModel().getClientID() != null) {
+            lsRefAgnt = oTrans.getModel().getModel().getClientID();
+        }
+        txtField01.setText(lsRefAgnt);
+
         txtField02.setText(oTransClient.getModel().getModel().getLastName());
         txtField03.setText(oTransClient.getModel().getModel().getFirstName());
         txtField04.setText(oTransClient.getModel().getModel().getMiddleName());
