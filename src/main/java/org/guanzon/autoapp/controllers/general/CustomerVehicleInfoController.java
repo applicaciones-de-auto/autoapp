@@ -160,32 +160,82 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
     public boolean loadMasterFields() {
         lblSerailID.setText("SERIAL ID: ");
         lblSerailIDValue.setText(oTrans.getModel().getModel().getSerialID());
-        txtField01.setText(oTrans.getModel().getModel().getOwnerNmx());
-        txtField03.setText(oTrans.getModel().getModel().getCOwnerNm());
-        textArea02.setText(oTrans.getModel().getModel().getOwnerAdd());
-        textArea04.setText(oTrans.getModel().getModel().getCOwnerAd());
-        txtField05.setText(oTrans.getModel().getModel().getMakeDesc());
-        txtField07.setText(oTrans.getModel().getModel().getModelDsc());
-        txtField09.setText(oTrans.getModel().getModel().getTypeDesc());
-        txtField06.setText(oTrans.getModel().getModel().getTransMsn());
-        txtField08.setText(oTrans.getModel().getModel().getColorDsc());
-        if (oTrans.getModel().getModel().getYearModl() == null) {
-            txtField10.setText("");
-        } else {
-            txtField10.setText(String.valueOf(oTrans.getModel().getModel().getYearModl()));
+
+        String lsOwnerNm = "";
+        if (oTrans.getModel().getModel().getOwnerNmx() != null) {
+            lsOwnerNm = oTrans.getModel().getModel().getOwnerNmx();
         }
+        txtField01.setText(lsOwnerNm);
+
+        String lsOwnAdrs = "";
+        if (oTrans.getModel().getModel().getOwnerAdd() != null) {
+            lsOwnAdrs = oTrans.getModel().getModel().getOwnerAdd();
+        }
+        textArea02.setText(lsOwnAdrs);
+
+        String lsCoOwrNm = "";
+        if (oTrans.getModel().getModel().getCOwnerNm() != null) {
+            lsCoOwrNm = oTrans.getModel().getModel().getCOwnerNm();
+        }
+        txtField03.setText(lsCoOwrNm);
+
+        String lsCOwnAdr = "";
+        if (oTrans.getModel().getModel().getOwnerAdd() != null) {
+            lsCOwnAdr = oTrans.getModel().getModel().getOwnerAdd();
+        }
+        textArea04.setText(lsCOwnAdr);
+
+        String lsMakeDsc = "";
+        if (oTrans.getModel().getModel().getMakeDesc() != null) {
+            lsMakeDsc = oTrans.getModel().getModel().getMakeDesc();
+        }
+        txtField05.setText(lsMakeDsc);
+
+        String lsModelDsc = "";
+        if (oTrans.getModel().getModel().getModelDsc() != null) {
+            lsModelDsc = oTrans.getModel().getModel().getModelDsc();
+        }
+        txtField07.setText(lsModelDsc);
+
+        String lsTypeDsc = "";
+        if (oTrans.getModel().getModel().getTypeDesc() != null) {
+            lsTypeDsc = oTrans.getModel().getModel().getTypeDesc();
+        }
+        txtField09.setText(lsTypeDsc);
+
+        String lsTransMn = "";
+        if (oTrans.getModel().getModel().getTransMsn() != null) {
+            lsTransMn = oTrans.getModel().getModel().getTransMsn();
+        }
+        txtField06.setText(lsTransMn);
+
+        String lsColrDsc = "";
+        if (oTrans.getModel().getModel().getColorDsc() != null) {
+            lsColrDsc = oTrans.getModel().getModel().getColorDsc();
+        }
+        txtField08.setText(lsColrDsc);
+
+        String lsYrModel = "";
+        if (oTrans.getModel().getModel().getYearModl() != null) {
+            lsYrModel = String.valueOf(oTrans.getModel().getModel().getYearModl());
+        }
+        txtField10.setText(lsYrModel);
+
+        String lsPlateNo = "";
         if (oTrans.getModel().getModel().getPlateNo() != null) {
-            txtField11.setText(oTrans.getModel().getModel().getPlateNo());
-        } else {
-            txtField11.setText("");
+            lsPlateNo = oTrans.getModel().getModel().getPlateNo();
         }
+        txtField11.setText(lsPlateNo);
+
         txtField13.setText(oTrans.getModel().getModel().getFrameNo());
         txtField15.setText(oTrans.getModel().getModel().getKeyNo());
+
+        String lsCSNoxxx = "";
         if (oTrans.getModel().getModel().getCSNo() != null) {
-            txtField12.setText(oTrans.getModel().getModel().getCSNo());
-        } else {
-            txtField12.setText("");
+            lsCSNoxxx = oTrans.getModel().getModel().getCSNo();
         }
+        txtField12.setText(lsCSNoxxx);
+
         txtField14.setText(oTrans.getModel().getModel().getEngineNo());
         txtField16.setText(oTrans.getModel().getModel().getLocation());
 //        txtField19.setText(oTrans.getModel().getModel().);
@@ -196,12 +246,25 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
 
         }
         txtField21.setText(lsDRNo);
+
         if (oTrans.getModel().getModel().getUdrDate() != null && !String.valueOf(oTrans.getModel().getModel().getUdrDate()).isEmpty()) {
             txtField22.setText(CustomCommonUtil.xsDateShort(oTrans.getModel().getModel().getUdrDate()));
         }
+
         txtField23.setText(oTrans.getModel().getModel().getSoldTo());
-        txtField24.setText(oTrans.getModel().getModel().getDealerNm());
-        txtField25.setText(oTrans.getModel().getModel().getPlaceReg());
+
+        String lsDealrNm = "";
+        if (oTrans.getModel().getModel().getDealerNm() != null) {
+            lsDealrNm = oTrans.getModel().getModel().getDealerNm();
+        }
+        txtField24.setText(lsDealrNm);
+
+        String lsPlaceRg = "";
+        if (oTrans.getModel().getModel().getPlaceReg() != null) {
+            lsPlaceRg = oTrans.getModel().getModel().getPlaceReg();
+        }
+        txtField25.setText(lsPlaceRg);
+
         textArea27.setText(oTrans.getModel().getModel().getRemarks());
         int lnVhclNew = -1;
         if (oTrans.getModel().getModel().getVhclNew() != null && !oTrans.getModel().getModel().getVhclNew().trim().isEmpty()) {
@@ -500,15 +563,15 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
 
     @Override
     public void handleButtonAction(ActionEvent event) {
-        JSONObject loJson = new JSONObject();
+        JSONObject loJSON = new JSONObject();
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnAdd":
                 clearFields();
                 clearTables();
                 oTrans = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
-                loJson = oTrans.newRecord();
-                if ("success".equals((String) loJson.get("result"))) {
+                loJSON = oTrans.newRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
                     if (!pbisVhclSales) {
                         comboBox18.getSelectionModel().select(0);
                         oTrans.getModel().getModel().setIsDemo("0");
@@ -522,14 +585,14 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                     pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                 }
                 break;
             case "btnEdit":
-                loJson = oTrans.updateRecord();
+                loJSON = oTrans.updateRecord();
                 pnEditMode = oTrans.getEditMode();
-                if ("error".equals((String) loJson.get("result"))) {
-                    ShowMessageFX.Warning((String) loJson.get("message"), "Warning", null);
+                if ("error".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                 }
                 break;
             case "btnSave":
@@ -555,11 +618,11 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                 if (!setSelection()) {
                     return;
                 }
-                loJson = oTrans.saveRecord();
-                if ("success".equals((String) loJson.get("result"))) {
-                    ShowMessageFX.Information(null, "Vehicle Information", (String) loJson.get("message"));
-                    loJson = oTrans.openRecord(oTrans.getModel().getModel().getSerialID());
-                    if ("success".equals((String) loJson.get("result"))) {
+                loJSON = oTrans.saveRecord();
+                if ("success".equals((String) loJSON.get("result"))) {
+                    ShowMessageFX.Information(null, "Vehicle Information", (String) loJSON.get("message"));
+                    loJSON = oTrans.openRecord(oTrans.getModel().getModel().getSerialID());
+                    if ("success".equals((String) loJSON.get("result"))) {
                         loadMasterFields();
 //                        loadWareHouseHistory();
 //                        loadOwnerHistory();
@@ -567,16 +630,27 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                         pnEditMode = oTrans.getEditMode();
                     }
                 } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) loJSON.get("message"));
                     return;
                 }
                 break;
             case "btnCancel":
                 if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
-                    clearFields();
-                    clearTables();
-                    oTrans = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        clearFields();
+                        clearTables();
+                        oTrans = new Vehicle_Serial(oApp, false, oApp.getBranchCode());
+                        pnEditMode = EditMode.UNKNOWN;
+                    } else {
+                        loJSON = oTrans.openRecord(oTrans.getModel().getModel().getSerialID());
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            loadMasterFields();
+                            //loadWareHouseHistory();
+//                        loadOwnerHistory();
+                            initFields(pnEditMode);
+                            pnEditMode = oTrans.getEditMode();
+                        }
+                    }
                 }
                 break;
             case "btnBrowse":
@@ -588,46 +662,56 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
                 }
 
                 if (pbisVhclSales) {
-                    loJson = oTrans.searchRecord("", false, true);
+                    loJSON = oTrans.searchRecord("", false, true);
                 } else {
-                    loJson = oTrans.searchRecord("", false, false);
+                    loJSON = oTrans.searchRecord("", false, false);
                 }
 
-                if ("success".equals((String) loJson.get("result"))) {
+                if ("success".equals(
+                        (String) loJSON.get("result"))) {
                     loadMasterFields();
 //                    loadOwnerHistory();
 //                    loadWareHouseHistory();
                     pnEditMode = oTrans.getEditMode();
                     initFields(pnEditMode);
                 } else {
-                    ShowMessageFX.Warning(null, "Search Vehicle Information", (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, "Search Vehicle Information", (String) loJSON.get("message"));
                 }
+
                 break;
             case "btnClose":
-                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to close this Tab?")) {
+                if (ShowMessageFX.YesNo(
+                        null, "Close Tab", "Are you sure you want to close this Tab?")) {
                     if (poUnload != null) {
                         poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     } else {
                         ShowMessageFX.Warning(null, pxeModuleName, "Please notify the system administrator to configure the null value at the close button.");
                     }
                 }
+
                 break;
             case "btnVhclDesc":
                 loadVehicleDescriptionWindow();
+
                 break;
             case "btnFrame":
             case "btnEngine":
-                if (txtField05.getText().trim().equals("")) {
+                if (txtField05.getText()
+                        .trim().equals("")) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter value of make.");
                     txtField05.requestFocus();
                     return;
                 }
-                if (txtField07.getText().trim().equals("")) {
+
+                if (txtField07.getText()
+                        .trim().equals("")) {
                     ShowMessageFX.Warning(null, pxeModuleName, "Please enter value of model.");
                     txtField07.requestFocus();
                     return;
                 }
-                if (lsButton.contains("btnEngine")) {
+
+                if (lsButton.contains(
+                        "btnEngine")) {
                     loadEngineWindow();
                 } else {
                     loadFrameWindow();
@@ -636,17 +720,21 @@ public class CustomerVehicleInfoController implements Initializable, ScreenInter
             case "btnWareHouse":
                 break;
             case "btnVhclAvl":
-                loJson = oTrans.searchAvailableVhcl();
-                if ("success".equals((String) loJson.get("result"))) {
+                loJSON = oTrans.searchAvailableVhcl();
+
+                if ("success".equals(
+                        (String) loJSON.get("result"))) {
                     loadAvailableVehicle();
                 } else {
-                    ShowMessageFX.Warning(null, "Search Available Vehicle", (String) loJson.get("message"));
+                    ShowMessageFX.Warning(null, "Search Available Vehicle", (String) loJSON.get("message"));
                 }
                 break;
             case "btnVhclMnl":
                 break;
             default:
-                ShowMessageFX.Warning(null, "Integrated Automotive System", "Please contact admin to assist about no button available");
+                ShowMessageFX.Warning(
+                        null, "Integrated Automotive System", "Please contact admin to assist about no button available");
+
                 break;
         }
         initFields(pnEditMode);
