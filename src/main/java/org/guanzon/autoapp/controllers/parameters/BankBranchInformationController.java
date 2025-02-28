@@ -118,8 +118,18 @@ public class BankBranchInformationController implements Initializable, ScreenInt
 
     @Override
     public boolean loadMasterFields() {
-        txtField01_Branch.setText(oTrans.getModel().getModel().getBankID());
-        txtField02_Branch.setText(oTrans.getModel().getModel().getBankName());
+        String lsBankIDx = "";
+        if (oTrans.getModel().getModel().getBankID() != null) {
+            lsBankIDx = oTrans.getModel().getModel().getBankID();
+        }
+        txtField01_Branch.setText(lsBankIDx);
+
+        String lsBankNme = "";
+        if (oTrans.getModel().getModel().getBankName() != null) {
+            lsBankNme = oTrans.getModel().getModel().getBankName();
+        }
+        txtField02_Branch.setText(lsBankNme);
+
         if (oTrans.getModel().getModel().getBankType() != null && !oTrans.getModel().getModel().getBankType().trim().isEmpty()) {
             switch ((String.valueOf(oTrans.getModel().getModel().getBankType()))) {
                 case "bank":
@@ -142,16 +152,35 @@ public class BankBranchInformationController implements Initializable, ScreenInt
         txtField05_Branch.setText(oTrans.getModel().getModel().getBrBankNm());
         txtField06_Branch.setText(oTrans.getModel().getModel().getBrBankCd());
         txtField07_Branch.setText(oTrans.getModel().getModel().getContactP());
-        txtField08_Branch.setText(oTrans.getModel().getModel().getProvName());
-        txtField09_Branch.setText(oTrans.getModel().getModel().getTownName());
-        txtField10_Branch.setText(oTrans.getModel().getModel().getZippCode());
+
+        String lsProvNme = "";
+        if (oTrans.getModel().getModel().getProvName() != null) {
+            lsProvNme = oTrans.getModel().getModel().getProvName();
+        }
+        txtField08_Branch.setText(lsProvNme);
+
+        String lsTownNme = "";
+        if (oTrans.getModel().getModel().getTownName() != null) {
+            lsTownNme = oTrans.getModel().getModel().getTownName();
+        }
+        txtField09_Branch.setText(lsTownNme);
+
+        String lsZipCode = "";
+        if (oTrans.getModel().getModel().getZippCode() != null) {
+            lsZipCode = oTrans.getModel().getModel().getZippCode();
+        }
+        txtField10_Branch.setText(lsZipCode);
+
         txtField11_Branch.setText(oTrans.getModel().getModel().getAddress());
         txtField12_Branch.setText(oTrans.getModel().getModel().getTelNo());
         txtField13_Branch.setText(oTrans.getModel().getModel().getFaxNo());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

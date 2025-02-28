@@ -250,8 +250,18 @@ public class CustomerController implements Initializable, ScreenInterface, GReco
             if (oTrans.getModel().getModel().getBirthDte() != null && !oTrans.getModel().getModel().getBirthDte().toString().isEmpty()) {
                 datePicker11.setValue(CustomCommonUtil.strToDate(SQLUtil.dateFormat(oTrans.getModel().getModel().getBirthDte(), SQLUtil.FORMAT_SHORT_DATE)));
             }
-            txtField10.setText(oTrans.getModel().getModel().getCntryNme());
-            txtField12.setText(oTrans.getModel().getModel().getTownName());
+
+            String fsCtryNme = "";
+            if (oTrans.getModel().getModel().getCntryNme() != null) {
+                fsCtryNme = oTrans.getModel().getModel().getCntryNme();
+            }
+            txtField10.setText(fsCtryNme);
+
+            String fsBrtPlce = "";
+            if (oTrans.getModel().getModel().getTownName() != null) {
+                fsBrtPlce = oTrans.getModel().getModel().getTownName();
+            }
+            txtField12.setText(fsBrtPlce);
         } else {
             lblType.setText("COMPANY ID : ");
             if (oTrans.getModel().getModel().getClientID() != null) {

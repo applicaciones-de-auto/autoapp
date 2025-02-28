@@ -123,15 +123,27 @@ public class VehicleFrameFormatController implements Initializable, ScreenInterf
 
     @Override
     public boolean loadMasterFields() {
+        String lsMakeDesc = "";
         switch (comboBox01.getSelectionModel().getSelectedIndex()) {
             case 0:
-                txtField02.setText(oTransMakeFrameFormat.getModel().getModel().getMakeDesc());
+                if (oTransMakeFrameFormat.getModel().getModel().getMakeDesc() != null) {
+                    lsMakeDesc = oTransMakeFrameFormat.getModel().getModel().getMakeDesc();
+                }
+                txtField02.setText(lsMakeDesc);
                 txtField04.setText(oTransMakeFrameFormat.getModel().getModel().getFrmePtrn());
                 CustomCommonUtil.setDisable(true, txtField03, txtField05);
                 break;
             case 1:
-                txtField02.setText(oTrans.getModel().getModel().getMakeDesc());
-                txtField03.setText(oTrans.getModel().getModel().getModelDsc());
+                if (oTrans.getModel().getModel().getMakeDesc() != null) {
+                    lsMakeDesc = oTrans.getModel().getModel().getMakeDesc();
+                }
+                txtField02.setText(lsMakeDesc);
+
+                String lsModelDesc = "";
+                if (oTrans.getModel().getModel().getModelDsc() != null) {
+                    lsModelDesc = oTrans.getModel().getModel().getModelDsc();
+                }
+                txtField03.setText(lsModelDesc);
                 txtField04.setText(oTrans.getModel().getModel().getFrmePtrn());
                 if (oTrans.getModel().getModel().getFrmeLen() == null) {
                     txtField05.setText("0");

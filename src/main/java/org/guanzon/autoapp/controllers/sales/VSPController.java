@@ -261,9 +261,31 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         txtField12.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getResrvFee()));
         txtField13.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getAmtPaid()));
         txtField14.setText(CustomCommonUtil.setDecimalFormat(oTrans.getMasterModel().getMasterModel().getNetTTotl()));
-        txtField15.setText(oTrans.getMasterModel().getMasterModel().getInqCltNm());
-        txtField16.setText(oTrans.getMasterModel().getMasterModel().getBuyCltNm());
-        textArea17.setText(oTrans.getMasterModel().getMasterModel().getAddress());
+
+        String lsInqNmex = "";
+        if (oTrans.getMasterModel().getMasterModel().getInqCltNm() != null) {
+            lsInqNmex = oTrans.getMasterModel().getMasterModel().getInqCltNm();
+        }
+        txtField15.setText(lsInqNmex);
+
+        String lsByClNme = "";
+        if (oTrans.getMasterModel().getMasterModel().getBuyCltNm() != null) {
+            lsByClNme = oTrans.getMasterModel().getMasterModel().getBuyCltNm();
+        }
+        txtField16.setText(lsByClNme);
+
+        String lsAddrexx = "";
+        if (oTrans.getMasterModel().getMasterModel().getAddress() != null) {
+            lsAddrexx = oTrans.getMasterModel().getMasterModel().getAddress();
+        }
+        textArea17.setText(lsAddrexx);
+
+        String lsCoClNme = "";
+        if (oTrans.getMasterModel().getMasterModel().getCoCltNm() != null) {
+            lsCoClNme = oTrans.getMasterModel().getMasterModel().getCoCltNm();
+        }
+        txtField18.setText(lsCoClNme);
+
         txtField18.setText(oTrans.getMasterModel().getMasterModel().getCoCltNm());
         txtField19.setText(oTrans.getMasterModel().getMasterModel().getContctNm());
         if (oTrans.getMasterModel().getMasterModel().getIsVhclNw().equals("0")) {
@@ -279,10 +301,31 @@ public class VSPController implements Initializable, ScreenInterface, GTransacti
         } else {
             chckBoxSpecialAccount.setSelected(false);
         }
-        txtField20.setText(oTrans.getMasterModel().getMasterModel().getCSNo());
-        txtField21.setText(oTrans.getMasterModel().getMasterModel().getPlateNo());
-        txtField22.setText(oTrans.getMasterModel().getMasterModel().getEngineNo());
-        txtField23.setText(oTrans.getMasterModel().getMasterModel().getFrameNo());
+
+        String lsCSNoxxx = "";
+        if (oTrans.getMasterModel().getMasterModel().getCSNo() != null) {
+            lsCSNoxxx = oTrans.getMasterModel().getMasterModel().getCSNo();
+        }
+        txtField20.setText(lsCSNoxxx);
+
+        String lsPltNoxx = "";
+        if (oTrans.getMasterModel().getMasterModel().getPlateNo() != null) {
+            lsPltNoxx = oTrans.getMasterModel().getMasterModel().getPlateNo();
+        }
+        txtField21.setText(lsPltNoxx);
+
+        String lsEngNoxx = "";
+        if (oTrans.getMasterModel().getMasterModel().getEngineNo() != null) {
+            lsEngNoxx = oTrans.getMasterModel().getMasterModel().getEngineNo();
+        }
+        txtField22.setText(lsEngNoxx);
+
+        String lsFrmNoxx = "";
+        if (oTrans.getMasterModel().getMasterModel().getFrameNo() != null) {
+            lsFrmNoxx = oTrans.getMasterModel().getMasterModel().getFrameNo();
+        }
+        txtField23.setText(lsFrmNoxx);
+
         txtField24.setText(oTrans.getMasterModel().getMasterModel().getEndPlate());
         txtField25.setText(oTrans.getMasterModel().getMasterModel().getKeyNo());
         textArea26.setText(oTrans.getMasterModel().getMasterModel().getVhclDesc());

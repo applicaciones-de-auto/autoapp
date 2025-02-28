@@ -196,15 +196,40 @@ public class ActivityInformationController implements Initializable, ScreenInter
                     break;
             }
         }
-        txtField06.setText(oTrans.getModel().getModel().getActTypDs().trim());
+        String lsActDsc = "";
+        if (oTrans.getModel().getModel().getActTypDs() != null) {
+            lsActDsc = oTrans.getModel().getModel().getActTypDs();
+        }
+        txtField06.setText(lsActDsc.trim());
         textArea07.setText(oTrans.getModel().getModel().getActTitle());
         textArea08.setText(oTrans.getModel().getModel().getActDesc());
         textArea09.setText(oTrans.getModel().getModel().getLogRemrk());
         textArea10.setText(oTrans.getModel().getModel().getRemarks());
-        txtField11.setText(oTrans.getModel().getModel().getDeptName());
-        txtField12.setText(oTrans.getModel().getModel().getEmpInCharge());
-        txtField13.setText(oTrans.getModel().getModel().getBranchNm());
-        txtField14.setText(oTrans.getModel().getModel().getLocation());
+
+        String lsDeptNme = "";
+        if (oTrans.getModel().getModel().getDeptName() != null) {
+            lsDeptNme = oTrans.getModel().getModel().getDeptName();
+        }
+        txtField11.setText(lsDeptNme);
+
+        String lsEmpCNme = "";
+        if (oTrans.getModel().getModel().getEmpInCharge() != null) {
+            lsEmpCNme = oTrans.getModel().getModel().getEmpInCharge();
+        }
+        txtField12.setText(lsEmpCNme);
+
+        String lsBrchNme = "";
+        if (oTrans.getModel().getModel().getBranchNm() != null) {
+            lsBrchNme = oTrans.getModel().getModel().getBranchNm();
+        }
+        txtField13.setText(lsBrchNme);
+
+        String lsBrnchID = "";
+        if (oTrans.getModel().getModel().getLocation() != null) {
+            lsBrnchID = oTrans.getModel().getModel().getLocation();
+        }
+        txtField14.setText(lsBrnchID);
+
         txtField15.setText(String.valueOf(oTrans.getModel().getModel().getTrgtClnt()));
         txtField16.setText(poGetDecimalFormat.format(Double.parseDouble(String.valueOf(oTrans.getModel().getModel().getRcvdBdgt()))));
         String lsApprvDate = "";
@@ -319,7 +344,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
     }
 
     @Override
-    public void txtField_KeyPressed(KeyEvent event) {
+    public void txtField_KeyPressed(KeyEvent event
+    ) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             TextField lsTxtField = (TextField) event.getSource();
             String txtFieldID = ((TextField) event.getSource()).getId();
@@ -399,7 +425,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
     }
 
     @Override
-    public void textArea_KeyPressed(KeyEvent event) {
+    public void textArea_KeyPressed(KeyEvent event
+    ) {
         String textAreaID = ((TextArea) event.getSource()).getId();
         if (event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.F3) {
             switch (textAreaID) {
@@ -420,7 +447,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
     }
 
     @Override
-    public void handleButtonAction(ActionEvent event) {
+    public void handleButtonAction(ActionEvent event
+    ) {
         try {
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
@@ -800,7 +828,8 @@ public class ActivityInformationController implements Initializable, ScreenInter
     }
 
     @Override
-    public void initFields(int fnValue) {
+    public void initFields(int fnValue
+    ) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
         CustomCommonUtil.setDisable(!lbShow, dateFrom03, dateTo04, comboBox05, textArea07, textArea08,

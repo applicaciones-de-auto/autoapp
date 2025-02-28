@@ -100,14 +100,27 @@ public class TownController implements Initializable, ScreenInterface, GRecordIn
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getTownID());
-        txtField02.setText(oTrans.getModel().getModel().getProvName());
-        txtField03.setText(oTrans.getModel().getModel().getTownName());
-        txtField04.setText(oTrans.getModel().getModel().getZippCode());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+        if (oTrans.getModel().getModel().getTownID() != null) {
+            txtField01.setText(oTrans.getModel().getModel().getTownID());
+        }
+        String lsProvName = "";
+        if (oTrans.getModel().getModel().getProvName() != null) {
+            lsProvName = oTrans.getModel().getModel().getProvName();
+        }
+        txtField02.setText(lsProvName);
+
+        if (oTrans.getModel().getModel().getTownName() != null) {
+            txtField03.setText(oTrans.getModel().getModel().getTownName());
+        }
+        if (oTrans.getModel().getModel().getZippCode() != null) {
+            txtField04.setText(oTrans.getModel().getModel().getZippCode());
+        }
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

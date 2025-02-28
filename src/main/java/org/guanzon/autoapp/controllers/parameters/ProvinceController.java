@@ -82,13 +82,25 @@ public class ProvinceController implements Initializable, ScreenInterface, GReco
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getProvID());
-        txtField02.setText(oTrans.getModel().getModel().getRegionNm());
-        txtField03.setText(oTrans.getModel().getModel().getProvName());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+        if (oTrans.getModel().getModel().getProvID() != null) {
+            txtField01.setText(oTrans.getModel().getModel().getProvID());
+        }
+
+        String lsRegionName = "";
+        if (oTrans.getModel().getModel().getRegionNm() != null) {
+            lsRegionName = oTrans.getModel().getModel().getRegionNm();
+        }
+        txtField02.setText(lsRegionName);
+
+        if (oTrans.getModel().getModel().getProvName() != null) {
+            txtField03.setText(oTrans.getModel().getModel().getProvName());
+        }
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

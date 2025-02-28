@@ -94,11 +94,18 @@ public class CategoryController implements Initializable, ScreenInterface, GReco
     public boolean loadMasterFields() {
         txtField01.setText(oTrans.getModel().getModel().getCategrCd());
         txtField02.setText(oTrans.getModel().getModel().getDescript());
-        txtField03.setText(oTrans.getModel().getModel().getInvTypDs());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+
+        String lsInvTypx = "";
+        if (oTrans.getModel().getModel().getInvTypDs() != null) {
+            lsInvTypx = oTrans.getModel().getModel().getInvTypDs();
+        }
+        txtField03.setText(lsInvTypx);
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

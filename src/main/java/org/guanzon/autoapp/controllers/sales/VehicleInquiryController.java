@@ -253,20 +253,60 @@ public class VehicleInquiryController implements Initializable, ScreenInterface,
         if (oTrans.getMasterModel().getMasterModel().getTransactDte() != null && !oTrans.getMasterModel().getMasterModel().getTransactDte().toString().isEmpty()) {
             txtField02.setText(CustomCommonUtil.xsDateShort(oTrans.getMasterModel().getMasterModel().getTransactDte()));
         }
-        txtField03.setText(oTrans.getMasterModel().getMasterModel().getClientNm());
+
+        String lsCstmNme = "";
+        if (oTrans.getMasterModel().getMasterModel().getClientNm() != null) {
+            lsCstmNme = oTrans.getMasterModel().getMasterModel().getClientNm();
+        }
+        txtField03.setText(lsCstmNme);
+
         textArea04.setText(oTrans.getMasterModel().getMasterModel().getAddress());
-        txtField05.setText(oTrans.getMasterModel().getMasterModel().getContctNm());
+
+        String lsCntNmex = "";
+        if (oTrans.getMasterModel().getMasterModel().getContctNm() != null) {
+            lsCntNmex = oTrans.getMasterModel().getMasterModel().getContctNm();
+        }
+        txtField05.setText(lsCntNmex);
+
         txtField06.setText(oTrans.getMasterModel().getMasterModel().getMobileNo());
         txtField07.setText(oTrans.getMasterModel().getMasterModel().getEmailAdd());
         txtField08.setText(oTrans.getMasterModel().getMasterModel().getAccount());
+
+        String lsSlesExe = "";
+        if (oTrans.getMasterModel().getMasterModel().getSalesExe() != null) {
+            lsSlesExe = oTrans.getMasterModel().getMasterModel().getSalesExe();
+        }
+        txtField09.setText(lsSlesExe);
+
         txtField09.setText(oTrans.getMasterModel().getMasterModel().getSalesExe());
         if (oTrans.getMasterModel().getMasterModel().getSourceCD() != null && !oTrans.getMasterModel().getMasterModel().getSourceCD().trim().isEmpty()) {
             comboBox10.getSelectionModel().select(Integer.parseInt(oTrans.getMasterModel().getMasterModel().getSourceCD()));
         }
-        txtField11.setText(oTrans.getMasterModel().getMasterModel().getPlatform());
-        txtField12.setText(oTrans.getMasterModel().getMasterModel().getActTitle());
-        txtField13.setText(oTrans.getMasterModel().getMasterModel().getSalesAgn());
-        txtField14.setText(oTrans.getMasterModel().getMasterModel().getBranchNm());
+
+        String lsPltForm = "";
+        if (oTrans.getMasterModel().getMasterModel().getPlatform() != null) {
+            lsPltForm = oTrans.getMasterModel().getMasterModel().getPlatform();
+        }
+        txtField11.setText(lsPltForm);
+
+        String lsEvntTtl = "";
+        if (oTrans.getMasterModel().getMasterModel().getActTitle() != null) {
+            lsEvntTtl = oTrans.getMasterModel().getMasterModel().getActTitle();
+        }
+        txtField12.setText(lsEvntTtl);
+
+        String lsRefrAgn = "";
+        if (oTrans.getMasterModel().getMasterModel().getSalesAgn() != null) {
+            lsRefrAgn = oTrans.getMasterModel().getMasterModel().getSalesAgn();
+        }
+        txtField13.setText(lsRefrAgn);
+
+        String lsBrnchNm = "";
+        if (oTrans.getMasterModel().getMasterModel().getBranchNm() != null) {
+            lsBrnchNm = oTrans.getMasterModel().getMasterModel().getBranchNm();
+        }
+        txtField14.setText(lsBrnchNm);
+
         txtField18.setText(poGetDecimalFormat.format(Double.parseDouble("0.00")));
         switch (oTrans.getMasterModel().getMasterModel().getIntrstLv()) {
             case "a":

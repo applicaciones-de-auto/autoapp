@@ -101,15 +101,35 @@ public class BarangayController implements Initializable, ScreenInterface, GReco
 
     @Override
     public boolean loadMasterFields() {
-        txtField01.setText(oTrans.getModel().getModel().getBrgyID());
-        txtField02.setText(oTrans.getModel().getModel().getProvName());
-        txtField03.setText(oTrans.getModel().getModel().getTownName());
-        txtField04.setText(oTrans.getModel().getModel().getZippCode());
-        txtField05.setText(oTrans.getModel().getModel().getBrgyName());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+        if (oTrans.getModel().getModel().getBrgyID() != null) {
+            txtField01.setText(oTrans.getModel().getModel().getBrgyID());
+        }
+        String lsProvName = "";
+        if (oTrans.getModel().getModel().getProvName() != null) {
+            lsProvName = oTrans.getModel().getModel().getProvName();
+        }
+        txtField02.setText(lsProvName);
+
+        String lsTownName = "";
+        if (oTrans.getModel().getModel().getTownName() != null) {
+            lsTownName = oTrans.getModel().getModel().getTownName();
+        }
+        txtField03.setText(lsTownName);
+        String lsZipCode = "";
+        if (oTrans.getModel().getModel().getZippCode() != null) {
+            lsZipCode = oTrans.getModel().getModel().getZippCode();
+        }
+        txtField04.setText(lsZipCode);
+
+        if (oTrans.getModel().getModel().getBrgyName() != null) {
+            txtField05.setText(oTrans.getModel().getModel().getBrgyName());
+        }
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }

@@ -118,8 +118,18 @@ public class InsuranceBranchInformationController implements Initializable, Scre
 
     @Override
     public boolean loadMasterFields() {
-        txtField01_Branch.setText(oTrans.getModel().getModel().getInsurID());
-        txtField02_Branch.setText(oTrans.getModel().getModel().getInsurNme());
+        String lsInsrIDx = "";
+        if (oTrans.getModel().getModel().getInsurID() != null) {
+            lsInsrIDx = oTrans.getModel().getModel().getInsurID();
+        }
+        txtField01_Branch.setText(lsInsrIDx);
+
+        String lsInsrNmx = "";
+        if (oTrans.getModel().getModel().getInsurNme() != null) {
+            lsInsrNmx = oTrans.getModel().getModel().getInsurNme();
+        }
+        txtField02_Branch.setText(lsInsrNmx);
+
         if (oTrans.getModel().getModel().getCompnyTp() != null && !oTrans.getModel().getModel().getCompnyTp().trim().isEmpty()) {
             comboBox03_Branch.getSelectionModel().select(Integer.parseInt(oTrans.getModel().getModel().getCompnyTp()));
         }
@@ -127,16 +137,35 @@ public class InsuranceBranchInformationController implements Initializable, Scre
         txtField05_Branch.setText(oTrans.getModel().getModel().getBrInsNme());
         txtField06_Branch.setText(oTrans.getModel().getModel().getBrInsCde());
         txtField07_Branch.setText(oTrans.getModel().getModel().getContactP());
-        txtField08_Branch.setText(oTrans.getModel().getModel().getProvName());
-        txtField09_Branch.setText(oTrans.getModel().getModel().getTownName());
-        txtField10_Branch.setText(oTrans.getModel().getModel().getZippCode());
+
+        String lsProvNme = "";
+        if (oTrans.getModel().getModel().getProvName() != null) {
+            lsProvNme = oTrans.getModel().getModel().getProvName();
+        }
+        txtField08_Branch.setText(lsProvNme);
+
+        String lsTownNme = "";
+        if (oTrans.getModel().getModel().getTownName() != null) {
+            lsTownNme = oTrans.getModel().getModel().getTownName();
+        }
+        txtField09_Branch.setText(lsTownNme);
+
+        String lsZipCode = "";
+        if (oTrans.getModel().getModel().getZippCode() != null) {
+            lsZipCode = oTrans.getModel().getModel().getZippCode();
+        }
+        txtField10_Branch.setText(lsZipCode);
+
         txtField11_Branch.setText(oTrans.getModel().getModel().getAddress());
         txtField12_Branch.setText(oTrans.getModel().getModel().getTelNo());
         txtField13_Branch.setText(oTrans.getModel().getModel().getFaxNo());
-        if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
-            cboxActivate.setSelected(true);
-        } else {
-            cboxActivate.setSelected(false);
+
+        if (oTrans.getModel().getModel().getRecdStat() != null) {
+            if (oTrans.getModel().getModel().getRecdStat().equals("1")) {
+                cboxActivate.setSelected(true);
+            } else {
+                cboxActivate.setSelected(false);
+            }
         }
         return true;
     }
